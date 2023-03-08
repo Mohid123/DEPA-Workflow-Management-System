@@ -1,0 +1,7 @@
+.bg_img {
+  @apply w-screen bg-[url('src/assets/login_bg.svg')] bg-no-repeat bg-contain bg-bottom h-screen;
+}
+
+.card {
+  @apply w-116 px-5 py-5 bg-white shadow-xl rounded-md border-white max-h-150;
+}
