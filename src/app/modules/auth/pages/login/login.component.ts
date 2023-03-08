@@ -48,15 +48,16 @@ export class LoginComponent implements OnInit {
   }
 
   submitForm() {
-    if(this.loginForm.value) {
-      this.auth.login(this.loginForm.value).pipe(takeUntil(this.destroy$), first())
-      .subscribe((response: any) => {
-        if(!response.hasErrors()) {
-          this.notif.displayNotification('You are successfully logged in', 'User Login', TuiNotification.Success);
-          setTimeout(() => this.router.navigate(['/dashboard/appStore']), 1200)
-        }
-    }) 
-    }
+    // if(this.loginForm.value) {
+    //   this.auth.login(this.loginForm.value).pipe(takeUntil(this.destroy$), first())
+    //   .subscribe((response: any) => {
+    //     if(!response.hasErrors()) {
+    //       this.notif.displayNotification('You are successfully logged in', 'User Login', TuiNotification.Success);
+    //       setTimeout(() => this.router.navigate(['/dashboard/appStore']), 1200)
+    //     }
+    // }) 
+    // }
+    this.router.navigate(['/dashboard/appStore'])
   }
 }
 
