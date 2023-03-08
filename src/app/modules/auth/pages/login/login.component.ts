@@ -52,8 +52,8 @@ export class LoginComponent implements OnInit {
       this.auth.login(this.loginForm.value).pipe(takeUntil(this.destroy$), first())
       .subscribe((response: any) => {
         if(!response.hasErrors()) {
-          this.notif.displayNotification('User log in successful', 'User Login', TuiNotification.Success);
-          // this.router.navigate(['/module/workflow/64015e0922c8d01d0cca6598']);
+          this.notif.displayNotification('You are successfully logged in', 'User Login', TuiNotification.Success);
+          setTimeout(() => this.router.navigate(['/dashboard/appStore']), 1200)
         }
     }) 
     }

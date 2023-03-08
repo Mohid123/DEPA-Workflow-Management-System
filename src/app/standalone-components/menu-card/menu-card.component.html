@@ -1,0 +1,34 @@
+<div class="w-65 rounded-lg shadow-xl px-5 py-4">
+  <div class="flex justify-start space-x-3">
+    <img [src]="menuIcon" width="25" height="25">
+    <span class="text-[#2F3044] text-xl font-[Montserrat] font-semibold">{{menuHeader}}</span>
+  </div>
+  <div class="flex flex-col mt-4">
+    <p class="font-semibold text-base">
+      {{menuSubHeader}}
+    </p>
+    <ul *ngFor="let item of (menuItems | async); let i = index" class="list-none">
+      <li
+        [ngClass]="{'bg-[#ECF8FF] text-[#009EF6]': item.isActive == true, 'bg-white text-[#A1A5B7]': item.isActive == false, 'mt-2' : i == 0 } "
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+        (click)="setActiveItem(item)"
+      >
+        {{item.name}}
+      </li>
+    </ul>
+    <ng-container *ngIf="secondaryMenuItems">
+      <p class="font-semibold text-base mt-3">
+        {{secondaryMenuSubHeader}}
+      </p>
+      <ul *ngFor="let item of (secondaryMenuItems | async); let i = index" class="list-none">
+        <li
+          [ngClass]="{'bg-[#ECF8FF] text-[#009EF6]': item.isActive == true, 'bg-white text-[#A1A5B7]': item.isActive == false, 'mt-2' : i == 0 } "
+          class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+          (click)="setActiveItem(item)"
+        >
+          {{item.name}}
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+</div>

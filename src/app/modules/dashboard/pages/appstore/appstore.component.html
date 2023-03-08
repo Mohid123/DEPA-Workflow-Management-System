@@ -1,0 +1,54 @@
+<app-header></app-header>
+<section class="grid grid-cols-12 gap-3 w-11/12 mx-auto mt-32 pb-20">
+  <div class="flex flex-col col-span-4">
+    <app-menu-card
+      [menuHeader]="'App Store'"
+      [menuSubHeader]="'Categories'"
+      [menuIcon]="'../../../../assets/menu_bars.svg'"
+      [menuItems]="categories$"
+      (setActive)="setActiveInactive($event)"
+      class="mb-14"
+    >
+    </app-menu-card>
+    <app-menu-card
+      [menuHeader]="'Store Console'"
+      [menuSubHeader]="'Categories'"
+      [secondaryMenuSubHeader]="'Apps'"
+      [menuIcon]="'../../../../assets/settings_icon.svg'"
+      [menuItems]="consoleCategories$"
+      [secondaryMenuItems]="apps$"
+      (setActive)="setActiveInactive($event)"
+    >
+    </app-menu-card>
+  </div>
+  <div class="col-span-8 flex flex-col my-4">
+    <section class="">
+      <p class="text-[#2F3044] text-xl font-semibold pb-7">Human Resources</p>
+      <div tuiCarouselButtons class="flex justify-between">
+        <button
+          tuiIconButton
+          icon="tuiIconChevronLeftLarge"
+          title="Previous"
+          appearance="flat"
+          class="drop-shadow-lg shadow-lg mt-16"
+          type="button"
+          (click)="carousel.prev()"
+        ></button>
+        <tui-carousel [itemsCount]="4" #carousel class="carousel">
+          <ng-container *ngFor="let app of (appStoreApps$ | async); let i = index">
+            <app-store-card *tuiItem [appIcon]="app.appIcon" [appName]="app.appName" [themeColor]="app.themeColor"></app-store-card>
+          </ng-container>
+        </tui-carousel>
+        <button
+          tuiIconButton
+          type="button"
+          icon="tuiIconChevronRightLarge"
+          title="Next"
+          appearance="flat"
+          class="drop-shadow-lg shadow-lg mt-16"
+          (click)="carousel.next()"
+        ></button>
+      </div>
+    </section>
+  </div>
+</section>

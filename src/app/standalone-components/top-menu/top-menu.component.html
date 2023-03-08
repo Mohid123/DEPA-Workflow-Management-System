@@ -1,0 +1,12 @@
+<div class="w-full h-28 rounded-lg shadow-xl bg-white">
+  <div class="flex justify-center items-center space-x-10 h-full cursor-pointer">
+    <ng-container *ngFor="let item of menuItems; let i = index;">
+      <div (click)="setActive(i)" [ngClass]="item.isActive ? 'bg-[#00A3FF] rounded-lg text-white': 'bg-white text-gray-500'" class="inline-flex px-3 py-3">
+        <img width="25" height="25" [src]="item.isActive ? item.altIcon : item.icon" class="mx-2">
+        <a class="uppercase text-sm font-semibold mt-0.5">
+          {{item.name}}
+        </a>
+      </div>
+    </ng-container>
+  </div>
+</div>
