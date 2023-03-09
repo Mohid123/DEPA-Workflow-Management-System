@@ -14,7 +14,7 @@ export class DashboardService extends ApiService<any> {
 
   dashboardMenuItems = of({
     categories: [
-      {name: 'View All', isActive: true},
+      {name: 'View All', isActive: false},
       {name: 'Human Resources', isActive: false},
       {name: 'General Management', isActive: false},
       {name: 'Finance', isActive: false},

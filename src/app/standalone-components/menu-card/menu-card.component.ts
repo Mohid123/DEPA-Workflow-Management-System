@@ -15,14 +15,11 @@ export class MenuCardComponent {
   @Input() menuHeader!: string;
   @Input() menuSubHeader!: string;
   @Input() secondaryMenuSubHeader!: string;
+  @Input() secondarySubHeader!: string;
   @Input() menuIcon!: string;
   @Input() menuItems!: Observable<any>;
   @Input() secondaryMenuItems?: Observable<any>;
-  @Output() setActive = new EventEmitter();
-
-  setActiveItem(item: any) {
-    this.setActive.emit(item)
-  }
+  @Input() apps?: Observable<any>;
 
   trackByFn(ndex: number, item: any) {
     return item.id; 

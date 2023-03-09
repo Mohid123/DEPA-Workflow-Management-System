@@ -1,26 +1,6 @@
 <app-header></app-header>
 <section class="grid grid-cols-12 gap-4 w-11/12 mx-auto mt-32 pb-20">
-  <div class="flex flex-col col-span-3">
-    <app-menu-card
-      [menuHeader]="'App Store'"
-      [menuSubHeader]="'Categories'"
-      [menuIcon]="'../../../../assets/menu_bars.svg'"
-      [menuItems]="categories$"
-      (setActive)="setActiveInactive($event)"
-      class="mb-14"
-    >
-    </app-menu-card>
-    <app-menu-card
-      [menuHeader]="'Store Console'"
-      [menuSubHeader]="'Categories'"
-      [secondaryMenuSubHeader]="'Apps'"
-      [menuIcon]="'../../../../assets/settings_icon.svg'"
-      [menuItems]="consoleCategories$"
-      [secondaryMenuItems]="apps$"
-      (setActive)="setActiveInactive($event)"
-    >
-    </app-menu-card>
-  </div>
+  <app-shared-menu class="col-span-3"></app-shared-menu>
   <div class="col-span-9 flex flex-col my-4">
     <section>
       <app-carousel [carouselName]="'Human Resources'" [appStoreData$]="appStoreApps$"></app-carousel>

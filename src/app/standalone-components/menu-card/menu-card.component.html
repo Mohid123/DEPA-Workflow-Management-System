@@ -8,30 +8,165 @@
       {{menuSubHeader}}
     </p>
     <ul *ngFor="let item of (menuItems | async); let i = index" class="list-none">
-      <a>
-        <li
-          [ngClass]="{'bg-[#ECF8FF] text-[#009EF6]': item.isActive == true, 'bg-white text-[#A1A5B7]': item.isActive == false, 'mt-2' : i == 0 } "
-          class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-          (click)="setActiveItem(item)"
+      <li
+        *ngIf="item.name == 'View All'"
+        [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          [routerLink]="['/dashboard/appStore']"
+          routerLinkActive="active"
         >
           {{item.name}}
-        </li>
-      </a>
+        </a>
+      </li>
+
+      <li
+        *ngIf="item.name == 'Human Resources'"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive="active"
+        >
+          {{item.name}}
+        </a>
+      </li>
+
+      <li
+        *ngIf="item.name == 'General Management'"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive="active"
+        >
+          {{item.name}}
+        </a>
+      </li>
+
+      <li
+        *ngIf="item.name == 'Finance'"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive="active"
+        >
+          {{item.name}}
+        </a>
+      </li>
+
+      <li
+        *ngIf="item.name == 'Marketing'"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive="active"
+        >
+          {{item.name}}
+        </a>
+      </li>
+
+      <li
+        *ngIf="item.name == 'Sales'"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive="active"
+        >
+          {{item.name}}
+        </a>
+      </li>
+
+      <li
+        *ngIf="item.name == 'Purchase'"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive="active"
+        >
+          {{item.name}}
+        </a>
+      </li>
+
+      <li
+        *ngIf="item.name == 'Options'"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+      >
+        <a
+          #rla="routerLinkActive"
+          routerLinkActive="active"
+        >
+          {{item.name}}
+        </a>
+      </li>
+
     </ul>
     <ng-container *ngIf="secondaryMenuItems">
+      <p class="font-semibold text-base">
+        {{secondarySubHeader}}
+      </p>
+      <ul *ngFor="let item of (secondaryMenuItems | async); let i = index" class="list-none">
+        <li
+          *ngIf="item.name == 'View Categories'"
+          [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}"
+          class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+        >
+          <a
+            #rla="routerLinkActive"
+            routerLinkActive="active"
+          >
+            {{item.name}}
+          </a>
+        </li>
+        <li
+          *ngIf="item.name == 'Add New Category'"
+          [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}"
+          class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer">
+          <a
+            #rla="routerLinkActive"
+            routerLinkActive="active"
+          >
+            {{item.name}}
+          </a>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-container *ngIf="apps">
       <p class="font-semibold text-base mt-3">
         {{secondaryMenuSubHeader}}
       </p>
-      <ul *ngFor="let item of (secondaryMenuItems | async); let i = index" class="list-none">
-        <a [routerLink]="item.name == 'Apps' ? ['/dashboard/appList'] : ''" >
-          <li
-            [ngClass]="{'bg-[#ECF8FF] text-[#009EF6]': item.isActive == true, 'bg-white text-[#A1A5B7]': item.isActive == false, 'mt-2' : i == 0 } "
-            class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-            (click)="setActiveItem(item)"
+      <ul *ngFor="let item of (apps | async); let i = index" class="list-none">
+        <li *ngIf="item.name == 'Apps'" [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}" class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer">
+          <a
+            #rla="routerLinkActive"
+            [routerLink]="['/dashboard/appList']"
+            routerLinkActive="active"
           >
             {{item.name}}
-          </li>
-        </a>
+          </a>
+        </li>
+        <li *ngIf="item.name == 'Publish on App'" [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}" class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer">
+          <a
+            #rla="routerLinkActive"
+            [routerLink]="['/auth/login']"
+            routerLinkActive="active"
+          >
+            {{item.name}}
+          </a>
+        </li>
       </ul>
     </ng-container>
   </div>

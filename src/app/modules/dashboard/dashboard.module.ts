@@ -10,6 +10,7 @@ import { TuiButtonModule } from '@taiga-ui/core';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import { AppListingComponent } from './pages/app-listing/app-listing.component';
 import { CarouselComponent } from 'src/app/standalone-components/carousel/carousel.component';
+import { SharedMenuComponent } from 'src/app/standalone-components/shared-menu/shared-menu.component';
 
 
 @NgModule({
@@ -22,10 +23,10 @@ import { CarouselComponent } from 'src/app/standalone-components/carousel/carous
     CommonModule,
     DashboardRoutingModule,
     HeaderComponent,
-    MenuCardComponent,
     TuiButtonModule,
     FooterComponent,
-    CarouselComponent
+    CarouselComponent,
+    SharedMenuComponent
   ]
 })
 export class DashboardModule { }
