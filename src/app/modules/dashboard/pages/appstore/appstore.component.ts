@@ -8,7 +8,6 @@ import { DashboardService } from '../../services/dashboard.service';
   styleUrls: ['./appstore.component.scss']
 })
 export class AppstoreComponent {
-  currentIndex: number = 0;
   appStoreApps$: Observable<any>;
 
   constructor(private dashService: DashboardService) {
