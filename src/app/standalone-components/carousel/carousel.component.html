@@ -1,6 +1,7 @@
 <p class="text-[#2F3044] text-lg font-semibold pb-7 ml-5">{{carouselName}}</p>
 <div *ngIf="(appStoreData$ | async) as apps" tuiCarouselButtons class="flex justify-between relative">
   <button
+   *ngIf="currentIndex > 0"
     tuiIconButton
     icon="tuiIconChevronLeftLarge"
     title="Previous"
