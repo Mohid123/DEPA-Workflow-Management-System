@@ -1,6 +1,6 @@
 <app-header></app-header>
-<section class="grid grid-cols-12 gap-3 w-11/12 mx-auto mt-32 pb-20">
-  <div class="flex flex-col col-span-4">
+<section class="grid grid-cols-12 gap-4 w-11/12 mx-auto mt-32 pb-20">
+  <div class="flex flex-col col-span-3">
     <app-menu-card
       [menuHeader]="'App Store'"
       [menuSubHeader]="'Categories'"
@@ -21,21 +21,51 @@
     >
     </app-menu-card>
   </div>
-  <div class="col-span-8 flex flex-col my-4">
-    <section class="">
-      <p class="text-[#2F3044] text-xl font-semibold pb-7">Human Resources</p>
-      <div tuiCarouselButtons class="flex justify-between">
+  <div class="col-span-9 flex flex-col my-4">
+    <section>
+      <p class="text-[#2F3044] text-lg font-semibold pb-7 ml-5">Human Resources</p>
+      <div *ngIf="(appStoreApps$ | async) as apps" tuiCarouselButtons class="flex justify-between relative">
         <button
           tuiIconButton
           icon="tuiIconChevronLeftLarge"
           title="Previous"
-          appearance="flat"
-          class="drop-shadow-lg shadow-lg mt-16"
+          appearance="outline"
+          class="drop-shadow-lg shadow-lg absolute top-16 left-0 z-50 bg-white"
+          type="button"
+          (click)="navigate(-1)"
+        ></button>
+        <tui-carousel [(index)]="currentIndex" [itemsCount]="noOfCards" #carousel class="carousel">
+          <ng-container *ngFor="let app of apps; let i = index">
+            <app-store-card *tuiItem [appIcon]="app.appIcon" [appName]="app.appName" [themeColor]="app.themeColor"></app-store-card>
+          </ng-container>
+        </tui-carousel>
+        <button
+          *ngIf="isLastItem == false"
+          tuiIconButton
+          type="button"
+          icon="tuiIconChevronRightLarge"
+          title="Next"
+          appearance="outline"
+          class="drop-shadow-lg shadow-lg absolute top-16 right-12 z-50 bg-white"
+          (click)="navigate(1)"
+        ></button>
+      </div>
+    </section>
+
+    <section class="my-20">
+      <p class="text-[#2F3044] text-lg font-semibold pb-7 ml-5">Finance</p>
+      <div *ngIf="(appStoreApps$ | async) as apps" tuiCarouselButtons class="flex justify-between relative">
+        <button
+          tuiIconButton
+          icon="tuiIconChevronLeftLarge"
+          title="Previous"
+          appearance="outline"
+          class="drop-shadow-lg shadow-lg absolute top-16 left-0 z-50 bg-white"
           type="button"
           (click)="carousel.prev()"
         ></button>
-        <tui-carousel [itemsCount]="4" #carousel class="carousel">
-          <ng-container *ngFor="let app of (appStoreApps$ | async); let i = index">
+        <tui-carousel [itemsCount]="noOfCards" #carousel class="carousel">
+          <ng-container *ngFor="let app of apps; let i = index">
             <app-store-card *tuiItem [appIcon]="app.appIcon" [appName]="app.appName" [themeColor]="app.themeColor"></app-store-card>
           </ng-container>
         </tui-carousel>
@@ -44,11 +74,41 @@
           type="button"
           icon="tuiIconChevronRightLarge"
           title="Next"
-          appearance="flat"
-          class="drop-shadow-lg shadow-lg mt-16"
-          (click)="carousel.next()"
+          appearance="outline"
+          class="drop-shadow-lg shadow-lg absolute top-16 right-12 z-50 bg-white"
+          (click)="carousel.next();"
+        ></button>
+      </div>
+    </section>
+
+    <section>
+      <p class="text-[#2F3044] text-lg font-semibold pb-7 ml-5">General Management</p>
+      <div *ngIf="(appStoreApps$ | async) as apps" tuiCarouselButtons class="flex justify-between relative">
+        <button
+          tuiIconButton
+          icon="tuiIconChevronLeftLarge"
+          title="Previous"
+          appearance="outline"
+          class="drop-shadow-lg shadow-lg absolute top-16 left-0 z-50 bg-white"
+          type="button"
+          (click)="carousel.prev();"
+        ></button>
+        <tui-carousel [itemsCount]="noOfCards" #carousel class="carousel">
+          <ng-container *ngFor="let app of apps; let i = index">
+            <app-store-card *tuiItem [appIcon]="app.appIcon" [appName]="app.appName" [themeColor]="app.themeColor"></app-store-card>
+          </ng-container>
+        </tui-carousel>
+        <button
+          tuiIconButton
+          type="button"
+          icon="tuiIconChevronRightLarge"
+          title="Next"
+          appearance="outline"
+          class="drop-shadow-lg shadow-lg absolute top-16 right-12 z-50 bg-white"
+          (click)="carousel.next();"
         ></button>
       </div>
     </section>
   </div>
 </section>
+<app-footer></app-footer>

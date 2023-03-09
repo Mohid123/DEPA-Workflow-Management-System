@@ -9,6 +9,7 @@ import { MenuCardComponent } from 'src/app/standalone-components/menu-card/menu-
 import { TuiCarouselModule } from '@taiga-ui/kit';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { StoreCardComponent } from 'src/app/standalone-components/store-card/store-card.component';
+import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { StoreCardComponent } from 'src/app/standalone-components/store-card/sto
     MenuCardComponent,
     TuiCarouselModule,
     TuiButtonModule,
-    StoreCardComponent
+    StoreCardComponent,
+    FooterComponent
   ]
 })
 export class DashboardModule { }

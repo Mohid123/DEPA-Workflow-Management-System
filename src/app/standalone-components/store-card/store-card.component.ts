@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -13,15 +13,4 @@ export class StoreCardComponent {
   @Input() appIcon!: string;
   @Input() appName!: string;
   @Input() themeColor!: string;
-
-  constructor() {
-    this.styleObject();
-  }
-
-  styleObject() {
-    if(this.appIcon) {
-      return {backgroundImage: this.appIcon, backgroundColor: this.themeColor}
-    }
-    return {}
-  }
 }
