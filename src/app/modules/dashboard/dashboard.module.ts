@@ -5,13 +5,14 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { AppstoreComponent } from './pages/appstore/appstore.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
-import { MenuCardComponent } from 'src/app/standalone-components/menu-card/menu-card.component';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import { AppListingComponent } from './pages/app-listing/app-listing.component';
 import { CarouselComponent } from 'src/app/standalone-components/carousel/carousel.component';
 import { SharedMenuComponent } from 'src/app/standalone-components/shared-menu/shared-menu.component';
-
+import {TuiTableModule} from '@taiga-ui/addon-table';
+import {TuiLetModule} from '@taiga-ui/cdk';
+import { TuiPaginationModule } from '@taiga-ui/kit';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,10 @@ import { SharedMenuComponent } from 'src/app/standalone-components/shared-menu/s
     TuiButtonModule,
     FooterComponent,
     CarouselComponent,
-    SharedMenuComponent
+    SharedMenuComponent,
+    TuiTableModule,
+    TuiPaginationModule,
+    TuiLetModule
   ]
 })
 export class DashboardModule { }
