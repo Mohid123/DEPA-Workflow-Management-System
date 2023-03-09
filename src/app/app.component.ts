@@ -21,6 +21,9 @@ export class AppComponent {
       try {
         const updateFound = await swUpdate.checkForUpdate();
         console.log(updateFound ? 'A new version is available.' : 'Already on the latest version.');
+        if(updateFound) {
+          document.location.reload();
+        }
       } catch (err) {
         console.error('Failed to check for updates:', err);
       }
