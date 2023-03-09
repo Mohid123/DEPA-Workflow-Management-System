@@ -6,26 +6,26 @@ import { DashboardComponent } from './dashboard.component';
 import { AppstoreComponent } from './pages/appstore/appstore.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
 import { MenuCardComponent } from 'src/app/standalone-components/menu-card/menu-card.component';
-import { TuiCarouselModule } from '@taiga-ui/kit';
 import { TuiButtonModule } from '@taiga-ui/core';
-import { StoreCardComponent } from 'src/app/standalone-components/store-card/store-card.component';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
+import { AppListingComponent } from './pages/app-listing/app-listing.component';
+import { CarouselComponent } from 'src/app/standalone-components/carousel/carousel.component';
 
 
 @NgModule({
   declarations: [
     DashboardComponent,
-    AppstoreComponent
+    AppstoreComponent,
+    AppListingComponent
   ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
     HeaderComponent,
     MenuCardComponent,
-    TuiCarouselModule,
     TuiButtonModule,
-    StoreCardComponent,
-    FooterComponent
+    FooterComponent,
+    CarouselComponent
   ]
 })
 export class DashboardModule { }

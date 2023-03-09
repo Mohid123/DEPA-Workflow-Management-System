@@ -8,19 +8,7 @@
       {{menuSubHeader}}
     </p>
     <ul *ngFor="let item of (menuItems | async); let i = index" class="list-none">
-      <li
-        [ngClass]="{'bg-[#ECF8FF] text-[#009EF6]': item.isActive == true, 'bg-white text-[#A1A5B7]': item.isActive == false, 'mt-2' : i == 0 } "
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-        (click)="setActiveItem(item)"
-      >
-        {{item.name}}
-      </li>
-    </ul>
-    <ng-container *ngIf="secondaryMenuItems">
-      <p class="font-semibold text-base mt-3">
-        {{secondaryMenuSubHeader}}
-      </p>
-      <ul *ngFor="let item of (secondaryMenuItems | async); let i = index" class="list-none">
+      <a>
         <li
           [ngClass]="{'bg-[#ECF8FF] text-[#009EF6]': item.isActive == true, 'bg-white text-[#A1A5B7]': item.isActive == false, 'mt-2' : i == 0 } "
           class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
@@ -28,6 +16,22 @@
         >
           {{item.name}}
         </li>
+      </a>
+    </ul>
+    <ng-container *ngIf="secondaryMenuItems">
+      <p class="font-semibold text-base mt-3">
+        {{secondaryMenuSubHeader}}
+      </p>
+      <ul *ngFor="let item of (secondaryMenuItems | async); let i = index" class="list-none">
+        <a [routerLink]="item.name == 'Apps' ? ['/dashboard/appList'] : ''" >
+          <li
+            [ngClass]="{'bg-[#ECF8FF] text-[#009EF6]': item.isActive == true, 'bg-white text-[#A1A5B7]': item.isActive == false, 'mt-2' : i == 0 } "
+            class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+            (click)="setActiveItem(item)"
+          >
+            {{item.name}}
+          </li>
+        </a>
       </ul>
     </ng-container>
   </div>
