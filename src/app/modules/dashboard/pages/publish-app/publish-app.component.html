@@ -8,8 +8,9 @@
         <tui-tabs tuiMobileTabs [(activeItemIndex)]="activeIndex">
           <ng-container *ngFor="let tab of tabs; let i = index; let last = last; let first = first">
             <button
+              disabled
               tuiTab
-              class="font-semibold text-base"
+              class="font-semibold text-base text-black"
               [ngClass]="{'mr-10': first, 'ml-10': last, 'mx-10' : !last && !first}"
             >
             {{tab.text}}

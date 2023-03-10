@@ -107,6 +107,10 @@ export class PublishAppComponent implements OnDestroy {
     setItem(StorageItem.publishAppValue, this.publishAppForm.value)
   }
 
+  onClick(e: any) {
+    console.log(e)
+  }
+
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();
