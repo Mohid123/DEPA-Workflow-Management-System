@@ -1,0 +1,195 @@
+<app-header></app-header>
+<div class="bg_img_main">
+  <section class="grid grid-cols-12 gap-4 w-11/12 mx-auto mt-32 pb-20">
+    <app-shared-menu class="col-span-3"></app-shared-menu>
+    <div class="col-span-9 bg-white rounded-lg shadow-sm px-5 py-5">
+      <p class="font-bold text-2xl">Publish an App</p>
+      <div class="flex justify-center my-6">
+        <tui-tabs tuiMobileTabs [(activeItemIndex)]="activeIndex">
+          <ng-container *ngFor="let tab of tabs; let i = index; let last = last; let first = first">
+            <button
+              tuiTab
+              class="font-semibold text-base"
+              [ngClass]="{'mr-10': first, 'ml-10': last, 'mx-10' : !last && !first}"
+            >
+            {{tab.text}}
+          </button>
+          </ng-container>
+        </tui-tabs>
+      </div>
+      <form [formGroup]="publishAppForm">
+        <ng-container *ngIf="activeIndex == 0">
+          <label class="text-sm font-bold block pb-2">App name <span class="tui-required"></span></label>
+          <tui-input
+            formControlName="appName"
+            [tuiTextfieldCleaner]="true"
+            tuiTextfieldSize="l"
+            [tuiTextfieldLabelOutside]="true"
+          >
+            <input
+              tuiTextfield
+              type="text"
+            />
+          </tui-input>
+          <div class="flex justify-between my-2">
+            <p class="text-xs text-gray-500">This is how your app will appear on the app store, It should be clear and simple</p>
+            <p [ngClass]="(appNameLength | async)! > 20 ? 'text-red-500': ''" class="text-xs text-gray-500">{{(appNameLength | async) || 0}}/20</p>
+          </div>
+          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'App name is required',
+            control: f['appName']
+          }"></ng-container>
+
+          <div class="my-12">
+            <label class="text-sm font-bold block pb-2">Short description <span class="tui-required"></span></label>
+            <tui-input
+              formControlName="shortDescription"
+              [tuiTextfieldCleaner]="true"
+              tuiTextfieldSize="l"
+              [tuiTextfieldLabelOutside]="true"
+            >
+              <input
+                tuiTextfield
+                type="text"
+              />
+            </tui-input>
+            <div class="flex justify-between my-2">
+              <p class="text-xs text-gray-500">A short description of the app, users can expend to view your full description.</p>
+              <p [ngClass]="(shortDescLength | async)! > 50 ? 'text-red-500': ''" class="text-xs text-gray-500">{{(shortDescLength | async) || 0}}/50</p>
+            </div>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'Please provide a short description',
+              control: f['shortDescription']
+            }"></ng-container>
+          </div>
+
+          <label class="text-sm font-bold block pb-2">Full description <span class="tui-required"></span></label>
+          <tui-text-area
+            formControlName="fullDescription"
+            [tuiTextfieldCleaner]="true"
+            [tuiTextfieldLabelOutside]="true"
+            class="min-h-40"
+          >
+          </tui-text-area>
+          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'Please provide a full description',
+            control: f['fullDescription']
+          }"></ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="activeIndex == 1">
+          <label class="text-sm font-bold block pb-2">App link <span class="tui-required"></span></label>
+          <tui-input
+            formControlName="appLink"
+            [tuiTextfieldCleaner]="true"
+            tuiTextfieldSize="l"
+            [tuiTextfieldLabelOutside]="true"
+          >
+            <input
+              tuiTextfield
+              type="text"
+            />
+          </tui-input>
+          <div class="flex justify-between my-2">
+            <p class="text-xs text-gray-500">Users will be redirected to this link upon clicking the app icon. This link should be active and working</p>
+          </div>
+          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'App link is required',
+            control: f['appLink']
+          }"></ng-container>
+
+          <div class="my-12">
+            <label class="text-sm font-bold block pb-2">App categories <span class="tui-required"></span></label>
+            <tui-multi-select formControlName="appCategories" [tuiTextfieldLabelOutside]="true">
+              <input placeholder="Select Categories">
+              <tui-data-list-wrapper
+                *tuiDataList
+                tuiMultiSelectGroup
+                [items]="categoryOtions"
+              ></tui-data-list-wrapper>
+            </tui-multi-select>
+            <div class="my-2">
+              <p class="text-xs text-gray-500">Multiple categories can be selected</p>
+            </div>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'Please select at least one category',
+              control: f['appCategories']
+            }"></ng-container>
+          </div>
+
+          <label class="text-sm font-bold block pb-2">Roles/ Designation/ Grade</label>
+            <tui-multi-select formControlName="roles" [tuiTextfieldLabelOutside]="true">
+              <input placeholder="Select roles/ designation/ grade" class="w-full">
+              <tui-data-list-wrapper
+                *tuiDataList
+                tuiMultiSelectGroup
+                [items]="roles"
+              ></tui-data-list-wrapper>
+            </tui-multi-select>
+            <div class="my-2">
+              <p class="text-xs text-gray-500">Multiple roles can be selected, the app will be available to all users if left empty</p>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeIndex == 2">
+          <label for="dropzone-file" class="mt-10 flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+            <tui-loader
+              [inheritColor]="true"
+              [size]="'l'"
+              [showLoader]="false"
+              [overlay]="true"
+            >
+              <div class="flex justify-start">
+                <div class="mx-8">
+                  <img src="../../../../../assets/windows.svg" width="32" height="32">
+                </div>
+                <div class="flex flex-col">
+                  <p class="font-semibold text-black text-lg mb-3">App Icon</p>
+                  <ul class="list-disc text-sm text-gray-400">
+                    <li>Icon should be 500x500 px (1:1) ratio</li>
+                    <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
+                    <li>Up to 1MB file size is allowed</li>
+                  </ul>
+                </div>
+              </div>
+            </tui-loader>
+            <input id="dropzone-file" type="file" class="hidden" />
+          </label>
+        </ng-container>
+
+        <ng-container *ngIf="activeIndex == 3">
+          <div class="mt-20 flex flex-col items-center justify-center w-full">
+            <img src="../../../../../assets/published.svg" alt="ok" width="118" height="118">
+            <p class="font-semibold my-2 text-lg">Congratulations</p>
+            <p class="text-base">Your app has been added and sent for approval</p>
+          </div>
+        </ng-container>
+
+        <div class="flex justify-end my-10">
+          <a (click)="previousStep()" class="px-6 py-3 text-sm font-semibold text-gray-500 bg-[#F5F8FA] rounded-lg cursor-pointer" [ngClass]="activeIndex < 3 ? 'mx-10': 'mr-10'">Back</a>
+          <a *ngIf="activeIndex !== 3" (click)="nextStep()" [ngSwitch]="activeIndex" class="px-10 py-3 text-sm font-semibold text-white bg-[#00A3FF] rounded-lg cursor-pointer">
+            <span *ngSwitchCase="0">Listing Details</span>
+            <span *ngSwitchCase="1">App Graphics</span>
+            <span *ngSwitchCase="2">Published</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+<app-footer></app-footer>
+
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
+      <span class="text-red-400 fv-help-block text-xxs 2xl:text-xs 2xl:mb-2" role="alert">
+        {{ message }}
+      </span>
+    </div>
+  </ng-container>
+</ng-template>

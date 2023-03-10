@@ -1,4 +1,4 @@
-<div class="w-65 rounded-lg shadow-xl px-5 py-4">
+<div class="w-65 rounded-lg shadow-xl px-5 py-4 bg-white">
   <div class="flex justify-start space-x-3">
     <img [src]="menuIcon" width="25" height="25">
     <span class="text-[#2F3044] text-xl font-[Montserrat] font-semibold">{{menuHeader}}</span>
@@ -114,6 +114,7 @@
       </li>
 
     </ul>
+    
     <ng-container *ngIf="secondaryMenuItems">
       <p class="font-semibold text-base">
         {{secondarySubHeader}}
@@ -158,10 +159,10 @@
             {{item.name}}
           </a>
         </li>
-        <li *ngIf="item.name == 'Publish on App'" [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}" class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer">
+        <li *ngIf="item.name == 'Publish an App'" [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}" class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer">
           <a
             #rla="routerLinkActive"
-            [routerLink]="['/auth/login']"
+            [routerLink]="['/dashboard/publish-app']"
             routerLinkActive="active"
           >
             {{item.name}}

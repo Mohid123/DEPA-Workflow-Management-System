@@ -4,6 +4,8 @@ export enum StorageItem {
   JwtToken = 'App/jwtToken',
   Key = 'App/key',
   Theme = 'App/theme',
+  publishAppValue = 'App/publish_app_value',
+  activeIndex = 'App/active_index'
 }
 
 export const getItem = (itemName: StorageItem): any | null => {

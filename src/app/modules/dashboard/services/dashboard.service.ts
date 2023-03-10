@@ -29,7 +29,7 @@ export class DashboardService extends ApiService<any> {
     ],
     apps: [
       {name: 'Apps', isActive: false},
-      {name: 'Publish on App', isActive: false},
+      {name: 'Publish an App', isActive: false},
     ]
   });
 
