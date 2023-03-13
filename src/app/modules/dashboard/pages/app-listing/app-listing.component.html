@@ -10,17 +10,49 @@
               <p class="text-lg text-black mb-3">Apps</p>
               <p class="text-xs text-gray-400">More than 40 apps installed</p>
             </th>
-            <th class="text-gray-400 text-xs border-transparent" *tuiHead="'All'" tuiTh [sorter]="null">
+            <th
+              (click)="applyFilters('All')"
+              class="border-transparent cursor-pointer"
+              *tuiHead="'All'"
+              tuiTh
+              [sorter]="null"
+            >
+            <span [ngClass]="appliedFilter == 'All' ? 'text-white bg-gray-400 px-2 py-1 rounded-md': 'text-gray-400 text-xs'">
               All
+            </span>
             </th>
-            <th class="text-gray-400 text-xs border-transparent" *tuiHead="'Approved'" tuiTh [sorter]="null">
-              Approved
+            <th
+              (click)="applyFilters('Approved')"
+              class="border-transparent cursor-pointer"
+              *tuiHead="'Approved'"
+              tuiTh
+              [sorter]="null"
+            >
+              <span [ngClass]="appliedFilter == 'Approved' ? 'text-green-500 bg-green-200 px-2 py-1 rounded-md': 'text-gray-400 text-xs'">
+                Approved
+              </span>
             </th>
-            <th class="text-gray-400 text-xs border-transparent" *tuiHead="'Rejected'" tuiTh [sorter]="null">
-              Rejected
+            <th
+              (click)="applyFilters('Rejected')"
+              *tuiHead="'Rejected'"
+              class="border-transparent cursor-pointer"
+              tuiTh
+              [sorter]="null"
+            >
+              <span [ngClass]="appliedFilter == 'Rejected' ? 'text-red-500 bg-red-200 px-2 py-1 rounded-md': 'text-gray-400 text-xs'">
+                Rejected
+              </span>
             </th>
-            <th class="text-gray-400 text-xs border-transparent" *tuiHead="'In Progress'" tuiTh [sorter]="null">
+            <th
+              (click)="applyFilters('In Progress')"
+              class="border-transparent cursor-pointer"
+              *tuiHead="'In Progress'"
+              tuiTh
+              [sorter]="null"
+            >
+            <span [ngClass]="appliedFilter == 'In Progress' ? 'text-yellow-500 bg-yellow-200 px-2 py-1 rounded-md': 'text-gray-400 text-xs'">
               In Progress
+            </span>
             </th>
           </tr>
         </thead>

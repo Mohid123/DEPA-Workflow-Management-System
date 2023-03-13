@@ -11,6 +11,7 @@ import { TuiNotification } from '@taiga-ui/core';
 })
 export class PublishAppComponent implements OnDestroy {
   destroy$ = new Subject();
+  file: any;
   localStorageApp: any;
   appNameLength: Observable<number> = of(0);
   shortDescLength: Observable<number> = of(0);
@@ -61,7 +62,9 @@ export class PublishAppComponent implements OnDestroy {
       appLink: [item?.appLink || null, Validators.required],
       appCategories: [item?.appCategories || null, Validators.required],
       roles: [item?.roles || null],
-    })
+      appIcon: [item.appIcon || null]
+    });
+    this.file = item.appIcon
   }
 
   getTextFieldLength() {
@@ -115,9 +118,17 @@ export class PublishAppComponent implements OnDestroy {
           this.notif.displayNotification('Image width and height should be 500px (1:1 aspect ratio)', 'File Upload', TuiNotification.Warning)
         }
         else {
-          this.notif.displayNotification('File is valid', 'File Upload', TuiNotification.Success)
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (e) => {
+            this.file = reader.result;
+            this.f['appIcon'].setValue(this.file)
+          };
         }
       });
+    }
+    else {
+      this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 1MB', 'File Upload', TuiNotification.Warning)
     }
   }
 
