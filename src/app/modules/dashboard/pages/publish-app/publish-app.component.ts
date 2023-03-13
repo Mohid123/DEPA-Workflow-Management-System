@@ -1,9 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import  { Subject, takeUntil, Observable, of, map } from 'rxjs';
-import { setItem, StorageItem } from 'src/core/utils/local-storage.utils';
-import { getItem } from 'src/core/utils/local-storage.utils';
-
+import { NotificationsService } from 'src/core/core-services/notifications.service';
+import { setItem, StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { TuiNotification } from '@taiga-ui/core';
 @Component({
   selector: 'app-publish-app',
   templateUrl: './publish-app.component.html',
@@ -43,7 +43,7 @@ export class PublishAppComponent implements OnDestroy {
     'Admin',
     'Any'
   ]
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private notif: NotificationsService) {
     this.localStorageApp = getItem(StorageItem.publishAppValue);
     this.initAppForm(this.localStorageApp);
     this.getTextFieldLength();
@@ -107,10 +107,47 @@ export class PublishAppComponent implements OnDestroy {
     setItem(StorageItem.publishAppValue, this.publishAppForm.value)
   }
 
-  onClick(e: any) {
-    console.log(e)
+  onFileSelect(event: any) {
+    const file = event?.target?.files[0];
+    if(this.calculateFileSize(file) == true) {
+      this.calculateAspectRatio(file).then((res) => {
+        if(res == false) {
+          this.notif.displayNotification('Image width and height should be 500px (1:1 aspect ratio)', 'File Upload', TuiNotification.Warning)
+        }
+        else {
+          this.notif.displayNotification('File is valid', 'File Upload', TuiNotification.Success)
+        }
+      });
+    }
   }
 
+  calculateAspectRatio(image: any) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = async (e: any) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = async () => {
+          let height = img.naturalHeight;
+          let width = img.naturalWidth;
+          if ((height > 500 || width > 500) && width/height !== 1) {
+            resolve(false)
+          }
+          resolve(true)
+        };
+      }
+    })
+  }
+
+  calculateFileSize(file: any): boolean {
+    const maxSize = 1024 * 1024;
+    if((file.type == 'image/jpg' || file.type == 'image/png' || file.type == 'image/webp') && file.size <= maxSize) {
+      return true
+    }
+    return false
+  }
+  
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();

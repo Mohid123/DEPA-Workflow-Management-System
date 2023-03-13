@@ -7,7 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { CoreModule } from "src/@core/core.module";
+import { CoreModule } from "src/core/core.module";
 
 @NgModule({
   declarations: [
