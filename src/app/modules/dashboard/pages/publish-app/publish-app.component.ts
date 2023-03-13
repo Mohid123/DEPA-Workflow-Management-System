@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import  { Subject, Observable, of, map } from 'rxjs';
+import  { Subject, Observable, of, map, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
@@ -68,8 +68,8 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   getTextFieldLength() {
-    this.appNameLength = this.f['appName'].valueChanges.pipe(map((val: string) => val.trim().length));
-    this.shortDescLength = this.f['shortDescription'].valueChanges.pipe(map((val: string) => val.trim().length));
+    this.appNameLength = this.f['appName'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
+    this.shortDescLength = this.f['shortDescription'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
   }
 
   nextStep() {
