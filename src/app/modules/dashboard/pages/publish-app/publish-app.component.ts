@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import  { Subject, takeUntil, Observable, of, map } from 'rxjs';
+import  { Subject, Observable, of, map } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { setItem, StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
 @Component({
   selector: 'app-publish-app',
@@ -62,9 +62,9 @@ export class PublishAppComponent implements OnDestroy {
       appLink: [item?.appLink || null, Validators.required],
       appCategories: [item?.appCategories || null, Validators.required],
       roles: [item?.roles || null],
-      appIcon: [item.appIcon || null]
+      appIcon: [item?.appIcon || null]
     });
-    this.file = item.appIcon
+    this.file = item?.appIcon
   }
 
   getTextFieldLength() {
@@ -73,28 +73,44 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   nextStep() {
-    if(this.activeIndex !== 3)
-    switch(this.activeIndex) {
-      case 0:
-        if(this.f['appName'].invalid || this.f['shortDescription'].invalid || this.f['fullDescription'].invalid) {
-          return ['appName', 'shortDescription', 'fullDescription'].forEach(val => this.f[val].markAsDirty())
-        }
-        else {
+    if(this.activeIndex !== 3) {
+      switch(this.activeIndex) {
+        case 0:
+          if(this.f['appName'].invalid || this.f['shortDescription'].invalid || this.f['fullDescription'].invalid) {
+            return ['appName', 'shortDescription', 'fullDescription'].forEach(val => this.f[val].markAsDirty())
+          }
+          else {
+            this.moveNext()
+          }
+          break;
+        case 1:
+          if(this.f['appLink'].invalid || this.f['appCategories'].invalid) {
+            return ['appLink', 'appCategories'].forEach(val => this.f[val].markAsDirty())
+          }
+          else {
+            this.moveNext()
+          }
+          break;
+        case 2:
+          if(!this.file && this.f['appIcon'].value == null) {
+            return this.notif.displayNotification('Please provide a valid icon for your app', 'Publish App', TuiNotification.Warning)
+          }
+          else {
+            this.moveNext()
+          }
+          break
+        default:
           this.moveNext()
-        }
-        break;
-      case 1:
-        if(this.f['appLink'].invalid || this.f['appCategories'].invalid) {
-          return ['appLink', 'appCategories'].forEach(val => this.f[val].markAsDirty())
-        }
-        else {
-          this.moveNext()
-        }
-        break;
-      case 2:
-        // handle image validation here
-      default:
-        this.moveNext()
+      }
+    }
+    if(this.activeIndex == 3) {
+      setTimeout(() => {
+        this.activeIndex = 0;
+        this.publishAppForm.reset();
+        removeItem(StorageItem.publishAppValue);
+        removeItem(StorageItem.activeIndex);
+        this.file = null;
+      }, 2000);
     }
   }
 
