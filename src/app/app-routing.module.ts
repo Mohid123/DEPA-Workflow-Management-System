@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CustomPreloadingStrategyService } from 'src/core/core-services/preloading-strategy.service';
 import { AuthGuard } from './modules/auth/guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+    path: 'auth',
+    data: {preload: true},
+    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
   },
   {
     path: '',
@@ -12,13 +15,14 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'dashboard', loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule),
+    path: 'dashboard',
+    loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule),
     // canActivate: [AuthGuard]
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {preloadingStrategy: CustomPreloadingStrategyService})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

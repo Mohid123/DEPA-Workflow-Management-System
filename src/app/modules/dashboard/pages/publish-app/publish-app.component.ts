@@ -72,7 +72,7 @@ export class PublishAppComponent implements OnDestroy {
     this.shortDescLength = this.f['shortDescription'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
   }
 
-  nextStep() {
+  nextStep(): void {
     if(this.activeIndex !== 3) {
       switch(this.activeIndex) {
         case 0:
@@ -114,13 +114,13 @@ export class PublishAppComponent implements OnDestroy {
     }
   }
 
-  previousStep() {
+  previousStep(): void {
     if(this.activeIndex !== 0)
     this.activeIndex--;
     setItem(StorageItem.activeIndex, this.activeIndex)
   }
 
-  moveNext() {
+  moveNext(): void {
     this.activeIndex++;
     setItem(StorageItem.activeIndex, this.activeIndex);
     setItem(StorageItem.publishAppValue, this.publishAppForm.value)
@@ -148,7 +148,7 @@ export class PublishAppComponent implements OnDestroy {
     }
   }
 
-  calculateAspectRatio(image: any) {
+  calculateAspectRatio(image: any): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(image);
