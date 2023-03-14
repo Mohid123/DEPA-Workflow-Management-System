@@ -3,12 +3,13 @@
     [menuHeader]="'App Store'"
     [menuSubHeader]="'Categories'"
     [menuIcon]="'../../../../assets/menu_bars.svg'"
-    [menuItems]="categories$"
+    [showFilters]="true"
     class="mb-14"
   >
   </app-menu-card>
   <app-menu-card
     [menuHeader]="'Store Console'"
+    [showFilters]="false"
     [secondarySubHeader]="'Categories'"
     [secondaryMenuSubHeader]="'Apps'"
     [menuIcon]="'../../../../assets/settings_icon.svg'"

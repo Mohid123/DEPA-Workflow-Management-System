@@ -7,109 +7,59 @@
     <p class="font-semibold text-base">
       {{menuSubHeader}}
     </p>
-    <ul *ngFor="let item of (menuItems | async); let i = index" class="list-none">
+    <ul *ngIf="showFilters == true" class="list-none">
       <li
-        *ngIf="item.name == 'View All'"
-        [ngClass]="{'mt-2' : i == 0, 'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
+        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
+        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer mt-2"
       >
         <a
           #rla="routerLinkActive"
           [routerLink]="['/dashboard/appStore']"
           routerLinkActive="active"
         >
-          {{item.name}}
+          View All
         </a>
       </li>
 
-      <li
-        *ngIf="item.name == 'Human Resources'"
-        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-      >
-        <a
-          #rla="routerLinkActive"
-          routerLinkActive="active"
-        >
-          {{item.name}}
+      <li class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer inactive">
+        <a>
+          Human Resources
         </a>
       </li>
 
-      <li
-        *ngIf="item.name == 'General Management'"
-        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-      >
-        <a
-          #rla="routerLinkActive"
-          routerLinkActive="active"
-        >
-          {{item.name}}
+      <li class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer inactive">
+        <a>
+          General Management
         </a>
       </li>
 
-      <li
-        *ngIf="item.name == 'Finance'"
-        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-      >
-        <a
-          #rla="routerLinkActive"
-          routerLinkActive="active"
-        >
-          {{item.name}}
+      <li class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer inactive">
+        <a>
+          Finance
         </a>
       </li>
 
-      <li
-        *ngIf="item.name == 'Marketing'"
-        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-      >
-        <a
-          #rla="routerLinkActive"
-          routerLinkActive="active"
-        >
-          {{item.name}}
+      <li class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer inactive">
+        <a>
+          Marketing
         </a>
       </li>
 
-      <li
-        *ngIf="item.name == 'Sales'"
-        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-      >
-        <a
-          #rla="routerLinkActive"
-          routerLinkActive="active"
-        >
-          {{item.name}}
+      <li class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer inactive">
+        <a>
+          Sales
         </a>
       </li>
 
-      <li
-        *ngIf="item.name == 'Purchase'"
-        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-      >
-        <a
-          #rla="routerLinkActive"
-          routerLinkActive="active"
-        >
-          {{item.name}}
+      <li class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer text-gray-400">
+        <a>
+          Purchase
         </a>
       </li>
 
-      <li
-        *ngIf="item.name == 'Options'"
-        [ngClass]="{'active' : rla.isActive, 'inactive': !rla.isActive}"
-        class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer"
-      >
-        <a
-          #rla="routerLinkActive"
-          routerLinkActive="active"
-        >
-          {{item.name}}
+      <li class="px-2 py-2 rounded-md font-semibold text-sm cursor-pointer text-gray-400">
+        <a>
+          Options
         </a>
       </li>
 
@@ -145,6 +95,7 @@
         </li>
       </ul>
     </ng-container>
+    
     <ng-container *ngIf="apps">
       <p class="font-semibold text-base mt-3">
         {{secondaryMenuSubHeader}}

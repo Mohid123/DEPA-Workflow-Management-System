@@ -13,11 +13,11 @@ import { RouterModule } from '@angular/router';
 })
 export class MenuCardComponent {
   @Input() menuHeader!: string;
+  @Input() showFilters!: boolean;
   @Input() menuSubHeader!: string;
   @Input() secondaryMenuSubHeader!: string;
   @Input() secondarySubHeader!: string;
   @Input() menuIcon!: string;
-  @Input() menuItems!: Observable<any>;
   @Input() secondaryMenuItems?: Observable<any>;
   @Input() apps?: Observable<any>;
 

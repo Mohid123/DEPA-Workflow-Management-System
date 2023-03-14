@@ -12,12 +12,10 @@ import { MenuCardComponent } from '../menu-card/menu-card.component';
   styleUrls: ['./shared-menu.component.scss']
 })
 export class SharedMenuComponent {
-  categories$: Observable<any>;
   consoleCategories$: Observable<any>;
   apps$: Observable<any>;
 
   constructor(private dashService: DashboardService) {
-    this.categories$ = this.dashService.dashboardMenuItems.pipe(map((value: any) => value.categories));
     this.consoleCategories$ = this.dashService.dashboardMenuItems.pipe(map((value: any) => value.consoleCategories));
     this.apps$ = this.dashService.dashboardMenuItems.pipe(map((value: any) => value.apps));
   }
