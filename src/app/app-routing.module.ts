@@ -19,6 +19,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule),
     // canActivate: [AuthGuard]
   },
+  {
+    path: 'form-builder',
+    loadChildren: () => import('./modules/form-builder/form-builder.module').then(m => m.FormBuilderModule)
+  }
 ];
 
 @NgModule({
