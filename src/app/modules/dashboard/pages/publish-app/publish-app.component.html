@@ -175,8 +175,8 @@
         </ng-container>
 
         <div class="flex justify-end my-10">
-          <a (click)="previousStep()" class="px-6 py-3 text-sm font-semibold text-gray-500 bg-[#F5F8FA] rounded-lg cursor-pointer" [ngClass]="activeIndex < 3 ? 'mx-10': 'mr-10'">Back</a>
-          <a *ngIf="activeIndex !== 3" (click)="nextStep()" [ngSwitch]="activeIndex" class="px-10 py-3 text-sm font-semibold text-white bg-[#00A3FF] rounded-lg cursor-pointer">
+          <a (click)="previousStep()" class="px-6 py-3 text-sm font-semibold text-gray-500 bg-[#F5F8FA] rounded-lg cursor-pointer hover:text-gray-500" [ngClass]="activeIndex < 3 ? 'mx-10': 'mr-10'">Back</a>
+          <a *ngIf="activeIndex !== 3" (click)="nextStep()" [ngSwitch]="activeIndex" class="px-10 py-3 text-sm font-semibold text-white bg-[#00A3FF] rounded-lg cursor-pointer hover:text-white">
             <span *ngSwitchCase="0">Listing Details</span>
             <span *ngSwitchCase="1">App Graphics</span>
             <span *ngSwitchCase="2">Published</span>
