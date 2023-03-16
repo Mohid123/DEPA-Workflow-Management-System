@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FormioAppConfig } from '@formio/angular';
+import { AppConfig } from 'src/app/config';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { ServerErrorInterceptor } from './interceptors/server-error.interceptor';
 
@@ -23,6 +25,10 @@ import { ServerErrorInterceptor } from './interceptors/server-error.interceptor'
       useClass: ServerErrorInterceptor,
       multi: true,
     },
+    // {
+    //   provide: FormioAppConfig,
+    //   useValue: AppConfig
+    // },
   ],
 })
 export class CoreModule {}
