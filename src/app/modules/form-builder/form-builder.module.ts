@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilderRoutingModule } from './form-builder-routing.module';
 import { FormBuilderComponent } from './form-builder.component';
 import { FormioModule } from '@formio/angular';
-
+import { TuiTabsModule } from '@taiga-ui/kit';
+import { TuiButtonModule } from '@taiga-ui/core';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,9 @@ import { FormioModule } from '@formio/angular';
   imports: [
     CommonModule,
     FormBuilderRoutingModule,
-    FormioModule
+    FormioModule,
+    TuiTabsModule,
+    TuiButtonModule,
   ]
 })
 export class FormBuilderModule { }
