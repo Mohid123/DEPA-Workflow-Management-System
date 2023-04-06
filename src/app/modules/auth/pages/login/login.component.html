@@ -69,7 +69,7 @@
           }"></ng-container>
           <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
             validation: 'minlength',
-            message: 'Password should be atleast 8 characters',
+            message: 'Password should be atleast 6 characters',
             control: f['password']
           }"></ng-container>
           <br>
@@ -85,7 +85,6 @@
               type="button"
               appearance="accent"
               class="tui-space_right-3 tui-space_bottom-3"
-              [disabled]="loginForm.invalid"
               [showLoader]="(isLoggingIn$ | async)!"
               (click)="submitForm()"
             >

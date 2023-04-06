@@ -61,6 +61,7 @@ export class LoginComponent implements OnInit {
     //     }
     // }) 
     // }
+    console.log(this.loginForm.value)
     this.router.navigate(['/dashboard/appStore'])
   }
 }
