@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   passwordHide: boolean = true;
   isLoggingIn$: Observable<boolean> = this.auth.isLoading$;
   destroy$ = new Subject();
+  loginViaActiveDir = new FormControl<boolean>(true);
 
   constructor(private auth: AuthService, private notif: NotificationsService, private router: Router) {}
 
@@ -30,10 +31,13 @@ export class LoginComponent implements OnInit {
         Validators.required,
         Validators.email
       ])),
+      username: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
       password: new FormControl(null, Validators.compose([
         Validators.required,
         Validators.maxLength(200),
-        Validators.minLength(8),
+        Validators.minLength(6),
         // Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$')
       ]))
     })

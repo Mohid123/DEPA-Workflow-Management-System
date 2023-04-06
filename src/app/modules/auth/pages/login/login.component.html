@@ -6,29 +6,49 @@
       </div>
       <div class="card">
         <p class="font-bold text-2xl pt-4 pb-2">Welcome to Depa App Store</p>
-        <p class="text-lg text-[#B5B5C3]">Enter your windows credentials</p>
+        <p class="text-lg text-[#B5B5C3]">Enter your {{loginViaActiveDir?.value === false ? 'Login' : 'Windows'}} credentials</p>
         <form [formGroup]="loginForm" class="text-left px-4 pt-2">
-          <label class="text-sm font-bold block pb-2">Email</label>
-          <tui-input
-            tuiTextfieldSize="l"
-            formControlName="email"
-            [tuiTextfieldLabelOutside]="true"
-          >
-            <input
-              tuiTextfield
-              type="email"
-            />
-          </tui-input>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'required',
-            message: 'Email address is required',
-            control: f['email']
-          }"></ng-container>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'email',
-            message: 'Please provide a valid email address',
-            control: f['email']
-          }"></ng-container>
+          <ng-container *ngIf="loginViaActiveDir?.value === false">
+            <label class="text-sm font-bold block">Email</label>
+            <tui-input
+              tuiTextfieldSize="l"
+              formControlName="email"
+              [tuiTextfieldLabelOutside]="true"
+            >
+              <input
+                tuiTextfield
+                type="email"
+              />
+            </tui-input>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'Email address is required',
+              control: f['email']
+            }"></ng-container>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+              validation: 'email',
+              message: 'Please provide a valid email address',
+              control: f['email']
+            }"></ng-container>
+          </ng-container>
+          <ng-container *ngIf="loginViaActiveDir?.value === true">
+            <label class="text-sm font-bold block">Username</label>
+            <tui-input
+              tuiTextfieldSize="l"
+              formControlName="username"
+              [tuiTextfieldLabelOutside]="true"
+            >
+              <input
+                tuiTextfield
+                type="text"
+              />
+            </tui-input>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'User name is required',
+              control: f['username']
+            }"></ng-container>
+          </ng-container>
           <br>
           <label class="text-sm font-bold block">Password</label>
           <tui-input-password
@@ -53,6 +73,12 @@
             control: f['password']
           }"></ng-container>
           <br>
+          <div class="inline-flex gap-x-3 pb-2">
+            <tui-checkbox
+              [formControl]="loginViaActiveDir"
+            ></tui-checkbox>
+            <label>Login via Windows Credentials</label>
+          </div>
           <div class="text-center relative">
             <button
               tuiButton
