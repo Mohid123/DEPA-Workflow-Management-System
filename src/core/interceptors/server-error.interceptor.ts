@@ -9,11 +9,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 @Injectable()
 export class ServerErrorInterceptor implements HttpInterceptor {
   constructor(
-    private router: Router
+    private router: Router,
+    private auth: AuthService
     ) {}
 
   intercept(
@@ -22,8 +24,8 @@ export class ServerErrorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if ([401, 403].includes(error.status) && !request.url.includes('auth/signup') && error?.error?.message !== "Incorrect credentials") {
-          this.router.navigate(['/auth/login']);
+        if ([401, 403].includes(error.status)) {
+          this.auth.logout();
           return throwError(error);
         } else if (error.status === 500) {
           return throwError(error);

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, exhaustMap, finalize, map, tap } from 'rxjs/operators';
+import { catchError, exhaustMap, finalize, map, shareReplay, tap } from 'rxjs/operators';
 import { RegisterModel } from '../auth/models/register.model';
 import { getItem, setItem, StorageItem } from 'src/core/utils/local-storage.utils';
 import { SignInResponse } from 'src/core/models/sign-in-response.model';
@@ -39,6 +39,10 @@ export class AuthService extends ApiService<AuthApiData> {
     return getItem(StorageItem.JwtToken)?.toString() || '';
   }
 
+  get RefreshToken(): string {
+    return getItem(StorageItem.RefreshToken)?.toString() || '';
+  }
+
   constructor(
     protected override http: HttpClient,
     private router: Router,
@@ -55,12 +59,12 @@ export class AuthService extends ApiService<AuthApiData> {
   // public methods
   login(params: AuthCredentials) {
     this.isLoadingSubject.next(true);
-    return this.post('add_url_here', params).pipe(
+    return this.post('/auth/login', params).pipe(
       map((result: ApiResponse<any>) => {
-        console.log('result',result);
         if (!result.hasErrors()) {
           setItem(StorageItem.User, result?.data?.user || null);
-          setItem(StorageItem.JwtToken, result?.data?.token || null);
+          setItem(StorageItem.JwtToken, result?.data?.tokens?.access?.token || null);
+          setItem(StorageItem.RefreshToken, result?.data?.tokens?.refresh?.token || null);
           if(result?.data?.user)
           this.currentUserSubject.next(result?.data?.user);
           return result
@@ -70,16 +74,16 @@ export class AuthService extends ApiService<AuthApiData> {
           throw result.errors[0].error?.message
         }
       }),
-      exhaustMap((res) => {
-        if (res?.data?.user) {
-          return this.get(`/add_url_here/${res?.data?.user?.id}`)
-        } else {
-          return of(null);
-        }
-      }),
+      // exhaustMap((res) => {
+      //   if (res?.data?.user) {
+      //     return this.get(`//${res?.data?.user?.id}`)
+      //   } else {
+      //     return of(null);
+      //   }
+      // }),
       tap((res) => {
         if(res && !res?.hasErrors()) {
-          this.updateUser(res.data)
+          this.updateUser(res.data?.user)
         }
       }),
       catchError((err) => {
@@ -89,10 +93,41 @@ export class AuthService extends ApiService<AuthApiData> {
     );
   }
 
+  loginWithActiveDirectory(params: {username: string, password: string}) {
+    this.isLoadingSubject.next(true);
+    return this.post('/auth/login/active-directory', params).pipe(
+      map((result: ApiResponse<any>) => {
+        if (!result.hasErrors()) {
+          setItem(StorageItem.User, result?.data?.user || null);
+          setItem(StorageItem.JwtToken, result?.data?.tokens?.access?.token || null);
+          setItem(StorageItem.RefreshToken, result?.data?.tokens?.refresh?.token || null);
+          if(result?.data?.user)
+          this.currentUserSubject.next(result?.data?.user);
+          return result
+        }
+        else {
+          this.notif.displayNotification(result.errors[0]?.error?.message || 'Failed to authenticate', 'Login Failed!', TuiNotification.Error);
+          throw result.errors[0].error?.message
+        }
+      }),
+      tap((res) => {
+        if(res && !res?.hasErrors()) {
+          this.updateUser(res.data?.user)
+        }
+      }),
+      catchError((err) => {
+        throw err
+      }),
+      finalize(() => this.isLoadingSubject.next(false))
+    )
+  }
+
   logout() {
     this.currentUserSubject.next(null);
     setItem(StorageItem.User, null);
-    setItem(StorageItem.JwtToken, null);
+    setItem(StorageItem.JwtToken, null);[]
+    this.post('/auth/logout', {refreshToken: this.RefreshToken}).subscribe();
+    setItem(StorageItem.RefreshToken, null);
     this.router.navigate(['/auth/login'], {
       queryParams: {},
     });
@@ -114,6 +149,14 @@ export class AuthService extends ApiService<AuthApiData> {
       this.currentUserSubject.next(user);
       setItem(StorageItem.User, user);
     }
+  }
+
+  getUser(id: string) {
+    return this.get(`/users/${id}`).pipe(shareReplay(), tap((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        console.log(res.data)
+      }
+    }))
   }
 
 }

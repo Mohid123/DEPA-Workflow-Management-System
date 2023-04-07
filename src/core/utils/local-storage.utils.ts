@@ -2,6 +2,7 @@ export enum StorageItem {
   User = 'App/user',
   LoggedInUser = 'App/loggedInUser',
   JwtToken = 'App/jwtToken',
+  RefreshToken = 'App/refreshToken',
   Key = 'App/key',
   Theme = 'App/theme',
   publishAppValue = 'App/publish_app_value',

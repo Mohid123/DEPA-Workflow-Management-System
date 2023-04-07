@@ -1,6 +1,12 @@
 export class User {
-  _id!: string;
+  id!: string;
   userName!: string;
   email!: string;
   password!: string;
+  fullName!: string;
+  image!: string;
+  isEmailVerified!: boolean;
+  revisionNo!: number;
+  role!: string;
+  status!: string;
 }

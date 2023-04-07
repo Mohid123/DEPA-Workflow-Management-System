@@ -1,6 +1,8 @@
 import { ApplicationRef, Component } from '@angular/core';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { concat, filter, first, interval } from 'rxjs';
+import { AuthService } from './modules/auth/auth.service';
+import { Router } from '@angular/router';
 
 function promptUser(event: VersionReadyEvent): boolean {
   return true;
@@ -13,7 +15,11 @@ function promptUser(event: VersionReadyEvent): boolean {
 export class AppComponent {
   title = 'DEPA_FRONTEND';
 
-  constructor(appRef: ApplicationRef, swUpdate: SwUpdate) {
+  constructor(appRef: ApplicationRef, swUpdate: SwUpdate, private auth: AuthService, router: Router) {
+    if(this.auth.currentUserValue) {
+      router.navigate(['/dashboard/appStore']);
+    }
+
     const appIsStable$ = appRef.isStable.pipe(first(isStable => isStable === true));
     const everySixHours$ = interval(6 * 60 * 60 * 1000);
     const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);

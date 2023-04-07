@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import { Subject, takeUntil, first, BehaviorSubject, Observable } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Router } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
+import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { TuiNotification } from '@taiga-ui/core';
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   passwordHide: boolean = true;
   isLoggingIn$: Observable<boolean> = this.auth.isLoading$;
@@ -52,17 +53,47 @@ export class LoginComponent implements OnInit {
   }
 
   submitForm() {
-    // if(this.loginForm.value) {
-    //   this.auth.login(this.loginForm.value).pipe(takeUntil(this.destroy$), first())
-    //   .subscribe((response: any) => {
-    //     if(!response.hasErrors()) {
-    //       this.notif.displayNotification('You are successfully logged in', 'User Login', TuiNotification.Success);
-    //       setTimeout(() => this.router.navigate(['/dashboard/appStore']), 1200)
-    //     }
-    // }) 
-    // }
-    console.log(this.loginForm.value)
-    this.router.navigate(['/dashboard/appStore'])
+    if(this.loginViaActiveDir?.value === true) {
+      const params: any = {
+        username: this.f['username']?.value,
+        password: this.f['password']?.value
+      }
+      if(params.username && params.password) {
+        this.auth.loginWithActiveDirectory(params).pipe(takeUntil(this.destroy$), first())
+        .subscribe((res: ApiResponse<any>) => {
+          if(!res.hasErrors()) {
+            this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
+            this.router.navigate(['/dashboard/appStore'])
+          }
+        })
+      }
+      else {
+        this.loginForm.markAllAsTouched();
+      }
+    }
+    else {
+      const params: any = {
+        email: this.f['email']?.value,
+        password: this.f['password']?.value
+      }
+      if(params.email && params.password) {
+        this.auth.login(params).pipe(takeUntil(this.destroy$), first())
+        .subscribe((res: ApiResponse<any>) => {
+          if(!res.hasErrors()) {
+            this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
+            this.router.navigate(['/dashboard/appStore'])
+          }
+        })
+      }
+      else {
+        this.loginForm.markAllAsTouched();
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }
 

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 export interface TabItems {
   name: string,
@@ -16,6 +17,9 @@ export interface TabItems {
 })
 
 export class TopMenuComponent {
+  constructor(private auth: AuthService) {
+
+  }
   @Output() selectByIndex = new EventEmitter();
   @Input() menuItems: TabItems[];
 
@@ -26,6 +30,10 @@ export class TopMenuComponent {
         item.isActive = false;
       }
     })
+  }
+
+  logout() {
+    this.auth.logout();
   }
 
 }
