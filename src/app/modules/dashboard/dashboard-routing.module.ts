@@ -1,31 +1,34 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
-import { AppListingComponent } from './pages/app-listing/app-listing.component';
-import { AppstoreComponent } from './pages/appstore/appstore.component';
+import { HomeComponent } from './pages/home/home.component';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
+    data: {breadcrumb:'Dashboard'},
     children:[
       {
         path: '',
-        component: AppstoreComponent
+        component: HomeComponent,
+        data: {breadcrumb:'Home'},
       },
       {
-        path: 'appStore',
-        component: AppstoreComponent
-      },
-      {
-        path: 'appList',
-        component: AppListingComponent
+        path: 'home',
+        component: HomeComponent,
+        data: {breadcrumb:'Home'},
       },
       {
         path: 'publish-app',
-        component: PublishAppComponent
-      }
+        component: PublishAppComponent,
+        data: {breadcrumb:'Pubish an App'},
+      },
+      // {
+      //   path: '**', pathMatch: 'full', 
+      //   component: PagenotfoundComponent
+      // },
     ]
   }
 ];

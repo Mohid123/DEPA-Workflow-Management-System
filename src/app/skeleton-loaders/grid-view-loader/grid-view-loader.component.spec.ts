@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppListingComponent } from './app-listing.component';
+import { GridViewLoaderComponent } from './grid-view-loader.component';
 
-describe('AppListingComponent', () => {
-  let component: AppListingComponent;
-  let fixture: ComponentFixture<AppListingComponent>;
+describe('GridViewLoaderComponent', () => {
+  let component: GridViewLoaderComponent;
+  let fixture: ComponentFixture<GridViewLoaderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AppListingComponent ]
+      declarations: [ GridViewLoaderComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AppListingComponent);
+    fixture = TestBed.createComponent(GridViewLoaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

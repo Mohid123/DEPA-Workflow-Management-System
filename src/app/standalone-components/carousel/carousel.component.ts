@@ -30,7 +30,6 @@ export class CarouselComponent implements OnDestroy {
     Breakpoints.Small,
     '(min-width: 500px)'])
   .pipe(
-    tap(value => console.log(value)),
     distinctUntilChanged(),
     takeUntil(this.destroy$)
   );

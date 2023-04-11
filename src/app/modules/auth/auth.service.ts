@@ -74,16 +74,16 @@ export class AuthService extends ApiService<AuthApiData> {
           throw result.errors[0].error?.message
         }
       }),
-      // exhaustMap((res) => {
-      //   if (res?.data?.user) {
-      //     return this.get(`//${res?.data?.user?.id}`)
-      //   } else {
-      //     return of(null);
-      //   }
-      // }),
+      exhaustMap((res) => {
+        if (res?.data?.user) {
+          return this.get(`/users/${res?.data?.user?.id}`)
+        } else {
+          return of(null);
+        }
+      }),
       tap((res) => {
         if(res && !res?.hasErrors()) {
-          this.updateUser(res.data?.user)
+          this.updateUser(res.data)
         }
       }),
       catchError((err) => {
@@ -110,9 +110,16 @@ export class AuthService extends ApiService<AuthApiData> {
           throw result.errors[0].error?.message
         }
       }),
+      exhaustMap((res) => {
+        if (res?.data?.user) {
+          return this.get(`/users/${res?.data?.user?.id}`)
+        } else {
+          return of(null);
+        }
+      }),
       tap((res) => {
         if(res && !res?.hasErrors()) {
-          this.updateUser(res.data?.user)
+          this.updateUser(res.data)
         }
       }),
       catchError((err) => {
@@ -125,7 +132,7 @@ export class AuthService extends ApiService<AuthApiData> {
   logout() {
     this.currentUserSubject.next(null);
     setItem(StorageItem.User, null);
-    setItem(StorageItem.JwtToken, null);[]
+    setItem(StorageItem.JwtToken, null);
     this.post('/auth/logout', {refreshToken: this.RefreshToken}).subscribe();
     setItem(StorageItem.RefreshToken, null);
     this.router.navigate(['/auth/login'], {
@@ -152,9 +159,9 @@ export class AuthService extends ApiService<AuthApiData> {
   }
 
   getUser(id: string) {
-    return this.get(`/users/${id}`).pipe(shareReplay(), tap((res: ApiResponse<any>) => {
+    return this.get(`/users/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        console.log(res.data)
+        return res.data
       }
     }))
   }
