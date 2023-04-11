@@ -13,6 +13,9 @@ import {TuiLetModule} from '@taiga-ui/cdk';
 import { TuiInputModule, TuiPaginationModule, TuiTabsModule, TuiTextAreaModule, TuiMultiSelectModule, TuiDataListWrapperModule } from '@taiga-ui/kit';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
+import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
+import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/grid-top-app.component';
+import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-app/grid-side-app.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,10 @@ import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-load
     TuiTextAreaModule,
     TuiMultiSelectModule,
     TuiDataListWrapperModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    GridSmallComponent,
+    GridTopAppComponent,
+    GridSideAppComponent
   ]
 })
 export class DashboardModule { }

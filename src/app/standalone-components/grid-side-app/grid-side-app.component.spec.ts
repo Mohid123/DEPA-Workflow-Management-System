@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StoreCardComponent } from './store-card.component';
+import { GridSideAppComponent } from './grid-side-app.component';
 
-describe('StoreCardComponent', () => {
-  let component: StoreCardComponent;
-  let fixture: ComponentFixture<StoreCardComponent>;
+describe('GridSideAppComponent', () => {
+  let component: GridSideAppComponent;
+  let fixture: ComponentFixture<GridSideAppComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ StoreCardComponent ]
+      imports: [ GridSideAppComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(StoreCardComponent);
+    fixture = TestBed.createComponent(GridSideAppComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

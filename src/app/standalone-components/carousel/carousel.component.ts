@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TuiCarouselModule } from '@taiga-ui/kit';
-import { StoreCardComponent } from '../store-card/store-card.component';
 import { distinctUntilChanged, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { TuiButtonModule } from '@taiga-ui/core';
@@ -9,7 +8,7 @@ import { TuiButtonModule } from '@taiga-ui/core';
 @Component({
   selector: 'app-carousel',
   standalone: true,
-  imports: [CommonModule, TuiCarouselModule, StoreCardComponent, TuiButtonModule],
+  imports: [CommonModule, TuiCarouselModule, TuiButtonModule],
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

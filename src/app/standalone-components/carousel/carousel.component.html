@@ -11,9 +11,9 @@
     (click)="navigate(-1)"
   ></button>
   <tui-carousel [(index)]="currentIndex" [itemsCount]="noOfCards" #carousel class="carousel">
-    <ng-container *ngFor="let app of apps; let i = index">
+    <!-- <ng-container *ngFor="let app of apps; let i = index">
       <app-store-card *tuiItem [appIcon]="app.appIcon" [appName]="app.appName" [themeColor]="app.themeColor"></app-store-card>
-    </ng-container>
+    </ng-container> -->
   </tui-carousel>
   <button
     tuiIconButton

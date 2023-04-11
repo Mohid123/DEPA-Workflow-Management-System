@@ -1,5 +1,12 @@
 <app-header></app-header>
 <div class="bg_img_main">
-  <app-grid-view-loader></app-grid-view-loader>
+  <!-- <app-grid-view-loader></app-grid-view-loader> -->
+  <section class="grid grid-cols-12 gap-4 w-11/12 mx-auto mt-52 pb-60">
+    <ng-container *ngFor="let i of Arr(num).fill(1); let index = index">
+      <grid-top-app *ngIf="index == 0" class="col-span-8"></grid-top-app>
+      <grid-side-app *ngIf="index == 1" class="col-span-4 row-span-3"></grid-side-app>
+      <grid-small-app *ngIf="index > 1" class="col-span-2"></grid-small-app>
+    </ng-container>
+  </section>
 </div>
-<app-footer></app-footer>
+<app-footer class="absolute bottom-0"></app-footer>
