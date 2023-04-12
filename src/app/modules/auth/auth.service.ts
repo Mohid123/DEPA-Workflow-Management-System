@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, exhaustMap, finalize, map, shareReplay, tap } from 'rxjs/operators';
-import { RegisterModel } from '../auth/models/register.model';
 import { getItem, setItem, StorageItem } from 'src/core/utils/local-storage.utils';
 import { SignInResponse } from 'src/core/models/sign-in-response.model';
 import { ApiService } from 'src/core/core-services/api.service';
@@ -19,8 +18,6 @@ type AuthApiData = SignInResponse | any;
   providedIn: 'root',
 })
 export class AuthService extends ApiService<AuthApiData> {
-
-  // public fields
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   currentUserSubject: BehaviorSubject<User | null>;
@@ -53,10 +50,8 @@ export class AuthService extends ApiService<AuthApiData> {
     this.currentUserSubject = new BehaviorSubject<User | null>(<User>getItem(StorageItem.User));
     this.currentUser$ = this.currentUserSubject.asObservable();
     this.isLoading$ = this.isLoadingSubject.asObservable();
-
   }
 
-  // public methods
   login(params: AuthCredentials) {
     this.isLoadingSubject.next(true);
     return this.post('/auth/login', params).pipe(
@@ -138,17 +133,6 @@ export class AuthService extends ApiService<AuthApiData> {
     this.router.navigate(['/auth/login'], {
       queryParams: {},
     });
-  }
-
-  registration(user: RegisterModel) {
-    this.isLoadingSubject.next(true);
-    return this.post('/add_url_here', user).pipe(
-      map((user: ApiResponse<SignInResponse>) => {
-        this.isLoadingSubject.next(false);
-        return user;
-      }),
-      finalize(() => this.isLoadingSubject.next(false))
-    );
   }
 
   updateUser(user:User) {

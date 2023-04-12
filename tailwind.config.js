@@ -105,7 +105,8 @@ module.exports = {
       minHeight: extendedSize,
       padding: {
         4.5: '1.125rem',
-        15: '9.625rem'
+        15: '9.625rem',
+        25: '6.25rem'
       },
       fontSize: {
         'xxs': '0.625rem',

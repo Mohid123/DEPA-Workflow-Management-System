@@ -22,6 +22,7 @@
     "@angular/router": "^15.2.0",
     "@angular/service-worker": "^15.2.0",
     "@formio/angular": "^5.5.0-rc.9",
+    "@swimlane/ngx-graph": "^8.0.3",
     "@taiga-ui/addon-charts": "^3.20.0",
     "@taiga-ui/addon-commerce": "^3.20.0",
     "@taiga-ui/addon-doc": "^3.20.0",
