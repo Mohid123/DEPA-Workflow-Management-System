@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 
 export class HomeComponent {
   Arr = Array;
-  num: number = 10;
+  num: number = 7;
 
   constructor() {
   }

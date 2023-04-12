@@ -9,5 +9,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 export class GridViewLoaderComponent {
   Arr = Array;
-  num: number = 10;
+  num: number = 7;
 }
