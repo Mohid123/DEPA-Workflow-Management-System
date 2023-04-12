@@ -12,7 +12,4 @@ export class HomeComponent {
   constructor() {
   }
 
-  onNodeSelect(event: any) {
-    
-  }
 }

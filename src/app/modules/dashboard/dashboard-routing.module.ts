@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
+import { DummyWorkflowComponent } from './pages/dummy-workflow/dummy-workflow.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,11 @@ const routes: Routes = [
         component: PublishAppComponent,
         data: {breadcrumb:'Pubish an App'},
       },
+      {
+        path: 'dummy-workflow',
+        component: DummyWorkflowComponent,
+        data: {breadcrumb:'Workflow'},
+      }
       // {
       //   path: '**', pathMatch: 'full', 
       //   component: PagenotfoundComponent

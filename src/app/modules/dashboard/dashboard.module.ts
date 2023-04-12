@@ -16,13 +16,16 @@ import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-load
 import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
 import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/grid-top-app.component';
 import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-app/grid-side-app.component';
+import { WorkflowChartComponent } from 'src/app/standalone-components/workflow-chart/workflow-chart.component';
+import { DummyWorkflowComponent } from './pages/dummy-workflow/dummy-workflow.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     HomeComponent,
     PublishAppComponent,
-    GridViewLoaderComponent
+    GridViewLoaderComponent,
+    DummyWorkflowComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +47,8 @@ import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-ap
     TuiLoaderModule,
     GridSmallComponent,
     GridTopAppComponent,
-    GridSideAppComponent
+    GridSideAppComponent,
+    WorkflowChartComponent
   ]
 })
 export class DashboardModule { }
