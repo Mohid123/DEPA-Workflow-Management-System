@@ -31,10 +31,6 @@ const routes: Routes = [
         component: DummyWorkflowComponent,
         data: {breadcrumb:'Workflow'},
       }
-      // {
-      //   path: '**', pathMatch: 'full', 
-      //   component: PagenotfoundComponent
-      // },
     ]
   }
 ];
@@ -44,3 +40,8 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class DashboardRoutingModule { }
+
+// {
+      //   path: '**', pathMatch: 'full', 
+      //   component: PagenotfoundComponent
+      // },
