@@ -1,11 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import  { Subject, Observable, of, map, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
+import {TUI_ARROW} from '@taiga-ui/kit';
+import { Module } from 'src/core/models/module.model';
 @Component({
-  selector: 'app-publish-app',
   templateUrl: './publish-app.component.html',
   styleUrls: ['./publish-app.component.scss']
 })
@@ -14,8 +15,8 @@ export class PublishAppComponent implements OnDestroy {
   file: any;
   localStorageApp: any;
   appNameLength: Observable<number> = of(0);
-  shortDescLength: Observable<number> = of(0);
   activeIndex: number = getItem(StorageItem.activeIndex) || 0;
+  readonly arrow = TUI_ARROW;
   readonly tabs = [
     {
       text: 'App Details'
@@ -31,19 +32,15 @@ export class PublishAppComponent implements OnDestroy {
     }
   ];
   publishAppForm!: FormGroup;
-  readonly categoryOtions = [
+  readonly categoryOptions = [
     'Human Resources',
     'Networking',
     'Games',
     'E-Commerce',
     'Finance',
-    'Management',
+    'Management'
   ];
-  readonly roles = [
-    'User',
-    'Admin',
-    'Any'
-  ]
+
   constructor(private fb: FormBuilder, private notif: NotificationsService) {
     this.localStorageApp = getItem(StorageItem.publishAppValue);
     this.initAppForm(this.localStorageApp);
@@ -57,35 +54,49 @@ export class PublishAppComponent implements OnDestroy {
   initAppForm(item?: any) {
     this.publishAppForm = this.fb.group({
       appName: [item?.appName || null, Validators.compose([Validators.required, Validators.maxLength(20)])],
-      shortDescription: [item?.shortDescription || null, Validators.compose([Validators.required, Validators.maxLength(50)])],
       fullDescription: [item?.fullDescription || null, Validators.required],
       appLink: [item?.appLink || null, Validators.required],
       appCategories: [item?.appCategories || null, Validators.required],
-      roles: [item?.roles || null],
-      appIcon: [item?.appIcon || null]
+      appIcon: [item?.appIcon || null],
+      companies: this.fb.array([]),
+      companyNames: [item?.companyNames, Validators.required]
     });
     this.file = item?.appIcon
   }
 
+  get companies() {
+    return this.f["companies"] as FormArray;
+  }
+
   getTextFieldLength() {
     this.appNameLength = this.f['appName'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
-    this.shortDescLength = this.f['shortDescription'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
+  }
+
+  addCompany() {
+    const companyForm = this.fb.group({
+      title: ['', Validators.required]
+    });
+    this.companies.push(companyForm)
+  }
+
+  removeCompany(index: number) {
+    this.companies.removeAt(index);
   }
 
   nextStep(): void {
     if(this.activeIndex !== 3) {
       switch(this.activeIndex) {
         case 0:
-          if(this.f['appName'].invalid || this.f['shortDescription'].invalid || this.f['fullDescription'].invalid) {
-            return ['appName', 'shortDescription', 'fullDescription'].forEach(val => this.f[val].markAsDirty())
+          if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid) {
+            return ['appName', 'appLink', 'fullDescription'].forEach(val => this.f[val].markAsDirty())
           }
           else {
             this.moveNext()
           }
           break;
         case 1:
-          if(this.f['appLink'].invalid || this.f['appCategories'].invalid) {
-            return ['appLink', 'appCategories'].forEach(val => this.f[val].markAsDirty())
+          if(this.f['appCategories'].invalid || !this.f['companyNames'].invalid) {
+            return ['appCategories', 'companies'].forEach(val => this.f[val].markAsDirty())
           }
           else {
             this.moveNext()
@@ -104,13 +115,7 @@ export class PublishAppComponent implements OnDestroy {
       }
     }
     if(this.activeIndex == 3) {
-      setTimeout(() => {
-        this.activeIndex = 0;
-        this.publishAppForm.reset();
-        removeItem(StorageItem.publishAppValue);
-        removeItem(StorageItem.activeIndex);
-        this.file = null;
-      }, 2000);
+      this.submitNewModule()
     }
   }
 
@@ -173,6 +178,25 @@ export class PublishAppComponent implements OnDestroy {
       return true
     }
     return false
+  }
+
+  submitNewModule() {
+    const payload: Partial<Module> = {
+      categoryId: this.f['appCategories']?.value,
+      title: this.f['appName']?.value,
+      description: this.f['fullDescription']?.value,
+      url: this.f['appLink']?.value,
+      image: this.f['appIcon']?.value
+    }
+    this.activeIndex = 0;
+    this.publishAppForm.reset();
+    removeItem(StorageItem.publishAppValue);
+    removeItem(StorageItem.activeIndex);
+    this.file = null;
+  }
+
+  submitNewCompany() {
+
   }
   
   ngOnDestroy(): void {

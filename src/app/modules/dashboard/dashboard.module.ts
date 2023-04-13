@@ -6,11 +6,11 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
-import { TuiButtonModule, TuiTextfieldControllerModule, TuiLoaderModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiTextfieldControllerModule, TuiLoaderModule, TuiDataListModule, TuiHostedDropdownModule } from '@taiga-ui/core';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import {TuiTableModule} from '@taiga-ui/addon-table';
-import {TuiLetModule} from '@taiga-ui/cdk';
-import { TuiInputModule, TuiPaginationModule, TuiTabsModule, TuiTextAreaModule, TuiMultiSelectModule, TuiDataListWrapperModule } from '@taiga-ui/kit';
+import { TuiLetModule } from '@taiga-ui/cdk';
+import { TuiInputModule, TuiPaginationModule, TuiTabsModule, TuiTextAreaModule, TuiMultiSelectModule, TuiDataListWrapperModule, TuiSelectModule } from '@taiga-ui/kit';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
 import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
@@ -44,6 +44,9 @@ import { DummyWorkflowComponent } from './pages/dummy-workflow/dummy-workflow.co
     TuiTextAreaModule,
     TuiMultiSelectModule,
     TuiDataListWrapperModule,
+    TuiDataListModule,
+    TuiSelectModule,
+    TuiHostedDropdownModule,
     TuiLoaderModule,
     GridSmallComponent,
     GridTopAppComponent,
