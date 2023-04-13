@@ -20,6 +20,10 @@ const routes: Routes = [
   {
     path: 'form-builder',
     loadChildren: () => import('./modules/form-builder/form-builder.module').then(m => m.FormBuilderModule)
+  },
+  {
+    path: 'appListing',
+    loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
   }
 ];
 

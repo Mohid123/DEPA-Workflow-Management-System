@@ -1,0 +1,86 @@
+<div class="flex justify-between">
+  <app-search-bar class="w-6/12 mb-5" (searchStr)="searchTableData($event)"></app-search-bar>
+  <div class="mt-3 cursor-pointer">
+    <a class="px-6 py-3 rounded-md bg-green-600 text-white no-underline hover:text-white text-base">+ Add new</a>
+  </div>
+</div>
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-6 py-3">
+          Company Name
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Module Name
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Category
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container >
+        <tr class="bg-white border-b border-gray-300">
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              Apple MacBook Pro 17"
+          </th>
+          <td class="px-6 py-4">
+              Silver
+          </td>
+          <td class="px-6 py-4">
+              Laptop
+          </td>
+          <td class="px-6 py-4">
+            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
+          </td>
+        </tr>
+        <tr class="bg-white border-b border-gray-300">
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              Apple MacBook Pro 17"
+          </th>
+          <td class="px-6 py-4">
+              Silver
+          </td>
+          <td class="px-6 py-4">
+              Laptop
+          </td>
+          <td class="px-6 py-4">
+            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
+          </td>
+        </tr>
+        <tr class="bg-white border-b border-gray-300">
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              Apple MacBook Pro 17"
+          </th>
+          <td class="px-6 py-4">
+              Silver
+          </td>
+          <td class="px-6 py-4">
+              Laptop
+          </td>
+          <td class="px-6 py-4">
+            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
+          </td>
+        </tr>
+        <tr class="bg-white border-b border-gray-300">
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              Apple MacBook Pro 17"
+          </th>
+          <td class="px-6 py-4">
+              Silver
+          </td>
+          <td class="px-6 py-4">
+              Laptop
+          </td>
+          <td class="px-6 py-4">
+            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
