@@ -1,0 +1,187 @@
+<app-header></app-header>
+<section class="w-11/12 mx-auto mt-52 pb-44">
+  <section>
+    <h3 class="text-xl font-semibold">Create new submodule</h3>
+  </section>
+  <form class="pt-5 block" [formGroup]="subModuleForm">
+    <div class="mb-8">
+      <label class="text-sm font-bold block pb-2">Submodule URL <span class="tui-required"></span></label>
+      <tui-input
+        formControlName="subModuleUrl"
+        [tuiTextfieldCleaner]="true"
+        tuiTextfieldSize="l"
+        [tuiTextfieldLabelOutside]="true"
+      >
+        <input
+          tuiTextfield
+          type="text"
+          placeholder="Add submodule url..."
+        />
+      </tui-input>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'Please provide a valid url',
+        control: f['subModuleUrl']
+      }"></ng-container>
+    </div>
+
+    <div class="mb-3">
+      <label class="text-sm font-bold block pb-2">Company name <span class="tui-required"></span></label>
+      <tui-select formControlName="companyName" [tuiTextfieldLabelOutside]="true">
+        <input
+          tuiTextfield
+          placeholder="Select Company"
+        />
+        <tui-data-list-wrapper
+          *tuiDataList
+          [items]="categoryOptions"
+        ></tui-data-list-wrapper>
+      </tui-select>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'Please select a company',
+        control: f['companyName']
+      }"></ng-container>
+    </div>
+    <div class="my-2">
+      <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
+    </div>
+    <ng-container formArrayName="companies">
+      <ng-container *ngFor="let company of companies.controls; let i = index; let first = first; let last = last">
+        <form class="px-8 w-7/12" [formGroupName]="i">
+          <div class="flex justify-between items-center mb-3 gap-2 w-full">
+            <div class="w-full">
+              <label *ngIf="i == 0" class="text-xs font-semibold block pb-2">Add new companies</label>
+              <tui-input
+                formControlName="title"
+                [tuiTextfieldCleaner]="true"
+                tuiTextfieldSize="m"
+                [tuiTextfieldLabelOutside]="true"
+              >
+                <input
+                  tuiTextfield
+                  type="text"
+                />
+              </tui-input>
+            </div>
+            <div [ngClass]="first ? 'mt-7': 'mt-0'">
+              <button
+                tuiIconButton
+                type="button"
+                size="s"
+                appearance="secondary-destructive"
+                icon="tuiIconTrash2Large"
+                (click)="removeCompany(i)"
+              ></button>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button
+              *ngIf="last"
+              tuiButton
+              type="button"
+              class="mb-3"
+              size="m"
+              (click)="submitNewCompany()"
+            >Submit</button>
+          </div>
+        </form>
+      </ng-container>
+    </ng-container>
+    <button
+      tuiIconButton
+      type="button"
+      size="m"
+      icon="tuiIconPlusLarge"
+      (click)="addCompany()"
+    ></button>
+  </form> 
+</section>
+<app-footer></app-footer>
+
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
+      <span class="text-red-400 fv-help-block text-xxs 2xl:text-xs 2xl:mb-2" role="alert">
+        {{ message }}
+      </span>
+    </div>
+  </ng-container>
+</ng-template>
+
+
+   <!-- Companies-->
+   <!-- <div class="mt-8 mb-4">
+    <label class="text-sm font-bold block pb-2">Companies <span class="tui-required"></span></label>
+    <tui-multi-select
+      formControlName="companyNames"
+      [tuiTextfieldCleaner]="true"
+      tuiTextfieldSize="l"
+      [tuiTextfieldLabelOutside]="true"
+    >
+      <input placeholder="Select Companies">
+      <tui-data-list-wrapper
+        *tuiDataList
+        tuiMultiSelectGroup
+        [items]="categoryOptions"
+      >
+    </tui-data-list-wrapper>
+    </tui-multi-select>
+    <div class="my-2">
+      <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
+    </div>
+    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+      validation: 'required',
+      message: 'Please select at least one company',
+      control: f['companyNames']
+    }"></ng-container>
+  </div>
+  <ng-container formArrayName="companies">
+    <ng-container *ngFor="let company of companies.controls; let j = index; let first = first; let last = last">
+      <form class="px-8 w-7/12" [formGroupName]="j">
+        <div class="flex justify-between items-center mb-3 gap-2 w-full">
+          <div class="w-full">
+            <label *ngIf="j == 0" class="text-xs font-semibold block pb-2">Add new companies</label>
+            <tui-input
+              formControlName="title"
+              [tuiTextfieldCleaner]="true"
+              tuiTextfieldSize="m"
+              [tuiTextfieldLabelOutside]="true"
+            >
+              <input
+                tuiTextfield
+                type="text"
+              />
+            </tui-input>
+          </div>
+          <div [ngClass]="first ? 'mt-7': 'mt-0'">
+            <button
+              tuiIconButton
+              type="button"
+              size="s"
+              appearance="secondary-destructive"
+              icon="tuiIconTrash2Large"
+              (click)="removeCompany(j)"
+            ></button>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button
+            *ngIf="last"
+            tuiButton
+            type="button"
+            class="mb-3"
+            size="m"
+            (click)="submitNewCompany()"
+          >Submit</button>
+        </div>
+      </form>
+    </ng-container>
+  </ng-container>
+  <button
+    tuiIconButton
+    type="button"
+    size="m"
+    icon="tuiIconPlusLarge"
+    (click)="addCompany()"
+  ></button> -->

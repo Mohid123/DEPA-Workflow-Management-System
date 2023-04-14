@@ -3,9 +3,21 @@
   <!-- <app-grid-view-loader></app-grid-view-loader> -->
   <section class="grid grid-cols-12 gap-4 w-11/12 mx-auto mt-52 pb-60">
     <ng-container *ngFor="let i of Arr(num).fill(1); let index = index; let first = first">
-      <grid-top-app *ngIf="first" class="col-span-8"></grid-top-app>
-      <grid-side-app *ngIf="index == 1" class="col-span-4 row-span-3"></grid-side-app>
-      <grid-small-app *ngIf="index > 1" class="col-span-4 row-span-2"></grid-small-app>
+      <p *ngIf="first" class="text-lg font-semibold col-span-12 mb-3">Category name</p>
+      <ng-container *ngIf="Arr(num).fill(1).length == 1">
+        <grid-small-app [routerLink]="['/appListing/companies']" class="col-span-8 row-span-2"></grid-small-app>
+      </ng-container>
+      <ng-container *ngIf="Arr(num).fill(1).length == 2">
+        <grid-small-app [routerLink]="['/appListing/companies']" class="col-span-6 row-span-2"></grid-small-app>
+      </ng-container>
+      <ng-container *ngIf="Arr(num).fill(1).length == 3">
+        <grid-small-app [routerLink]="['/appListing/companies']" class="col-span-4 row-span-2"></grid-small-app>
+      </ng-container>
+      <ng-container *ngIf="Arr(num).fill(1).length >= 4">
+        <grid-top-app [routerLink]="['/appListing/companies']" *ngIf="first" class="col-span-8"></grid-top-app>
+        <grid-side-app [routerLink]="['/appListing/companies']" *ngIf="index == 1" class="col-span-4 row-span-3"></grid-side-app>
+        <grid-small-app [routerLink]="['/appListing/companies']" *ngIf="index > 1" class="col-span-4 row-span-2"></grid-small-app>
+      </ng-container>
     </ng-container>
   </section>
 </div>

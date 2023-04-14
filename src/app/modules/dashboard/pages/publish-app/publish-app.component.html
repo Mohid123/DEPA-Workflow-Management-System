@@ -2,7 +2,7 @@
 <div class="bg_img_main">
   <section class="grid grid-cols-12 gap-4 w-10/12 mx-auto mt-48 pb-44">
     <div class="col-span-full bg-white rounded-lg shadow-lg px-12 py-5">
-      <p class="font-bold text-2xl text-center">Publish an App</p>
+      <p class="font-bold text-2xl text-center">Create new Module</p>
       <div class="flex justify-center my-6">
         <tui-tabs tuiMobileTabs [(activeItemIndex)]="activeIndex">
           <ng-container *ngFor="let tab of tabs; let i = index; let last = last; let first = first">
@@ -19,7 +19,7 @@
       </div>
       <form [formGroup]="publishAppForm">
         <ng-container *ngIf="activeIndex == 0">
-          <label class="text-sm font-bold block pb-2">App name <span class="tui-required"></span></label>
+          <label class="text-sm font-bold block pb-2">Module title <span class="tui-required"></span></label>
           <tui-input
             formControlName="appName"
             [tuiTextfieldCleaner]="true"
@@ -37,12 +37,12 @@
           </div>
           <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
             validation: 'required',
-            message: 'App name is required',
+            message: 'Module name is required',
             control: f['appName']
           }"></ng-container>
 
           <div class="my-12">
-            <label class="text-sm font-bold block pb-2">App URL <span class="tui-required"></span></label>
+            <label class="text-sm font-bold block pb-2">Module URL <span class="tui-required"></span></label>
             <tui-input
               formControlName="appLink"
               [tuiTextfieldCleaner]="true"
@@ -56,7 +56,7 @@
             </tui-input>
             <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
               validation: 'required',
-              message: 'Please provide a valid app url',
+              message: 'Please provide a valid url',
               control: f['appLink']
             }"></ng-container>
           </div>
@@ -74,106 +74,30 @@
             message: 'Please provide a description',
             control: f['fullDescription']
           }"></ng-container>
+
+          <!--Categories-->
+          <div class="mt-8">
+            <label class="text-sm font-bold block pb-2">Module category <span class="tui-required"></span></label>
+            <tui-select formControlName="appCategories" [tuiTextfieldLabelOutside]="true">
+              <input
+                tuiTextfield
+                placeholder="Select Category"
+              />
+              <tui-data-list-wrapper
+                *tuiDataList
+                [items]="categoryOptions"
+              ></tui-data-list-wrapper>
+            </tui-select>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'Please select at least one category',
+              control: f['appCategories']
+            }"></ng-container>
+          </div>
+
         </ng-container>
 
         <ng-container *ngIf="activeIndex == 1">
-          <!--Categories-->
-          <label class="text-sm font-bold block pb-2">App categories <span class="tui-required"></span></label>
-          <tui-select formControlName="appCategories" [tuiTextfieldLabelOutside]="true">
-            <input
-              tuiTextfield
-              placeholder="Select Categories"
-            />
-            <tui-data-list-wrapper
-              *tuiDataList
-              [items]="categoryOptions"
-            ></tui-data-list-wrapper>
-          </tui-select>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'required',
-            message: 'Please select at least one category',
-            control: f['appCategories']
-          }"></ng-container>
-
-          <!-- Companies-->
-          <div class="mt-8 mb-4">
-            <label class="text-sm font-bold block pb-2">Companies <span class="tui-required"></span></label>
-            <tui-multi-select
-              formControlName="companyNames"
-              [tuiTextfieldCleaner]="true"
-              tuiTextfieldSize="l"
-              [tuiTextfieldLabelOutside]="true"
-            >
-              <input placeholder="Select Companies">
-              <tui-data-list-wrapper
-                *tuiDataList
-                tuiMultiSelectGroup
-                [items]="categoryOptions"
-              >
-            </tui-data-list-wrapper>
-            </tui-multi-select>
-            <div class="my-2">
-              <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
-            </div>
-            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'Please select at least one company',
-              control: f['companyNames']
-            }"></ng-container>
-          </div>
-          <ng-container formArrayName="companies">
-            <ng-container *ngFor="let company of companies.controls; let j = index; let first = first; let last = last">
-              <form class="px-8 w-7/12" [formGroupName]="j">
-                <div class="flex justify-between items-center mb-3 gap-2 w-full">
-                  <div class="w-full">
-                    <label *ngIf="j == 0" class="text-xs font-semibold block pb-2">Add new companies</label>
-                    <tui-input
-                      formControlName="title"
-                      [tuiTextfieldCleaner]="true"
-                      tuiTextfieldSize="m"
-                      [tuiTextfieldLabelOutside]="true"
-                    >
-                      <input
-                        tuiTextfield
-                        type="text"
-                      />
-                    </tui-input>
-                  </div>
-                  <div [ngClass]="first ? 'mt-7': 'mt-0'">
-                    <button
-                      tuiIconButton
-                      type="button"
-                      size="s"
-                      appearance="secondary-destructive"
-                      icon="tuiIconTrash2Large"
-                      (click)="removeCompany(j)"
-                    ></button>
-                  </div>
-                </div>
-                <div class="flex justify-end">
-                  <button
-                    *ngIf="last"
-                    tuiButton
-                    type="button"
-                    class="mb-3"
-                    size="m"
-                    (click)="submitNewCompany()"
-                  >Submit</button>
-                </div>
-              </form>
-            </ng-container>
-          </ng-container>
-          <button
-            tuiIconButton
-            type="button"
-            size="m"
-            icon="tuiIconPlusLarge"
-            (click)="addCompany()"
-          ></button>
-
-        </ng-container>
-
-        <ng-container *ngIf="activeIndex == 2">
           <label (change)="onFileSelect($event)" for="dropzone-file" class="mt-10 flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
             <tui-loader
               [inheritColor]="true"
@@ -189,7 +113,7 @@
                   <img src="../../../../../assets/windows.svg" width="32" height="32">
                 </div>
                 <div class="flex flex-col">
-                  <p class="font-semibold text-black text-lg mb-3">App Icon</p>
+                  <p class="font-semibold text-black text-lg mb-3">Module Icon</p>
                   <ul class="list-disc text-sm text-gray-400">
                     <li>Icon should be 500x500 px (1:1) ratio</li>
                     <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
@@ -202,11 +126,11 @@
           </label>
         </ng-container>
 
-        <ng-container *ngIf="activeIndex == 3">
+        <ng-container *ngIf="activeIndex == 2">
           <div class="mt-20 flex flex-col items-center justify-center w-full">
             <img src="../../../../../assets/published.svg" alt="ok" width="118" height="118">
             <p class="font-semibold my-2 text-lg">Congratulations</p>
-            <p class="text-base">Your app has been added and sent for approval</p>
+            <p class="text-base">Your module has been created successfully</p>
           </div>
         </ng-container>
 

@@ -1,12 +1,12 @@
 <div class="flex justify-between">
   <app-search-bar class="w-6/12 mb-5" (searchStr)="searchTableData($event)"></app-search-bar>
   <div class="mt-3 cursor-pointer">
-    <a class="px-6 py-3 rounded-md bg-green-600 text-white no-underline hover:text-white text-base">+ Add new</a>
+    <a [routerLink]="['/appListing/add-submodule']"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
   </div>
 </div>
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+<div class="relative overflow-x-auto shadow-lg rounded-lg">
+  <table class="w-full text-sm text-left text-gray-500">
+    <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
       <tr>
         <th scope="col" class="px-6 py-3">
           Company Name
@@ -25,59 +25,22 @@
     <tbody>
       <ng-container >
         <tr class="bg-white border-b border-gray-300">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Apple MacBook Pro 17"
+          <th scope="row" class="px-6 py-4 font-normal whitespace-nowrap">
+            Depa Interiors LLC
           </th>
           <td class="px-6 py-4">
-              Silver
+            Angular
           </td>
           <td class="px-6 py-4">
-              Laptop
+            Interior Design
           </td>
-          <td class="px-6 py-4">
-            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
-          </td>
-        </tr>
-        <tr class="bg-white border-b border-gray-300">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Apple MacBook Pro 17"
-          </th>
-          <td class="px-6 py-4">
-              Silver
-          </td>
-          <td class="px-6 py-4">
-              Laptop
-          </td>
-          <td class="px-6 py-4">
-            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
-          </td>
-        </tr>
-        <tr class="bg-white border-b border-gray-300">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Apple MacBook Pro 17"
-          </th>
-          <td class="px-6 py-4">
-              Silver
-          </td>
-          <td class="px-6 py-4">
-              Laptop
-          </td>
-          <td class="px-6 py-4">
-            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
-          </td>
-        </tr>
-        <tr class="bg-white border-b border-gray-300">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Apple MacBook Pro 17"
-          </th>
-          <td class="px-6 py-4">
-              Silver
-          </td>
-          <td class="px-6 py-4">
-              Laptop
-          </td>
-          <td class="px-6 py-4">
-            <a class="font-medium text-blue-600 dark:text-blue-500">Edit</a>
+          <td class="py-4 w-3/12">
+            <a class="font-medium px-2 py-1 bg-blue-400 text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+              <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i> Edit
+            </a>
+            <a class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+              <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> Delete
+            </a>
           </td>
         </tr>
       </ng-container>

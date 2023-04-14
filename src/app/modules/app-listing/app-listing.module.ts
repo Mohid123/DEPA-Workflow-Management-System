@@ -8,12 +8,17 @@ import { HeaderComponent } from 'src/app/standalone-components/header/header.com
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { SearchBarComponent } from 'src/app/standalone-components/search-bar/search-bar.component';
+import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
+import { TuiDataListWrapperModule, TuiInputModule, TuiSelectModule } from '@taiga-ui/kit';
+import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [
     AppListingComponent,
-    CompaniesComponent
+    CompaniesComponent,
+    AddSubmoduleComponent
   ],
   imports: [
     CommonModule,
@@ -21,7 +26,14 @@ import { SearchBarComponent } from 'src/app/standalone-components/search-bar/sea
     HeaderComponent,
     FooterComponent,
     TableViewComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
+    TuiDataListWrapperModule,
+    TuiSelectModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TuiButtonModule
   ]
 })
 export class AppListingModule { }

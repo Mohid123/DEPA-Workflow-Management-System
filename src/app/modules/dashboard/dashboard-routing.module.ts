@@ -12,11 +12,6 @@ const routes: Routes = [
     data: {breadcrumb:'Dashboard'},
     children:[
       {
-        path: '',
-        component: HomeComponent,
-        data: {breadcrumb:'Home'},
-      },
-      {
         path: 'home',
         component: HomeComponent,
         data: {breadcrumb:'Home'},
@@ -30,6 +25,11 @@ const routes: Routes = [
         path: 'dummy-workflow',
         component: DummyWorkflowComponent,
         data: {breadcrumb:'Workflow'},
+      },
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full' 
       }
     ]
   }

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import  { Subject, Observable, of, map, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
@@ -19,13 +19,10 @@ export class PublishAppComponent implements OnDestroy {
   readonly arrow = TUI_ARROW;
   readonly tabs = [
     {
-      text: 'App Details'
+      text: 'Module Details'
     },
     {
-      text: 'Listing Details'
-    },
-    {
-      text: 'App Graphics'
+      text: 'Module Graphics'
     },
     {
       text: 'Published'
@@ -57,64 +54,39 @@ export class PublishAppComponent implements OnDestroy {
       fullDescription: [item?.fullDescription || null, Validators.required],
       appLink: [item?.appLink || null, Validators.required],
       appCategories: [item?.appCategories || null, Validators.required],
-      appIcon: [item?.appIcon || null],
-      companies: this.fb.array([]),
-      companyNames: [item?.companyNames, Validators.required]
+      appIcon: [item?.appIcon || null]
     });
     this.file = item?.appIcon
-  }
-
-  get companies() {
-    return this.f["companies"] as FormArray;
   }
 
   getTextFieldLength() {
     this.appNameLength = this.f['appName'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
   }
 
-  addCompany() {
-    const companyForm = this.fb.group({
-      title: ['', Validators.required]
-    });
-    this.companies.push(companyForm)
-  }
-
-  removeCompany(index: number) {
-    this.companies.removeAt(index);
-  }
-
   nextStep(): void {
-    if(this.activeIndex !== 3) {
+    if(this.activeIndex !== 2) {
       switch(this.activeIndex) {
         case 0:
-          if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid) {
-            return ['appName', 'appLink', 'fullDescription'].forEach(val => this.f[val].markAsDirty())
+          if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid || this.f['appCategories'].invalid) {
+            return ['appName', 'appLink', 'fullDescription, appCategories'].forEach(val => this.f[val].markAsDirty())
           }
           else {
             this.moveNext()
           }
           break;
         case 1:
-          if(this.f['appCategories'].invalid || !this.f['companyNames'].invalid) {
-            return ['appCategories', 'companies'].forEach(val => this.f[val].markAsDirty())
-          }
-          else {
-            this.moveNext()
-          }
-          break;
-        case 2:
           if(!this.file && this.f['appIcon'].value == null) {
             return this.notif.displayNotification('Please provide a valid icon for your app', 'Publish App', TuiNotification.Warning)
           }
           else {
             this.moveNext()
           }
-          break
+          break;
         default:
           this.moveNext()
       }
     }
-    if(this.activeIndex == 3) {
+    if(this.activeIndex == 2) {
       this.submitNewModule()
     }
   }
@@ -193,10 +165,6 @@ export class PublishAppComponent implements OnDestroy {
     removeItem(StorageItem.publishAppValue);
     removeItem(StorageItem.activeIndex);
     this.file = null;
-  }
-
-  submitNewCompany() {
-
   }
   
   ngOnDestroy(): void {
