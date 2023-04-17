@@ -1,0 +1,24 @@
+<tui-hosted-dropdown
+  [content]="dropdown"
+  [(open)]="open"
+>
+  <button
+    tuiIconButton
+    size="xs"
+    appearance="outline"
+    icon="tuiIconFilter"
+  >
+  </button>
+
+  <ng-template #dropdown>
+    <div class="px-5 py-3 w-80">
+      <h4 class="text-sm font-semibold my-3">Filter by {{filterBy}}</h4>
+      <app-search-bar *ngIf="searchEnabled" class="mb-5" (searchStr)="searchTableData($event)"></app-search-bar>
+      <tui-data-list-wrapper
+        tuiMultiSelectGroup
+        class="text-sm"
+        [items]="showSortCategories ? items : ['Draft', 'Published']"
+      ></tui-data-list-wrapper>
+    </div>
+  </ng-template>
+</tui-hosted-dropdown>

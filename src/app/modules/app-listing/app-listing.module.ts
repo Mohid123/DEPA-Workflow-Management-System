@@ -13,6 +13,7 @@ import { TuiDataListWrapperModule, TuiInputModule, TuiRadioLabeledModule, TuiSel
 import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
+import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { FormioModule } from '@formio/angular';
     FormsModule,
     TuiButtonModule,
     FormioModule,
-    TuiRadioLabeledModule
+    TuiRadioLabeledModule,
+    FilterComponent
   ]
 })
 export class AppListingModule { }

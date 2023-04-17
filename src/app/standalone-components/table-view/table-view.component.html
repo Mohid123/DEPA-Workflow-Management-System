@@ -1,6 +1,5 @@
-<div class="flex justify-between">
-  <app-search-bar class="w-6/12 mb-5" (searchStr)="searchTableData($event)"></app-search-bar>
-  <div class="mt-3 cursor-pointer">
+<div class="flex justify-end mb-7">
+  <div class="cursor-pointer">
     <a [routerLink]="['/appListing/add-submodule']"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
   </div>
 </div>
@@ -8,19 +7,19 @@
   <table class="w-full text-sm text-left text-gray-500">
     <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
       <tr>
-        <th scope="col" class="px-6 py-3">
-          Company Name
+        <th scope="col" class="px-6 py-3 text-sm">
+          Company Name &nbsp; <filter [filterBy]="'Company Name'"></filter>
         </th>
-        <th scope="col" class="px-6 py-3">
-          Submodule Name
+        <th scope="col" class="px-6 py-3 text-sm">
+          Submodule Name &nbsp; <filter [filterBy]="'Submodule Name'"></filter>
         </th>
-        <th scope="col" class="px-6 py-3">
-          Module Name
+        <th scope="col" class="px-6 py-3 text-sm">
+          Module Name &nbsp; <filter [filterBy]="'Module Name'"></filter>
         </th>
-        <th scope="col" class="px-6 py-3">
-          Category
+        <th scope="col" class="px-6 py-3 text-sm">
+          Status &nbsp; <filter [filterBy]="'Status'" [searchEnabled]="false" [showSortCategories]="false"></filter>
         </th>
-        <th scope="col" class="px-6 py-3">
+        <th scope="col" class="px-6 py-3 text-sm">
           Actions
         </th>
       </tr>
