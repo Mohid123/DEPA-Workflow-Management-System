@@ -17,15 +17,13 @@ import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app
 import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/grid-top-app.component';
 import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-app/grid-side-app.component';
 import { WorkflowChartComponent } from 'src/app/standalone-components/workflow-chart/workflow-chart.component';
-import { DummyWorkflowComponent } from './pages/dummy-workflow/dummy-workflow.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     HomeComponent,
     PublishAppComponent,
-    GridViewLoaderComponent,
-    DummyWorkflowComponent
+    GridViewLoaderComponent
   ],
   imports: [
     CommonModule,

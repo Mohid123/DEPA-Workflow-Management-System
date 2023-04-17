@@ -13,7 +13,7 @@ const routes: Routes = [
       {
         path: 'companies',
         component: CompaniesComponent,
-        data: {breadcrumb:'Companies'},
+        data: {breadcrumb:'List of Submodules'},
       },
       {
         path: 'add-submodule',

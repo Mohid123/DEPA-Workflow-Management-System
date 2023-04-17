@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -8,6 +10,8 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
 })
 export class AddSubmoduleComponent {
   subModuleForm!: FormGroup;
+  submoduleFromLS: any;
+  formComponents: any;
   readonly categoryOptions = [
     'Human Resources',
     'Networking',
@@ -17,15 +21,18 @@ export class AddSubmoduleComponent {
     'Management'
   ];
 
-  constructor(private fb: FormBuilder, public auth: AuthService) {
-    this.initSubModuleForm();
+  constructor(private fb: FormBuilder, public auth: AuthService, private transportService: DataTransportService) {
+    this.formComponents = this.transportService.formBuilderData.value
+    console.log(this.formComponents)
+    this.submoduleFromLS = getItem(StorageItem.subModuleData);
+    this.initSubModuleForm(this.submoduleFromLS);
   }
 
-  initSubModuleForm() {
+  initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: ['', Validators.required],
+      subModuleUrl: [item?.subModuleUrl || '', Validators.required],
       companies: this.fb.array([]),
-      companyName: ['', Validators.required]
+      companyName: [item?.companyName || '', Validators.required]
     })
   }
 
@@ -49,6 +56,10 @@ export class AddSubmoduleComponent {
   }
 
   submitNewCompany() {
+    console.log(this.f["companies"]?.value)
+  }
 
+  saveDraft() {
+    setItem(StorageItem.subModuleData, this.subModuleForm.value);
   }
 }

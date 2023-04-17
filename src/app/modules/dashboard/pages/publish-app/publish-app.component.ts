@@ -68,7 +68,7 @@ export class PublishAppComponent implements OnDestroy {
       switch(this.activeIndex) {
         case 0:
           if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid || this.f['appCategories'].invalid) {
-            return ['appName', 'appLink', 'fullDescription, appCategories'].forEach(val => this.f[val].markAsDirty())
+            return ['appName', 'appLink', 'fullDescription, appCategories'].forEach(val => this.f[val].markAsTouched())
           }
           else {
             this.moveNext()

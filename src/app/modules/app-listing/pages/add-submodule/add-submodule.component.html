@@ -48,7 +48,7 @@
     </div>
     <ng-container formArrayName="companies">
       <ng-container *ngFor="let company of companies.controls; let i = index; let first = first; let last = last">
-        <form class="px-8 w-7/12" [formGroupName]="i">
+        <div class="px-8 w-7/12" [formGroupName]="i">
           <div class="flex justify-between items-center mb-3 gap-2 w-full">
             <div class="w-full">
               <label *ngIf="i == 0" class="text-xs font-semibold block pb-2">Add new companies</label>
@@ -85,16 +85,47 @@
               (click)="submitNewCompany()"
             >Submit</button>
           </div>
-        </form>
+        </div>
       </ng-container>
     </ng-container>
     <button
       tuiIconButton
       type="button"
       size="m"
+      appearance="secondary"
       icon="tuiIconPlusLarge"
       (click)="addCompany()"
     ></button>
+
+    <!--Form preview-->
+    <h4 class="text-base font-semibold mt-5 text-center">Form Preview</h4>
+    <div class="w-full flex flex-col px-5 bg-gray-50 mx-auto rounded-md border border-dashed border-gray-400 mt-5">
+      <ng-container *ngIf="formComponents?.components?.length > 0">
+        <div class="well jsonviewer">
+          <formio [form]="formComponents"></formio>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="formComponents?.components?.length == 0">
+        <div class="grid grid-cols-12 gap-2">
+          <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
+          <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
+          <div data-placeholder class="h-32 mb-3 col-span-12 overflow-hidden rounded-md bg-gray-200"></div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="my-1 w-full mx-auto">
+      <p class="text-xs text-gray-500">The form you add will appear here</p>
+    </div>
+
+    <!--Add new Form-->
+    <div class="mt-7">
+      <a [routerLink]="['/form-builder']" (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
+        {{formComponents?.components?.length == 0 ? 'Add' : 'Edit'}} Form
+      </a>
+    </div>
+
+    <!--Add Workflow-->
+    
   </form> 
 </section>
 <app-footer></app-footer>
@@ -108,80 +139,3 @@
     </div>
   </ng-container>
 </ng-template>
-
-
-   <!-- Companies-->
-   <!-- <div class="mt-8 mb-4">
-    <label class="text-sm font-bold block pb-2">Companies <span class="tui-required"></span></label>
-    <tui-multi-select
-      formControlName="companyNames"
-      [tuiTextfieldCleaner]="true"
-      tuiTextfieldSize="l"
-      [tuiTextfieldLabelOutside]="true"
-    >
-      <input placeholder="Select Companies">
-      <tui-data-list-wrapper
-        *tuiDataList
-        tuiMultiSelectGroup
-        [items]="categoryOptions"
-      >
-    </tui-data-list-wrapper>
-    </tui-multi-select>
-    <div class="my-2">
-      <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
-    </div>
-    <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-      validation: 'required',
-      message: 'Please select at least one company',
-      control: f['companyNames']
-    }"></ng-container>
-  </div>
-  <ng-container formArrayName="companies">
-    <ng-container *ngFor="let company of companies.controls; let j = index; let first = first; let last = last">
-      <form class="px-8 w-7/12" [formGroupName]="j">
-        <div class="flex justify-between items-center mb-3 gap-2 w-full">
-          <div class="w-full">
-            <label *ngIf="j == 0" class="text-xs font-semibold block pb-2">Add new companies</label>
-            <tui-input
-              formControlName="title"
-              [tuiTextfieldCleaner]="true"
-              tuiTextfieldSize="m"
-              [tuiTextfieldLabelOutside]="true"
-            >
-              <input
-                tuiTextfield
-                type="text"
-              />
-            </tui-input>
-          </div>
-          <div [ngClass]="first ? 'mt-7': 'mt-0'">
-            <button
-              tuiIconButton
-              type="button"
-              size="s"
-              appearance="secondary-destructive"
-              icon="tuiIconTrash2Large"
-              (click)="removeCompany(j)"
-            ></button>
-          </div>
-        </div>
-        <div class="flex justify-end">
-          <button
-            *ngIf="last"
-            tuiButton
-            type="button"
-            class="mb-3"
-            size="m"
-            (click)="submitNewCompany()"
-          >Submit</button>
-        </div>
-      </form>
-    </ng-container>
-  </ng-container>
-  <button
-    tuiIconButton
-    type="button"
-    size="m"
-    icon="tuiIconPlusLarge"
-    (click)="addCompany()"
-  ></button> -->

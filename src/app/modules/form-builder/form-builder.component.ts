@@ -1,6 +1,6 @@
 import { Component, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormioRefreshValue } from '@formio/angular';
-import { Subject } from 'rxjs';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 @Component({
   selector: 'app-form-builder',
@@ -29,8 +29,8 @@ export class FormBuilderComponent {
     }
   ];
 
-  constructor() {
-    this.form = {components: []};
+  constructor(private transportService: DataTransportService) {
+    this.form = this.transportService.formBuilderData.value || {components: []};
   }
 
   onChange(event: any) {
@@ -48,6 +48,14 @@ export class FormBuilderComponent {
         jsonElement.innerHTML = '';
         jsonElement?.appendChild(document.createTextNode(JSON.stringify(this.formValue, null, 4)));
     }, 500)
+  }
+
+  submitFormData() {
+    this.transportService.sendFormBuilderData(this.form);
+  }
+
+  cancelFormData() {
+    this.transportService.sendFormBuilderData({components: []});
   }
 
 }

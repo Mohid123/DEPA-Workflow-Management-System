@@ -12,6 +12,7 @@ import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.compo
 import { TuiDataListWrapperModule, TuiInputModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormioModule } from '@formio/angular';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     TuiSelectModule,
     ReactiveFormsModule,
     FormsModule,
-    TuiButtonModule
+    TuiButtonModule,
+    FormioModule
   ]
 })
 export class AppListingModule { }

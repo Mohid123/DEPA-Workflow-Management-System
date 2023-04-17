@@ -6,7 +6,8 @@ export enum StorageItem {
   Key = 'App/key',
   Theme = 'App/theme',
   publishAppValue = 'App/publish_app_value',
-  activeIndex = 'App/active_index'
+  activeIndex = 'App/active_index',
+  subModuleData = 'App/submodule_data'
 }
 
 export const getItem = (itemName: StorageItem): any | null => {
