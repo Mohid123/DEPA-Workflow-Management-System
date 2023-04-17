@@ -13,6 +13,16 @@
 </section>
 
 <section *ngIf="activeIndex == 0" class="px-5">
+  <div class="grid grid-cols-12 gap-3 w-8/12 mx-auto px-1 my-4">
+    <div class="col-span-6">
+      <label for="titleField">Title</label>
+      <input type="text" class="form-control" placeholder="Form title" id="titleField">
+    </div>
+    <div class="col-span-6">
+      <label for="nameField">Name</label>
+      <input type="text" class="form-control" placeholder="Form name" id="nameField">
+    </div>
+  </div>
   <form-builder [form]="form" (change)="onChange($event)"></form-builder>
   <div class="flex justify-center py-3">
     <button

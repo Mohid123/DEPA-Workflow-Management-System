@@ -16,7 +16,7 @@ import { TuiButtonModule } from '@taiga-ui/core';
     FormBuilderRoutingModule,
     FormioModule,
     TuiTabsModule,
-    TuiButtonModule,
+    TuiButtonModule
   ]
 })
 export class FormBuilderModule { }

@@ -9,7 +9,7 @@ import { FooterComponent } from 'src/app/standalone-components/footer/footer.com
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { SearchBarComponent } from 'src/app/standalone-components/search-bar/search-bar.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
-import { TuiDataListWrapperModule, TuiInputModule, TuiSelectModule } from '@taiga-ui/kit';
+import { TuiDataListWrapperModule, TuiInputModule, TuiRadioLabeledModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
@@ -35,7 +35,8 @@ import { FormioModule } from '@formio/angular';
     ReactiveFormsModule,
     FormsModule,
     TuiButtonModule,
-    FormioModule
+    FormioModule,
+    TuiRadioLabeledModule
   ]
 })
 export class AppListingModule { }

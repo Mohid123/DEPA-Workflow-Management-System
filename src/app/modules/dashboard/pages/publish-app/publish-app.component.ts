@@ -1,11 +1,17 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import  { Subject, Observable, of, map, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
 import { Module } from 'src/core/models/module.model';
+
+enum condition {
+  OR = 'OR',
+  AND = 'AND',
+  ANY = 'ANY'
+}
 @Component({
   templateUrl: './publish-app.component.html',
   styleUrls: ['./publish-app.component.scss']
@@ -22,12 +28,27 @@ export class PublishAppComponent implements OnDestroy {
       text: 'Module Details'
     },
     {
+      text: 'Default Workflow'
+    },
+    {
       text: 'Module Graphics'
     },
     {
       text: 'Published'
     }
   ];
+  readonly approverNames = [
+    'Ahtasham',
+    'Fida',
+    'Fadii',
+    'Tabii',
+    'Jani'
+  ];
+  readonly conditions = [
+    'OR',
+    'AND',
+    'ANY'
+  ]
   publishAppForm!: FormGroup;
   readonly categoryOptions = [
     'Human Resources',
@@ -42,6 +63,7 @@ export class PublishAppComponent implements OnDestroy {
     this.localStorageApp = getItem(StorageItem.publishAppValue);
     this.initAppForm(this.localStorageApp);
     this.getTextFieldLength();
+
   }
 
   get f() {
@@ -54,9 +76,40 @@ export class PublishAppComponent implements OnDestroy {
       fullDescription: [item?.fullDescription || null, Validators.required],
       appLink: [item?.appLink || null, Validators.required],
       appCategories: [item?.appCategories || null, Validators.required],
+      workflows: this.fb.array(
+        item?.workflows?.map((val: { condition: any; approvers: any; }) => {
+          return this.fb.group({
+            condition: [val.condition, Validators.required],
+            approvers: [val.approvers, Validators.required]
+          })
+        })
+        ||
+        [
+          this.fb.group({
+            condition: ['', Validators.required],
+            approvers: [[], Validators.required]
+          })
+        ]
+      ),
       appIcon: [item?.appIcon || null]
     });
     this.file = item?.appIcon
+  }
+
+  get workflows() {
+    return this.f['workflows'] as FormArray
+  }
+
+  addWorkflowStep() {
+    const workflowStepForm = this.fb.group({
+      condition: ['', Validators.required],
+      approvers: [[], Validators.required]
+    });
+    this.workflows.push(workflowStepForm)
+  }
+
+  removeWorkflowStep(index: number) {
+    this.workflows.removeAt(index);
   }
 
   getTextFieldLength() {
@@ -64,7 +117,7 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   nextStep(): void {
-    if(this.activeIndex !== 2) {
+    if(this.activeIndex !== 3) {
       switch(this.activeIndex) {
         case 0:
           if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid || this.f['appCategories'].invalid) {
@@ -75,6 +128,14 @@ export class PublishAppComponent implements OnDestroy {
           }
           break;
         case 1:
+          if(this.workflows.invalid) {
+            return this.notif.displayNotification('Please complete the approval workflow before moving to the next step', 'Publish App', TuiNotification.Warning)
+          }
+          else {
+            this.moveNext()
+          }
+          break;
+        case 2:
           if(!this.file && this.f['appIcon'].value == null) {
             return this.notif.displayNotification('Please provide a valid icon for your app', 'Publish App', TuiNotification.Warning)
           }
@@ -86,7 +147,7 @@ export class PublishAppComponent implements OnDestroy {
           this.moveNext()
       }
     }
-    if(this.activeIndex == 2) {
+    if(this.activeIndex == 3) {
       this.submitNewModule()
     }
   }
@@ -100,7 +161,8 @@ export class PublishAppComponent implements OnDestroy {
   moveNext(): void {
     this.activeIndex++;
     setItem(StorageItem.activeIndex, this.activeIndex);
-    setItem(StorageItem.publishAppValue, this.publishAppForm.value)
+    setItem(StorageItem.publishAppValue, this.publishAppForm.value);
+    console.log(this.publishAppForm.value)
   }
 
   onFileSelect(event: any) {

@@ -1,6 +1,8 @@
 import { Component, ViewChild, EventEmitter, ElementRef } from '@angular/core';
-import { FormioRefreshValue } from '@formio/angular';
+import { FormioOptions, FormioRefreshValue } from '@formio/angular';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { options } from './options';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-form-builder',

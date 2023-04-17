@@ -101,8 +101,27 @@
     <h4 class="text-base font-semibold mt-5 text-center">Form Preview</h4>
     <div class="w-full flex flex-col px-5 bg-gray-50 mx-auto rounded-md border border-dashed border-gray-400 mt-5">
       <ng-container *ngIf="formComponents?.components?.length > 0">
+        <div class="inline-flex gap-3 mb-8 mt-3" [formGroup]="languageForm">
+          <tui-radio-labeled
+            formControlName="languages"
+            size="l"
+            [item]="langItems[0]"
+            (click)="changeLanguage(langItems[0]?.name)"
+            
+          >
+            English
+          </tui-radio-labeled>
+          <tui-radio-labeled
+            formControlName="languages"
+            size="l"
+            [item]="langItems[1]"
+            (click)="changeLanguage(langItems[1]?.name)"
+          >
+            Arabic
+          </tui-radio-labeled>
+        </div>
         <div class="well jsonviewer">
-          <formio [form]="formComponents"></formio>
+          <formio [language]="language" [options]="options" [form]="formComponents"></formio>
         </div>
       </ng-container>
       <ng-container *ngIf="formComponents?.components?.length == 0">
