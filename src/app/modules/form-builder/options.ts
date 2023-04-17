@@ -121,7 +121,9 @@ export const options: FormioOptions = {
       'September': 'سبتمبر',
       'October': 'اكتوبر',
       'November': 'نوفمبر',
-      'December': 'ديسمبر'
+      'December': 'ديسمبر',
+      'Password': 'كلمة المرور',
+      'Select': 'يختار'
     }
   }
 };
