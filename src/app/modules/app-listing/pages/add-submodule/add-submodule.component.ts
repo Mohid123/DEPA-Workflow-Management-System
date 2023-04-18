@@ -29,6 +29,19 @@ export class AddSubmoduleComponent {
     languages: new FormControl(this.langItems[0]),
   });
 
+  readonly approverNames = [
+    'Ahtasham',
+    'Fida',
+    'Fadii',
+    'Tabii',
+    'Jani'
+  ];
+  readonly conditions = [
+    'OR',
+    'AND',
+    'ANY'
+  ]
+
   constructor(private fb: FormBuilder, public auth: AuthService, private transportService: DataTransportService) {
     this.options = options;
     this.formComponents = this.transportService.formBuilderData.value
@@ -41,7 +54,22 @@ export class AddSubmoduleComponent {
     this.subModuleForm = this.fb.group({
       subModuleUrl: [item?.subModuleUrl || '', Validators.required],
       companies: this.fb.array([]),
-      companyName: [item?.companyName || '', Validators.required]
+      companyName: [item?.companyName || '', Validators.required],
+      workflows: this.fb.array(
+        item?.workflows?.map((val: { condition: any; approvers: any; }) => {
+          return this.fb.group({
+            condition: [val.condition, Validators.required],
+            approvers: [val.approvers, Validators.required]
+          })
+        })
+        ||
+        [
+          this.fb.group({
+            condition: ['', Validators.required],
+            approvers: [[], Validators.required]
+          })
+        ]
+      )
     })
   }
 
@@ -62,6 +90,22 @@ export class AddSubmoduleComponent {
 
   removeCompany(index: number) {
     this.companies.removeAt(index);
+  }
+
+  get workflows() {
+    return this.f['workflows'] as FormArray
+  }
+
+  addWorkflowStep() {
+    const workflowStepForm = this.fb.group({
+      condition: ['', Validators.required],
+      approvers: [[], Validators.required]
+    });
+    this.workflows.push(workflowStepForm)
+  }
+
+  removeWorkflowStep(index: number) {
+    this.workflows.removeAt(index);
   }
 
   submitNewCompany() {

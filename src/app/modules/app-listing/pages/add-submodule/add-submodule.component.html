@@ -43,6 +43,7 @@
         control: f['companyName']
       }"></ng-container>
     </div>
+
     <div class="my-2">
       <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
     </div>
@@ -98,42 +99,45 @@
     ></button>
 
     <!--Form preview-->
-    <h4 class="text-base font-semibold mt-5 text-center">Form Preview</h4>
-    <div class="w-full flex flex-col px-5 bg-gray-50 mx-auto rounded-md border border-dashed border-gray-400 mt-5">
-      <ng-container *ngIf="formComponents?.components?.length > 0">
-        <div class="inline-flex gap-3 mb-8 mt-3" [formGroup]="languageForm">
-          <tui-radio-labeled
-            formControlName="languages"
-            size="l"
-            [item]="langItems[0]"
-            (click)="changeLanguage(langItems[0]?.name)"
-            
-          >
-            English
-          </tui-radio-labeled>
-          <tui-radio-labeled
-            formControlName="languages"
-            size="l"
-            [item]="langItems[1]"
-            (click)="changeLanguage(langItems[1]?.name)"
-          >
-            Arabic
-          </tui-radio-labeled>
-        </div>
-        <div class="well jsonviewer">
-          <formio [language]="language" [options]="options" [form]="formComponents"></formio>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="formComponents?.components?.length == 0">
-        <div class="grid grid-cols-12 gap-2">
-          <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
-          <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
-          <div data-placeholder class="h-32 mb-3 col-span-12 overflow-hidden rounded-md bg-gray-200"></div>
-        </div>
-      </ng-container>
-    </div>
-    <div class="my-1 w-full mx-auto">
-      <p class="text-xs text-gray-500">The form you add will appear here</p>
+    <div class="mt-7 mb-5">
+      <h3 class="text-lg font-semibold mb-5">Create Form</h3>
+      <h4 class="text-base font-semibold text-center">Form Preview</h4>
+      <div class="w-full flex flex-col px-5 bg-gray-50 mx-auto rounded-md border border-dashed border-gray-400 mt-5">
+        <ng-container *ngIf="formComponents?.components?.length > 0">
+          <div class="inline-flex gap-3 mb-8 mt-3" [formGroup]="languageForm">
+            <tui-radio-labeled
+              formControlName="languages"
+              size="l"
+              [item]="langItems[0]"
+              (click)="changeLanguage(langItems[0]?.name)"
+              
+            >
+              English
+            </tui-radio-labeled>
+            <tui-radio-labeled
+              formControlName="languages"
+              size="l"
+              [item]="langItems[1]"
+              (click)="changeLanguage(langItems[1]?.name)"
+            >
+              Arabic
+            </tui-radio-labeled>
+          </div>
+          <div class="well jsonviewer">
+            <formio [language]="language" [options]="options" [form]="formComponents"></formio>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="formComponents?.components?.length == 0">
+          <div class="grid grid-cols-12 gap-2">
+            <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
+            <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
+            <div data-placeholder class="h-32 mb-3 col-span-12 overflow-hidden rounded-md bg-gray-200"></div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="my-1 w-full mx-auto">
+        <p class="text-xs text-gray-500">The form you add will appear here</p>
+      </div>
     </div>
 
     <!--Add new Form-->
@@ -144,7 +148,63 @@
     </div>
 
     <!--Add Workflow-->
-    
+    <div class="mt-12">
+      <h4 class="text-lg font-semibold">Create default workflow</h4>
+      <p class="text-sm text-gray-500 my-2">Please specify the details of your workflow and it's steps</p>
+      <ng-container formArrayName="workflows">
+        <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
+          <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
+          <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
+            <div class="col-span-5">
+              <label class="text-sm font-semibold block pb-2">Approvers</label>
+              <tui-multi-select
+                formControlName="approvers"
+                [tuiTextfieldLabelOutside]="true"
+                [editable]="false"
+                placeholder="Select Approver/s"
+                >
+                <tui-data-list-wrapper
+                  *tuiDataList
+                  tuiMultiSelectGroup
+                  [items]="approverNames"
+                ></tui-data-list-wrapper>
+              </tui-multi-select>
+            </div>
+            <div class="col-span-5">
+              <label class="text-sm font-semibold block pb-2">Condition</label>
+              <tui-select formControlName="condition" [tuiTextfieldLabelOutside]="true">
+                <input
+                  tuiTextfield
+                  placeholder="Select Conditon"
+                />
+                <tui-data-list-wrapper
+                  *tuiDataList
+                  [items]="conditions"
+                ></tui-data-list-wrapper>
+              </tui-select>
+            </div>
+            <div class="col-span-2 mt-12" *ngIf="i > 0">
+              <button
+                tuiIconButton
+                type="button"
+                size="s"
+                appearance="secondary-destructive"
+                icon="tuiIconTrash2Large"
+                (click)="removeWorkflowStep(i)"
+              ></button>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <button
+        tuiIconButton
+        type="button"
+        size="m"
+        appearance="primary"
+        icon="tuiIconPlusLarge"
+        (click)="addWorkflowStep()"
+      ></button>
+    </div>
   </form> 
 </section>
 <app-footer></app-footer>
