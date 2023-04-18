@@ -14,6 +14,7 @@ import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
+import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { FilterComponent } from 'src/app/standalone-components/filter/filter.com
     TuiButtonModule,
     FormioModule,
     TuiRadioLabeledModule,
-    FilterComponent
+    FilterComponent,
+    CustomMultiSelectComponent
   ]
 })
 export class AppListingModule { }

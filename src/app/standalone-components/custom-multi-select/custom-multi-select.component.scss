@@ -1,0 +1,18 @@
+.scrollable-elem::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-elem {
+  scrollbar-color: #d6dde2;
+  scrollbar-width: thin;
+}
+
+.scrollable-elem::-webkit-scrollbar-track {
+  background-color: rgb(235, 231, 231);
+}
+
+.scrollable-elem::-webkit-scrollbar-thumb {
+  background-color: #d6dde2;
+  border-radius: 6px;
+  border: 1px solid #CFD8DC;
+}
