@@ -7,11 +7,6 @@ import { TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
 import { Module } from 'src/core/models/module.model';
 
-enum condition {
-  OR = 'OR',
-  AND = 'AND',
-  ANY = 'ANY'
-}
 @Component({
   templateUrl: './publish-app.component.html',
   styleUrls: ['./publish-app.component.scss']
@@ -34,18 +29,6 @@ export class PublishAppComponent implements OnDestroy {
       text: 'Published'
     }
   ];
-  readonly approverNames = [
-    'Ahtasham',
-    'Fida',
-    'Fadii',
-    'Tabii',
-    'Jani'
-  ];
-  readonly conditions = [
-    'OR',
-    'AND',
-    'ANY'
-  ]
   publishAppForm!: FormGroup;
   readonly categoryOptions = [
     'Human Resources',
