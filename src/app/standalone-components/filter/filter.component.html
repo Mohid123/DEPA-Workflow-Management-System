@@ -4,8 +4,10 @@
 >
   <button
     tuiIconButton
+    [tuiHint]="tooltip"
+    tuiHintDirection="right"
     size="xs"
-    appearance="outline"
+    [appearance]="isFilterApplied ? 'primary': 'outline'"
     icon="tuiIconFilter"
   >
   </button>
@@ -14,11 +16,27 @@
     <div class="px-5 py-3 w-80">
       <h4 class="text-sm font-semibold my-3">Filter by {{filterBy}}</h4>
       <app-search-bar *ngIf="searchEnabled" class="mb-5" (searchStr)="searchTableData($event)"></app-search-bar>
-      <tui-data-list-wrapper
-        tuiMultiSelectGroup
-        class="text-sm"
-        [items]="showSortCategories ? items : ['Draft', 'Published']"
-      ></tui-data-list-wrapper>
+      <ul class="my-3">
+        <ng-container *ngFor="let item of items; let i = index">
+          <li
+            class="px-2 py-3 bg-white hover:bg-gray-100 text-sm rounded-lg cursor-pointer"
+            [ngClass]="item.status === 'active' ? 'bg-blue-400': ''"
+            (click)="setFilterAndApplyActive({index: i, applyOn: item.name})"
+          >
+          <div class="flex justify-between">
+            <span>{{item.name}}</span>
+            <i [ngClass]="item.icon" aria-hidden="true"></i>
+          </div>
+        </li>
+        </ng-container>
+      </ul>
+      <div *ngIf="isFilterApplied === true" class="cursor-pointer my-3 text-center">
+        <a (click)="isFilterApplied = false" class="px-3 py-2 rounded-md bg-[#ac2224] text-white text-sm no-underline hover:text-white">Reset Filters</a>
+      </div>
     </div>
   </ng-template>
 </tui-hosted-dropdown>
+
+<ng-template #tooltip>
+  <p>{{isFilterApplied ? 'This filter is currently active': 'Apply filters'}}</p>
+</ng-template>

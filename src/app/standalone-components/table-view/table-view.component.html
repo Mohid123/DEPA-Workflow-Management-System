@@ -7,18 +7,29 @@
   <table class="w-full text-sm text-left text-gray-500">
     <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
       <tr>
-        <th scope="col" class="px-6 py-3 text-sm">
-          Company Name &nbsp; <filter [filterBy]="'Company Name'"></filter>
-        </th>
-        <th scope="col" class="px-6 py-3 text-sm">
-          Submodule Name &nbsp; <filter [filterBy]="'Submodule Name'"></filter>
-        </th>
-        <th scope="col" class="px-6 py-3 text-sm">
-          Module Name &nbsp; <filter [filterBy]="'Module Name'"></filter>
-        </th>
-        <th scope="col" class="px-6 py-3 text-sm">
-          Status &nbsp; <filter [filterBy]="'Status'" [searchEnabled]="false" [showSortCategories]="false"></filter>
-        </th>
+        <ng-container *ngFor="let column of tableColumns; let i = index; let first = first; let last = last;">
+          <th scope="col" class="px-6 py-3 text-sm">
+            {{column}} &nbsp;
+            <ng-container *ngIf="column === 'Status'; else notStatus">
+              <filter
+                [filterBy]="column"
+                [searchEnabled]="false"
+                [showSortCategories]="false"
+                [items]="statusMenu"
+                (applyStatus)="sendFilterValue($event)"
+              >
+            </filter>
+            </ng-container>
+            <ng-template #notStatus>
+              <filter
+                [filterBy]="column"
+                [items]="filterMenu"
+                (applyStatus)="sendFilterValue($event)"
+              >
+              </filter>
+            </ng-template>
+          </th>
+        </ng-container>
         <th scope="col" class="px-6 py-3 text-sm">
           Actions
         </th>
@@ -51,4 +62,11 @@
       </ng-container>
     </tbody>
   </table>
+  <div class="pb-6 pt-10">
+    <tui-pagination
+      [length]="length"
+      [index]="index"
+      (indexChange)="goToPage($event)"
+    ></tui-pagination>
+  </div>
 </div>
