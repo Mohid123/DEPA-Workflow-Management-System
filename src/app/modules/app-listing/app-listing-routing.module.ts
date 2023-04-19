@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppListingComponent } from './app-listing.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
+import { SubmoduleGuard } from '../auth/guards/submodule.guard';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
       {
         path: 'companies',
         component: CompaniesComponent,
+        canActivate: [SubmoduleGuard],
         data: {breadcrumb:'List of Submodules'},
       },
       {

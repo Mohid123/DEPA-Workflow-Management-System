@@ -7,11 +7,13 @@ import { LoginComponent } from './pages/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiInputPasswordModule, TuiInputModule, TuiCheckboxModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { SubmoduleGuardComponent } from './templates/submodule-guard/submodule-guard.component';
 
 @NgModule({
   declarations: [
     AuthComponent,
-    LoginComponent
+    LoginComponent,
+    SubmoduleGuardComponent
   ],
   imports: [
     CommonModule,

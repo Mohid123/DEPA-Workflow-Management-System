@@ -45,8 +45,7 @@ export class AddSubmoduleComponent {
   constructor(private fb: FormBuilder, public auth: AuthService, private transportService: DataTransportService) {
     this.options = options;
     this.formComponents = this.transportService.formBuilderData.value
-    console.log(this.formComponents)
-    this.submoduleFromLS = getItem(StorageItem.subModuleData);
+    this.submoduleFromLS = this.transportService.subModuleDraft.value;
     this.initSubModuleForm(this.submoduleFromLS);
   }
 
@@ -113,7 +112,7 @@ export class AddSubmoduleComponent {
   }
 
   saveDraft() {
-    setItem(StorageItem.subModuleData, this.subModuleForm.value);
+    this.transportService.saveDraftLocally(this.subModuleForm.value);
   }
 
   changeLanguage(lang: string) {

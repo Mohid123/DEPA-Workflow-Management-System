@@ -1,0 +1,26 @@
+<div class="flex justify-center flex-col items-center">
+  <i class="fa fa-exclamation-circle fa-5x text-yellow-500" aria-hidden="true"></i>
+  <p class="font-semibold text-base my-5">All your unsaved data will be lost. Are you sure you want to proceed?</p>
+  <div class="flex justify-between gap-2">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      (click)="cancel()"
+    >Yes, Cancel</button>
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="secondary"
+      (click)="stayOnPage()"
+    >No, Stay on this page</button>
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="outline"
+    >Save Draft</button>
+  </div>
+</div>
