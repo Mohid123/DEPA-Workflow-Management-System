@@ -1,6 +1,5 @@
 <app-header></app-header>
 <section class="w-11/12 mx-auto mt-52 pb-44">
-  <custom-multi-select></custom-multi-select>
   <section>
     <h3 class="text-xl font-semibold">Create new submodule</h3>
   </section>
@@ -158,18 +157,7 @@
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
             <div class="col-span-5">
               <label class="text-sm font-semibold block pb-2">Approvers</label>
-              <tui-multi-select
-                formControlName="approvers"
-                [tuiTextfieldLabelOutside]="true"
-                [editable]="false"
-                placeholder="Select Approver/s"
-                >
-                <tui-data-list-wrapper
-                  *tuiDataList
-                  tuiMultiSelectGroup
-                  [items]="approverNames"
-                ></tui-data-list-wrapper>
-              </tui-multi-select>
+              <custom-multi-select></custom-multi-select>
             </div>
             <div class="col-span-5">
               <label class="text-sm font-semibold block pb-2">Condition</label>
