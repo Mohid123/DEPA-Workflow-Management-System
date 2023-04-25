@@ -1,8 +1,8 @@
 {
-  "name": "DEPA_FRONTEND",
-  "short_name": "DEPA_FRONTEND",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "name": "Depa Workflow Dashboard",
+  "short_name": "Workflow panel",
+  "theme_color": "#f15b40",
+  "background_color": "#2F3044",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
