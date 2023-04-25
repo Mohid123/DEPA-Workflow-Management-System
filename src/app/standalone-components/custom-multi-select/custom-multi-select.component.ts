@@ -3,8 +3,12 @@ import { CommonModule } from '@angular/common';
 import { TuiCheckboxLabeledModule, TuiInputModule } from '@taiga-ui/kit';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
- 
+import { Subject } from 'rxjs';
+
+class dropDownItems {
+  name: string;
+  control: FormControl
+}
 
 @Component({
   selector: 'custom-multi-select',
@@ -20,13 +24,12 @@ export class CustomMultiSelectComponent implements OnDestroy {
   destroy$ = new Subject();
   inputFieldArr: string[] = [];
   @ViewChild('customElem') customElem?: ElementRef;
-  @Input() items: any[] = [
+  @Input() items: dropDownItems[] = [
     {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
     {name: 'Abid ahmad tarakai', control: new FormControl(false)},
     {name: 'Junaid mehmood', control: new FormControl(false)},
     {name: 'Fadi', control: new FormControl(false)},
-    {name: 'Ahtasham', control: new FormControl(false)},
-    {name: 'Sadiq', control: new FormControl(false)}
+    {name: 'Ahtasham', control: new FormControl(false)}
   ]
 
   @HostListener('document:click', ['$event'])
@@ -39,7 +42,11 @@ export class CustomMultiSelectComponent implements OnDestroy {
   @HostListener('document:scroll', ['$event'])
   listenToDOMScroll() {
     if(!this.customElem.nativeElement.contains(event.target)) {
-      this.open = false;
+      const windowHeight = window.innerHeight;
+      const boundingRectangle = this.customElem.nativeElement.getBoundingClientRect();
+      if(boundingRectangle.bottom >= windowHeight) {
+        this.open = false;
+      }
     }
   }
 
@@ -47,17 +54,23 @@ export class CustomMultiSelectComponent implements OnDestroy {
     this.open = !this.open;
   }
 
-  selectValueAndPushToInput(index: number, event: any) {
-    if(event.target?.checked === true) {
-      this.inputFieldArr.push(this.items[index]?.name)
+  selectValueAndPushToInput(user: any, event: any) {
+    if(user?.control.value === true && this.inputFieldArr.includes(user?.name)) {
+      this.removeItem(user.name);
     }
-    else {
-      this.inputFieldArr.splice(index, 1);
+    if(event.target?.checked === true) {
+      this.inputFieldArr.push(user?.name);
     }
   }
 
-  removeItem(index: number) {
+  removeItem(value: string) {
+    const index = this.inputFieldArr.indexOf(value);
     this.inputFieldArr.splice(index, 1);
+    this.items.forEach((val: dropDownItems) => {
+      if(val.name === value && val.control.value === true) {
+        val.control.setValue(false)
+      }
+    })
   }
 
   ngOnDestroy(): void {

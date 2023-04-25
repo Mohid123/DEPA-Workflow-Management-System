@@ -8,13 +8,13 @@
   >
     <ng-container *ngIf="inputFieldArr.length > 0">
       <ng-container *ngFor="let selected of inputFieldArr; let j = index">
-        <option (click)="removeItem(j)" class="rounded-xl bg-[#6C86E2] px-3 py-1 h-7 text-white my-1 mx-1 w-auto inline-block" [value]="selected">
+        <option (click)="removeItem(selected)" class="rounded-xl bg-[#6C86E2] px-3 py-1 h-7 text-white my-1 mx-1 w-auto inline-block" [value]="selected">
           {{selected}} &nbsp; &nbsp; <span>&#10005;</span>
         </option>
       </ng-container>
     </ng-container>
   </select>
-  <i (click)="toggleDropDown()" [ngClass]="open ? 'rotate-0 transition-all delay-75' : '-rotate-180 transition-all delay-75'" class="fa fa-angle-up fa-2x absolute top-4 right-5 text-gray-400" aria-hidden="true"></i>
+  <i (click)="toggleDropDown()" [ngClass]="open ? 'rotate-0 transition-all delay-75' : '-rotate-180 transition-all delay-75'" class="fa fa-angle-up fa-2x absolute top-4 right-5 text-gray-400 cursor-pointer" aria-hidden="true"></i>
   <div class="absolute block w-full z-40">
     <ul [ngClass]="open ? 'h-80 border border-gray-300 py-3 px-5 transition-all ease-in-out delay-75' : 'h-0 border-none px-0 py-0 transition-all ease-in-out delay-75'" class="rounded-lg shadow-md bg-white mt-1 overflow-y-auto scrollable-elem">
       <tui-input
@@ -33,7 +33,7 @@
         <li class="gap-2 my-3">
           <tui-checkbox-labeled
             [formControl]="user.control"
-            (click)="selectValueAndPushToInput(i, $event)"
+            (click)="selectValueAndPushToInput(user, $event)"
             size="l"
           >
             {{user.name}}

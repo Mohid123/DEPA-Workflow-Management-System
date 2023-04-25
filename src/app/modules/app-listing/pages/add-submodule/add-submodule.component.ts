@@ -4,7 +4,6 @@ import { FormioOptions } from '@formio/angular';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { options } from 'src/app/modules/form-builder/options';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './add-submodule.component.html',
