@@ -17,10 +17,10 @@
       <h4 class="text-sm font-semibold my-3">Filter by {{filterBy}}</h4>
       <app-search-bar *ngIf="searchEnabled" class="mb-5" (searchStr)="searchTableData($event)"></app-search-bar>
       <ul class="my-3">
-        <ng-container *ngFor="let item of items; let i = index">
+        <ng-container *ngFor="let item of items; let i = index; trackBy:trackByFn">
           <li
-            class="px-2 py-3 bg-white hover:bg-gray-100 text-sm rounded-lg cursor-pointer"
-            [ngClass]="item.status === 'active' ? 'bg-blue-400': ''"
+            class="px-2 py-3 my-1 text-sm rounded-lg cursor-pointer"
+            [ngClass]="item.status === 'active' ? 'bg-blue-200 hover:bg-blue-200': 'bg-white hover:bg-gray-100'"
             (click)="setFilterAndApplyActive({index: i, applyOn: item.name})"
           >
           <div class="flex justify-between">
@@ -31,7 +31,7 @@
         </ng-container>
       </ul>
       <div *ngIf="isFilterApplied === true" class="cursor-pointer my-3 text-center">
-        <a (click)="isFilterApplied = false" class="px-3 py-2 rounded-md bg-[#ac2224] text-white text-sm no-underline hover:text-white">Reset Filters</a>
+        <a (click)="resetFilterValue()" class="px-3 py-2 rounded-md bg-[#ac2224] text-white text-sm no-underline hover:text-white">Reset Filters</a>
       </div>
     </div>
   </ng-template>

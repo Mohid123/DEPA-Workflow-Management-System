@@ -76,11 +76,27 @@ export class FilterComponent {
    * @param {any} value
    * @returns void
    */
-  setFilterAndApplyActive(value: any) {
+  setFilterAndApplyActive(value: {applyOn: string, index: number}) {
     this.applyStatus.emit(value);
     if(this.items?.some(val => val.name === value.applyOn)) {
-      this.items[value.index].status = 'active';
+      this.items.forEach(val => {
+        if(value.applyOn === val.name) {
+          val.status = 'active'
+        }
+        else {
+          val.status = 'idle'
+        }
+      })
       this.isFilterApplied = true;
     }
+  }
+
+  resetFilterValue() {
+    this.isFilterApplied = false;
+    this.items.forEach(val => val.status = 'idle');
+  }
+
+  trackByFn(item: any, index: number) {
+    return index
   }
 }
