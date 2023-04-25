@@ -71,7 +71,8 @@ export class FilterComponent {
 
   /**
    * @description
-   * Apply filters when user selects any option from the dropdown. Also create indicatores to let user know which filter is applied and active
+   * Apply filters when user selects any option from the dropdown.
+   * Also create indicators to let user know which filter is applied and active
    * 
    * @param {any} value
    * @returns void
@@ -91,11 +92,22 @@ export class FilterComponent {
     }
   }
 
+  /**
+   * @description
+   * Function for resetting filters
+   */
   resetFilterValue() {
     this.isFilterApplied = false;
     this.items.forEach(val => val.status = 'idle');
   }
 
+  /**
+   * 
+   * @param {any} item The item inside the ngFor loop 
+   * @param {number} index The index of the item 
+   * @returns The index of the current item on which any action is performed
+   * @see [ngForTrackBy]{@link https://angular.io/api/common/NgForOf#description}
+   */
   trackByFn(item: any, index: number) {
     return index
   }
