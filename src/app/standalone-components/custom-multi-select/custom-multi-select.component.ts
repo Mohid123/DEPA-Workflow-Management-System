@@ -26,24 +26,28 @@ export class CustomMultiSelectComponent implements OnDestroy {
    * @internal
    */
   open = false;
+
   /**
    * @internal
    */
   searchValue = new FormControl();
+
   /**
    * @internal
    */
   destroy$ = new Subject();
+
   /**
    * @internal
    */
   inputFieldArr: string[] = [];
+
   /**
    * @internal
    */
   @ViewChild('customElem') customElem?: ElementRef;
+
   /**
-   * @description
    * Dropdown user list
    */
   @Input() items: dropDownItems[] = [
@@ -82,15 +86,18 @@ export class CustomMultiSelectComponent implements OnDestroy {
       }
     }
   }
+
   /**
    * @internal
    */
   toggleDropDown() {
     this.open = !this.open;
   }
+
   /**
-   * @description Adds value in option list to show inside the input select field
-   * @param {dropDownItems} user 
+   * @description
+   * Adds value in option list to show inside the input select field
+   * @param {dropDownItems} user The user selected from the dropdown
    * @param {any} event 
    */
   selectValueAndPushToInput(user: any, event: any) {
@@ -101,9 +108,11 @@ export class CustomMultiSelectComponent implements OnDestroy {
       this.inputFieldArr.push(user?.name);
     }
   }
+
   /**
-   * @description Removes value from option list and DOM
-   * @param {string} value 
+   * @description
+   * Removes value from option list and DOM
+   * @param {string} value The name of the user
    */
   removeItem(value: string) {
     const index = this.inputFieldArr.indexOf(value);
