@@ -23,7 +23,7 @@ export class SubmoduleGuardComponent {
 
   cancel() {
     this.transportService.saveDraftLocally({});
-    this.transportService.sendFormBuilderData({});
+    this.transportService.sendFormBuilderData({components: []});
     this.transportService.dialogState.emit(DialogState.DISCARD);
     this.context.completeWith(true);
   }

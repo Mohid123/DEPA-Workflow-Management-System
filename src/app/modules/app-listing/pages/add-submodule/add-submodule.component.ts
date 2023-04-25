@@ -43,7 +43,7 @@ export class AddSubmoduleComponent {
 
   constructor(private fb: FormBuilder, public auth: AuthService, private transportService: DataTransportService) {
     this.options = options;
-    this.formComponents = this.transportService.formBuilderData.value
+    this.formComponents = this.transportService.formBuilderData.value;
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     this.initSubModuleForm(this.submoduleFromLS);
   }

@@ -123,7 +123,8 @@ export const options: FormioOptions = {
       'November': 'نوفمبر',
       'December': 'ديسمبر',
       'Password': 'كلمة المرور',
-      'Select': 'يختار'
+      'Select': 'يختار',
+      'Checkbox': 'خانة الاختيار'
     }
   }
 };
