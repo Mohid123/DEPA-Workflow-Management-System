@@ -50,7 +50,7 @@ export class AddSubmoduleComponent {
 
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.subModuleUrl || '', Validators.required],
+      subModuleUrl: [item?.subModuleUrl || '', Validators.compose([Validators.required, Validators.pattern(/^(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}$/)])],
       companies: this.fb.array([]),
       companyName: [item?.companyName || '', Validators.required],
       workflows: this.fb.array(

@@ -20,7 +20,12 @@
       </tui-input>
       <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
         validation: 'required',
-        message: 'Please provide a valid url',
+        message: 'A valid URL is required',
+        control: f['subModuleUrl']
+      }"></ng-container>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'pattern',
+        message: 'The provided URL is not valid',
         control: f['subModuleUrl']
       }"></ng-container>
     </div>

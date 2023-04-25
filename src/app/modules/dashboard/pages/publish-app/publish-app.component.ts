@@ -54,7 +54,7 @@ export class PublishAppComponent implements OnDestroy {
     this.publishAppForm = this.fb.group({
       appName: [item?.appName || null, Validators.compose([Validators.required, Validators.maxLength(20)])],
       fullDescription: [item?.fullDescription || null, Validators.required],
-      appLink: [item?.appLink || null, Validators.required],
+      appLink: [item?.appLink || null, Validators.compose([Validators.required, Validators.pattern(/^(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}$/)])],
       appCategories: [item?.appCategories || null, Validators.required],
       appIcon: [item?.appIcon || null]
     });
