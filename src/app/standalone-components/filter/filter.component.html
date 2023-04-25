@@ -20,7 +20,7 @@
         <ng-container *ngFor="let item of items; let i = index; trackBy:trackByFn">
           <li
             class="px-2 py-3 my-1 text-sm rounded-lg cursor-pointer"
-            [ngClass]="item.status === 'active' ? 'bg-blue-200 hover:bg-blue-200': 'bg-white hover:bg-gray-100'"
+            [ngClass]="item.status === 'active' ? 'bg-blue-100 hover:bg-blue-100': 'bg-white hover:bg-gray-100'"
             (click)="setFilterAndApplyActive({index: i, applyOn: item.name})"
           >
           <div class="flex justify-between">
@@ -30,7 +30,7 @@
         </li>
         </ng-container>
       </ul>
-      <div *ngIf="isFilterApplied === true" class="cursor-pointer my-3 text-center">
+      <div *ngIf="isFilterApplied === true" class="cursor-pointer mt-5 mb-3 text-center">
         <a (click)="resetFilterValue()" class="px-3 py-2 rounded-md bg-[#ac2224] text-white text-sm no-underline hover:text-white">Reset Filters</a>
       </div>
     </div>

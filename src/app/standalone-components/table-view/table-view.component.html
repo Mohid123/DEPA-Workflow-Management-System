@@ -21,12 +21,30 @@
             </filter>
             </ng-container>
             <ng-template #notStatus>
-              <filter
-                [filterBy]="column"
-                [items]="filterMenu"
-                (applyStatus)="sendFilterValue($event)"
-              >
+              <ng-container *ngIf="column === 'Company Name'">
+                <filter
+                  [filterBy]="column"
+                  [items]="filterMenuCompany"
+                  (applyStatus)="sendFilterValue($event)"
+                >
               </filter>
+              </ng-container>
+              <ng-container *ngIf="column === 'Submodule Name'">
+                <filter
+                  [filterBy]="column"
+                  [items]="filterMenuSubmodule"
+                  (applyStatus)="sendFilterValue($event)"
+                >
+              </filter>
+              </ng-container>
+              <ng-container *ngIf="column === 'Module Name'">
+                <filter
+                  [filterBy]="column"
+                  [items]="filterMenuModule"
+                  (applyStatus)="sendFilterValue($event)"
+                >
+              </filter>
+              </ng-container>
             </ng-template>
           </th>
         </ng-container>
