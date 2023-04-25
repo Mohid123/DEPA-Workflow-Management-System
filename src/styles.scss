@@ -10,7 +10,7 @@ $fa-font-path: '~font-awesome/fonts';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,500&display=swap');
 
 .bg_img_main {
-  @apply w-screen bg-[url('src/assets/login_bg.svg')] bg-no-repeat bg-contain bg-bottom h-auto;
+  @apply w-screen bg-[url('src/assets/login_bg.svg')] bg-no-repeat bg-contain bg-bottom h-auto min-h-screen;
 }
 
 .btn-primary {
