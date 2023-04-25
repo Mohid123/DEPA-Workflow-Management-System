@@ -10,6 +10,9 @@ class dropDownItems {
   control: FormControl
 }
 
+/**
+ * Multi-Select component (Uses Custom styling and event handling on a HTML Select Element)
+ */
 @Component({
   selector: 'custom-multi-select',
   standalone: true,
@@ -19,11 +22,30 @@ class dropDownItems {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomMultiSelectComponent implements OnDestroy {
+  /**
+   * @internal
+   */
   open = false;
+  /**
+   * @internal
+   */
   searchValue = new FormControl();
+  /**
+   * @internal
+   */
   destroy$ = new Subject();
+  /**
+   * @internal
+   */
   inputFieldArr: string[] = [];
+  /**
+   * @internal
+   */
   @ViewChild('customElem') customElem?: ElementRef;
+  /**
+   * @description
+   * Dropdown user list
+   */
   @Input() items: dropDownItems[] = [
     {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
     {name: 'Abid ahmad tarakai', control: new FormControl(false)},
@@ -32,6 +54,11 @@ export class CustomMultiSelectComponent implements OnDestroy {
     {name: 'Ahtasham', control: new FormControl(false)}
   ]
 
+  /**
+   * @description
+   * Click Event Listener on the document to close dropdown. Excludes the dropdown element from event listener
+   * @event click
+   */
   @HostListener('document:click', ['$event'])
   listenToDOMClick() {
     if(!this.customElem.nativeElement.contains(event.target)) {
@@ -39,6 +66,12 @@ export class CustomMultiSelectComponent implements OnDestroy {
     }
   }
 
+    /**
+   * @description
+   * Scroll Event Listener on the document to close dropdown. Excludes the dropdown element from event listener.
+   * If the element is no longer inside the current viewport, the dropdown will be closed
+   * @event scroll
+   */
   @HostListener('document:scroll', ['$event'])
   listenToDOMScroll() {
     if(!this.customElem.nativeElement.contains(event.target)) {
@@ -49,11 +82,17 @@ export class CustomMultiSelectComponent implements OnDestroy {
       }
     }
   }
-
+  /**
+   * @internal
+   */
   toggleDropDown() {
     this.open = !this.open;
   }
-
+  /**
+   * @description Adds value in option list to show inside the input select field
+   * @param {dropDownItems} user 
+   * @param {any} event 
+   */
   selectValueAndPushToInput(user: any, event: any) {
     if(user?.control.value === true && this.inputFieldArr.includes(user?.name)) {
       this.removeItem(user.name);
@@ -62,7 +101,10 @@ export class CustomMultiSelectComponent implements OnDestroy {
       this.inputFieldArr.push(user?.name);
     }
   }
-
+  /**
+   * @description Removes value from option list and DOM
+   * @param {string} value 
+   */
   removeItem(value: string) {
     const index = this.inputFieldArr.indexOf(value);
     this.inputFieldArr.splice(index, 1);
@@ -72,7 +114,7 @@ export class CustomMultiSelectComponent implements OnDestroy {
       }
     })
   }
-
+  
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();

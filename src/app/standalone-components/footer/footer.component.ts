@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 
+/**
+ * Footer Component
+ */
 @Component({
   selector: 'app-footer',
   standalone: true,
