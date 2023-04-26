@@ -1,4 +1,4 @@
-import { Component, ViewChild, EventEmitter, ElementRef } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef, HostListener } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
@@ -50,11 +50,11 @@ export class FormBuilderComponent {
     else {
       this.form = {formTitle: this.formTitleControl?.value, components: []};
     }
-    
-    window.addEventListener('beforeunload', function (e) {
-      e.preventDefault();
-      e.returnValue = '';
-    });
+  }
+
+  @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
+    event.preventDefault();
+    event.returnValue = false;
   }
 
   onChange(event: any) {
