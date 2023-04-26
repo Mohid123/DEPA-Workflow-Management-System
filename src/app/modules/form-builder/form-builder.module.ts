@@ -6,6 +6,7 @@ import { FormBuilderComponent } from './form-builder.component';
 import { FormioModule } from '@formio/angular';
 import { TuiTabsModule } from '@taiga-ui/kit';
 import { TuiButtonModule } from '@taiga-ui/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { TuiButtonModule } from '@taiga-ui/core';
     FormBuilderRoutingModule,
     FormioModule,
     TuiTabsModule,
-    TuiButtonModule
+    TuiButtonModule,
+    ReactiveFormsModule
   ]
 })
 export class FormBuilderModule { }

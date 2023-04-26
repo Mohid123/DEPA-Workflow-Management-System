@@ -1,5 +1,6 @@
 import { Component, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { options } from 'src/app/modules/form-builder/options';
@@ -12,7 +13,8 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 export class AddSubmoduleComponent {
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
-  formComponents: any;
+  formComponents: any[] = [];
+  activeIndex: number = 0;
   public options: FormioOptions;
   public language: EventEmitter<string> = new EventEmitter();
   readonly categoryOptions = [
@@ -39,11 +41,18 @@ export class AddSubmoduleComponent {
     'OR',
     'AND',
     'ANY'
-  ]
+  ];
+  formTabs: any[] = []
 
-  constructor(private fb: FormBuilder, public auth: AuthService, private transportService: DataTransportService) {
+  constructor(
+    private fb: FormBuilder,
+    public auth: AuthService,
+    private transportService: DataTransportService,
+    private router: Router
+  ) {
     this.options = options;
     this.formComponents = this.transportService.formBuilderData.value;
+    this.formTabs = this.formComponents.map(val => val.formTitle);
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     this.initSubModuleForm(this.submoduleFromLS);
   }
@@ -111,7 +120,16 @@ export class AddSubmoduleComponent {
   }
 
   saveDraft() {
+    this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
+    this.router.navigate(['/form-builder']);
+  }
+
+  sendFormForEdit(index: number) {
+    this.transportService.isFormEdit.next(true);
+    this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
+    this.transportService.saveDraftLocally(this.subModuleForm.value);
+    this.router.navigate(['/form-builder']);
   }
 
   changeLanguage(lang: string) {

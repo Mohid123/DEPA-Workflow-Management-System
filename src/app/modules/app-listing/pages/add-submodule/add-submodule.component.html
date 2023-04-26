@@ -106,9 +106,9 @@
     <!--Form preview-->
     <div class="mt-7 mb-5">
       <h3 class="text-lg font-semibold mb-5">Create Form</h3>
-      <h4 class="text-base font-semibold text-center">Form Preview</h4>
+      <h4 class="text-base font-semibold text-center">Form/s Preview</h4>
       <div class="w-full flex flex-col px-5 bg-gray-50 mx-auto rounded-md border border-dashed border-gray-400 mt-5">
-        <ng-container *ngIf="formComponents?.components?.length > 0">
+        <ng-container *ngIf="formComponents[0]?.components?.length > 0">
           <div class="inline-flex gap-3 mb-8 mt-3" [formGroup]="languageForm">
             <tui-radio-labeled
               formControlName="languages"
@@ -128,11 +128,30 @@
               Arabic
             </tui-radio-labeled>
           </div>
-          <div class="well jsonviewer">
-            <formio [language]="language" [options]="options" [form]="formComponents"></formio>
-          </div>
+            <section class="flex justify-between">
+              <nav
+                tuiTabs
+                vertical="left"
+                class="w-32 mr-5"
+              >
+                <ng-container *ngFor="let tab of formTabs; let j = index">
+                  <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+                </ng-container>
+              </nav>
+              <ng-container *ngFor="let form of formComponents; let i = index;">
+                <div *ngIf="activeIndex == i" class="well jsonviewer w-full">
+                  <div class="flex justify-end">
+                    <a (click)="sendFormForEdit(i)" class="px-2 py-1 rounded-md bg-slate-200 cursor-pointer">
+                      <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                  <formio [language]="language" [options]="options" [form]="form"></formio>
+                </div>
+              </ng-container>
+
+            </section>
         </ng-container>
-        <ng-container *ngIf="formComponents?.components?.length == 0">
+        <ng-container *ngIf="formComponents[0]?.components?.length == 0">
           <div class="grid grid-cols-12 gap-2">
             <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
             <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
@@ -147,8 +166,8 @@
 
     <!--Add new Form-->
     <div class="mt-7">
-      <a [routerLink]="['/form-builder']" (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
-        {{formComponents?.components?.length == 0 ? 'Add' : 'Edit'}} Form
+      <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
+        {{formComponents[0]?.components?.length == 0 ? 'Add form' : 'Add another'}}
       </a>
     </div>
 

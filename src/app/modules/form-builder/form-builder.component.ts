@@ -1,8 +1,10 @@
 import { Component, ViewChild, EventEmitter, ElementRef } from '@angular/core';
-import { FormioOptions, FormioRefreshValue } from '@formio/angular';
+import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormioRefreshValue } from '@formio/angular';
+import { TuiNotification } from '@taiga-ui/core';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
-import { options } from './options';
-import { FormControl, FormGroup } from '@angular/forms';
+import { NotificationsService } from 'src/core/core-services/notifications.service';
 
 @Component({
   selector: 'app-form-builder',
@@ -12,10 +14,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class FormBuilderComponent {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
-  public form: Object;
+  public form: {formTitle: string , components: []};
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   activeIndex: number = 0;
   formValue: any;
+  editMode: boolean = false;
   readonly items = [
     {
       text: 'Form Builder',
@@ -31,8 +34,22 @@ export class FormBuilderComponent {
     }
   ];
 
-  constructor(private transportService: DataTransportService) {
-    this.form = this.transportService.formBuilderData.value || {components: []};
+  formTitleControl = new FormControl({value: '', disabled: this.editMode});
+
+  constructor(
+    private transportService: DataTransportService,
+    private notif: NotificationsService,
+    private router: Router
+  ) {
+    this.editMode = this.transportService.isFormEdit.value;
+    if(this.editMode === true) {
+      this.form = this.transportService.sendFormDataForEdit.value;
+      this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.formTitle);
+      this.formTitleControl.disable();
+    }
+    else {
+      this.form = {formTitle: this.formTitleControl?.value, components: []};
+    }
   }
 
   onChange(event: any) {
@@ -40,7 +57,7 @@ export class FormBuilderComponent {
       property: 'form',
       value: event.form
     });
-    this.formValue = event.form
+    this.formValue = event.form;
   }
 
   onJsonView() {
@@ -53,11 +70,39 @@ export class FormBuilderComponent {
   }
 
   submitFormData() {
-    this.transportService.sendFormBuilderData(this.form);
+    if(!this.formTitleControl?.value || this.formTitleControl?.value == '') {
+      return this.notif.displayNotification('Please provide a title for your form', 'Create Form', TuiNotification.Warning)
+    }
+    if(this.form?.components?.length == 0) {
+      return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
+    }
+    this.form.formTitle = this.formTitleControl?.value;
+    if(this.editMode == false) {
+      if(this.transportService.formBuilderData.value[0].components?.length > 0) {
+        const data = [...this.transportService.formBuilderData.value, this.form];
+        this.transportService.sendFormBuilderData(data);
+        this.router.navigate(['/appListing/add-submodule']);
+      }
+      else {
+        this.transportService.sendFormBuilderData([this.form]);
+        this.router.navigate(['/appListing/add-submodule']);
+      }
+    }
+    else {
+      const data = this.transportService.formBuilderData.value?.map(val => {
+        if(val.formTitle == this.form?.formTitle) {
+          val = this.form
+        }
+        return val
+      });
+      this.transportService.sendFormBuilderData(data);
+      this.router.navigate(['/appListing/add-submodule']);
+    }
   }
 
   cancelFormData() {
-    this.transportService.sendFormBuilderData({components: []});
+    this.transportService.sendFormBuilderData([{formTitle: '', components: []}]);
+    this.router.navigate(['/appListing/add-submodule']);
   }
 
 }

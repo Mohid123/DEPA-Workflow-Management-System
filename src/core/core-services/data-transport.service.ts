@@ -11,9 +11,13 @@ export enum DialogState {
 })
 export class DataTransportService {
 
-  public formBuilderData: BehaviorSubject<any> = new BehaviorSubject({components: []});
+  public formBuilderData: BehaviorSubject<any> = new BehaviorSubject([
+    {formTitle: '', components: []}
+  ]);
   public subModuleDraft: BehaviorSubject<any> = new BehaviorSubject({});
-  public dialogState = new EventEmitter<DialogState>()
+  public dialogState = new EventEmitter<DialogState>();
+  public isFormEdit = new BehaviorSubject(false);
+  public sendFormDataForEdit: BehaviorSubject<any> = new BehaviorSubject({formTitle: '', components: []})
 
   constructor() { }
 
@@ -22,7 +26,7 @@ export class DataTransportService {
   }
 
   saveDraftLocally(data: any) {
-    this.subModuleDraft.next(data)
+    this.subModuleDraft.next(data);
   }
 
   
