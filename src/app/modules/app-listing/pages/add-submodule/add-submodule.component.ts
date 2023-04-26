@@ -120,6 +120,10 @@ export class AddSubmoduleComponent {
     this.workflows.removeAt(index);
   }
 
+  getApproverList(value: string[], index: number) {
+    this.workflows.at(index)?.get('approvers')?.setValue(value);
+  }
+
   submitNewCompany() {
     console.log(this.f["companies"]?.value)
   }

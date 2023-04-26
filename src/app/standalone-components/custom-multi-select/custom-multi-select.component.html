@@ -3,7 +3,7 @@
     (keypress)="$event.preventDefault()"
     (click)="toggleDropDown()"
     multiple
-    [ngClass]="inputFieldArr?.length > 2 ? 'h-auto overflow-y-auto scrollable-elem': 'h-14 overflow-y-hidden'"
+    [ngClass]="inputFieldArr?.length > 1 ? 'h-auto overflow-y-auto scrollable-elem': 'h-14 overflow-y-hidden'"
     class="px-4 text-transparent cursor-pointer py-2 rounded-xl w-full outline-none border border-gray-100 focus:border-2 focus:border-[rgb(116,140,235)] focus:transition-all shadow-md whitespace-normal"
   >
     <ng-container *ngIf="inputFieldArr.length > 0">
@@ -29,7 +29,7 @@
           placeholder="Type to start searching..."
         />
       </tui-input>
-      <ng-container *ngFor="let user of items; let i = index">
+      <ng-container *ngFor="let user of users; let i = index">
         <li class="gap-2 my-3">
           <tui-checkbox-labeled
             [formControl]="user.control"

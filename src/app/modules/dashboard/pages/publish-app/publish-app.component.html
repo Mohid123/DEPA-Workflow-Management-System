@@ -103,6 +103,55 @@
         </ng-container>
 
         <ng-container *ngIf="activeIndex == 1">
+          <div class="my-3">
+            <h4 class="text-lg font-semibold">Create default workflow</h4>
+            <p class="text-sm text-gray-500 my-2">Please specify the details of your workflow and it's steps</p>
+            <ng-container formArrayName="workflows">
+              <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
+                <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
+                <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
+                  <div class="col-span-5">
+                    <label class="text-sm font-semibold block pb-2">Approvers</label>
+                    <custom-multi-select formControlName="approvers" [users]="userList" (approverList)="getApproverList($event, i)"></custom-multi-select>
+                  </div>
+                  <div class="col-span-5">
+                    <label class="text-sm font-semibold block pb-2">Condition</label>
+                    <tui-select formControlName="condition" [tuiTextfieldLabelOutside]="true">
+                      <input
+                        tuiTextfield
+                        placeholder="Select Conditon"
+                      />
+                      <tui-data-list-wrapper
+                        *tuiDataList
+                        [items]="conditions"
+                      ></tui-data-list-wrapper>
+                    </tui-select>
+                  </div>
+                  <div class="col-span-2 mt-12" *ngIf="i > 0">
+                    <button
+                      tuiIconButton
+                      type="button"
+                      size="s"
+                      appearance="secondary-destructive"
+                      icon="tuiIconTrash2Large"
+                      (click)="removeWorkflowStep(i)"
+                    ></button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+            <button
+              tuiIconButton
+              type="button"
+              size="m"
+              appearance="primary"
+              icon="tuiIconPlusLarge"
+              (click)="addWorkflowStep()"
+            ></button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeIndex == 2">
           <label (change)="onFileSelect($event)" for="dropzone-file" class="mt-10 flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
             <tui-loader
               [inheritColor]="true"
@@ -131,7 +180,7 @@
           </label>
         </ng-container>
 
-        <ng-container *ngIf="activeIndex == 2">
+        <ng-container *ngIf="activeIndex == 3">
           <div class="mt-20 flex flex-col items-center justify-center w-full">
             <img src="../../../../../assets/published.svg" alt="ok" width="118" height="118">
             <p class="font-semibold my-2 text-lg">Congratulations</p>
@@ -141,9 +190,10 @@
 
         <div class="flex justify-end my-10">
           <a (click)="previousStep()" class="px-6 py-3 text-sm font-semibold text-gray-500 bg-[#F5F8FA] rounded-lg cursor-pointer hover:text-gray-500" [ngClass]="activeIndex < 3 ? 'mx-10': 'mr-10'">Back</a>
-          <a *ngIf="activeIndex !== 2" (click)="nextStep()" [ngSwitch]="activeIndex" class="px-10 py-3 text-sm font-semibold text-white bg-[#00A3FF] rounded-lg cursor-pointer hover:text-white">
-            <span *ngSwitchCase="0">Module Graphics</span>
-            <span *ngSwitchCase="1">Published</span>
+          <a *ngIf="activeIndex !== 3" (click)="nextStep()" [ngSwitch]="activeIndex" class="px-10 py-3 text-sm font-semibold text-white bg-[#00A3FF] rounded-lg cursor-pointer hover:text-white">
+            <span *ngSwitchCase="0">Proceed to Default Workflow</span>
+            <span *ngSwitchCase="1">Proceed to Module Graphics</span>
+            <span *ngSwitchCase="2">Publish Module</span>
           </a>
         </div>
       </form>

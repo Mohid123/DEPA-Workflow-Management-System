@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, ViewChild, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TuiCheckboxLabeledModule, TuiInputModule } from '@taiga-ui/kit';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
 
@@ -11,7 +11,10 @@ class dropDownItems {
 }
 
 /**
- * Multi-Select component (Uses Custom styling and event handling on a HTML Select Element)
+ * Multi-Select component (Uses Custom styling and event handling on a HTML Select Element).
+ * 
+ * The component acts as Custom Form Control For More:
+ * @see [CustomFormControls] {@linkhttps://blog.angular-university.io/angular-custom-form-controls/}
  */
 @Component({
   selector: 'custom-multi-select',
@@ -19,9 +22,16 @@ class dropDownItems {
   imports: [CommonModule, TuiCheckboxLabeledModule, ReactiveFormsModule, TuiInputModule, TuiTextfieldControllerModule],
   templateUrl: './custom-multi-select.component.html',
   styleUrls: ['./custom-multi-select.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CustomMultiSelectComponent),
+      multi: true
+    }
+  ]
 })
-export class CustomMultiSelectComponent implements OnDestroy {
+export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestroy {
   /**
    * @ignore
    */
@@ -50,13 +60,12 @@ export class CustomMultiSelectComponent implements OnDestroy {
   /**
    * Dropdown user list
    */
-  @Input() items: dropDownItems[] = [
-    {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
-    {name: 'Abid ahmad tarakai', control: new FormControl(false)},
-    {name: 'Junaid mehmood', control: new FormControl(false)},
-    {name: 'Fadi', control: new FormControl(false)},
-    {name: 'Ahtasham', control: new FormControl(false)}
-  ]
+  @Input() users: dropDownItems[];
+
+  /**
+   * List of approvers that will be sent to server as part of workflow 
+   */
+  @Output() approverList = new EventEmitter();
 
   /**
    * Click Event Listener on the document to close dropdown. Excludes the dropdown element from event listener
@@ -68,6 +77,12 @@ export class CustomMultiSelectComponent implements OnDestroy {
       this.open = false;
     }
   }
+
+  /**
+   * Method for updating component after changes occur
+   * @param {any} onchanges 
+   */
+  onChange: any = (onchanges:any) => {};
 
     /**
    * Scroll Event Listener on the document to close dropdown. Excludes the dropdown element from event listener.
@@ -100,9 +115,13 @@ export class CustomMultiSelectComponent implements OnDestroy {
   selectValueAndPushToInput(user: any, event: any) {
     if(user?.control.value === true && this.inputFieldArr.includes(user?.name)) {
       this.removeItem(user.name);
+      this.approverList.emit(this.inputFieldArr);
+      this.onChange(this.inputFieldArr);
     }
     if(event.target?.checked === true) {
       this.inputFieldArr.push(user?.name);
+      this.approverList.emit(this.inputFieldArr);
+      this.onChange(this.inputFieldArr);
     }
   }
 
@@ -113,12 +132,26 @@ export class CustomMultiSelectComponent implements OnDestroy {
   removeItem(value: string) {
     const index = this.inputFieldArr.indexOf(value);
     this.inputFieldArr.splice(index, 1);
-    this.items.forEach((val: dropDownItems) => {
+    this.users.forEach((val: dropDownItems) => {
       if(val.name === value && val.control.value === true) {
         val.control.setValue(false)
       }
     })
   }
+
+  /**
+   * Register changes that occur on the FormControl
+   * @param {Function} fn 
+   */
+  registerOnChange(fn: (value: any) => void): void {
+    this.onChange = fn;
+  }
+
+  writeValue(value: any) {
+    this.inputFieldArr = value;
+  }
+
+  registerOnTouched(){}
   
   /**
    * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM

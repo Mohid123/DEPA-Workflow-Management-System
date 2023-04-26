@@ -16,6 +16,7 @@ import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-load
 import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
 import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/grid-top-app.component';
 import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-app/grid-side-app.component';
+import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-ap
     TuiLoaderModule,
     GridSmallComponent,
     GridTopAppComponent,
-    GridSideAppComponent
+    GridSideAppComponent,
+    CustomMultiSelectComponent
   ]
 })
 export class DashboardModule { }

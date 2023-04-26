@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import  { Subject, Observable, of, map, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
@@ -23,6 +23,9 @@ export class PublishAppComponent implements OnDestroy {
       text: 'Module Details'
     },
     {
+      text: 'Default Workflow'
+    },
+    {
       text: 'Module Graphics'
     },
     {
@@ -38,12 +41,25 @@ export class PublishAppComponent implements OnDestroy {
     'Finance',
     'Management'
   ];
+  readonly conditions = [
+    'OR',
+    'AND',
+    'ANY'
+  ];
+  
+  // This user list will come from backend.
+  userList = [
+    {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
+    {name: 'Abid ahmad tarakai', control: new FormControl(false)},
+    {name: 'Junaid mehmood', control: new FormControl(false)},
+    {name: 'Fadi', control: new FormControl(false)},
+    {name: 'Ahtasham', control: new FormControl(false)}
+  ];
 
   constructor(private fb: FormBuilder, private notif: NotificationsService) {
     this.localStorageApp = getItem(StorageItem.publishAppValue);
     this.initAppForm(this.localStorageApp);
     this.getTextFieldLength();
-
   }
 
   get f() {
@@ -56,17 +72,52 @@ export class PublishAppComponent implements OnDestroy {
       fullDescription: [item?.fullDescription || null, Validators.required],
       appLink: [item?.appLink || null, Validators.compose([Validators.required, Validators.pattern(/^(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}$/)])],
       appCategories: [item?.appCategories || null, Validators.required],
-      appIcon: [item?.appIcon || null]
+      appIcon: [item?.appIcon || null],
+      workflows: this.fb.array(
+        item?.workflows?.map((val: { condition: any; approvers: any; }) => {
+          return this.fb.group({
+            condition: [val.condition, Validators.required],
+            approvers: [val.approvers, Validators.required]
+          })
+        })
+        ||
+        [
+          this.fb.group({
+            condition: ['', Validators.required],
+            approvers: [[], Validators.required]
+          })
+        ]
+      )
     });
     this.file = item?.appIcon
+  }
+
+  get workflows() {
+    return this.f['workflows'] as FormArray
+  }
+
+  addWorkflowStep() {
+    const workflowStepForm = this.fb.group({
+      condition: ['', Validators.required],
+      approvers: [[], Validators.required]
+    });
+    this.workflows.push(workflowStepForm)
+  }
+
+  removeWorkflowStep(index: number) {
+    this.workflows.removeAt(index);
   }
 
   getTextFieldLength() {
     this.appNameLength = this.f['appName'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
   }
 
+  getApproverList(value: string[], index: number) {
+    this.workflows.at(index)?.get('approvers')?.setValue(value);
+  }
+
   nextStep(): void {
-    if(this.activeIndex !== 2) {
+    if(this.activeIndex !== 3) {
       switch(this.activeIndex) {
         case 0:
           if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid || this.f['appCategories'].invalid) {
@@ -77,6 +128,9 @@ export class PublishAppComponent implements OnDestroy {
           }
           break;
         case 1:
+          this.moveNext()
+          break;
+        case 2:
           if(!this.file && this.f['appIcon'].value == null) {
             return this.notif.displayNotification('Please provide a valid icon for your app', 'Publish App', TuiNotification.Warning)
           }
@@ -88,7 +142,7 @@ export class PublishAppComponent implements OnDestroy {
           this.moveNext()
       }
     }
-    if(this.activeIndex == 2) {
+    if(this.activeIndex == 3) {
       this.submitNewModule()
     }
   }

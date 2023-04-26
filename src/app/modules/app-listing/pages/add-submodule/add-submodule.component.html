@@ -171,9 +171,9 @@
       </a>
     </div>
 
-    <!--Add Workflow-->
+    <!--Edit Workflow-->
     <div class="mt-12">
-      <h4 class="text-lg font-semibold">Create default workflow</h4>
+      <h4 class="text-lg font-semibold">Modify default workflow</h4>
       <p class="text-sm text-gray-500 my-2">Please specify the details of your workflow and it's steps</p>
       <ng-container formArrayName="workflows">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
@@ -181,7 +181,7 @@
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
             <div class="col-span-5">
               <label class="text-sm font-semibold block pb-2">Approvers</label>
-              <custom-multi-select></custom-multi-select>
+              <custom-multi-select (approverList)="getApproverList($event, i)"></custom-multi-select>
             </div>
             <div class="col-span-5">
               <label class="text-sm font-semibold block pb-2">Condition</label>
