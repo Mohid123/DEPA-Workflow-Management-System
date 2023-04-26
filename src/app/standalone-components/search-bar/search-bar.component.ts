@@ -7,6 +7,7 @@ import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 
 /**
  * Reusable Component for handling search dynamically
+ * @implements OnDestroy
  */
 @Component({
   selector: 'app-search-bar',
@@ -16,27 +17,26 @@ import { TuiTextfieldControllerModule } from '@taiga-ui/core';
   styleUrls: ['./search-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class SearchBarComponent implements OnDestroy {
   /**
    * @description
-   * Form Control for manipulating searhc bar value.
+   * Form Control for manipulating search bar value.
    */
   searchValue: FormControl = new FormControl();
 
   /**
-   * @ignore
+   * [Subject]{@link https://rxjs.dev/guide/subject} for handling observable unsubscriptions after component is destroyed
    */
   destroy$ = new Subject();
 
   /**
-   * @description
    * The value the component will emit after user types in the input field
    */
   @Output() searchStr = new EventEmitter();
 
   /**
    * @constructor
-   * @description
    * The form control will emit values when the user starts typing. RxJS operators debounce and map handle delay and trim logic when user types.
    * After user finishes typing, the component will emit the latest value
    */
@@ -49,6 +49,9 @@ export class SearchBarComponent implements OnDestroy {
     .subscribe(typedValue => this.searchStr.emit(typedValue))
   }
 
+  /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();

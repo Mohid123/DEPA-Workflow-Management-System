@@ -1,19 +1,12 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
+/**
+ * Env Object which has common parameters that may be required throughout the app such as the apiUrl is the endpoint for sending
+ * server side requests
+ * @public
+ * @constant
+ */
 export const environment = {
   production: false,
   appVersion: 'v1.0.00',
   apiUrl: 'http://localhost:3021/v1',
   appThemeName: 'Depa Frontend'
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

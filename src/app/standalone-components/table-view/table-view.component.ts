@@ -23,7 +23,7 @@ export class TableViewComponent {
   @Input() tableColumns: string[] = ['Company Name', 'Submodule Name', 'Module Name', 'Status'];
 
   /**
-   * @internal
+   * The filter parameters to show in the dropdown
    */
   filterMenuCompany =  [
     {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
@@ -33,7 +33,7 @@ export class TableViewComponent {
   ];
 
   /**
-   * @internal
+   * The filter parameters to show in the dropdown
    */
   filterMenuSubmodule =  [
     {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
@@ -43,7 +43,7 @@ export class TableViewComponent {
   ];
 
   /**
-   * @internal
+   * The filter parameters to show in the dropdown
    */
   filterMenuModule =  [
     {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
@@ -53,7 +53,7 @@ export class TableViewComponent {
   ];
 
    /**
-   * @internal
+   * The filter parameters to show in the dropdown
    */
   statusMenu = [
     {name: 'Draft', status: 'idle', icon: ''},
@@ -61,19 +61,18 @@ export class TableViewComponent {
   ];
   
    /**
-   * @internal
+   * @ignore
    */
   length = 20;
 
    /**
-   * @internal
+   * @ignore
    */
   index = 1;
 
   /**
    * 
    * @param {number} index
-   * @description
    * Handles pagination of table data
    */
   goToPage(index: number): void {
@@ -84,7 +83,6 @@ export class TableViewComponent {
   /**
    * 
    * @param {any} value
-   * @description
    * Sends the selected filter value from the [Filter Component]{@link FilterComponent} to server and fetches result
    */
   sendFilterValue(value: any) {

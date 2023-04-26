@@ -23,27 +23,27 @@ class dropDownItems {
 })
 export class CustomMultiSelectComponent implements OnDestroy {
   /**
-   * @internal
+   * @ignore
    */
   open = false;
 
   /**
-   * @internal
+   * @ignore
    */
   searchValue = new FormControl();
 
   /**
-   * @internal
+   * @ignore
    */
   destroy$ = new Subject();
 
   /**
-   * @internal
+   * @ignore
    */
   inputFieldArr: string[] = [];
 
   /**
-   * @internal
+   * @ignore
    */
   @ViewChild('customElem') customElem?: ElementRef;
 
@@ -59,7 +59,6 @@ export class CustomMultiSelectComponent implements OnDestroy {
   ]
 
   /**
-   * @description
    * Click Event Listener on the document to close dropdown. Excludes the dropdown element from event listener
    * @event click
    */
@@ -71,7 +70,6 @@ export class CustomMultiSelectComponent implements OnDestroy {
   }
 
     /**
-   * @description
    * Scroll Event Listener on the document to close dropdown. Excludes the dropdown element from event listener.
    * If the element is no longer inside the current viewport, the dropdown will be closed
    * @event scroll
@@ -88,14 +86,13 @@ export class CustomMultiSelectComponent implements OnDestroy {
   }
 
   /**
-   * @internal
+   * @ignore
    */
   toggleDropDown() {
     this.open = !this.open;
   }
 
   /**
-   * @description
    * Adds value in option list to show inside the input select field
    * @param {dropDownItems} user The user selected from the dropdown
    * @param {any} event 
@@ -110,7 +107,6 @@ export class CustomMultiSelectComponent implements OnDestroy {
   }
 
   /**
-   * @description
    * Removes value from option list and DOM
    * @param {string} value The name of the user
    */
@@ -124,6 +120,9 @@ export class CustomMultiSelectComponent implements OnDestroy {
     })
   }
   
+  /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();

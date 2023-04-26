@@ -5,7 +5,18 @@ import { TuiDataListWrapperModule, TuiInputModule } from '@taiga-ui/kit';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 /**
- * Dynamic Filter component for handling search, sorting and other filters on the Table component
+ * Dynamic Filter component for handling search, sorting and other filters on the Table component Example usage:
+ * 
+ * ```typescript
+ * <filter
+ *  [filterBy]="Module Name"
+ *  [items]="[{name: '', status: ''}]"
+ *  [searchEnabled]="false"
+ *  [showSortCategories]="false"
+ *  (applyStatus)="EventEmitterFunction($event)"
+ * >
+ * </filter>
+ * ```
  */
 @Component({
   selector: 'filter',
@@ -17,7 +28,7 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
 })
 export class FilterComponent {
   /**
-   * @ignore
+   * handles the state of the dropdown that shows the filters and searchbar
    */
   open = false;
 
@@ -32,7 +43,7 @@ export class FilterComponent {
   @Input() searchEnabled: boolean = true;
 
   /**
-   * Handles whether to show sortng filters
+   * Handles which sorting parameters are to be shown and where
    */
   @Input() showSortCategories: boolean = true;
 
@@ -54,9 +65,9 @@ export class FilterComponent {
   @Output() resetFilters = new EventEmitter();
 
   /**
-   * @internal
+   * Boolean to indicate that filter is active or not. Default is false "Reset Filter" button appears if value is true.
    */
-  isFilterApplied = false;
+  isFilterApplied: boolean = false;
 
   /**
    * @description

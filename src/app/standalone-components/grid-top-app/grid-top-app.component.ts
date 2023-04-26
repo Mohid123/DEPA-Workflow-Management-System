@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class GridTopAppComponent {
     /**
-   * @description Used to display the relevant data inside the card view
+   * Used to display the relevant data inside the card view
    */
   @Input() appData: any;
 }

@@ -15,7 +15,7 @@ import { TuiButtonModule } from '@taiga-ui/core';
 })
 export class GridSmallComponent {
   /**
-   * @description Used to display the relevant data inside the card view
+   * Used to display the relevant data inside the card view
    */
   @Input() appData: any;
 }
