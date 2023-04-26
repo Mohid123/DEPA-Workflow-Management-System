@@ -50,6 +50,11 @@ export class FormBuilderComponent {
     else {
       this.form = {formTitle: this.formTitleControl?.value, components: []};
     }
+    
+    window.addEventListener('beforeunload', function (e) {
+      e.preventDefault();
+      e.returnValue = '';
+    });
   }
 
   onChange(event: any) {

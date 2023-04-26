@@ -55,6 +55,10 @@ export class AddSubmoduleComponent {
     this.formTabs = this.formComponents.map(val => val.formTitle);
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     this.initSubModuleForm(this.submoduleFromLS);
+    window.addEventListener('beforeunload', function (e) {
+      e.preventDefault();
+      e.returnValue = '';
+    });
   }
 
   initSubModuleForm(item?: any) {
