@@ -19,6 +19,13 @@
         <grid-small-app [routerLink]="['/appListing/companies']" *ngIf="index > 1" class="col-span-4 row-span-2"></grid-small-app>
       </ng-container>
     </ng-container>
+    <div class="mt-6 mb-10 col-span-full flex justify-end">
+      <tui-pagination
+        [length]="length"
+        [index]="index"
+        (indexChange)="goToPage($event)"
+      ></tui-pagination>
+    </div>
   </section>
 </div>
 <app-footer></app-footer>
