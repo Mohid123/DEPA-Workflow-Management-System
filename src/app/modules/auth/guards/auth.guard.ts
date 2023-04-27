@@ -6,10 +6,19 @@ import {
 } from '@angular/router';
 import { AuthService } from '../auth.service';
 
+/**
+ * Injectable Guard that prevents access to pages without authentication
+ */
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService) {}
 
+  /**
+   * Handles the gurading of routes based on user authorization
+   * @param {ActivatedRouteSnapshot} route 
+   * @param {RouterStateSnapshot} state 
+   * @returns {boolean} Either true or false based on user's logged in status
+   */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const currentUser = this.authService.currentUserValue;
     if (currentUser) {

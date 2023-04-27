@@ -5,6 +5,9 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
 
+/**
+ * @ignore
+ */
 export class dropDownItems {
   name: string;
   control: FormControl
