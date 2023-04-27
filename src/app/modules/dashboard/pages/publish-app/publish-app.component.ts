@@ -114,25 +114,22 @@ export class PublishAppComponent implements OnDestroy {
           if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid || this.f['appCategories'].invalid) {
             return ['appName', 'appLink', 'fullDescription', 'appCategories'].forEach(val => this.f[val].markAsTouched())
           }
-          else {
-            this.moveNext()
-          }
+          this.moveNext()
           break;
         case 1:
-          if(this.workflows[0]?.approverIds?.length == 0) {
-            return this.notif.displayNotification('Please create a default workflow to proceed', 'Publish App', TuiNotification.Warning)
+          if(this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true)) {
+            return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
           }
-          else {
-            this.moveNext()
+          if(this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true) {
+            return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
           }
+          this.moveNext()
           break;
         case 2:
           if(!this.file && this.f['appIcon'].value == null) {
-            return this.notif.displayNotification('Please provide a valid icon for your app', 'Publish App', TuiNotification.Warning)
+            return this.notif.displayNotification('Please provide a valid icon for your app', 'Create Module', TuiNotification.Warning)
           }
-          else {
-            this.moveNext()
-          }
+          this.moveNext()
           break;
         default:
           this.moveNext()
