@@ -42,7 +42,16 @@ export class AddSubmoduleComponent {
     'AND',
     'ANY'
   ];
-  formTabs: any[] = []
+  formTabs: any[] = [];
+
+   // This user list will come from backend.
+   userList = [
+    {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
+    {name: 'Abid ahmad tarakai', control: new FormControl(false)},
+    {name: 'Junaid mehmood', control: new FormControl(false)},
+    {name: 'Fadi', control: new FormControl(false)},
+    {name: 'Ahtasham', control: new FormControl(false)}
+  ];
 
   constructor(
     private fb: FormBuilder,

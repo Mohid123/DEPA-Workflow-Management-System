@@ -5,7 +5,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
 
-class dropDownItems {
+export class dropDownItems {
   name: string;
   control: FormControl
 }
@@ -13,8 +13,19 @@ class dropDownItems {
 /**
  * Multi-Select component (Uses Custom styling and event handling on a HTML Select Element).
  * 
- * The component acts as Custom Form Control For More:
- * @see [CustomFormControls] {@linkhttps://blog.angular-university.io/angular-custom-form-controls/}
+ * The component acts as Custom Form Control using Angular's Control Value Accessor. For more
+ * @see [CustomFormControls]{@link https://blog.angular-university.io/angular-custom-form-controls/}
+ * 
+ * Example:
+ * 
+ * ```typescript
+ * <custom-multi-select
+ *  formControlName="approvers"
+ *  [users]="userList"
+ *  (approverList)="getApproverList($event, i)"
+ * >
+ * </custom-multi-select>
+ * ```
  */
 @Component({
   selector: 'custom-multi-select',
@@ -147,10 +158,25 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
     this.onChange = fn;
   }
 
+  /**
+   * Writes the provided formControlName value to the component
+   * @param {any} value It can be any data type that is provided in the formControlName in the selector of this component
+   */
   writeValue(value: any) {
     this.inputFieldArr = value;
+    value.forEach(str => {
+      this.users.map(val => {
+        if(val.name == str) {
+          val.control.setValue(true)
+        }
+        return val
+      })
+    })
   }
 
+  /**
+   * @ignore
+   */
   registerOnTouched(){}
   
   /**
