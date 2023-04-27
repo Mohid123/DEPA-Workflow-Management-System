@@ -103,6 +103,22 @@
       (click)="addCompany()"
     ></button>
 
+    <div class="my-8 grid grid-cols-12 gap-3">
+      <div class="col-span-6">
+        <label class="text-sm font-bold block pb-2">Admin users <span class="tui-required"></span></label>
+        <custom-multi-select
+          formControlName="adminUsers"
+        ></custom-multi-select>
+      </div>
+
+      <div class="col-span-6">
+        <label class="text-sm font-bold block pb-2">View Only users <span class="tui-required"></span></label>
+        <custom-multi-select
+          formControlName="viewOnlyUsers"
+        ></custom-multi-select>
+      </div>
+    </div>
+
     <!--Form preview-->
     <div class="mt-7 mb-5">
       <h3 class="text-lg font-semibold mb-5">Create Form</h3>
@@ -181,7 +197,7 @@
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
             <div class="col-span-5">
               <label class="text-sm font-semibold block pb-2">Approvers</label>
-              <custom-multi-select formControlName="approvers" [users]="userList" (approverList)="getApproverList($event, i)"></custom-multi-select>
+              <custom-multi-select formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
             </div>
             <div class="col-span-5">
               <label class="text-sm font-semibold block pb-2">Condition</label>

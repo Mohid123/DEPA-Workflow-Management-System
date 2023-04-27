@@ -46,15 +46,6 @@ export class PublishAppComponent implements OnDestroy {
     'AND',
     'ANY'
   ];
-  
-  // This user list will come from backend.
-  userList = [
-    {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
-    {name: 'Abid ahmad tarakai', control: new FormControl(false)},
-    {name: 'Junaid mehmood', control: new FormControl(false)},
-    {name: 'Fadi', control: new FormControl(false)},
-    {name: 'Ahtasham', control: new FormControl(false)}
-  ];
 
   constructor(private fb: FormBuilder, private notif: NotificationsService) {
     this.localStorageApp = getItem(StorageItem.publishAppValue);
@@ -74,17 +65,17 @@ export class PublishAppComponent implements OnDestroy {
       appCategories: [item?.appCategories || null, Validators.required],
       appIcon: [item?.appIcon || null],
       workflows: this.fb.array(
-        item?.workflows?.map((val: { condition: any; approvers: any; }) => {
+        item?.workflows?.map((val: { condition: any; approverIds: any; }) => {
           return this.fb.group({
             condition: [val.condition, Validators.required],
-            approvers: [val.approvers, Validators.required]
+            approverIds: [val.approverIds, Validators.required]
           })
         })
         ||
         [
           this.fb.group({
             condition: ['', Validators.required],
-            approvers: [[], Validators.required]
+            approverIds: [[], Validators.required]
           })
         ]
       )
@@ -99,9 +90,9 @@ export class PublishAppComponent implements OnDestroy {
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       condition: ['', Validators.required],
-      approvers: [[], Validators.required]
+      approverIds: [[], Validators.required]
     });
-    this.workflows.push(workflowStepForm)
+    this.workflows.push(workflowStepForm);
   }
 
   removeWorkflowStep(index: number) {
@@ -113,7 +104,7 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   getApproverList(value: string[], index: number) {
-    this.workflows.at(index)?.get('approvers')?.setValue(value);
+    this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
   nextStep(): void {
@@ -121,14 +112,19 @@ export class PublishAppComponent implements OnDestroy {
       switch(this.activeIndex) {
         case 0:
           if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid || this.f['appCategories'].invalid) {
-            return ['appName', 'appLink', 'fullDescription, appCategories'].forEach(val => this.f[val].markAsTouched())
+            return ['appName', 'appLink', 'fullDescription', 'appCategories'].forEach(val => this.f[val].markAsTouched())
           }
           else {
             this.moveNext()
           }
           break;
         case 1:
-          this.moveNext()
+          if(this.workflows[0]?.approverIds?.length == 0) {
+            return this.notif.displayNotification('Please create a default workflow to proceed', 'Publish App', TuiNotification.Warning)
+          }
+          else {
+            this.moveNext()
+          }
           break;
         case 2:
           if(!this.file && this.f['appIcon'].value == null) {
@@ -215,8 +211,10 @@ export class PublishAppComponent implements OnDestroy {
       title: this.f['appName']?.value,
       description: this.f['fullDescription']?.value,
       url: this.f['appLink']?.value,
-      image: this.f['appIcon']?.value
+      image: this.f['appIcon']?.value,
+      defaultWorkflow: this.workflows.value
     }
+    console.log(payload)
     setTimeout(() => {
       this.activeIndex = 0;
       this.publishAppForm.reset();

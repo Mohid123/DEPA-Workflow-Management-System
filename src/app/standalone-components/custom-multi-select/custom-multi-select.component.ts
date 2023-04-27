@@ -74,7 +74,14 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
   /**
    * Dropdown user list
    */
-  @Input() users: dropDownItems[];
+  @Input() users: dropDownItems[] =
+  [
+    {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
+    {name: 'Abid ahmad tarakai', control: new FormControl(false)},
+    {name: 'Junaid mehmood', control: new FormControl(false)},
+    {name: 'Fadi', control: new FormControl(false)},
+    {name: 'Ahtasham', control: new FormControl(false)}
+  ];
 
   /**
    * List of approvers that will be sent to server as part of workflow 
@@ -87,7 +94,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    */
   @HostListener('document:click', ['$event'])
   listenToDOMClick() {
-    if(!this.customElem.nativeElement.contains(event.target)) {
+    if(!this.customElem?.nativeElement?.contains(event.target)) {
       this.open = false;
     }
   }
@@ -130,13 +137,27 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
     if(user?.control.value === true && this.inputFieldArr.includes(user?.name)) {
       this.removeItem(user.name);
       this.approverList.emit(this.inputFieldArr);
-      this.onChange(this.inputFieldArr);
     }
     if(event.target?.checked === true) {
       this.inputFieldArr.push(user?.name);
       this.approverList.emit(this.inputFieldArr);
-      this.onChange(this.inputFieldArr);
     }
+  }
+
+  /**
+   * Writes the provided formControlName value to the component
+   * @param {any} value It can be any data type that is provided in the formControlName in the selector of this component
+   */
+  writeValue(value: any) {
+    this.inputFieldArr = value;
+    value.forEach((str) => {
+      this.users.map((val) => {
+        if(val.name == str) {
+          val.control.setValue(true);
+        }
+        return val
+      })
+    });
   }
 
   /**
@@ -159,22 +180,6 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    */
   registerOnChange(fn: (value: any) => void): void {
     this.onChange = fn;
-  }
-
-  /**
-   * Writes the provided formControlName value to the component
-   * @param {any} value It can be any data type that is provided in the formControlName in the selector of this component
-   */
-  writeValue(value: any) {
-    this.inputFieldArr = value;
-    value.forEach(str => {
-      this.users.map(val => {
-        if(val.name == str) {
-          val.control.setValue(true)
-        }
-        return val
-      })
-    })
   }
 
   /**

@@ -44,15 +44,6 @@ export class AddSubmoduleComponent {
   ];
   formTabs: any[] = [];
 
-   // This user list will come from backend.
-   userList = [
-    {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
-    {name: 'Abid ahmad tarakai', control: new FormControl(false)},
-    {name: 'Junaid mehmood', control: new FormControl(false)},
-    {name: 'Fadi', control: new FormControl(false)},
-    {name: 'Ahtasham', control: new FormControl(false)}
-  ];
-
   constructor(
     private fb: FormBuilder,
     public auth: AuthService,
@@ -76,18 +67,20 @@ export class AddSubmoduleComponent {
       subModuleUrl: [item?.subModuleUrl || '', Validators.compose([Validators.required, Validators.pattern(/^(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}$/)])],
       companies: this.fb.array([]),
       companyName: [item?.companyName || '', Validators.required],
+      adminUsers: [item?.adminUsers || [], Validators.required],
+      viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       workflows: this.fb.array(
-        item?.workflows?.map((val: { condition: any; approvers: any; }) => {
+        item?.workflows?.map((val: { condition: any; approverIds: any; }) => {
           return this.fb.group({
             condition: [val.condition, Validators.required],
-            approvers: [val.approvers, Validators.required]
+            approverIds: [val.approverIds, Validators.required]
           })
         })
         ||
         [
           this.fb.group({
             condition: ['', Validators.required],
-            approvers: [[], Validators.required]
+            approverIds: [[], Validators.required]
           })
         ]
       )
@@ -120,7 +113,7 @@ export class AddSubmoduleComponent {
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       condition: ['', Validators.required],
-      approvers: [[], Validators.required]
+      approverIds: [[], Validators.required]
     });
     this.workflows.push(workflowStepForm)
   }
@@ -130,7 +123,7 @@ export class AddSubmoduleComponent {
   }
 
   getApproverList(value: string[], index: number) {
-    this.workflows.at(index)?.get('approvers')?.setValue(value);
+    this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
   submitNewCompany() {
@@ -140,6 +133,7 @@ export class AddSubmoduleComponent {
   saveDraft() {
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
+    console.log(this.subModuleForm.value)
     this.router.navigate(['/form-builder']);
   }
 

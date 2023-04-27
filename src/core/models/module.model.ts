@@ -1,4 +1,5 @@
 import { BaseModel } from "src/core/models/base.model";
+import { WorkflowModel } from "./workflow.model";
 
 export class Module extends BaseModel {
   categoryId: string;
@@ -7,4 +8,6 @@ export class Module extends BaseModel {
   description: string;
   url: string;
   image: string;
+  defaultWorkflowId: string;
+  defaultWorkflow?: WorkflowModel
 }

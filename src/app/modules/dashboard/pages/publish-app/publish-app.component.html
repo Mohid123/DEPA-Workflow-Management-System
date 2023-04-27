@@ -112,7 +112,7 @@
                 <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
                   <div class="col-span-5">
                     <label class="text-sm font-semibold block pb-2">Approvers</label>
-                    <custom-multi-select formControlName="approvers" [users]="userList" (approverList)="getApproverList($event, i)"></custom-multi-select>
+                    <custom-multi-select formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
                   </div>
                   <div class="col-span-5">
                     <label class="text-sm font-semibold block pb-2">Condition</label>
