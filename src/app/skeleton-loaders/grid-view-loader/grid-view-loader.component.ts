@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+/**
+ * @ignore
+ */
 @Component({
   selector: 'app-grid-view-loader',
   templateUrl: './grid-view-loader.component.html',

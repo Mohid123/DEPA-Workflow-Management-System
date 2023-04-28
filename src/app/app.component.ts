@@ -5,17 +5,38 @@ import { AuthService } from './modules/auth/auth.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { DashboardService } from './modules/dashboard/dashboard.service';
 
+/**
+ * Monitors the event that is emitted when app updates and returns true
+ * @param {VersionReadyEvent} event An event emitted when a new version of the app is available.
+ * @returns {boolean} true | false based on provided condition
+ */
 function promptUser(event: VersionReadyEvent): boolean {
   return true;
 }
+
+/**
+ * Main component of the application. Monitors the version of the application and updates app accordingly
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  /**
+   * Project title
+   */
   title = 'DEPA_FRONTEND';
 
+  /**
+   * Handles route redirect if user is authenticated and checks for updates
+   * @param appRef A reference to an Angular application running on a page.
+   * @param swUpdate Subscribe to update notifications from the Service Worker, trigger update checks, and forcibly activate updates.
+   * @param auth Authentication Service
+   * @param router A service that provides navigation among views and URL manipulation capabilities.
+   * @param dashboardService Dashboard Service
+   * @param activatedRoute Provides access to information about a route associated with a component that is loaded in an outlet.
+   */
   constructor(appRef: ApplicationRef, swUpdate: SwUpdate, private auth: AuthService, router: Router, private dashboardService: DashboardService, private activatedRoute: ActivatedRoute) {
     if(this.auth.currentUserValue) {
       router.navigate([window.location.pathname]);

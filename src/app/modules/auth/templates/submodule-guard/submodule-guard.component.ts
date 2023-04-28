@@ -3,6 +3,9 @@ import {TuiDialogContext, TuiDialogService} from '@taiga-ui/core';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
 
+/**
+ * Template for showing the Popup when user reroutes from the Add Submodule page without saving data
+ */
 @Component({
   selector: 'app-submodule-guard',
   templateUrl: './submodule-guard.component.html',
@@ -10,6 +13,13 @@ import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubmoduleGuardComponent {
+
+  /**
+   * Injects Taiga UI's Dialog service
+   * @param dialog Taiga UI's Dialog Servoce
+   * @param transportService Injectable for client side transport of data and state management between different pages
+   * @param context Dialog Context
+   */
   constructor(
     @Inject(TuiDialogService) private readonly dialog: TuiDialogService,
     private transportService: DataTransportService,
@@ -17,24 +27,37 @@ export class SubmoduleGuardComponent {
     private readonly context: TuiDialogContext<boolean>,
     ) {}
 
-  showDialog(content: TemplateRef<TuiDialogContext>): void {
-    this.dialog.open(content).subscribe();
-  }
+    /**
+     * Uses Taiga UI's Dialog Context as a template reference and shows the dialog when prompted
+     * @param content epresents an embedded template that can be used to instantiate embedded views. 
+     */
+    showDialog(content: TemplateRef<TuiDialogContext>): void {
+      this.dialog.open(content).subscribe();
+    }
 
-  cancel() {
-    this.transportService.saveDraftLocally({});
-    this.transportService.sendFormBuilderData([{formTitle: '', components: []}]);
-    this.transportService.dialogState.emit(DialogState.DISCARD);
-    this.context.completeWith(true);
-  }
+    /**
+     * Handles the reroute of user after the decision to redirect. Clears all submodule data from state
+     */
+    cancel() {
+      this.transportService.saveDraftLocally({});
+      this.transportService.sendFormBuilderData([{formTitle: '', components: []}]);
+      this.transportService.dialogState.emit(DialogState.DISCARD);
+      this.context.completeWith(true);
+    }
 
-  saveDraft() {
+    /**
+     * Saves the draft of the submodule if user selects the "Save as Draft" option
+     */
+    saveDraft() {
 
-  }
+    }
 
-  stayOnPage() {
-    this.context.completeWith(true);
-    this.transportService.dialogState.emit(DialogState.DEFAULT);
-  }
+    /**
+     * Prevents reroute and maintains current data state
+     */
+    stayOnPage() {
+      this.context.completeWith(true);
+      this.transportService.dialogState.emit(DialogState.DEFAULT);
+    }
 
 }

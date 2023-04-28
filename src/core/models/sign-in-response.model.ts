@@ -1,9 +1,7 @@
 import { User } from './user.model';
 
 /**
- * Expected response from server after user authentication
- * @interface SignInResponse
- * @typedef SignInResponse
+ * @ignore
  */
 export interface SignInResponse {
   user:   User;

@@ -1,3 +1,6 @@
+/**
+ * @ignore
+ */
 export class BaseModel {
   revisionNo: number;
   createdBy: string;
@@ -7,6 +10,9 @@ export class BaseModel {
   status: status
 }
 
+/**
+ * @ignore
+ */
 enum status {
   active = 1,
   deleted = 2

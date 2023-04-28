@@ -1,10 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SignInResponse } from './sign-in-response.model';
+
+/**
+ * @ignore
+ */
 export interface Response {
   status: boolean;
   data: SignInResponse | any;
 }
 
+/**
+ * @ignore
+ */
 export class ApiResponse<T> {
   headers: any;
   constructor() {
@@ -21,11 +28,17 @@ export class ApiResponse<T> {
   }
 }
 
+/**
+ * @ignore
+ */
 export class ApiError {
   code!: ErrorCode;
   text!: string;
 }
 
+/**
+ * @ignore
+ */
 export enum ErrorCode {
   UnknownError = 1,
   OrderIsOutdated = 2

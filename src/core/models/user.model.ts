@@ -1,9 +1,7 @@
 import { BaseModel } from "./base.model";
 
 /**
- * User type definition
- * @typedef User
- * @extends BaseModel
+ * @ignore
  */
 export class User extends BaseModel {
   username: string;
@@ -17,7 +15,7 @@ export class User extends BaseModel {
 }
 
 /**
- * @enum role
+ * @ignore
  */
 enum role {
   Admin = 'admin',

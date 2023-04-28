@@ -12,34 +12,79 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 import { AuthCredentials } from 'src/core/models/auth-credentials.model';
 import { TuiNotification } from '@taiga-ui/core';
 
+/**
+ * Type defintion that is provided as the type of the Api Service
+ * @type
+ */
 type AuthApiData = SignInResponse | any;
 
+/**
+ * Authentication Service
+ */
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthService extends ApiService<AuthApiData> {
+  /**
+   * Current user observable
+   */
   currentUser$: Observable<User | null>;
+
+  /**
+   * Observable to handle whether response is complete, pending or failed
+   */
   isLoading$: Observable<boolean>;
+
+  /**
+   * The BehaviorSubject that holds the user data after login
+   */
   currentUserSubject: BehaviorSubject<User | null>;
+
+  /**
+   * Subject to handle whether response is complete, pending or failed
+   */
   isLoadingSubject: BehaviorSubject<boolean>;
+
+  /**
+   * Checks whether the login process is complete, pending or failed
+   */
   isLoggingIn: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  /**
+   * Getter for getting the lates user data
+   */
   get currentUserValue(): User | null {
     return this.currentUserSubject.value;
   }
 
+  /**
+   * Setter for updating user data
+   */
   set currentUserValue(user: User | null) {
     this.currentUserSubject.next(user);
   }
 
+  /**
+   * Getter for getting JWT token
+   */
   get JwtToken(): string {
     return getItem(StorageItem.JwtToken)?.toString() || '';
   }
 
+  /**
+   * Getter for getting the refresh token
+   */
   get RefreshToken(): string {
     return getItem(StorageItem.RefreshToken)?.toString() || '';
   }
 
+  /**
+   * Extends Api Service and handles all authentication apis
+   * @param http Performs HTTP requests.
+   * @param router A service that provides navigation among views and URL manipulation capabilities.
+   * @param notif Injectable for handling custom notifications throughout the panel
+   */
   constructor(
     protected override http: HttpClient,
     private router: Router,
@@ -52,6 +97,11 @@ export class AuthService extends ApiService<AuthApiData> {
     this.isLoading$ = this.isLoadingSubject.asObservable();
   }
 
+  /**
+   * Login function
+   * @param params Authentication or Login credentials provided by user
+   * @returns User object or null
+   */
   login(params: AuthCredentials) {
     this.isLoadingSubject.next(true);
     return this.post('/auth/login', params).pipe(
@@ -88,6 +138,11 @@ export class AuthService extends ApiService<AuthApiData> {
     );
   }
 
+  /**
+   * Login user via Active Directory or Windows users
+   * @param params Authentication or Login credentials provided by user
+   * @returns User object or null
+   */
   loginWithActiveDirectory(params: {username: string, password: string}) {
     this.isLoadingSubject.next(true);
     return this.post('/auth/login/active-directory', params).pipe(
@@ -124,6 +179,9 @@ export class AuthService extends ApiService<AuthApiData> {
     )
   }
 
+  /**
+   * Logout user and remove all pertaining data from state
+   */
   logout() {
     this.currentUserSubject.next(null);
     setItem(StorageItem.User, null);
@@ -135,6 +193,10 @@ export class AuthService extends ApiService<AuthApiData> {
     });
   }
 
+  /**
+   * Updates user data in the state
+   * @param user User Object
+   */
   updateUser(user:User) {
     if (user) {
       this.currentUserSubject.next(user);
@@ -142,6 +204,11 @@ export class AuthService extends ApiService<AuthApiData> {
     }
   }
 
+  /**
+   * Get latest user data and update state of user info
+   * @param id The id of the current user
+   * @returns latest user data fronm server
+   */
   getUser(id: string) {
     return this.get(`/users/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

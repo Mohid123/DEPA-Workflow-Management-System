@@ -1,5 +1,8 @@
 import { FormioOptions } from "@formio/angular";
 
+/**
+ * @ignore
+ */
 export const options: FormioOptions = {
   i18n: {
     ar: {

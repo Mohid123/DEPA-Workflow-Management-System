@@ -11,6 +11,11 @@ import { AuthService } from '../auth.service';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
+
+  /**
+   * Uses Auth service as a dependancy to verify user's authorization status
+   * @param authService 
+   */
   constructor(private authService: AuthService) {}
 
   /**

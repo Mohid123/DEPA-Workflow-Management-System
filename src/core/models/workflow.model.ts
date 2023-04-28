@@ -1,5 +1,8 @@
 import { BaseModel } from "./base.model";
 
+/**
+ * @ignore
+ */
 export class WorkflowModel extends BaseModel {
   approverIds: string[];
   condition: Conditions
