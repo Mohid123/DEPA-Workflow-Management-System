@@ -1,8 +1,8 @@
 # DEPA HRPMS and Workflow Panel
 
-| Angular | Compodoc  | Taiga UI | Form IO |
-| ------------ | ------------- | ------------- | ------------ |
-| <img src="https://angular.io/assets/images/logos/angular/angular.svg" width="100" height="100"> | ![Compodoc logo](https://compodoc.app/assets/img/logo.png)  | ![Taiga UI](https://taiga-ui.dev/assets/images/taiga.svg)  | ![Formio](https://res.cloudinary.com/govimg/image/upload/v1671538209/6399f1b5e79f8e715dbeb6f7/logo-formio-horizontal-lightbg.svg) |
+| Angular | Compodoc  | Taiga UI | Form IO | Tailwind CSS |
+| ------------ | ------------- | ------------- | ------------ | ------------ |
+| <img src="https://angular.io/assets/images/logos/angular/angular.svg" width="100" height="100"> | ![Compodoc logo](https://compodoc.app/assets/img/logo.png)  | ![Taiga UI](https://taiga-ui.dev/assets/images/taiga.svg)  | ![Formio](https://res.cloudinary.com/govimg/image/upload/v1671538209/6399f1b5e79f8e715dbeb6f7/logo-formio-horizontal-lightbg.svg) | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/1200px-Tailwind_CSS_Logo.svg.png" width="100" height="100">
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.1.
 
