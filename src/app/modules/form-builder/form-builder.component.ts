@@ -14,7 +14,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 export class FormBuilderComponent {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
-  public form: {formTitle: string , components: []};
+  public form: {formTitle: string, display: string, components: []};
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   activeIndex: number = 0;
   formValue: any;
@@ -35,6 +35,7 @@ export class FormBuilderComponent {
   ];
 
   formTitleControl = new FormControl({value: '', disabled: this.editMode});
+  formDisplayType = new FormControl('form');
 
   constructor(
     private transportService: DataTransportService,
@@ -48,7 +49,7 @@ export class FormBuilderComponent {
       this.formTitleControl.disable();
     }
     else {
-      this.form = {formTitle: this.formTitleControl?.value, components: []};
+      this.form = {formTitle: this.formTitleControl?.value, display: this.formDisplayType.value, components: []};
     }
   }
 
@@ -62,6 +63,8 @@ export class FormBuilderComponent {
       property: 'form',
       value: event.form
     });
+    event.form.display = this.formDisplayType?.value;
+    event.form.formTitle = this.formTitleControl?.value;
     this.formValue = event.form;
   }
 
@@ -82,6 +85,7 @@ export class FormBuilderComponent {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
     }
     this.form.formTitle = this.formTitleControl?.value;
+    this.form.display = this.formDisplayType?.value;
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];
@@ -105,9 +109,25 @@ export class FormBuilderComponent {
     }
   }
 
+  setSelectValue(event: any) {
+    this.formDisplayType.setValue(event.target.value);
+  }
+
   cancelFormData() {
-    this.transportService.sendFormBuilderData([{formTitle: '', components: []}]);
-    this.router.navigate(['/appListing/add-submodule']);
+    if(this.editMode == false) {
+      this.transportService.sendFormBuilderData([{formTitle: '', components: []}]);
+      this.router.navigate(['/appListing/add-submodule']);
+    }
+    else {
+      const data = this.transportService.formBuilderData.value?.map(val => {
+        if(val.formTitle == this.form?.formTitle) {
+          val = this.form
+        }
+        return val
+      });
+      this.transportService.sendFormBuilderData(data);
+      this.router.navigate(['/appListing/add-submodule']);
+    }
   }
 
 }

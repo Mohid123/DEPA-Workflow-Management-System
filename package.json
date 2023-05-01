@@ -7,8 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "compodoc:build": "compodoc -p tsconfig.doc.json",
-    "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
+    "compodoc:build": "compodoc -p tsconfig.doc.json --theme postmark",
+    "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s --theme postmark",
     "compodoc:serve": "compodoc -s"
   },
   "private": true,

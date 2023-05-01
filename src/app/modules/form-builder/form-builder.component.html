@@ -18,6 +18,13 @@
       <label for="titleField">Title</label>
       <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">
     </div>
+    <!-- <div class="col-span-6">
+      <label for="titleField">Display as: </label>
+      <select (change)="setSelectValue($event)" [formControl]="formDisplayType" class="form-select form-control" aria-label="Default select">
+        <option value="form">Form</option>
+        <option value="pdf">PDF</option>
+      </select>
+    </div> -->
   </div>
   <form-builder [form]="form" (change)="onChange($event)"></form-builder>
   <div class="flex justify-center py-3">

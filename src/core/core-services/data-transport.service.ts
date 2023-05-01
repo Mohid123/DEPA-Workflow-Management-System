@@ -44,7 +44,7 @@ export class DataTransportService {
   /**
    * @ignore
    */
-  public sendFormDataForEdit: BehaviorSubject<any> = new BehaviorSubject({formTitle: '', components: []})
+  public sendFormDataForEdit: BehaviorSubject<any> = new BehaviorSubject({formTitle: '', display: '', components: []})
 
   /**
    * Data transport constructor definition
