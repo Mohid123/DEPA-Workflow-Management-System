@@ -20,6 +20,8 @@ Run `npm run compodoc:build` to create the documentation build folder
 
 Run `npm run compodoc:serve` to run the build and view it at `http://127.0.0.1:8080`
 
+Or simply **Run `npm run compodoc:build-and-serve` to build and view the documentation at `http://127.0.0.1:8080`**
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
