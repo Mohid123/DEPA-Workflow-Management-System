@@ -184,15 +184,22 @@ export class AuthService extends ApiService<AuthApiData> {
   /**
    * Logout user and remove all pertaining data from state
    */
-  logout() {
+  logout(): Observable<ApiResponse<any>> {
     this.currentUserSubject.next(null);
     setItem(StorageItem.User, null);
     setItem(StorageItem.JwtToken, null);
-    this.post('/auth/logout', {refreshToken: this.RefreshToken}).pipe(shareReplay()).subscribe();
-    setItem(StorageItem.RefreshToken, null);
-    this.router.navigate(['/auth/login'], {
-      queryParams: {},
-    });
+    return this.post('/auth/logout', {refreshToken: this.RefreshToken})
+    .pipe(shareReplay(), tap((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        setItem(StorageItem.RefreshToken, null);
+        this.router.navigate(['/auth/login'], {
+          queryParams: {},
+        });
+      }
+      else {
+        this.notif.displayNotification(res.errors[0]?.error?.message || 'Something went wrong', 'Logout Failed!', TuiNotification.Error);
+      }
+    }));
   }
 
   /**

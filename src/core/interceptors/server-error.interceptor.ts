@@ -5,9 +5,9 @@ import {
   HttpInterceptor,
   HttpRequest
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, Subscription, throwError } from 'rxjs';
+import { catchError, takeUntil } from 'rxjs/operators';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 
 /**
@@ -15,8 +15,9 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
  * @implements HttpInterceptor
  */
 @Injectable()
-export class ServerErrorInterceptor implements HttpInterceptor {
+export class ServerErrorInterceptor implements HttpInterceptor, OnDestroy {
 
+  subscription: Subscription[] = []; 
   /**
    * @constructor
    * @param {AuthService} auth Auth Service holds the user's logged in status and JWT token.
@@ -42,7 +43,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if ([401, 403].includes(error.status)) {
-          this.auth.logout();
+          this.subscription.push(this.auth.logout().subscribe());
           return throwError(error);
         } else if (error.status === 500) {
           return throwError(error);
@@ -51,5 +52,9 @@ export class ServerErrorInterceptor implements HttpInterceptor {
         }
       }),
     );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach(subs => subs.unsubscribe());
   }
 }

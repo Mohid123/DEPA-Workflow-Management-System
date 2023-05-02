@@ -15,7 +15,9 @@
           <a class="block py-2 text-white px-4 no-underline hover:text-gray-100">Settings</a>
         </li>
         <li>
-          <a class="block py-2 text-white px-4 no-underline hover:text-gray-100">Contact</a>
+          <a (click)="logoutSession()" class="block py-2 text-white px-4 no-underline bg-[#cf2729] rounded-lg hover:text-gray-100 cursor-pointer">
+            <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; Logout
+          </a>
         </li>
       </ul>
     </div>

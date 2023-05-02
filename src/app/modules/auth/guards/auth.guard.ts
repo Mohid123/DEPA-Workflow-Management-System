@@ -3,6 +3,7 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
+  Router,
 } from '@angular/router';
 import { AuthService } from '../auth.service';
 
@@ -11,12 +12,11 @@ import { AuthService } from '../auth.service';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-
   /**
    * Uses Auth service as a dependancy to verify user's authorization status
    * @param authService 
    */
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   /**
    * Handles the gurading of routes based on user authorization
@@ -30,9 +30,12 @@ export class AuthGuard implements CanActivate {
       // logged in so return true
       return true;
     }
-
+    debugger
     // not logged in so redirect to login page with the return url
-    this.authService.logout();
+    this.router.navigate(['/auth/login'], {
+      queryParams: {},
+    });
+    debugger
     return false;
   }
 }
