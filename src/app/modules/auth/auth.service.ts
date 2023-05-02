@@ -105,6 +105,7 @@ export class AuthService extends ApiService<AuthApiData> {
   login(params: AuthCredentials) {
     this.isLoadingSubject.next(true);
     return this.post('/auth/login', params).pipe(
+      shareReplay(),
       map((result: ApiResponse<any>) => {
         if (!result.hasErrors()) {
           setItem(StorageItem.User, result?.data?.user || null);
@@ -146,6 +147,7 @@ export class AuthService extends ApiService<AuthApiData> {
   loginWithActiveDirectory(params: {username: string, password: string}) {
     this.isLoadingSubject.next(true);
     return this.post('/auth/login/active-directory', params).pipe(
+      shareReplay(),
       map((result: ApiResponse<any>) => {
         if (!result.hasErrors()) {
           setItem(StorageItem.User, result?.data?.user || null);
@@ -186,7 +188,7 @@ export class AuthService extends ApiService<AuthApiData> {
     this.currentUserSubject.next(null);
     setItem(StorageItem.User, null);
     setItem(StorageItem.JwtToken, null);
-    this.post('/auth/logout', {refreshToken: this.RefreshToken}).subscribe();
+    this.post('/auth/logout', {refreshToken: this.RefreshToken}).pipe(shareReplay()).subscribe();
     setItem(StorageItem.RefreshToken, null);
     this.router.navigate(['/auth/login'], {
       queryParams: {},

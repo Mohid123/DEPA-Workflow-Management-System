@@ -37,14 +37,16 @@ export class AppComponent {
    * @param dashboardService Dashboard Service
    * @param activatedRoute Provides access to information about a route associated with a component that is loaded in an outlet.
    */
-  constructor(appRef: ApplicationRef, swUpdate: SwUpdate, private auth: AuthService, router: Router, private dashboardService: DashboardService, private activatedRoute: ActivatedRoute) {
-    if(this.auth.currentUserValue) {
-      router.navigate([window.location.pathname]);
+  constructor(appRef: ApplicationRef, swUpdate: SwUpdate, auth: AuthService, router: Router, private dashboardService: DashboardService, private activatedRoute: ActivatedRoute) {
+    if(auth.currentUserValue && (window.location.pathname === '/' || window.location.pathname === '/auth/login')) {
+      router.navigate(['/dashboard/home'])
     }
-    
+
     router.events
     .pipe(filter(event => event instanceof NavigationEnd))
-    .subscribe(() => this.dashboardService.items = this.dashboardService.createBreadcrumbs(this.activatedRoute.root));
+    .subscribe(() => {
+      this.dashboardService.items = this.dashboardService.createBreadcrumbs(this.activatedRoute.root);
+    });
 
     const appIsStable$ = appRef.isStable.pipe(first(isStable => isStable === true));
     const everySixHours$ = interval(6 * 60 * 60 * 1000);

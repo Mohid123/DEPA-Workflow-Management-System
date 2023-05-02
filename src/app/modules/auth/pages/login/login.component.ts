@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         .subscribe((res: ApiResponse<any>) => {
           if(!res.hasErrors()) {
             this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
-            this.router.navigate(['/dashboard/appStore'])
+            this.router.navigate(['/dashboard/home'])
           }
         })
       }

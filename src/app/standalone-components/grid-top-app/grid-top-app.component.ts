@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Module } from 'src/core/models/module.model';
 
 /**
  * The topmost card to display Module data inside Grid View on the Home Page. Will display if Grid contains at least 4 elements
@@ -16,5 +17,5 @@ export class GridTopAppComponent {
     /**
    * Used to display the relevant data inside the card view
    */
-  @Input() appData: any;
+  @Input() appData: Module;
 }

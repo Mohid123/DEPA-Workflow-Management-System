@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TuiButtonModule } from '@taiga-ui/core';
+import { Module } from 'src/core/models/module.model';
 
 /**
  * Smaller card component to display Module data inside Grid View on the Home Page.
@@ -17,5 +18,5 @@ export class GridSmallComponent {
   /**
    * Used to display the relevant data inside the card view
    */
-  @Input() appData: any;
+  @Input() appData: Module;
 }

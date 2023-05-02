@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TuiNotification } from '@taiga-ui/core';
+import { Observable, map, shareReplay } from 'rxjs';
 import { ApiService } from 'src/core/core-services/api.service';
+import { NotificationsService } from 'src/core/core-services/notifications.service';
+import { ApiResponse } from 'src/core/models/api-response.model';
 
 /**
  * Interface for Breadcrumb navigation
@@ -36,7 +40,7 @@ export class DashboardService extends ApiService<any> {
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
    * @param http Performs HTTP requests.
    */
-  constructor(protected override http: HttpClient) {
+  constructor(protected override http: HttpClient, private notif: NotificationsService) {
     super(http)
   }
 
@@ -64,5 +68,20 @@ export class DashboardService extends ApiService<any> {
       }
       return this.createBreadcrumbs(child, routerLink, breadcrumbs);
     }
+  }
+
+  /**
+   * Get method for fetching dashbaord page apps
+   * @returns {Observable<ApiResponse>} Returns an observable array with category and corresponding module data
+   */
+  getDashboardApps(): Observable<ApiResponse<any>> {
+    return this.get(`/dashboard`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get dashboard apps', TuiNotification.Error)
+      }
+    }))
   }
 }
