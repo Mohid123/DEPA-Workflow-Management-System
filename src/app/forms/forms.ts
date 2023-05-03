@@ -26,7 +26,7 @@ export const emailLoginForm: any = {
       "protected": true
     },
     {
-      "label": "Submit",
+      "label": "Login",
       "showValidations": false,
       "disableOnInvalid": true,
       "tableView": false,
@@ -66,7 +66,7 @@ export const activeDirectoryLoginForm = {
         "protected": true
       },
       {
-        "label": "Submit",
+        "label": "Login",
         "showValidations": false,
         "disableOnInvalid": true,
         "tableView": false,

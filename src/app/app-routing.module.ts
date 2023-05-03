@@ -29,6 +29,11 @@ const routes: Routes = [
     path: 'appListing',
     // canActivate: [AuthGuard],
     loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
+  },
+  {
+    path: 'workflows',
+    // canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/workflows/workflows.module').then(m => m.WorkflowsModule)
   }
 ];
 
