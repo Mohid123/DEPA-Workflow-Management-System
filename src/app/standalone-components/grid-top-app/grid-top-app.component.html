@@ -1,10 +1,10 @@
-<div class="px-4 py-2 bg-white rounded-md h-72 shadow-lg cursor-pointer col-span-8">
+<div class="col-span-8 px-4 py-2 bg-white rounded-md shadow-lg cursor-pointer h-72">
   <div class="flex items-center space-x-8">
-    <div class="flex items-center justify-center w-132 rounded-lg h-68 border border-gray-200 bg-gray-100">
-      <img [src]="appData?.image ?? '../../../assets/placeholder.webp'" alt="top_app_icon" class="w-full h-full object-cover rounded-lg">
+    <div class="flex items-center justify-center bg-gray-100 border border-gray-200 rounded-lg w-136 h-68">
+      <img [src]="appData?.image ?? '../../../assets/placeholder.webp'" alt="top_app_icon" class="object-cover w-full h-full rounded-lg">
     </div>
     <div class="w-full">
-      <h3 class="text-xl mb-2 font-semibold">{{appData?.title}}</h3>
+      <h3 class="mb-2 text-xl font-semibold">{{appData?.title}}</h3>
       <p class="leading-6">{{appData?.description}}</p>
     </div>
   </div>

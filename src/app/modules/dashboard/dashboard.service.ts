@@ -46,7 +46,7 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Handles the dynamic creation of breadcrumbs when route changes
-   * @param route Provides access to information about a route associated with a component that is loaded in an outlet. 
+   * @param route Provides access to information about a route associated with a component that is loaded in an outlet.
    * @param routerLink The route path
    * @param breadcrumbs Array fo breadcrumbs
    * @returns {BreadCrumbs[]} An array of breadcrumbs
@@ -81,6 +81,17 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get dashboard apps', TuiNotification.Error)
+      }
+    }))
+  }
+
+  getSubModuleByModule(moduleID: string): Observable<ApiResponse<any>> {
+    return this.get(`/module/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)
       }
     }))
   }

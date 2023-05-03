@@ -3,7 +3,7 @@
     <a [routerLink]="['/appListing/add-submodule']"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
   </div>
 </div>
-<div class="relative overflow-x-auto shadow-lg rounded-lg">
+<div class="relative overflow-x-auto rounded-lg shadow-lg">
   <table class="w-full text-sm text-left text-gray-500">
     <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
       <tr>
@@ -29,18 +29,18 @@
                 >
               </filter>
               </ng-container>
-              <ng-container *ngIf="column === 'Submodule Name'">
-                <filter
-                  [filterBy]="column"
-                  [items]="filterMenuSubmodule"
-                  (applyStatus)="sendFilterValue($event)"
-                >
-              </filter>
-              </ng-container>
               <ng-container *ngIf="column === 'Module Name'">
                 <filter
                   [filterBy]="column"
                   [items]="filterMenuModule"
+                  (applyStatus)="sendFilterValue($event)"
+                >
+              </filter>
+              </ng-container>
+              <ng-container *ngIf="column === 'Submodule Name'">
+                <filter
+                  [filterBy]="column"
+                  [items]="filterMenuSubmodule"
                   (applyStatus)="sendFilterValue($event)"
                 >
               </filter>
@@ -54,22 +54,22 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container >
+      <ng-container *ngFor="let data of (tableData | async); let i = index; let first = first; let last = last">
         <tr class="bg-white border-b border-gray-300">
-          <th scope="row" class="px-6 py-4 font-normal whitespace-nowrap">
-            Depa Interiors LLC
-          </th>
           <td class="px-6 py-4">
-            Angular Forms
+            {{data?.companyId?.title}}
           </td>
           <td class="px-6 py-4">
-            Angular
+            {{data?.moduleId?.title}}
           </td>
           <td class="px-6 py-4">
-            Published
+            {{data?.code}}
           </td>
-          <td class="py-4 w-3/12">
-            <a class="font-medium px-2 py-1 bg-blue-400 text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+          <td class="px-6 py-4">
+            {{data?.status === 1 ? 'Published' : 'Draft'}}
+          </td>
+          <td class="w-3/12 py-4">
+            <a class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
               <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i> Edit
             </a>
             <a class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
@@ -80,7 +80,7 @@
       </ng-container>
     </tbody>
   </table>
-  <div class="pb-6 pt-10">
+  <div class="pt-10 pb-6">
     <tui-pagination
       [length]="length"
       [index]="index"

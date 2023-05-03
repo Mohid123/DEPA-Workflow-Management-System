@@ -12,7 +12,7 @@ const routes: Routes = [
     data: {breadcrumb:'Modules'},
     children:[
       {
-        path: 'companies',
+        path: 'submodules/:id',
         component: CompaniesComponent,
         canActivate: [SubmoduleGuard],
         data: {breadcrumb:'List of Submodules'},
@@ -24,8 +24,8 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'companies',
-        pathMatch: 'full' 
+        redirectTo: 'submodules/:id',
+        pathMatch: 'full'
       }
     ]
   }

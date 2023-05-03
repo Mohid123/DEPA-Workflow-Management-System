@@ -2,51 +2,51 @@
 <div class="bg_img_main">
   <app-grid-view-loader *ngIf="!(dashboardApps | async); else dashboardapps"></app-grid-view-loader>
   <ng-template #dashboardapps>
-    <section class="grid grid-cols-12 gap-4 w-11/12 mx-auto mt-52 pb-60">
+    <section class="grid w-11/12 grid-cols-12 gap-4 mx-auto mt-52 pb-60">
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
-        <p class="text-lg font-semibold col-span-12 mb-3" [ngClass]="!firstItem ? 'mt-7': 'mt-0'">{{app.name}}</p>
+        <p class="col-span-12 mb-3 text-lg font-semibold" [ngClass]="!firstItem ? 'mt-7': 'mt-0'">{{app.name}}</p>
         <ng-container *ngIf="app.modules.length == 0; else showApps">
-          <p class="col-span-12 my-8 text-center font-semibold text-base">No modules exist against this category. You can add a new module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/publish-app">here</a> </p>
+          <p class="col-span-12 my-8 text-base font-semibold text-center">No modules exist against this category. You can add a new module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/publish-app">here</a> </p>
         </ng-container>
-  
+
         <ng-template #showApps>
           <ng-container *ngFor="let appdata of app?.modules; let i = index; let firstModule = first; let last = last;">
             <ng-container *ngIf="app?.modules?.length == 1">
               <grid-small-app
-                [routerLink]="['/appListing/companies']"
+                [routerLink]="['/appListing/submodules', appdata?._id]"
                 [appData]="appdata"
                 class="col-span-8 row-span-2"
               ></grid-small-app>
             </ng-container>
             <ng-container *ngIf="app?.modules?.length == 2">
               <grid-small-app
-                [routerLink]="['/appListing/companies']"
+                [routerLink]="['/appListing/submodules', appdata?._id]"
                 [appData]="appdata"
                 class="col-span-6 row-span-2"
               ></grid-small-app>
             </ng-container>
             <ng-container *ngIf="app?.modules?.length == 3">
               <grid-small-app
-                [routerLink]="['/appListing/companies']"
+                [routerLink]="['/appListing/submodules', appdata?._id]"
                 [appData]="appdata"
                 class="col-span-4 row-span-2"
               ></grid-small-app>
             </ng-container>
             <ng-container *ngIf="app?.modules?.length >= 4">
               <grid-top-app
-                [routerLink]="['/appListing/companies']"
+                [routerLink]="['/appListing/submodules', appdata?._id]"
                 [appData]="appdata"
                 *ngIf="firstModule"
                 class="col-span-8"
               ></grid-top-app>
               <grid-side-app
-                [routerLink]="['/appListing/companies']"
+                [routerLink]="['/appListing/submodules', appdata?._id]"
                 *ngIf="i == 1"
                 [appData]="appdata"
                 class="col-span-4 row-span-3"
               ></grid-side-app>
               <grid-small-app
-                [routerLink]="['/appListing/companies']"
+                [routerLink]="['/appListing/submodules', appdata?._id]"
                 *ngIf="i > 1"
                 class="col-span-4 row-span-2"
                 [appData]="appdata"
@@ -55,7 +55,7 @@
           </ng-container>
         </ng-template>
       </ng-container>
-      <!-- <div class="mt-6 mb-10 col-span-full flex justify-end">
+      <!-- <div class="flex justify-end mt-6 mb-10 col-span-full">
         <tui-pagination
           [length]="length"
           [index]="index"
@@ -64,6 +64,6 @@
       </div> -->
     </section>
   </ng-template>
-  
+
 </div>
 <app-footer></app-footer>

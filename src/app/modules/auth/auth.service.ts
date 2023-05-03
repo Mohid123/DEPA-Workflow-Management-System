@@ -186,17 +186,23 @@ export class AuthService extends ApiService<AuthApiData> {
    */
   logout(): Observable<ApiResponse<any>> {
     this.currentUserSubject.next(null);
-    setItem(StorageItem.User, null);
-    setItem(StorageItem.JwtToken, null);
     return this.post('/auth/logout', {refreshToken: this.RefreshToken})
     .pipe(shareReplay(), tap((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         setItem(StorageItem.RefreshToken, null);
+        setItem(StorageItem.User, null);
+        setItem(StorageItem.JwtToken, null);
         this.router.navigate(['/auth/login'], {
           queryParams: {},
         });
       }
       else {
+        setItem(StorageItem.RefreshToken, null);
+        setItem(StorageItem.User, null);
+        setItem(StorageItem.JwtToken, null);
+        this.router.navigate(['/auth/login'], {
+          queryParams: {},
+        });
         this.notif.displayNotification(res.errors[0]?.error?.message || 'Something went wrong', 'Logout Failed!', TuiNotification.Error);
       }
     }));
