@@ -6,17 +6,18 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
-import { TuiButtonModule, TuiTextfieldControllerModule, TuiLoaderModule, TuiDataListModule, TuiHostedDropdownModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import {TuiTableModule} from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
-import { TuiInputModule, TuiPaginationModule, TuiTabsModule, TuiTextAreaModule, TuiMultiSelectModule, TuiDataListWrapperModule, TuiSelectModule } from '@taiga-ui/kit';
+import { TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
 import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
 import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/grid-top-app.component';
 import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-app/grid-side-app.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
+import { FormioModule } from '@formio/angular';
 
 @NgModule({
   declarations: [
@@ -37,19 +38,12 @@ import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom
     TuiTabsModule,
     ReactiveFormsModule,
     FormsModule,
-    TuiInputModule,
-    TuiTextfieldControllerModule,
-    TuiTextAreaModule,
-    TuiMultiSelectModule,
-    TuiDataListWrapperModule,
-    TuiDataListModule,
-    TuiSelectModule,
-    TuiHostedDropdownModule,
     TuiLoaderModule,
     GridSmallComponent,
     GridTopAppComponent,
     GridSideAppComponent,
-    CustomMultiSelectComponent
+    CustomMultiSelectComponent,
+    FormioModule
   ]
 })
 export class DashboardModule { }

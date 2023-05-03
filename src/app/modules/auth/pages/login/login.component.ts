@@ -6,6 +6,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { Router } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
 import { ApiResponse } from 'src/core/models/api-response.model';
+import { activeDirectoryLoginForm, emailLoginForm } from 'src/app/forms/forms';
 
 @Component({
   templateUrl: './login.component.html',
@@ -16,85 +17,9 @@ export class LoginComponent implements OnDestroy {
   destroy$ = new Subject();
   userAuthData: any;
   loginViaActiveDir = new FormControl<boolean>(true);
-  public emailLoginForm: any = {
-    "title": "Login Form",
-    "components": [
-      {
-        "label": "Email",
-        "tableView": true,
-        "validate": {
-            "required": true,
-            "customMessage": "A valid email is required"
-        },
-        "key": "email",
-        "type": "email",
-        "input": true
-      },
-      {
-        "label": "Password",
-        "showCharCount": true,
-        "tableView": false,
-        "validate": {
-            "required": true,
-            "minLength": 8
-        },
-        "key": "password",
-        "type": "password",
-        "input": true,
-        "protected": true
-      },
-      {
-        "label": "Submit",
-        "showValidations": false,
-        "disableOnInvalid": true,
-        "tableView": false,
-        "key": "submit",
-        "type": "button",
-        "input": true,
-        "saveOnEnter": false
-      }
-    ]
-  };
+  public emailLoginForm = emailLoginForm
 
-  public activeDirectoryLoginForm: any = {
-    "title": "Login Form",
-    "components": [
-      {
-        "label": "Username",
-        "tableView": true,
-        "validate": {
-          "required": true,
-          "customMessage": "Username is required"
-        },
-        "key": "username",
-        "type": "textfield",
-        "input": true
-      },
-      {
-        "label": "Password",
-        "showCharCount": true,
-        "tableView": false,
-        "validate": {
-            "required": true,
-            "minLength": 8
-        },
-        "key": "password",
-        "type": "password",
-        "input": true,
-        "protected": true
-      },
-      {
-        "label": "Submit",
-        "showValidations": false,
-        "disableOnInvalid": true,
-        "tableView": false,
-        "key": "submit",
-        "type": "button",
-        "input": true,
-        "saveOnEnter": false
-      }
-    ]
-  };
+  public activeDirectoryLoginForm = activeDirectoryLoginForm;
 
   options: any = {
     "disableAlerts": true

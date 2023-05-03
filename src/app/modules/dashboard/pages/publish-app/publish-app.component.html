@@ -1,15 +1,15 @@
 <app-header></app-header>
 <div class="bg_img_main">
-  <section class="grid grid-cols-12 gap-4 w-10/12 mx-auto mt-48 pb-44">
-    <div class="col-span-full bg-white rounded-lg shadow-lg px-12 py-5">
-      <p class="font-bold text-2xl text-center">Create new Module</p>
+  <section class="grid w-10/12 grid-cols-12 gap-4 mx-auto mt-48 pb-44">
+    <div class="px-12 py-5 bg-white rounded-lg shadow-lg col-span-full">
+      <p class="text-2xl font-bold text-center">Create new Module</p>
       <div class="flex justify-center my-6">
         <tui-tabs tuiMobileTabs [(activeItemIndex)]="activeIndex">
           <ng-container *ngFor="let tab of tabs; let i = index; let last = last; let first = first">
             <button
               disabled
               tuiTab
-              class="font-semibold text-base text-black"
+              class="text-base font-semibold text-black"
               [ngClass]="{'mr-10': first, 'ml-10': last, 'mx-10' : !last && !first}"
             >
             {{tab.text}}
@@ -17,117 +17,30 @@
           </ng-container>
         </tui-tabs>
       </div>
-      <form [formGroup]="publishAppForm">
+      <form>
         <ng-container *ngIf="activeIndex == 0">
-          <label class="text-sm font-bold block pb-2">Module title <span class="tui-required"></span></label>
-          <tui-input
-            formControlName="appName"
-            [tuiTextfieldCleaner]="true"
-            tuiTextfieldSize="l"
-            [tuiTextfieldLabelOutside]="true"
-          >
-            <input
-              tuiTextfield
-              type="text"
-            />
-          </tui-input>
-          <div class="flex justify-between my-2">
-            <p class="text-xs text-gray-500">This is how your app will appear on the app store, It should be clear and simple</p>
-            <p [ngClass]="(appNameLength | async)! > 20 ? 'text-red-500': ''" class="text-xs text-gray-500">{{(appNameLength | async) || 0}}/20</p>
-          </div>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'required',
-            message: 'Module name is required',
-            control: f['appName']
-          }"></ng-container>
-
-          <div class="my-12">
-            <label class="text-sm font-bold block pb-2">Module URL <span class="tui-required"></span></label>
-            <tui-input
-              formControlName="appLink"
-              [tuiTextfieldCleaner]="true"
-              tuiTextfieldSize="l"
-              [tuiTextfieldLabelOutside]="true"
-            >
-              <input
-                tuiTextfield
-                type="text"
-              />
-            </tui-input>
-            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'A valid URL is required',
-              control: f['appLink']
-            }"></ng-container>
-            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-              validation: 'pattern',
-              message: 'The provided URL is not valid',
-              control: f['appLink']
-            }"></ng-container>
-          </div>
-
-          <label class="text-sm font-bold block pb-2">Description <span class="tui-required"></span></label>
-          <tui-text-area
-            formControlName="fullDescription"
-            [tuiTextfieldCleaner]="true"
-            [tuiTextfieldLabelOutside]="true"
-            class="min-h-40"
-          >
-          </tui-text-area>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'required',
-            message: 'Please provide a description',
-            control: f['fullDescription']
-          }"></ng-container>
-
-          <!--Categories-->
-          <div class="mt-8">
-            <label class="text-sm font-bold block pb-2">Module category <span class="tui-required"></span></label>
-            <tui-select formControlName="appCategories" [tuiTextfieldLabelOutside]="true">
-              <input
-                tuiTextfield
-                placeholder="Select Category"
-              />
-              <tui-data-list-wrapper
-                *tuiDataList
-                [items]="categoryOptions"
-              ></tui-data-list-wrapper>
-            </tui-select>
-            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'Please select at least one category',
-              control: f['appCategories']
-            }"></ng-container>
-          </div>
-
+          <formio (submit)="nextStep($event)" [form]="moduleDetailsForm" [options]="options" [submission]="prePopulatedDataDetails"></formio>
         </ng-container>
 
         <ng-container *ngIf="activeIndex == 1">
-          <div class="my-3">
-            <h4 class="text-lg font-semibold">Create default workflow</h4>
-            <p class="text-sm text-gray-500 my-2">Please specify the details of your workflow and it's steps</p>
+          <div [formGroup]="workflowForm">
             <ng-container formArrayName="workflows">
-              <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
+              <ng-container *ngFor="let workflow of workflows.controls; let i = index">
                 <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
                 <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
                   <div class="col-span-5">
-                    <label class="text-sm font-semibold block pb-2">Approvers</label>
+                    <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
                     <custom-multi-select formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
                   </div>
                   <div class="col-span-5">
-                    <label class="text-sm font-semibold block pb-2">Condition</label>
-                    <tui-select formControlName="condition" [tuiTextfieldLabelOutside]="true">
-                      <input
-                        tuiTextfield
-                        placeholder="Select Conditon"
-                      />
-                      <tui-data-list-wrapper
-                        *tuiDataList
-                        [items]="conditions"
-                      ></tui-data-list-wrapper>
-                    </tui-select>
+                    <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+                    <select formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                      <option value="and">AND</option>
+                      <option value="or">OR</option>
+                      <option value="any">ANY</option>
+                    </select>
                   </div>
-                  <div class="col-span-2 mt-12" *ngIf="i > 0">
+                  <div class="col-span-2 mt-8" *ngIf="i > 0">
                     <button
                       tuiIconButton
                       type="button"
@@ -148,11 +61,16 @@
               icon="tuiIconPlusLarge"
               (click)="addWorkflowStep()"
             ></button>
+
+            <div class="flex justify-end gap-5 mt-5">
+              <button (click)="previousStep()" type="button" class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
+              <button (click)="nextStep()" type="button" class="btn btn-primary">Proceed to Module Graphics</button>
+            </div>
           </div>
         </ng-container>
 
         <ng-container *ngIf="activeIndex == 2">
-          <label (change)="onFileSelect($event)" for="dropzone-file" class="mt-10 flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+          <label (change)="onFileSelect($event)" for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 mt-10 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
             <tui-loader
               [inheritColor]="true"
               [size]="'l'"
@@ -167,8 +85,8 @@
                   <img src="../../../../../assets/windows.svg" width="32" height="32">
                 </div>
                 <div class="flex flex-col">
-                  <p class="font-semibold text-black text-lg mb-3">Module Icon</p>
-                  <ul class="list-disc text-sm text-gray-400">
+                  <p class="mb-3 text-lg font-semibold text-black">Module Icon</p>
+                  <ul class="text-sm text-gray-400 list-disc">
                     <li>Icon should be 500x500 px (1:1) ratio</li>
                     <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
                     <li>Up to 1MB file size is allowed</li>
@@ -178,24 +96,20 @@
             </tui-loader>
             <input id="dropzone-file" type="file" class="hidden" />
           </label>
-        </ng-container>
 
-        <ng-container *ngIf="activeIndex == 3">
-          <div class="mt-20 flex flex-col items-center justify-center w-full">
-            <img src="../../../../../assets/published.svg" alt="ok" width="118" height="118">
-            <p class="font-semibold my-2 text-lg">Congratulations</p>
-            <p class="text-base">Your module has been created successfully</p>
+          <div class="flex justify-end gap-5 mt-5">
+            <button (click)="previousStep()" type="button" class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
+            <button (click)="nextStep()" type="button" class="btn btn-primary">Publish Module</button>
           </div>
         </ng-container>
 
-        <div class="flex justify-end my-10">
-          <a (click)="previousStep()" class="px-6 py-3 text-sm font-semibold text-gray-500 bg-[#F5F8FA] rounded-lg cursor-pointer hover:text-gray-500" [ngClass]="activeIndex < 3 ? 'mx-10': 'mr-10'">Back</a>
-          <a *ngIf="activeIndex !== 3" (click)="nextStep()" [ngSwitch]="activeIndex" class="px-10 py-3 text-sm font-semibold text-white bg-[#00A3FF] rounded-lg cursor-pointer hover:text-white">
-            <span *ngSwitchCase="0">Proceed to Default Workflow</span>
-            <span *ngSwitchCase="1">Proceed to Module Graphics</span>
-            <span *ngSwitchCase="2">Publish Module</span>
-          </a>
-        </div>
+        <ng-container *ngIf="activeIndex == 3">
+          <div class="flex flex-col items-center justify-center w-full mt-20">
+            <img src="../../../../../assets/published.svg" alt="ok" width="118" height="118">
+            <p class="my-2 text-lg font-semibold">Congratulations</p>
+            <p class="text-base">Your module has been created successfully</p>
+          </div>
+        </ng-container>
       </form>
     </div>
   </section>

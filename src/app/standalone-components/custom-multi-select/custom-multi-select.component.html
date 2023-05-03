@@ -3,32 +3,25 @@
     (keypress)="$event.preventDefault()"
     (click)="toggleDropDown()"
     multiple
-    [ngClass]="inputFieldArr?.length > 1 ? 'h-auto overflow-y-auto scrollable-elem': 'h-14 overflow-y-hidden'"
-    class="px-4 text-transparent cursor-pointer py-2 rounded-xl w-full outline-none border border-gray-100 focus:border-2 focus:border-[rgb(116,140,235)] focus:transition-all shadow-md whitespace-normal"
+    [ngClass]="inputFieldArr?.length > 2 ? 'h-auto overflow-y-auto scrollable-elem': 'h-10 overflow-y-hidden'"
+    class="w-full text-transparent whitespace-normal form-control"
   >
     <ng-container *ngIf="inputFieldArr.length > 0">
       <ng-container *ngFor="let selected of inputFieldArr; let j = index">
-        <option (click)="removeItem(selected)" class="rounded-xl bg-[#6C86E2] px-3 py-1 h-7 text-white my-1 mx-1 w-auto inline-block" [value]="selected">
+        <option (click)="removeItem(selected)" class="rounded-xl bg-[#6C86E2] text-xs px-3 py-1 h-6 text-white my-1 mx-1 w-auto inline-block" [value]="selected">
           {{selected}} &nbsp; &nbsp; <span>&#10005;</span>
         </option>
       </ng-container>
     </ng-container>
   </select>
-  <i (click)="toggleDropDown()" [ngClass]="open ? 'rotate-0 transition-all delay-75' : '-rotate-180 transition-all delay-75'" class="fa fa-angle-up fa-2x absolute top-4 right-5 text-gray-400 cursor-pointer" aria-hidden="true"></i>
-  <div class="absolute block w-full z-40">
-    <ul [ngClass]="open ? 'h-80 border border-gray-300 py-3 px-5 transition-all ease-in-out delay-75' : 'h-0 border-none px-0 py-0 transition-all ease-in-out delay-75'" class="rounded-lg shadow-md bg-white mt-1 overflow-y-auto scrollable-elem">
-      <tui-input
-        tuiTextfieldIconLeft="tuiIconSearchLarge"
-        class="w-full mb-4"
+  <i (click)="toggleDropDown()" [ngClass]="open ? 'rotate-0 transition-all delay-75' : '-rotate-180 transition-all delay-75'" class="absolute text-gray-600 cursor-pointer fa fa-angle-up fa-lg top-3.5 right-2 font-semibold" aria-hidden="true"></i>
+  <div class="absolute z-40 block w-full">
+    <ul [ngClass]="open ? 'h-80 border border-gray-300 py-3 px-5 transition-all ease-in-out delay-75' : 'h-0 border-none px-0 py-0 transition-all ease-in-out delay-75'" class="mt-1 overflow-y-auto bg-white rounded-lg shadow-md scrollable-elem">
+      <input
+        class="form-control"
+        placeholder="Search users"
         [formControl]="searchValue"
-        [tuiTextfieldCleaner]="true"
-      >
-        <p class="mt-2">Search Users</p>
-        <input
-          tuiTextfield
-          placeholder="Type to start searching..."
-        />
-      </tui-input>
+      />
       <ng-container *ngFor="let user of users; let i = index">
         <li class="gap-2 my-3">
           <tui-checkbox-labeled

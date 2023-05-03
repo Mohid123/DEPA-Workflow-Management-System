@@ -1,11 +1,11 @@
-import { Component, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
-import  { Subject, Observable, of, map, takeUntil } from 'rxjs';
+import { Component, EventEmitter, OnDestroy } from '@angular/core';
+import  { Subject, Observable, of, map, takeUntil, BehaviorSubject } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
-import { Module } from 'src/core/models/module.model';
+import { createModuleDetailsForm } from 'src/app/forms/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -17,6 +17,8 @@ export class PublishAppComponent implements OnDestroy {
   localStorageApp: any;
   appNameLength: Observable<number> = of(0);
   activeIndex: number = getItem(StorageItem.activeIndex) || 0;
+  moduleData = new BehaviorSubject<any>({});
+  refreshForm = new EventEmitter();
   readonly arrow = TUI_ARROW;
   readonly tabs = [
     {
@@ -32,7 +34,6 @@ export class PublishAppComponent implements OnDestroy {
       text: 'Published'
     }
   ];
-  publishAppForm!: FormGroup;
   readonly categoryOptions = [
     'Human Resources',
     'Networking',
@@ -47,44 +48,57 @@ export class PublishAppComponent implements OnDestroy {
     'ANY'
   ];
 
+  options: any = {
+    "disableAlerts": true
+  };
+
+  prePopulatedDataDetails: any;
+  workflowForm: FormGroup;
+
+  public moduleDetailsForm: any = createModuleDetailsForm;
+
   constructor(private fb: FormBuilder, private notif: NotificationsService) {
     this.localStorageApp = getItem(StorageItem.publishAppValue);
-    this.initAppForm(this.localStorageApp);
-    this.getTextFieldLength();
+    if(this.localStorageApp) {
+      this.initWorkflowForm(this.localStorageApp);
+      this.moduleData.next(this.localStorageApp);
+      this.prePopulatedDataDetails = {
+        "data": {
+          "moduleCategory": this.localStorageApp?.categoryId,
+          "moduleTitle": this.localStorageApp?.title,
+          "description": this.localStorageApp?.description,
+          "moduleUrl": this.localStorageApp?.url
+        }
+      }
+    }
   }
 
-  get f() {
-    return this.publishAppForm.controls;
-  }
-
-  initAppForm(item?: any) {
-    this.publishAppForm = this.fb.group({
-      appName: [item?.appName || null, Validators.compose([Validators.required, Validators.maxLength(20)])],
-      fullDescription: [item?.fullDescription || null, Validators.required],
-      appLink: [item?.appLink || null, Validators.compose([Validators.required, Validators.pattern(/^(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}$/)])],
-      appCategories: [item?.appCategories || null, Validators.required],
-      appIcon: [item?.appIcon || null],
-      workflows: this.fb.array(
-        item?.workflows?.map((val: { condition: any; approverIds: any; }) => {
-          return this.fb.group({
-            condition: [val.condition, Validators.required],
-            approverIds: [val.approverIds, Validators.required]
-          })
+  initWorkflowForm(item?: any) {
+    if(item.defaultWorkflow) {
+      this.workflowForm = this.fb.group({
+        workflows: this.fb.array(
+          item?.defaultWorkflow?.map((val: { condition: any; approverIds: any; }) => {
+            return this.fb.group({
+              condition: [val.condition, Validators.required],
+              approverIds: [val.approverIds, Validators.required]
+            })
+          }))
         })
-        ||
-        [
+    }
+    else {
+      this.workflowForm = this.fb.group({
+        workflows: this.fb.array([
           this.fb.group({
             condition: ['', Validators.required],
             approverIds: [[], Validators.required]
           })
-        ]
-      )
-    });
-    this.file = item?.appIcon
+        ])
+      })
+    }
   }
 
   get workflows() {
-    return this.f['workflows'] as FormArray
+    return this.workflowForm.controls['workflows'] as FormArray
   }
 
   addWorkflowStep() {
@@ -99,21 +113,22 @@ export class PublishAppComponent implements OnDestroy {
     this.workflows.removeAt(index);
   }
 
-  getTextFieldLength() {
-    this.appNameLength = this.f['appName'].valueChanges.pipe(map((val: string) => val.trim().length), takeUntil(this.destroy$));
-  }
-
   getApproverList(value: string[], index: number) {
     this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
-  nextStep(): void {
+  nextStep(submission?: any): void {
     if(this.activeIndex !== 3) {
       switch(this.activeIndex) {
         case 0:
-          if(this.f['appName'].invalid || this.f['appLink'].invalid || this.f['fullDescription'].invalid || this.f['appCategories'].invalid) {
-            return ['appName', 'appLink', 'fullDescription', 'appCategories'].forEach(val => this.f[val].markAsTouched())
+          const moduleDetails = {
+            categoryId: submission?.data?.moduleCategory,
+            title: submission?.data?.moduleTitle,
+            description: submission?.data?.description,
+            url: submission?.data?.moduleUrl
           }
+          setItem(StorageItem.publishAppValue, moduleDetails)
+          this.moduleData.next(moduleDetails);
           this.moveNext()
           break;
         case 1:
@@ -123,20 +138,21 @@ export class PublishAppComponent implements OnDestroy {
           if(this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true) {
             return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
           }
+          this.moduleData.next({...this.moduleData?.value, defaultWorkflow: this.workflows.value});
+          setItem(StorageItem.publishAppValue, this.moduleData?.value);
           this.moveNext()
           break;
         case 2:
-          if(!this.file && this.f['appIcon'].value == null) {
+          if(!this.file) {
             return this.notif.displayNotification('Please provide a valid icon for your app', 'Create Module', TuiNotification.Warning)
           }
-          this.moveNext()
+          this.moduleData.next({...this.moduleData?.value, url: this.file});
+          setItem(StorageItem.publishAppValue, this.moduleData?.value);
+          this.submitNewModule()
           break;
         default:
           this.moveNext()
       }
-    }
-    if(this.activeIndex == 3) {
-      this.submitNewModule()
     }
   }
 
@@ -148,9 +164,7 @@ export class PublishAppComponent implements OnDestroy {
 
   moveNext(): void {
     this.activeIndex++;
-    setItem(StorageItem.activeIndex, this.activeIndex);
-    setItem(StorageItem.publishAppValue, this.publishAppForm.value);
-    console.log(this.publishAppForm.value)
+    setItem(StorageItem.activeIndex, this.activeIndex)
   }
 
   onFileSelect(event: any) {
@@ -165,7 +179,6 @@ export class PublishAppComponent implements OnDestroy {
           reader.readAsDataURL(file);
           reader.onload = (e) => {
             this.file = reader.result;
-            this.f['appIcon'].setValue(this.file)
           };
         }
       });
@@ -203,24 +216,9 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   submitNewModule() {
-    const payload: Partial<Module> = {
-      categoryId: this.f['appCategories']?.value,
-      title: this.f['appName']?.value,
-      description: this.f['fullDescription']?.value,
-      url: this.f['appLink']?.value,
-      image: this.f['appIcon']?.value,
-      defaultWorkflow: this.workflows.value
-    }
-    console.log(payload)
-    setTimeout(() => {
-      this.activeIndex = 0;
-      this.publishAppForm.reset();
-      removeItem(StorageItem.publishAppValue);
-      removeItem(StorageItem.activeIndex);
-      this.file = null;
-    }, 1500)
+    console.log(this.moduleData.value)
   }
-  
+
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();
