@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { AuthService } from '../../auth.service';
-import { Subject, takeUntil, first, BehaviorSubject, Observable } from 'rxjs';
+import { Subject, takeUntil, first, Observable } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Router } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
@@ -9,53 +9,104 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  loginForm!: FormGroup;
-  passwordHide: boolean = true;
+export class LoginComponent implements OnDestroy {
   isLoggingIn$: Observable<boolean> = this.auth.isLoading$;
   destroy$ = new Subject();
+  userAuthData: any;
   loginViaActiveDir = new FormControl<boolean>(true);
+  public emailLoginForm: any = {
+    "title": "Login Form",
+    "components": [
+      {
+        "label": "Email",
+        "tableView": true,
+        "validate": {
+            "required": true,
+            "customMessage": "A valid email is required"
+        },
+        "key": "email",
+        "type": "email",
+        "input": true
+      },
+      {
+        "label": "Password",
+        "showCharCount": true,
+        "tableView": false,
+        "validate": {
+            "required": true,
+            "minLength": 8
+        },
+        "key": "password",
+        "type": "password",
+        "input": true,
+        "protected": true
+      },
+      {
+        "label": "Submit",
+        "showValidations": false,
+        "disableOnInvalid": true,
+        "tableView": false,
+        "key": "submit",
+        "type": "button",
+        "input": true,
+        "saveOnEnter": false
+      }
+    ]
+  };
+
+  public activeDirectoryLoginForm: any = {
+    "title": "Login Form",
+    "components": [
+      {
+        "label": "Username",
+        "tableView": true,
+        "validate": {
+          "required": true,
+          "customMessage": "Username is required"
+        },
+        "key": "username",
+        "type": "textfield",
+        "input": true
+      },
+      {
+        "label": "Password",
+        "showCharCount": true,
+        "tableView": false,
+        "validate": {
+            "required": true,
+            "minLength": 8
+        },
+        "key": "password",
+        "type": "password",
+        "input": true,
+        "protected": true
+      },
+      {
+        "label": "Submit",
+        "showValidations": false,
+        "disableOnInvalid": true,
+        "tableView": false,
+        "key": "submit",
+        "type": "button",
+        "input": true,
+        "saveOnEnter": false
+      }
+    ]
+  };
+
+  options: any = {
+    "disableAlerts": true
+  }
 
   constructor(private auth: AuthService, private notif: NotificationsService, private router: Router) {}
 
-  ngOnInit(): void {
-    this.initLoginForm();
-  }
-
-  initLoginForm() {
-    this.loginForm = new FormGroup({
-      email: new FormControl(null, Validators.compose([
-        Validators.required,
-        Validators.email
-      ])),
-      username: new FormControl(null, Validators.compose([
-        Validators.required
-      ])),
-      password: new FormControl(null, Validators.compose([
-        Validators.required,
-        Validators.maxLength(200),
-        Validators.minLength(6),
-        // Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$')
-      ]))
-    })
-  }
-
-  get f() {
-    return this.loginForm.controls;
-  }
-
-  passwordShowHide(): void {
-    this.passwordHide = !this.passwordHide;
-  }
-
-  submitForm() {
+  onSubmit(submission: any) {
     if(this.loginViaActiveDir?.value === true) {
       const params: any = {
-        username: this.f['username']?.value,
-        password: this.f['password']?.value
+        username: submission?.data?.username,
+        password: submission?.data?.password
       }
       if(params.username && params.password) {
         this.auth.loginWithActiveDirectory(params).pipe(takeUntil(this.destroy$), first())
@@ -66,14 +117,11 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         })
       }
-      else {
-        this.loginForm.markAllAsTouched();
-      }
     }
     else {
       const params: any = {
-        email: this.f['email']?.value,
-        password: this.f['password']?.value
+        email: submission?.data?.email,
+        password: submission?.data?.password
       }
       if(params.email && params.password) {
         this.auth.login(params).pipe(takeUntil(this.destroy$), first())
@@ -83,9 +131,6 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.router.navigate(['/dashboard/home'])
           }
         })
-      }
-      else {
-        this.loginForm.markAllAsTouched();
       }
     }
   }

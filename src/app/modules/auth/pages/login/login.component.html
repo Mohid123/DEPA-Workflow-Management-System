@@ -1,98 +1,27 @@
-<div class="bg_img relative">
-  <section class="absolute top-20 mx-auto left-0 right-0 text-center">
-    <div class="flex flex-col justify-center items-center">
+<div class="relative bg_img">
+  <section class="absolute left-0 right-0 mx-auto text-center top-20">
+    <div class="flex flex-col items-center justify-center">
       <div class="">
         <img ngSrc="../../../../../assets/depa_logo.svg" width="100" height="97"/>
       </div>
       <div class="card">
-        <p class="font-bold text-2xl pt-4 pb-2">Welcome to Depa App Store</p>
+        <p class="pt-4 pb-2 text-2xl font-bold">Welcome to Depa App Store</p>
         <p class="text-lg text-[#B5B5C3]">Enter your {{loginViaActiveDir?.value === false ? 'Login' : 'Windows'}} credentials</p>
-        <form [formGroup]="loginForm" class="text-left px-4 pt-2">
+        <div class="px-4 pt-2 text-left">
           <ng-container *ngIf="loginViaActiveDir?.value === false">
-            <label class="text-sm font-bold block">Email</label>
-            <tui-input
-              tuiTextfieldSize="l"
-              formControlName="email"
-              [tuiTextfieldLabelOutside]="true"
-            >
-              <input
-                tuiTextfield
-                type="email"
-              />
-            </tui-input>
-            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'Email address is required',
-              control: f['email']
-            }"></ng-container>
-            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-              validation: 'email',
-              message: 'Please provide a valid email address',
-              control: f['email']
-            }"></ng-container>
+            <formio (submit)="onSubmit($event)" [form]="emailLoginForm" [options]="options"></formio>
           </ng-container>
           <ng-container *ngIf="loginViaActiveDir?.value === true">
-            <label class="text-sm font-bold block">Username</label>
-            <tui-input
-              tuiTextfieldSize="l"
-              formControlName="username"
-              [tuiTextfieldLabelOutside]="true"
-            >
-              <input
-                tuiTextfield
-                type="text"
-              />
-            </tui-input>
-            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'User name is required',
-              control: f['username']
-            }"></ng-container>
+            <formio (submit)="onSubmit($event)" [form]="activeDirectoryLoginForm" [options]="options"></formio>
           </ng-container>
-          <br>
-          <label class="text-sm font-bold block">Password</label>
-          <tui-input-password
-            formControlName="password"
-            tuiTextfieldSize="l"
-            class="tui-space_top-2"
-            [tuiTextfieldLabelOutside]="true"
-          >
-            <input
-              tuiTextfield
-              placeholder="Enter your password"
-            />
-          </tui-input-password>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'required',
-            message: 'Password is required',
-            control: f['password']
-          }"></ng-container>
-          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-            validation: 'minlength',
-            message: 'Password should be atleast 6 characters',
-            control: f['password']
-          }"></ng-container>
-          <br>
-          <div class="inline-flex gap-x-3 pb-2">
+          <div class="inline-flex pb-2 gap-x-3">
             <tui-checkbox
               [formControl]="loginViaActiveDir"
               class="mt-0.5"
             ></tui-checkbox>
             <label>Login via Windows Credentials</label>
           </div>
-          <div class="text-center relative">
-            <button
-              tuiButton
-              type="button"
-              appearance="accent"
-              class="tui-space_right-3 tui-space_bottom-3"
-              [showLoader]="(isLoggingIn$ | async)!"
-              (click)="submitForm()"
-            >
-              Sign In
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </section>

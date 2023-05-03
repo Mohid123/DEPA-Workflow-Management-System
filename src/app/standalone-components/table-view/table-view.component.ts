@@ -4,7 +4,8 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { TuiPaginationModule } from '@taiga-ui/kit';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { TuiLoaderModule } from '@taiga-ui/core';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -12,7 +13,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-table-view',
   standalone: true,
-  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule],
+  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule],
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,7 +27,7 @@ export class TableViewComponent {
   /**
    * The data to display inside the table
    */
-  @Input() tableData: Observable<any>;
+  @Input() tableData: Observable<any> = of([]);
 
   /**
    * The filter parameters to show in the dropdown

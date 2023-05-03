@@ -3,88 +3,99 @@
     <a [routerLink]="['/appListing/add-submodule']"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
   </div>
 </div>
-<div class="relative overflow-x-auto rounded-lg shadow-lg">
-  <table class="w-full text-sm text-left text-gray-500">
-    <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
-      <tr>
-        <ng-container *ngFor="let column of tableColumns; let i = index; let first = first; let last = last;">
+
+<!-- <tui-loader [overlay]="true" size="xl"> -->
+  <div class="relative overflow-x-auto rounded-lg shadow-lg">
+    <table class="w-full text-sm text-left text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
+        <tr>
+          <ng-container *ngFor="let column of tableColumns; let i = index; let first = first; let last = last;">
+            <th scope="col" class="px-6 py-3 text-sm">
+              {{column}} &nbsp;
+              <ng-container *ngIf="column === 'Status'; else notStatus">
+                <filter
+                  [filterBy]="column"
+                  [searchEnabled]="false"
+                  [showSortCategories]="false"
+                  [items]="statusMenu"
+                  (applyStatus)="sendFilterValue($event)"
+                >
+              </filter>
+              </ng-container>
+              <ng-template #notStatus>
+                <ng-container *ngIf="column === 'Company Name'">
+                  <filter
+                    [filterBy]="column"
+                    [items]="filterMenuCompany"
+                    (applyStatus)="sendFilterValue($event)"
+                  >
+                </filter>
+                </ng-container>
+                <ng-container *ngIf="column === 'Module Name'">
+                  <filter
+                    [filterBy]="column"
+                    [items]="filterMenuModule"
+                    (applyStatus)="sendFilterValue($event)"
+                  >
+                </filter>
+                </ng-container>
+                <ng-container *ngIf="column === 'Submodule Name'">
+                  <filter
+                    [filterBy]="column"
+                    [items]="filterMenuSubmodule"
+                    (applyStatus)="sendFilterValue($event)"
+                  >
+                </filter>
+                </ng-container>
+              </ng-template>
+            </th>
+          </ng-container>
           <th scope="col" class="px-6 py-3 text-sm">
-            {{column}} &nbsp;
-            <ng-container *ngIf="column === 'Status'; else notStatus">
-              <filter
-                [filterBy]="column"
-                [searchEnabled]="false"
-                [showSortCategories]="false"
-                [items]="statusMenu"
-                (applyStatus)="sendFilterValue($event)"
-              >
-            </filter>
-            </ng-container>
-            <ng-template #notStatus>
-              <ng-container *ngIf="column === 'Company Name'">
-                <filter
-                  [filterBy]="column"
-                  [items]="filterMenuCompany"
-                  (applyStatus)="sendFilterValue($event)"
-                >
-              </filter>
-              </ng-container>
-              <ng-container *ngIf="column === 'Module Name'">
-                <filter
-                  [filterBy]="column"
-                  [items]="filterMenuModule"
-                  (applyStatus)="sendFilterValue($event)"
-                >
-              </filter>
-              </ng-container>
-              <ng-container *ngIf="column === 'Submodule Name'">
-                <filter
-                  [filterBy]="column"
-                  [items]="filterMenuSubmodule"
-                  (applyStatus)="sendFilterValue($event)"
-                >
-              </filter>
-              </ng-container>
-            </ng-template>
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="(tableData | async)?.length == 0; else showSubModules">
+          <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
+            It seems there are no submodules to show here!
           </th>
         </ng-container>
-        <th scope="col" class="px-6 py-3 text-sm">
-          Actions
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <ng-container *ngFor="let data of (tableData | async); let i = index; let first = first; let last = last">
-        <tr class="bg-white border-b border-gray-300">
-          <td class="px-6 py-4">
-            {{data?.companyId?.title}}
-          </td>
-          <td class="px-6 py-4">
-            {{data?.moduleId?.title}}
-          </td>
-          <td class="px-6 py-4">
-            {{data?.code}}
-          </td>
-          <td class="px-6 py-4">
-            {{data?.status === 1 ? 'Published' : 'Draft'}}
-          </td>
-          <td class="w-3/12 py-4">
-            <a class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
-              <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i> Edit
-            </a>
-            <a class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
-              <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> Delete
-            </a>
-          </td>
-        </tr>
-      </ng-container>
-    </tbody>
-  </table>
-  <div class="pt-10 pb-6">
-    <tui-pagination
-      [length]="length"
-      [index]="index"
-      (indexChange)="goToPage($event)"
-    ></tui-pagination>
+
+        <ng-template #showSubModules>
+          <ng-container *ngFor="let data of (tableData | async); let i = index; let first = first; let last = last">
+            <tr class="bg-white border-b border-gray-300">
+              <td class="px-6 py-4">
+                {{data?.companyId?.title}}
+              </td>
+              <td class="px-6 py-4">
+                {{data?.moduleId?.title}}
+              </td>
+              <td class="px-6 py-4">
+                {{data?.code}}
+              </td>
+              <td class="px-6 py-4">
+                {{data?.status === 1 ? 'Published' : 'Draft'}}
+              </td>
+              <td class="w-3/12 py-4">
+                <a class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                  <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i> Edit
+                </a>
+                <a class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+                  <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> Delete
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+      </tbody>
+    </table>
+    <div class="pt-10 pb-6">
+      <tui-pagination
+        [length]="length"
+        [index]="index"
+        (indexChange)="goToPage($event)"
+      ></tui-pagination>
+    </div>
   </div>
-</div>
+<!-- </tui-loader> -->

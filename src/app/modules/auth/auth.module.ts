@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiInputPasswordModule, TuiInputModule, TuiCheckboxModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { SubmoduleGuardComponent } from './templates/submodule-guard/submodule-guard.component';
+import { FormioModule } from '@formio/angular';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { SubmoduleGuardComponent } from './templates/submodule-guard/submodule-g
     TuiTextfieldControllerModule,
     NgOptimizedImage,
     TuiButtonModule,
-    TuiCheckboxModule
+    TuiCheckboxModule,
+    FormioModule
   ]
 })
 export class AuthModule { }
