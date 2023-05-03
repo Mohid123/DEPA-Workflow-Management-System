@@ -56,14 +56,14 @@
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">
-        <label class="block pb-2 text-sm font-bold">Admin users <span class="tui-required"></span></label>
+        <label class="block pb-1 text-sm">Admin users <span class="tui-required"></span></label>
         <custom-multi-select
           formControlName="adminUsers"
         ></custom-multi-select>
       </div>
 
       <div class="col-span-6">
-        <label class="block pb-2 text-sm font-bold">View Only users <span class="tui-required"></span></label>
+        <label class="block pb-1 text-sm">View Only users <span class="tui-required"></span></label>
         <custom-multi-select
           formControlName="viewOnlyUsers"
         ></custom-multi-select>
@@ -158,7 +158,7 @@
                 <option value="any">ANY</option>
               </select>
             </div>
-            <div class="col-span-2 mt-12" *ngIf="i > 0">
+            <div class="col-span-2 mt-8" *ngIf="i > 0">
               <button
                 tuiIconButton
                 type="button"
