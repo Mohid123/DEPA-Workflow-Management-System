@@ -242,4 +242,39 @@ export const workflowForm = {
       "input": true
     }
   ]
+};
+
+export const subModuleForm = {
+  "title": "Submodule Form",
+  "components": [
+    {
+        "label": "Submodule Url",
+        "tableView": true,
+        "validate": {
+            "required": true
+        },
+        "key": "submoduleUrl",
+        "type": "url",
+        "input": true
+    },
+    {
+        "label": "Company Name",
+        "widget": "html5",
+        "tableView": true,
+        "validate": {
+          "required": true
+        },
+        "key": "companyName",
+        "type": "select",
+        "data": {
+          "values": [
+            {"value": 'apple', "label": 'Apple'},
+            {"value": 'banana', "label": 'Banana'},
+            {"value": 'pear', "label": 'Pear'},
+            {"value": 'orange', "label": 'Orange'}
+          ]
+        },
+        "input": true
+    }
+  ]
 }

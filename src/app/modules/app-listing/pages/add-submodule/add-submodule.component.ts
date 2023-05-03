@@ -2,6 +2,8 @@ import { Component, EventEmitter, HostListener } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
+import { BehaviorSubject } from 'rxjs';
+import { subModuleForm } from 'src/app/forms/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { options } from 'src/app/modules/form-builder/options';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -43,6 +45,12 @@ export class AddSubmoduleComponent {
     'ANY'
   ];
   formTabs: any[] = [];
+  subModForm = subModuleForm;
+  formOptions: any = {
+    "disableAlerts": true
+  };
+  prePopulatedDataDetails: any;
+  subModuleFormIoValue = new BehaviorSubject<any>({})
 
   constructor(
     private fb: FormBuilder,
@@ -55,6 +63,12 @@ export class AddSubmoduleComponent {
     this.formTabs = this.formComponents.map(val => val.formTitle);
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     this.initSubModuleForm(this.submoduleFromLS);
+    this.prePopulatedDataDetails = {
+      "data": {
+        "submoduleUrl": this.submoduleFromLS?.subModuleUrl,
+        "companyName": this.submoduleFromLS?.companyName
+      }
+    }
   }
 
   @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
@@ -85,6 +99,10 @@ export class AddSubmoduleComponent {
         ]
       )
     })
+  }
+
+  getFormIoValueOnChange(value: any) {
+    this.subModuleFormIoValue.next(value?.data)
   }
 
   get f() {
@@ -131,6 +149,8 @@ export class AddSubmoduleComponent {
   }
 
   saveDraft() {
+    this.subModuleForm.get('subModuleUrl')?.setValue(this.subModuleFormIoValue?.value.submoduleUrl)
+    this.subModuleForm.get('companyName')?.setValue(this.subModuleFormIoValue?.value.companyName)
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
     console.log(this.subModuleForm.value)

@@ -1,74 +1,24 @@
 <app-header></app-header>
-<section class="w-11/12 mx-auto mt-52 h-auto min-h-screen pb-44">
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
     <h3 class="text-xl font-semibold">Create new submodule</h3>
   </section>
-  <form class="pt-5 block" [formGroup]="subModuleForm">
-    <div class="mb-8">
-      <label class="text-sm font-bold block pb-2">Submodule URL <span class="tui-required"></span></label>
-      <tui-input
-        formControlName="subModuleUrl"
-        [tuiTextfieldCleaner]="true"
-        tuiTextfieldSize="l"
-        [tuiTextfieldLabelOutside]="true"
-      >
-        <input
-          tuiTextfield
-          type="text"
-          placeholder="Add submodule url..."
-        />
-      </tui-input>
-      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-        validation: 'required',
-        message: 'A valid URL is required',
-        control: f['subModuleUrl']
-      }"></ng-container>
-      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-        validation: 'pattern',
-        message: 'The provided URL is not valid',
-        control: f['subModuleUrl']
-      }"></ng-container>
-    </div>
-
-    <div class="mb-3">
-      <label class="text-sm font-bold block pb-2">Company name <span class="tui-required"></span></label>
-      <tui-select formControlName="companyName" [tuiTextfieldLabelOutside]="true">
-        <input
-          tuiTextfield
-          placeholder="Select Company"
-        />
-        <tui-data-list-wrapper
-          *tuiDataList
-          [items]="categoryOptions"
-        ></tui-data-list-wrapper>
-      </tui-select>
-      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-        validation: 'required',
-        message: 'Please select a company',
-        control: f['companyName']
-      }"></ng-container>
-    </div>
-
+  <form class="block pt-5" [formGroup]="subModuleForm">
+    <formio (change)="getFormIoValueOnChange($event)" [form]="subModForm" [options]="formOptions" [submission]="prePopulatedDataDetails"></formio>
     <div class="my-2">
       <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
     </div>
     <ng-container formArrayName="companies">
       <ng-container *ngFor="let company of companies.controls; let i = index; let first = first; let last = last">
-        <div class="px-8 w-7/12" [formGroupName]="i">
-          <div class="flex justify-between items-center mb-3 gap-2 w-full">
+        <div class="w-7/12 px-8" [formGroupName]="i">
+          <div class="flex items-center justify-between w-full gap-2 mb-3">
             <div class="w-full">
-              <label *ngIf="i == 0" class="text-xs font-semibold block pb-2">Add new companies</label>
-              <tui-input
-                formControlName="title"
-                [tuiTextfieldCleaner]="true"
-                tuiTextfieldSize="m"
-                [tuiTextfieldLabelOutside]="true"
-              >
+              <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new companies</label>
                 <input
-                  tuiTextfield
+                  class="form-control"
+                  formControlName="title"
                   type="text"
                 />
-              </tui-input>
             </div>
             <div [ngClass]="first ? 'mt-7': 'mt-0'">
               <button
@@ -104,16 +54,16 @@
     ></button>
 
     <!--Admin and View only users-->
-    <div class="my-8 grid grid-cols-12 gap-3">
+    <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">
-        <label class="text-sm font-bold block pb-2">Admin users <span class="tui-required"></span></label>
+        <label class="block pb-2 text-sm font-bold">Admin users <span class="tui-required"></span></label>
         <custom-multi-select
           formControlName="adminUsers"
         ></custom-multi-select>
       </div>
 
       <div class="col-span-6">
-        <label class="text-sm font-bold block pb-2">View Only users <span class="tui-required"></span></label>
+        <label class="block pb-2 text-sm font-bold">View Only users <span class="tui-required"></span></label>
         <custom-multi-select
           formControlName="viewOnlyUsers"
         ></custom-multi-select>
@@ -121,18 +71,18 @@
     </div>
 
     <!--Form preview-->
-    <div class="mt-7 mb-5">
-      <h3 class="text-lg font-semibold mb-5">Create Form</h3>
+    <div class="mb-5 mt-7">
+      <h3 class="mb-5 text-lg font-semibold">Create Form</h3>
       <h4 class="text-base font-semibold text-center">Form/s Preview</h4>
-      <div class="w-full flex flex-col px-5 bg-gray-50 mx-auto rounded-md border border-dashed border-gray-400 mt-5">
+      <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
         <ng-container *ngIf="formComponents[0]?.components?.length > 0">
-          <!-- <div class="inline-flex gap-3 mb-8 mt-3" [formGroup]="languageForm">
+          <!-- <div class="inline-flex gap-3 mt-3 mb-8" [formGroup]="languageForm">
             <tui-radio-labeled
               formControlName="languages"
               size="l"
               [item]="langItems[0]"
               (click)="changeLanguage(langItems[0]?.name)"
-              
+
             >
               English
             </tui-radio-labeled>
@@ -156,9 +106,9 @@
               </ng-container>
             </nav>
             <ng-container *ngFor="let form of formComponents; let i = index;">
-              <div *ngIf="activeIndex == i" class="well jsonviewer w-full">
+              <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
                 <div class="flex justify-end">
-                  <a (click)="sendFormForEdit(i)" class="px-2 py-1 rounded-md bg-slate-200 cursor-pointer">
+                  <a (click)="sendFormForEdit(i)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
                     <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -170,13 +120,13 @@
         </ng-container>
         <ng-container *ngIf="formComponents[0]?.components?.length == 0">
           <div class="grid grid-cols-12 gap-2">
-            <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
-            <div data-placeholder class="my-3 h-8 col-span-6 overflow-hidden rounded-md bg-gray-200"></div>
-            <div data-placeholder class="h-32 mb-3 col-span-12 overflow-hidden rounded-md bg-gray-200"></div>
+            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            <div data-placeholder class="h-32 col-span-12 mb-3 overflow-hidden bg-gray-200 rounded-md"></div>
           </div>
         </ng-container>
       </div>
-      <div class="my-1 w-full mx-auto">
+      <div class="w-full mx-auto my-1">
         <p class="text-xs text-gray-500">The form you add will appear here</p>
       </div>
     </div>
@@ -191,27 +141,22 @@
     <!--Edit Workflow-->
     <div class="mt-12">
       <h4 class="text-lg font-semibold">Modify default workflow</h4>
-      <p class="text-sm text-gray-500 my-2">The default workflow will be used if you choose not to modify it</p>
+      <p class="my-2 text-sm text-gray-500">The default workflow will be used if you choose not to modify it</p>
       <ng-container formArrayName="workflows">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
             <div class="col-span-5">
-              <label class="text-sm font-semibold block pb-2">Approvers</label>
+              <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
               <custom-multi-select formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
             </div>
             <div class="col-span-5">
-              <label class="text-sm font-semibold block pb-2">Condition</label>
-              <tui-select formControlName="condition" [tuiTextfieldLabelOutside]="true">
-                <input
-                  tuiTextfield
-                  placeholder="Select Conditon"
-                />
-                <tui-data-list-wrapper
-                  *tuiDataList
-                  [items]="conditions"
-                ></tui-data-list-wrapper>
-              </tui-select>
+              <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+              <select formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                <option value="and">AND</option>
+                <option value="or">OR</option>
+                <option value="any">ANY</option>
+              </select>
             </div>
             <div class="col-span-2 mt-12" *ngIf="i > 0">
               <button
@@ -256,7 +201,7 @@
         appearance="accent"
       >Cancel</button>
     </div>
-  </form> 
+  </form>
 </section>
 <app-footer></app-footer>
 
