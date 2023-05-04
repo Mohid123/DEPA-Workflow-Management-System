@@ -1,11 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
-import { Observable, map, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, map, shareReplay, tap } from 'rxjs';
 import { ApiService } from 'src/core/core-services/api.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
+import { Module } from 'src/core/models/module.model';
+import { User } from 'src/core/models/user.model';
 
 /**
  * Interface for Breadcrumb navigation
@@ -31,6 +34,7 @@ interface BreadCrumbs {
 
 export class DashboardService extends ApiService<any> {
 
+  creatingModule = new Subject<boolean>();
   /**
    * Breadcrumb array to display
    */
@@ -80,7 +84,7 @@ export class DashboardService extends ApiService<any> {
         return res.data
       }
       else {
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get dashboard apps', TuiNotification.Error)
+        return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch data', 'Get dashboard apps', TuiNotification.Error)
       }
     }))
   }
@@ -92,6 +96,61 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)
+      }
+    }))
+  }
+
+  getAllUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
+    const params: any = {
+      limit: limit,
+      page: page,
+      name: name ?? undefined
+    }
+    return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data?.results?.map((value: User) => {
+          return {
+            id: value?.id,
+            name: value?.fullName,
+            control: new FormControl<boolean>(false)
+          }
+        })
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch users', 'Get Users', TuiNotification.Error)
+      }
+    }))
+  }
+
+  getAllCategories(): Observable<ApiResponse<any>> {
+    return this.get(`/categories`)
+    .pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        const response = res.data?.results?.map((data: any) => {
+          return {
+            id: data?.id,
+            name: data?.name
+          }
+        });
+        return response
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch categories', 'Get categories', TuiNotification.Error)
+      }
+    }))
+  }
+
+  createModule(payload: Module): Observable<ApiResponse<any>> {
+    this.creatingModule.next(true)
+    return this.post(`/modules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        console.log(res?.data);
+        this.creatingModule.next(false)
+        return res.data
+      }
+      else {
+        this.creatingModule.next(false)
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Module', TuiNotification.Error)
       }
     }))
   }

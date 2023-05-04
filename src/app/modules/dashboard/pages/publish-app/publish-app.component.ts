@@ -6,6 +6,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
 import { createModuleDetailsForm } from 'src/app/forms/forms';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DashboardService } from '../../dashboard.service';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -48,6 +49,8 @@ export class PublishAppComponent implements OnDestroy {
     'ANY'
   ];
 
+  categories: any
+
   options: any = {
     "disableAlerts": true
   };
@@ -56,12 +59,84 @@ export class PublishAppComponent implements OnDestroy {
   workflowForm: FormGroup;
 
   public moduleDetailsForm: any = createModuleDetailsForm;
+  categoryDataForFormIOSelect = new BehaviorSubject<any>(null);
 
-  constructor(private fb: FormBuilder, private notif: NotificationsService) {
+  constructor(private fb: FormBuilder, private notif: NotificationsService, private dashboard: DashboardService) {
+    this.dashboard.getAllCategories().pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      this.categories = value?.map(data => {
+        return {
+          value: data?.id,
+          label: data?.name
+        }
+      });
+      this.moduleDetailsForm = {
+        "title": "Module details form",
+        "components": [
+          {
+            "label": "Module Title",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "key": "moduleTitle",
+            "type": "textfield",
+            "input": true
+          },
+          {
+            "label": "Module URL",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "key": "moduleUrl",
+            "type": "url",
+            "input": true
+          },
+          {
+            "label": "Description",
+            "autoExpand": false,
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "key": "description",
+            "type": "textarea",
+            "input": true
+          },
+          {
+            "label": "Module Category",
+            "widget": "html5",
+            "tableView": true,
+            "data": {
+              "values": this.categories
+            },
+            "validate": {
+                "required": true
+            },
+            "key": "moduleCategory",
+            "type": "select",
+            "input": true
+          },
+          {
+            "label": "Proceed to Default Workflow",
+            "showValidations": false,
+            "customClass": "flex justify-end",
+            "tableView": false,
+            "key": "proceedToDefaultWorkflow",
+            "type": "button",
+            "input": true,
+            "saveOnEnter": false,
+            "disableOnInvalid": true
+          }
+        ]
+      };
+    });
+    
     this.localStorageApp = getItem(StorageItem.publishAppValue);
     if(this.localStorageApp) {
       this.initWorkflowForm(this.localStorageApp);
       this.moduleData.next(this.localStorageApp);
+      this.file = this.localStorageApp?.image
       this.prePopulatedDataDetails = {
         "data": {
           "moduleCategory": this.localStorageApp?.categoryId,
@@ -71,10 +146,13 @@ export class PublishAppComponent implements OnDestroy {
         }
       }
     }
+    else {
+      this.initWorkflowForm();
+    }
   }
 
   initWorkflowForm(item?: any) {
-    if(item.defaultWorkflow) {
+    if(item?.defaultWorkflow) {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array(
           item?.defaultWorkflow?.map((val: { condition: any; approverIds: any; }) => {
@@ -129,7 +207,7 @@ export class PublishAppComponent implements OnDestroy {
           }
           setItem(StorageItem.publishAppValue, moduleDetails)
           this.moduleData.next(moduleDetails);
-          this.moveNext()
+          this.moveNext();
           break;
         case 1:
           if(this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true)) {
@@ -138,7 +216,19 @@ export class PublishAppComponent implements OnDestroy {
           if(this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true) {
             return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
           }
-          this.moduleData.next({...this.moduleData?.value, defaultWorkflow: this.workflows.value});
+          const defaultFlow = this.workflows?.value?.map(data => {
+            return {
+              approverIds: data.approverIds?.map(approvers => {
+                if(approvers?.id) {
+                  return approvers?.id
+                }
+                return approvers
+              }),
+              condition: data?.condition
+            }
+          });
+          console.log(defaultFlow)
+          this.moduleData.next({...this.moduleData?.value, defaultWorkflow: defaultFlow});
           setItem(StorageItem.publishAppValue, this.moduleData?.value);
           this.moveNext()
           break;
@@ -146,7 +236,7 @@ export class PublishAppComponent implements OnDestroy {
           if(!this.file) {
             return this.notif.displayNotification('Please provide a valid icon for your app', 'Create Module', TuiNotification.Warning)
           }
-          this.moduleData.next({...this.moduleData?.value, url: this.file});
+          this.moduleData.next({...this.moduleData?.value, image: this.file});
           setItem(StorageItem.publishAppValue, this.moduleData?.value);
           this.submitNewModule()
           break;
@@ -157,6 +247,14 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   previousStep(): void {
+    this.prePopulatedDataDetails = {
+      "data": {
+        "moduleCategory": this.moduleData?.value?.categoryId,
+        "moduleTitle": this.moduleData?.value?.title,
+        "description": this.moduleData?.value?.description,
+        "moduleUrl": this.moduleData?.value?.url
+      }
+    }
     if(this.activeIndex !== 0)
     this.activeIndex--;
     setItem(StorageItem.activeIndex, this.activeIndex)
@@ -169,23 +267,23 @@ export class PublishAppComponent implements OnDestroy {
 
   onFileSelect(event: any) {
     const file = event?.target?.files[0];
-    if(this.calculateFileSize(file) == true) {
-      this.calculateAspectRatio(file).then((res) => {
-        if(res == false) {
-          this.notif.displayNotification('Image width and height should be 500px (1:1 aspect ratio)', 'File Upload', TuiNotification.Warning)
-        }
-        else {
+    // if(this.calculateFileSize(file) == true) {
+    //   this.calculateAspectRatio(file).then((res) => {
+    //     if(res == false) {
+    //       this.notif.displayNotification('Image width and height should be 500px (1:1 aspect ratio)', 'File Upload', TuiNotification.Warning)
+    //     }
+    //     else {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = (e) => {
             this.file = reader.result;
           };
-        }
-      });
-    }
-    else {
-      this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 1MB', 'File Upload', TuiNotification.Warning)
-    }
+      //   }
+      // });
+    // }
+    // else {
+    //   this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 1MB', 'File Upload', TuiNotification.Warning)
+    // }
   }
 
   calculateAspectRatio(image: any): Promise<boolean> {
@@ -216,7 +314,8 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   submitNewModule() {
-    console.log(this.moduleData.value)
+    console.log(this.moduleData.value);
+    this.dashboard.createModule(this.moduleData.value).pipe(takeUntil(this.destroy$)).subscribe()
   }
 
   ngOnDestroy(): void {

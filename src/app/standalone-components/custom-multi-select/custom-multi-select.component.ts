@@ -3,12 +3,16 @@ import { CommonModule } from '@angular/common';
 import { TuiCheckboxLabeledModule, TuiInputModule } from '@taiga-ui/kit';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, filter, map, switchMap, takeUntil } from 'rxjs';
+import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
+import { ApiResponse } from 'src/core/models/api-response.model';
+import { User } from 'src/core/models/user.model';
 
 /**
  * @ignore
  */
 export class dropDownItems {
+  id: string;
   name: string;
   control: FormControl
 }
@@ -64,7 +68,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
   /**
    * @ignore
    */
-  inputFieldArr: string[] = [];
+  inputFieldArr: any[] = [];
 
   /**
    * @ignore
@@ -74,19 +78,37 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
   /**
    * Dropdown user list
    */
-  @Input() users: dropDownItems[] =
-  [
-    {name: 'Ali khan raja raunaqzai', control: new FormControl(false)},
-    {name: 'Abid ahmad tarakai', control: new FormControl(false)},
-    {name: 'Junaid mehmood', control: new FormControl(false)},
-    {name: 'Fadi', control: new FormControl(false)},
-    {name: 'Ahtasham', control: new FormControl(false)}
-  ];
+  @Input() users: BehaviorSubject<any> = new BehaviorSubject([]);
+
+  limit: number = 10;
+  page: number = 1;
 
   /**
    * List of approvers that will be sent to server as part of workflow 
    */
   @Output() approverList = new EventEmitter();
+
+  constructor(private dashboard: DashboardService) {
+    this.getUserData(this.limit, this.page)
+
+    this.searchValue.valueChanges
+    .pipe(
+      takeUntil(this.destroy$),
+      debounceTime(400),
+      map(val => val.trim()),
+      switchMap(searchStr => searchStr == '' ? this.dashboard.getAllUsers(this.limit, this.page, undefined) : this.dashboard.getAllUsers(this.limit, this.page, searchStr))
+    ).subscribe(users => {
+      this.users.next(users);
+    })
+  }
+
+  getUserData(limit: number, page: number) {
+    this.dashboard.getAllUsers(limit, page)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      this.users.next(res);
+    });
+  }
 
   /**
    * Click Event Listener on the document to close dropdown. Excludes the dropdown element from event listener
@@ -134,12 +156,12 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    * @param {any} event 
    */
   selectValueAndPushToInput(user: any, event: any) {
-    if(user?.control.value === true && this.inputFieldArr.includes(user?.name)) {
+    if(user?.control.value === true && this.inputFieldArr.includes(user)) {
       this.removeItem(user.name);
       this.approverList.emit(this.inputFieldArr);
     }
     if(event.target?.checked === true) {
-      this.inputFieldArr.push(user?.name);
+      this.inputFieldArr.push(user);
       this.approverList.emit(this.inputFieldArr);
     }
   }
@@ -148,29 +170,35 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    * Writes the provided formControlName value to the component
    * @param {any} value It can be any data type that is provided in the formControlName in the selector of this component
    */
-  writeValue(value: any) {
-    this.inputFieldArr = value;
-    value.forEach((str) => {
-      this.users.map((val) => {
-        if(val.name == str) {
+  writeValue(approverIds: any) {
+    this.users?.pipe(takeUntil(this.destroy$)).subscribe(user => {
+      user = user?.filter((val) => {
+        if(approverIds?.includes(val.id)) {
           val.control.setValue(true);
+          return val
         }
-        return val
-      })
+        else if(approverIds.map(user => user?.id).includes(val.id)) {
+          val.control.setValue(true);
+          return val
+        }
+      });
+      this.inputFieldArr = user
     });
   }
 
   /**
    * Removes value from option list and DOM
-   * @param {string} value The name of the user
+   * @param {any} value The user object
    */
-  removeItem(value: string) {
+  removeItem(value: any) {
     const index = this.inputFieldArr.indexOf(value);
     this.inputFieldArr.splice(index, 1);
-    this.users.forEach((val: dropDownItems) => {
-      if(val.name === value && val.control.value === true) {
-        val.control.setValue(false)
-      }
+    this.users.forEach((val: dropDownItems[]) => {
+      val.forEach(user => {
+        if(user === value && user.control.value === true) {
+          user.control.setValue(false)
+        }
+      })
     })
   }
 

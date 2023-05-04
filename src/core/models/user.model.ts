@@ -4,6 +4,7 @@ import { BaseModel } from "./base.model";
  * @ignore
  */
 export class User extends BaseModel {
+  id: string;
   username: string;
   fullName: string;
   email: string;

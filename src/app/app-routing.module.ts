@@ -17,22 +17,22 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    // canActivate: [AuthGuard, SubmoduleGuard],
+    canActivate: [AuthGuard, SubmoduleGuard],
     loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
     path: 'form-builder',
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     loadChildren: () => import('./modules/form-builder/form-builder.module').then(m => m.FormBuilderModule)
   },
   {
     path: 'appListing',
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
   },
   {
     path: 'workflows',
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     loadChildren: () => import('./modules/workflows/workflows.module').then(m => m.WorkflowsModule)
   }
 ];

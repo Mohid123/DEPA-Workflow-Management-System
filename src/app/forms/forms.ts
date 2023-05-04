@@ -117,12 +117,7 @@ export const createModuleDetailsForm = {
       "widget": "html5",
       "tableView": true,
       "data": {
-        "values": [
-          {"value": 'apple', "label": 'Apple'},
-          {"value": 'banana', "label": 'Banana'},
-          {"value": 'pear', "label": 'Pear'},
-          {"value": 'orange', "label": 'Orange'}
-        ]
+        "values": []
       },
       "validate": {
           "required": true
