@@ -190,6 +190,7 @@
         size="m"
         appearance="primary"
         (click)="saveSubModule()"
+        [showLoader]="isCreatingSubModule | async"
       >Publish</button>
       <button
         tuiButton

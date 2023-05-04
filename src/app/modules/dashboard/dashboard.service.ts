@@ -182,6 +182,7 @@ export class DashboardService extends ApiService<any> {
   }
 
   editModule(moduleID: string, payload: any): Observable<ApiResponse<any>> {
+    this.creatingModule.next(true);
     return this.patch(`/modules/${moduleID}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         this.creatingModule.next(false)
@@ -213,12 +214,17 @@ export class DashboardService extends ApiService<any> {
   }
 
   createSubModule(payload: any): Observable<ApiResponse<any>> {
+    this.creatingModule.next(true);
+    debugger
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
+        debugger
+        this.creatingModule.next(false)
         this.notif.displayNotification('Submodule created successfully', 'Create SubModule', TuiNotification.Success);
         return res.data
       }
       else {
+        this.creatingModule.next(false)
         return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create SubModule', TuiNotification.Error);
       }
     }))

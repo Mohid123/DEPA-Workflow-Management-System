@@ -53,6 +53,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   prePopulatedDataDetails: any;
   subModuleFormIoValue = new BehaviorSubject<any>({});
   destroy$ = new Subject();
+  isCreatingSubModule = new Subject<boolean>();
 
   constructor(
     private fb: FormBuilder,
@@ -81,8 +82,7 @@ export class AddSubmoduleComponent implements OnDestroy {
 
     this.options = options;
     this.formComponents = this.transportService.formBuilderData.value;
-    console.log(this.formComponents)
-    this.formTabs = this.formComponents.map(val => val.formTitle);
+    this.formTabs = this.formComponents.map(val => val.title);
     this.prePopulatedDataDetails = {
       "data": {
         "submoduleUrl": this.submoduleFromLS?.subModuleUrl,
@@ -219,7 +219,6 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.subModuleForm.get('companyName')?.setValue(this.subModuleFormIoValue?.value.companyName)
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
-    console.log(this.subModuleForm.value)
     this.router.navigate(['/form-builder']);
   }
 
@@ -235,15 +234,19 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   saveSubModule() {
-    console.log(this.subModuleForm.value)
+    this.isCreatingSubModule = this.dashboard.creatingModule
+    console.log(this.workflows?.value)
     const payload = {
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: this.subModuleForm.get('companyName')?.value + Array(8).fill(null).map(() => Math.round(Math.random() * 4).toString(4)).join(''),
-      adminUsers: this.subModuleForm.get('adminUsers')?.value,
-      viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value,
-      formIds: ''
+      code: 'subMod' + '-' + Array(8).fill(null).map(() => Math.round(Math.random() * 4).toString(4)).join(''),
+      adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
+      viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+      formIds: this.formComponents,
+      steps: this.workflows?.value
     }
+    console.log('FINAL PAYLOAD', payload);
+    this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe()
   }
 
   setAdminUsers(users: string[]) {
