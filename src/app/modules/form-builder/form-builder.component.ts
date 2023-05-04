@@ -14,7 +14,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 export class FormBuilderComponent {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
-  public form: {formTitle: string, display: string, components: []};
+  public form: {title: string, key: string, display: string, components: []};
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   activeIndex: number = 0;
   formValue: any;
@@ -45,11 +45,11 @@ export class FormBuilderComponent {
     this.editMode = this.transportService.isFormEdit.value;
     if(this.editMode === true) {
       this.form = this.transportService.sendFormDataForEdit.value;
-      this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.formTitle);
+      this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
       this.formTitleControl.disable();
     }
     else {
-      this.form = {formTitle: this.formTitleControl?.value, display: this.formDisplayType.value, components: []};
+      this.form = {title: this.formTitleControl?.value, key: '', display: this.formDisplayType.value, components: []};
     }
   }
 
@@ -64,7 +64,7 @@ export class FormBuilderComponent {
       value: event.form
     });
     event.form.display = this.formDisplayType?.value;
-    event.form.formTitle = this.formTitleControl?.value;
+    event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
   }
 
@@ -84,28 +84,29 @@ export class FormBuilderComponent {
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
     }
-    this.form.formTitle = this.formTitleControl?.value;
+    this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
+    this.form.key = this.formTitleControl?.value + + Array(8).fill(null).map(() => Math.round(Math.random() * 4).toString(4)).join('') 
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];
         this.transportService.sendFormBuilderData(data);
-        this.router.navigate(['/appListing/add-submodule']);
+        this.router.navigate(['/appListing/add-submodule'], { queryParams: { id: this.transportService.moduleID?.value } });
       }
       else {
         this.transportService.sendFormBuilderData([this.form]);
-        this.router.navigate(['/appListing/add-submodule']);
+        this.router.navigate(['/appListing/add-submodule'], { queryParams: { id: this.transportService.moduleID?.value } });
       }
     }
     else {
       const data = this.transportService.formBuilderData.value?.map(val => {
-        if(val.formTitle == this.form?.formTitle) {
+        if(val.title == this.form?.title) {
           val = this.form
         }
         return val
       });
       this.transportService.sendFormBuilderData(data);
-      this.router.navigate(['/appListing/add-submodule']);
+      this.router.navigate(['/appListing/add-submodule'], { queryParams: { id: this.transportService.moduleID?.value } });
     }
   }
 
@@ -115,12 +116,12 @@ export class FormBuilderComponent {
 
   cancelFormData() {
     if(this.editMode == false) {
-      this.transportService.sendFormBuilderData([{formTitle: '', components: []}]);
+      this.transportService.sendFormBuilderData([{title: '', components: []}]);
       this.router.navigate(['/appListing/add-submodule']);
     }
     else {
       const data = this.transportService.formBuilderData.value?.map(val => {
-        if(val.formTitle == this.form?.formTitle) {
+        if(val.title == this.form?.title) {
           val = this.form
         }
         return val

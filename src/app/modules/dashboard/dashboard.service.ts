@@ -182,16 +182,55 @@ export class DashboardService extends ApiService<any> {
   }
 
   editModule(moduleID: string, payload: any): Observable<ApiResponse<any>> {
-    debugger
     return this.patch(`/modules/${moduleID}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        debugger
         this.creatingModule.next(false)
         return res.data
       }
       else {
         this.creatingModule.next(false)
         return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Module', TuiNotification.Error)
+      }
+    }))
+  }
+
+  getWorkflowFromModule(moduleID: string): Observable<ApiResponse<any>> {
+    return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.moduleEditData.next(res.data);
+        const response = res.data?.workFlowId?.stepIds?.map(data => {
+          return {
+            approverIds: data?.approverIds?.map(ids => ids.id),
+            condition: data?.condition
+          }
+        });
+        return response;
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+      }
+    }))
+  }
+
+  createSubModule(payload: any): Observable<ApiResponse<any>> {
+    return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Submodule created successfully', 'Create SubModule', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create SubModule', TuiNotification.Error);
+      }
+    }))
+  }
+
+  getAllCompanies(): Observable<ApiResponse<any>> {
+    return this.get(`/companies`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch data', 'Fetch companies', TuiNotification.Error);
       }
     }))
   }

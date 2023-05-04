@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { TuiPaginationModule } from '@taiga-ui/kit';
 import { Observable, of } from 'rxjs';
@@ -76,6 +76,12 @@ export class TableViewComponent {
    * @ignore
    */
   index = 1;
+
+  moduleId: string;
+
+  constructor(private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.params.subscribe(val => this.moduleId = val['id'])
+  }
 
   /**
    *

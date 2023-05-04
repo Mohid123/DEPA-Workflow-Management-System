@@ -23,13 +23,15 @@ export class DataTransportService {
    * @ignore
    */
   public formBuilderData: BehaviorSubject<any> = new BehaviorSubject([
-    {formTitle: '', components: []}
+    {title: '', key: '', display: '', components: []}
   ]);
 
   /**
    * @ignore
    */
   public subModuleDraft: BehaviorSubject<any> = new BehaviorSubject({});
+
+  moduleID = new BehaviorSubject<string>('')
 
   /**
    * @ignore
@@ -44,7 +46,7 @@ export class DataTransportService {
   /**
    * @ignore
    */
-  public sendFormDataForEdit: BehaviorSubject<any> = new BehaviorSubject({formTitle: '', display: '', components: []})
+  public sendFormDataForEdit: BehaviorSubject<any> = new BehaviorSubject({title: '', key: '', display: '', components: []})
 
   /**
    * Data transport constructor definition
@@ -66,6 +68,5 @@ export class DataTransportService {
   saveDraftLocally(data: any) {
     this.subModuleDraft.next(data);
   }
-
   
 }

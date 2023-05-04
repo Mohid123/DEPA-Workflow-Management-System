@@ -272,12 +272,7 @@ export const subModuleForm = {
         "key": "companyName",
         "type": "select",
         "data": {
-          "values": [
-            {"value": 'apple', "label": 'Apple'},
-            {"value": 'banana', "label": 'Banana'},
-            {"value": 'pear', "label": 'Pear'},
-            {"value": 'orange', "label": 'Orange'}
-          ]
+          "values": []
         },
         "input": true
     }

@@ -59,6 +59,7 @@
         <label class="block pb-1 text-sm">Admin users <span class="text-red-500">*</span></label>
         <custom-multi-select
           formControlName="adminUsers"
+          (approverList)="setAdminUsers($event)"
         ></custom-multi-select>
       </div>
 
@@ -66,6 +67,7 @@
         <label class="block pb-1 text-sm">View Only users <span class="text-red-500">*</span></label>
         <custom-multi-select
           formControlName="viewOnlyUsers"
+          (approverList)="setViewUsers($event)"
         ></custom-multi-select>
       </div>
     </div>
@@ -187,6 +189,7 @@
         type="button"
         size="m"
         appearance="primary"
+        (click)="saveSubModule()"
       >Publish</button>
       <button
         tuiButton
