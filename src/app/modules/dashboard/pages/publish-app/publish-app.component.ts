@@ -7,6 +7,7 @@ import {TUI_ARROW} from '@taiga-ui/kit';
 import { createModuleDetailsForm } from 'src/app/forms/forms';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -49,7 +50,8 @@ export class PublishAppComponent implements OnDestroy {
     'ANY'
   ];
 
-  categories: any
+  categories: any;
+  isCreatingModule = new Subject<boolean>();
 
   options: any = {
     "disableAlerts": true
@@ -61,7 +63,12 @@ export class PublishAppComponent implements OnDestroy {
   public moduleDetailsForm: any = createModuleDetailsForm;
   categoryDataForFormIOSelect = new BehaviorSubject<any>(null);
 
-  constructor(private fb: FormBuilder, private notif: NotificationsService, private dashboard: DashboardService) {
+  constructor(
+    private fb: FormBuilder,
+    private notif: NotificationsService,
+    private dashboard: DashboardService,
+    private router: Router
+  ) {
     this.dashboard.getAllCategories().pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       this.categories = value?.map(data => {
         return {
@@ -118,6 +125,16 @@ export class PublishAppComponent implements OnDestroy {
             "input": true
           },
           {
+            "label": "Code",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "key": "code",
+            "type": "textfield",
+            "input": true
+          },
+          {
             "label": "Proceed to Default Workflow",
             "showValidations": false,
             "customClass": "flex justify-end",
@@ -142,7 +159,8 @@ export class PublishAppComponent implements OnDestroy {
           "moduleCategory": this.localStorageApp?.categoryId,
           "moduleTitle": this.localStorageApp?.title,
           "description": this.localStorageApp?.description,
-          "moduleUrl": this.localStorageApp?.url
+          "moduleUrl": this.localStorageApp?.url,
+          "code": this.localStorageApp?.code
         }
       }
     }
@@ -203,7 +221,8 @@ export class PublishAppComponent implements OnDestroy {
             categoryId: submission?.data?.moduleCategory,
             title: submission?.data?.moduleTitle,
             description: submission?.data?.description,
-            url: submission?.data?.moduleUrl
+            url: submission?.data?.moduleUrl,
+            code: submission?.data?.code
           }
           setItem(StorageItem.publishAppValue, moduleDetails)
           this.moduleData.next(moduleDetails);
@@ -227,8 +246,7 @@ export class PublishAppComponent implements OnDestroy {
               condition: data?.condition
             }
           });
-          console.log(defaultFlow)
-          this.moduleData.next({...this.moduleData?.value, defaultWorkflow: defaultFlow});
+          this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
           setItem(StorageItem.publishAppValue, this.moduleData?.value);
           this.moveNext()
           break;
@@ -252,7 +270,8 @@ export class PublishAppComponent implements OnDestroy {
         "moduleCategory": this.moduleData?.value?.categoryId,
         "moduleTitle": this.moduleData?.value?.title,
         "description": this.moduleData?.value?.description,
-        "moduleUrl": this.moduleData?.value?.url
+        "moduleUrl": this.moduleData?.value?.url,
+        "code": this.localStorageApp?.code
       }
     }
     if(this.activeIndex !== 0)
@@ -314,8 +333,17 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   submitNewModule() {
-    console.log(this.moduleData.value);
-    this.dashboard.createModule(this.moduleData.value).pipe(takeUntil(this.destroy$)).subscribe()
+    this.isCreatingModule = this.dashboard.creatingModule;
+    this.dashboard.createModule(this.moduleData.value).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if(res) {
+        this.moveNext();
+        setTimeout(() => {
+          removeItem(StorageItem.publishAppValue);
+          removeItem(StorageItem.activeIndex);
+          this.router.navigate(['/dashboard/home'])
+        }, 1400)
+      }
+    })
   }
 
   ngOnDestroy(): void {

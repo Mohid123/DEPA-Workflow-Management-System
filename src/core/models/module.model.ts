@@ -11,5 +11,5 @@ export class Module extends BaseModel {
   description: string;
   url: string;
   image: string;
-  defaultWorkflow: string;
+  steps: string;
 }

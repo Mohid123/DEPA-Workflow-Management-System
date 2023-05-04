@@ -10,7 +10,12 @@
     <p class="mb-5 text-lg font-semibold">Approval Workflow</p>
     <div class="flex flex-col items-center justify-center">
       <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
-        <tui-island size="l" class="w-1/2 my-4 shadow-lg" [hoverable]="true">
+        <tui-island
+          size="l"
+          class="w-1/2 my-4 shadow-lg"
+          [hoverable]="true"
+          [ngClass]="(user?.stepStatus == 'approved') ? 'border border-green-600' : (user?.stepStatus == 'rejected') ? 'border border-red-600' : 'border border-yellow-600'"
+        >
           <ng-container *ngIf="user?.stepStatus == 'pending'">
             <tui-badge
               class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
@@ -65,8 +70,8 @@
   <!--Workflow progress-->
   <section class="my-4">
     <p class="mb-5 text-lg font-semibold">Workflow Progress & Approval Logs</p>
-    <div class="flex justify-between">
-      <div>
+    <div class="grid grid-cols-12 gap-3">
+      <div class="col-span-2">
         <label
           *ngIf="value$ | async as value"
           tuiProgressLabel
@@ -83,10 +88,30 @@
         </label>
       </div>
 
-      <div class="flex flex-col">
-        <div class="flex justify-between">
-
-        </div>
+      <div class="col-span-10">
+        <tui-island size="l" class="shadow-lg w-full">
+          <div class="grid grid-cols-12 gap-2">
+            <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
+            <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
+            <p class="font-semibold col-span-6">Comments: <br>
+              <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
+            </p>
+          </div>
+          <div class="grid grid-cols-12 gap-2">
+            <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
+            <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
+            <p class="font-semibold col-span-6">Comments: <br>
+              <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
+            </p>
+          </div>
+          <div class="grid grid-cols-12 gap-2">
+            <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
+            <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
+            <p class="font-semibold col-span-6">Comments: <br>
+              <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
+            </p>
+          </div>
+        </tui-island>
       </div>
     </div>
   </section>

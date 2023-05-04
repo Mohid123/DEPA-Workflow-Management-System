@@ -141,10 +141,9 @@ export class DashboardService extends ApiService<any> {
   }
 
   createModule(payload: Module): Observable<ApiResponse<any>> {
-    this.creatingModule.next(true)
+    this.creatingModule.next(true);
     return this.post(`/modules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        console.log(res?.data);
         this.creatingModule.next(false)
         return res.data
       }

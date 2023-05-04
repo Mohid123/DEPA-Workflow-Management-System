@@ -60,6 +60,7 @@ export class AddSubmoduleComponent {
   ) {
     this.options = options;
     this.formComponents = this.transportService.formBuilderData.value;
+    console.log(this.formComponents)
     this.formTabs = this.formComponents.map(val => val.formTitle);
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     this.initSubModuleForm(this.submoduleFromLS);

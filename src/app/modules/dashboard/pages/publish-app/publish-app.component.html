@@ -99,7 +99,9 @@
 
           <div class="flex justify-end gap-5 mt-5">
             <button (click)="previousStep()" type="button" class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
-            <button (click)="nextStep()" type="button" class="btn btn-primary">Publish Module</button>
+            <button (click)="nextStep()" type="button" class="btn btn-primary">
+              {{(isCreatingModule | async) ? 'Please wait...' : 'Publish Module'}}
+            </button>
           </div>
         </ng-container>
 

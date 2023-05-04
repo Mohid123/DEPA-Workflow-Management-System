@@ -3,7 +3,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, exhaustMap, finalize, map, shareReplay, tap } from 'rxjs/operators';
-import { getItem, setItem, StorageItem } from 'src/core/utils/local-storage.utils';
+import { getItem, removeItem, setItem, StorageItem } from 'src/core/utils/local-storage.utils';
 import { SignInResponse } from 'src/core/models/sign-in-response.model';
 import { ApiService } from 'src/core/core-services/api.service';
 import { User } from 'src/core/models/user.model';
@@ -189,7 +189,7 @@ export class AuthService extends ApiService<AuthApiData> {
     return this.post('/auth/logout', {refreshToken: this.RefreshToken})
     .pipe(shareReplay(), tap((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        setItem(StorageItem.RefreshToken, null);
+        removeItem(StorageItem.RefreshToken);
         setItem(StorageItem.User, null);
         setItem(StorageItem.JwtToken, null);
         this.router.navigate(['/auth/login'], {
@@ -197,7 +197,7 @@ export class AuthService extends ApiService<AuthApiData> {
         });
       }
       else {
-        setItem(StorageItem.RefreshToken, null);
+        removeItem(StorageItem.RefreshToken);
         setItem(StorageItem.User, null);
         setItem(StorageItem.JwtToken, null);
         this.router.navigate(['/auth/login'], {

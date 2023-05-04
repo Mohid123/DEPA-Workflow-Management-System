@@ -1,9 +1,17 @@
-<div class="px-5 py-4 bg-white rounded-lg shadow-lg cursor-pointer h-160">
+<div class="px-5 py-4 bg-white rounded-lg shadow-lg cursor-pointer h-180">
   <div class="flex items-center justify-center w-full bg-gray-100 border border-gray-200 rounded-lg h-68">
     <img [src]="appData?.image ?? '../../../assets/placeholder.webp'" alt="side_app_icon" class="object-cover w-full h-full rounded-lg">
   </div>
-  <div class="w-full mt-8">
+  <div class="w-full mt-8 border-b border-gray-400">
     <h3 class="mb-2 text-xl font-semibold">{{appData?.title}}</h3>
       <p class="leading-6 pb-11 line-clamp-10">{{appData?.description}}</p>
+  </div>
+  <div class="flex justify-center py-2">
+    <button class="px-2 py-1 rounded-md bg-blue-400 text-white mr-2">
+      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+    </button>
+    <button class="px-2 py-1 rounded-md bg-red-500 text-white">
+      <i class="fa fa-trash" aria-hidden="true"></i>
+    </button>
   </div>
 </div>

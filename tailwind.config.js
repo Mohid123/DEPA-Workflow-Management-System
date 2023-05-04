@@ -33,6 +33,7 @@ const extendedSize = {
   80: '20rem',
   84: '21rem',
   88: '22rem',
+  92: '23rem',
   100: '25rem',
   102: '28.25rem',
   104: '27.688rem',

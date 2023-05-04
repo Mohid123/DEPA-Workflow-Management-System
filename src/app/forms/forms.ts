@@ -127,6 +127,16 @@ export const createModuleDetailsForm = {
       "input": true
     },
     {
+      "label": "Code",
+      "tableView": true,
+      "validate": {
+          "required": true
+      },
+      "key": "code",
+      "type": "textfield",
+      "input": true
+    },
+    {
       "label": "Proceed to Default Workflow",
       "showValidations": false,
       "customClass": "flex justify-end",
