@@ -1,10 +1,11 @@
-import { Component, EventEmitter, HostListener } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { subModuleForm } from 'src/app/forms/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { options } from 'src/app/modules/form-builder/options';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
@@ -12,7 +13,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
   templateUrl: './add-submodule.component.html',
   styleUrls: ['./add-submodule.component.scss']
 })
-export class AddSubmoduleComponent {
+export class AddSubmoduleComponent implements OnDestroy {
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
   formComponents: any[] = [];
@@ -50,26 +51,83 @@ export class AddSubmoduleComponent {
     "disableAlerts": true
   };
   prePopulatedDataDetails: any;
-  subModuleFormIoValue = new BehaviorSubject<any>({})
+  subModuleFormIoValue = new BehaviorSubject<any>({});
+  destroy$ = new Subject();
 
   constructor(
     private fb: FormBuilder,
     public auth: AuthService,
     private transportService: DataTransportService,
-    private router: Router
+    private router: Router,
+    private dashboard: DashboardService,
+    private activatedRoute: ActivatedRoute
   ) {
+    this.initSubModuleForm();
+    this.submoduleFromLS = this.transportService.subModuleDraft.value;
+    //get default workflow
+    this.activatedRoute.queryParams.subscribe(val => {
+      if(val['id']) {
+        this.transportService.moduleID.next(val['id'])
+        this.dashboard.getWorkflowFromModule(val['id']).subscribe((response: any) => {
+          if(response) {
+            this.initSubModuleForm(response)
+          }
+          if(Object.keys(this.submoduleFromLS)?.length > 0) {
+            this.initSubModuleForm(this.submoduleFromLS);
+          }
+        })
+      }
+    });
+
     this.options = options;
     this.formComponents = this.transportService.formBuilderData.value;
     console.log(this.formComponents)
     this.formTabs = this.formComponents.map(val => val.formTitle);
-    this.submoduleFromLS = this.transportService.subModuleDraft.value;
-    this.initSubModuleForm(this.submoduleFromLS);
     this.prePopulatedDataDetails = {
       "data": {
         "submoduleUrl": this.submoduleFromLS?.subModuleUrl,
         "companyName": this.submoduleFromLS?.companyName
       }
-    }
+    };
+
+    this.dashboard.getAllCompanies()
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      const companies = res.results?.map(data => {
+        return {
+          value: data?.id,
+          label: data?.title
+        }
+      });
+      this.subModForm = {
+        "title": "Submodule Form",
+        "components": [
+          {
+              "label": "Submodule Url",
+              "tableView": true,
+              "validate": {
+                  "required": true
+              },
+              "key": "submoduleUrl",
+              "type": "url",
+              "input": true
+          },
+          {
+              "label": "Company Name",
+              "widget": "html5",
+              "tableView": true,
+              "validate": {
+                "required": true
+              },
+              "key": "companyName",
+              "type": "select",
+              "data": {
+                "values": companies
+              },
+              "input": true
+          }
+        ]
+      }
+    })
   }
 
   @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
@@ -85,7 +143,14 @@ export class AddSubmoduleComponent {
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       workflows: this.fb.array(
+        item?.workflows ?
         item?.workflows?.map((val: { condition: any; approverIds: any; }) => {
+          return this.fb.group({
+            condition: [val.condition, Validators.required],
+            approverIds: [val.approverIds, Validators.required]
+          })
+        }) :
+        item?.map((val: { condition: any; approverIds: any; }) => {
           return this.fb.group({
             condition: [val.condition, Validators.required],
             approverIds: [val.approverIds, Validators.required]
@@ -103,7 +168,7 @@ export class AddSubmoduleComponent {
   }
 
   getFormIoValueOnChange(value: any) {
-    this.subModuleFormIoValue.next(value?.data)
+    this.subModuleFormIoValue.next(value?.data);
   }
 
   get f() {
@@ -167,5 +232,30 @@ export class AddSubmoduleComponent {
 
   changeLanguage(lang: string) {
     this.language.emit(lang);
+  }
+
+  saveSubModule() {
+    console.log(this.subModuleForm.value)
+    const payload = {
+      moduleId: this.transportService.moduleID?.value,
+      companyId: this.subModuleForm.get('companyName')?.value,
+      code: this.subModuleForm.get('companyName')?.value + Array(8).fill(null).map(() => Math.round(Math.random() * 4).toString(4)).join(''),
+      adminUsers: this.subModuleForm.get('adminUsers')?.value,
+      viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value,
+      formIds: ''
+    }
+  }
+
+  setAdminUsers(users: string[]) {
+    this.subModuleForm?.get('adminUsers')?.setValue(users)
+  }
+
+  setViewUsers(users: string[]) {
+    this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe()
   }
 }
