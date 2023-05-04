@@ -118,6 +118,27 @@ export class ApiService<T> {
   }
 
   /**
+   * Generic Put Request method for handling update requests
+   * @param path The path or URL to send the request to
+   * @param body The payload object to send with the request
+   * @returns {@link ApiResponse}
+   */
+  public patch(
+    path: string,
+    body: Object = {}
+  ): Observable<ApiResponse<T>> {
+
+    const options = { headers: this.setHeaders() };
+    return this.mapAndCatchError<T>(
+      this.http.patch<ApiResponse<T>>(
+        `${environment.apiUrl}${path}`,
+        JSON.stringify(body),
+        options
+      )
+    );
+  }
+
+  /**
    * Generic Delete Request method for handling delete requests
    * @param path The path or URL to send the request to
    * @param body The payload object to send with the request

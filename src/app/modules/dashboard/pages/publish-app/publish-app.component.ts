@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy } from '@angular/core';
-import  { Subject, Observable, of, map, takeUntil, BehaviorSubject } from 'rxjs';
+import  { Subject, Observable, of, map, takeUntil, BehaviorSubject, take, first } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
@@ -7,7 +7,7 @@ import {TUI_ARROW} from '@taiga-ui/kit';
 import { createModuleDetailsForm } from 'src/app/forms/forms';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -62,12 +62,15 @@ export class PublishAppComponent implements OnDestroy {
 
   public moduleDetailsForm: any = createModuleDetailsForm;
   categoryDataForFormIOSelect = new BehaviorSubject<any>(null);
+  isEditMode = new BehaviorSubject(false);
+  storeModuleID = new BehaviorSubject<any>('')
 
   constructor(
     private fb: FormBuilder,
     private notif: NotificationsService,
     private dashboard: DashboardService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.dashboard.getAllCategories().pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       this.categories = value?.map(data => {
@@ -148,6 +151,30 @@ export class PublishAppComponent implements OnDestroy {
         ]
       };
     });
+
+    //edit module case
+    this.dashboard.moduleEditData.pipe(takeUntil(this.destroy$), take(1)).subscribe(val => {
+      if(val) {
+        const category = {
+          value: val.categoryId?.id,
+          label: val.categoryId?.name
+        };
+        const stepsArr = val?.workFlowId?.stepIds?.map(data => {
+          return {
+            id: data?.id,
+            approverIds: data?.approverIds?.map(ids => ids.id),
+            condition: data?.condition
+          }
+        });
+        const workFlow = val?.workFlowId?.id;
+        this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+          this.storeModuleID.next(val['id'])
+        })
+        const editableValue = Object.assign(val, {categoryId: category, workFlowId: workFlow, steps: stepsArr});
+        setItem(StorageItem.publishAppValue, editableValue);
+        this.isEditMode.next(true);
+      }
+    })
     
     this.localStorageApp = getItem(StorageItem.publishAppValue);
     if(this.localStorageApp) {
@@ -170,13 +197,14 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   initWorkflowForm(item?: any) {
-    if(item?.defaultWorkflow) {
+    if(item?.steps) {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array(
-          item?.defaultWorkflow?.map((val: { condition: any; approverIds: any; }) => {
+          item?.steps?.map((val: { condition: any; approverIds: any; id?: any }) => {
             return this.fb.group({
               condition: [val.condition, Validators.required],
-              approverIds: [val.approverIds, Validators.required]
+              approverIds: [val.approverIds, Validators.required],
+              id: [val.id || undefined]
             })
           }))
         })
@@ -224,6 +252,12 @@ export class PublishAppComponent implements OnDestroy {
             url: submission?.data?.moduleUrl,
             code: submission?.data?.code
           }
+          if(this.isEditMode.value == true) {
+            const catId = this.localStorageApp?.categoryId?.value;
+            const workFlowId = this.localStorageApp?.workFlowId;
+            const steps = this.localStorageApp?.steps;
+            Object.assign(moduleDetails, {workFlowId, categoryId: catId, steps})
+          }
           setItem(StorageItem.publishAppValue, moduleDetails)
           this.moduleData.next(moduleDetails);
           this.moveNext();
@@ -235,18 +269,36 @@ export class PublishAppComponent implements OnDestroy {
           if(this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true) {
             return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
           }
-          const defaultFlow = this.workflows?.value?.map(data => {
-            return {
-              approverIds: data.approverIds?.map(approvers => {
-                if(approvers?.id) {
-                  return approvers?.id
-                }
-                return approvers
-              }),
-              condition: data?.condition
-            }
-          });
-          this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
+          if(this.isEditMode.value == false) {
+            const defaultFlow = this.workflows?.value?.map(data => {
+              return {
+                approverIds: data.approverIds?.map(approvers => {
+                  if(approvers?.id) {
+                    return approvers?.id
+                  }
+                  return approvers
+                }),
+                condition: data?.condition
+              }
+            });
+            this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
+          }
+          else {
+            const newSteps = this.workflows?.value?.map(data => {
+              return {
+                approverIds: data.approverIds?.map(approvers => {
+                  if(approvers?.id) {
+                    return approvers?.id
+                  }
+                  return approvers
+                }),
+                condition: data?.condition,
+                id: data?.id || undefined
+              }
+            });
+            const defaultFlow = newSteps;
+            this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
+          }
           setItem(StorageItem.publishAppValue, this.moduleData?.value);
           this.moveNext()
           break;
@@ -296,6 +348,7 @@ export class PublishAppComponent implements OnDestroy {
           reader.readAsDataURL(file);
           reader.onload = (e) => {
             this.file = reader.result;
+            this.file = 'https://images.pexels.com/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
           };
       //   }
       // });
@@ -333,17 +386,33 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   submitNewModule() {
-    this.isCreatingModule = this.dashboard.creatingModule;
-    this.dashboard.createModule(this.moduleData.value).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if(res) {
-        this.moveNext();
-        setTimeout(() => {
-          removeItem(StorageItem.publishAppValue);
-          removeItem(StorageItem.activeIndex);
-          this.router.navigate(['/dashboard/home'])
-        }, 1400)
-      }
-    })
+    if(this.isEditMode.value == false) {
+      this.isCreatingModule = this.dashboard.creatingModule;
+      this.dashboard.createModule(this.moduleData.value).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if(res) {
+          this.moveNext();
+          setTimeout(() => {
+            removeItem(StorageItem.publishAppValue);
+            removeItem(StorageItem.activeIndex);
+            this.router.navigate(['/dashboard/home'])
+          }, 1400)
+        }
+      })
+    }
+    else {
+      this.isCreatingModule = this.dashboard.creatingModule;
+      this.dashboard.editModule(this.storeModuleID?.value, this.moduleData.value)
+      .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if(res) {
+          this.moveNext();
+          setTimeout(() => {
+            removeItem(StorageItem.publishAppValue);
+            removeItem(StorageItem.activeIndex);
+            this.router.navigate(['/dashboard/home'])
+          }, 1400)
+        }
+      })
+    }
   }
 
   ngOnDestroy(): void {
