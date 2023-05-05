@@ -98,8 +98,8 @@
                 <div class="flex justify-between">
                   <span class="text-base font-semibold">{{approvers?.name}}</span>
                   <div *ngIf="currentUser?.fullName === approvers?.name" class="flex justify-end gap-5">
-                    <span>Approve &nbsp; <tui-toggle (click)="showDialog(template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <span>Reject &nbsp; <tui-toggle (click)="showDialog(template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    <span>Approve &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <span>Reject &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                   </div>
                 </div>
               </li>
@@ -162,11 +162,12 @@
   <p class="mt-3 text-base font-medium">Please add your comments below (if any) and send your decision</p>
   <div class="flex flex-col justify-center my-5">
     <label class="block" for="Textarea1">Comments</label>
-    <textarea class="form-control" id="Textarea1" rows="4"></textarea>
+    <textarea [formControl]="remarks" class="form-control" id="Textarea1" rows="4"></textarea>
   </div>
   <button
     tuiButton
     type="button"
+    [showLoader]="(savingDecision | async)"
     size="m"
     (click)="sendDecisionData(); observer.complete()"
     >

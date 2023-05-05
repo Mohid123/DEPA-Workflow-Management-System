@@ -78,6 +78,7 @@ export class AddSubmoduleComponent implements OnDestroy {
           if(Object.keys(this.submoduleFromLS)?.length > 0) {
             this.initSubModuleForm(this.submoduleFromLS);
           }
+          console.log(this.submoduleFromLS)
         })
       }
     });
@@ -182,12 +183,9 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   getFormIoValueOnChange(value: any) {
-    this.subModuleFormIoValue.next(value?.data);
-    setTimeout(() => {
-      this.subModuleForm.get('subModuleUrl')?.setValue(this.subModuleFormIoValue?.value?.submoduleUrl)
-      this.subModuleForm.get('companyName')?.setValue(this.subModuleFormIoValue?.value?.companyName)
-      this.subModuleForm.get('code')?.setValue(this.subModuleFormIoValue?.value?.code)
-    }, 2000)
+    if(value && value?.data) {
+      this.subModuleFormIoValue.next(value?.data);
+    }
   }
 
   get f() {

@@ -23,13 +23,16 @@ export class ViewWorkflowComponent implements OnDestroy {
 
   approve = new FormControl(false);
   reject = new FormControl(false);
+  remarks = new FormControl('');
   showLoader = new Subject<boolean>();
   workflowData: any;
   workflowID: string;
   formTabs: any[] = [];
   currentUser: any;
   workflowProgress = new BehaviorSubject<number>(0);
-  saveDialogSubscription: Subscription[] = []
+  saveDialogSubscription: Subscription[] = [];
+  decisionData = new BehaviorSubject<any>(null);
+  savingDecision = new Subject<boolean>()
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -78,29 +81,46 @@ export class ViewWorkflowComponent implements OnDestroy {
             approverIds: users?.allUserIds?.map(val => {
               return {
                 name: val?.fullName,
-                id: val?._id
+                id: val?._id,
+                stepId: users?.stepId
               }
             }),
             condition: users?.condition,
             status: users?.status
           }
         });
+        console.log(this.workflowUsers)
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
         this.approvalLogs = this.workflowData?.approvalLog;
       }
     });
   }
 
-  showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+  showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
     this.showLoader.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === false) {
+        this.decisionData.next(data)
         this.saveDialogSubscription.push(this.dialogs.open(content).pipe(take(1)).subscribe())
       }
     })
   }
 
   sendDecisionData() {
-    this.saveDialogSubscription.forEach(val => val.unsubscribe());
+    this.savingDecision.next(true)
+    const payload: any = {
+      stepId: this.decisionData?.value?.stepId,
+      userId: this.decisionData?.value?.id,
+      remarks: this.remarks?.value,
+      isApproved: this.approve?.value == true ? true : false
+    }
+    console.log(payload);
+    this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      console.log(res)
+      this.savingDecision.next(false);
+      this.remarks.reset();
+      this.saveDialogSubscription.forEach(val => val.unsubscribe());
+    })
   }
 
   ngOnDestroy(): void {
