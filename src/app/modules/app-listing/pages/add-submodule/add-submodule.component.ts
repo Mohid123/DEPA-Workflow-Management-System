@@ -248,7 +248,7 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.language.emit(lang);
   }
 
-  saveSubModule(statusStr?: string) {
+  saveSubModule(statusStr?: number) {
     this.isCreatingSubModule.next(true)
     const payload = {
       moduleId: this.transportService.moduleID?.value,

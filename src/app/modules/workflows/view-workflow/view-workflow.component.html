@@ -2,8 +2,43 @@
 
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <p class="text-lg font-semibold">Form Title</p>
-  <div class="px-5 py-5 rounded-md well jsonviewer bg-gray-50">
-    <formio [form]="formWithWorkflow"></formio>
+  <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
+    <!-- <div class="inline-flex gap-3 mt-3 mb-8" [formGroup]="languageForm">
+      <tui-radio-labeled
+        formControlName="languages"
+        size="l"
+        [item]="langItems[0]"
+        (click)="changeLanguage(langItems[0]?.name)"
+
+      >
+        English
+      </tui-radio-labeled>
+      <tui-radio-labeled
+        formControlName="languages"
+        size="l"
+        [item]="langItems[1]"
+        (click)="changeLanguage(langItems[1]?.name)"
+      >
+        Arabic
+      </tui-radio-labeled>
+    </div> -->
+    <section class="flex justify-between my-8">
+      <nav
+        tuiTabs
+        vertical="left"
+        class="w-32 mr-5"
+      >
+        <ng-container *ngFor="let tab of formTabs; let j = index">
+          <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+        </ng-container>
+      </nav>
+      <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
+        <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+          <formio [form]="form"></formio>
+        </div>
+      </ng-container>
+
+    </section>
   </div>
 
   <section class="my-10">
@@ -14,9 +49,9 @@
           size="l"
           class="w-1/2 my-4 shadow-lg"
           [hoverable]="true"
-          [ngClass]="(user?.stepStatus == 'approved') ? 'border border-green-600' : (user?.stepStatus == 'rejected') ? 'border border-red-600' : 'border border-yellow-600'"
+          [ngClass]="(user?.status == 'approved') ? 'border border-green-00' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
         >
-          <ng-container *ngIf="user?.stepStatus == 'pending'">
+          <ng-container *ngIf="user?.status == 'pending'">
             <tui-badge
               class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
               [value]="'Pending'"
@@ -26,7 +61,17 @@
             </tui-badge>
             <hr class="mb-2">
           </ng-container>
-          <ng-container *ngIf="user?.stepStatus == 'rejected'">
+          <ng-container *ngIf="user?.status == 'inProgress'">
+            <tui-badge
+              class="px-2 font-semibold text-white bg-blue-600 tui-space_right-2 tui-space_bottom-4"
+              [value]="'Active'"
+              status="custom"
+            >
+              <tui-svg src="tuiIconRadio"></tui-svg>
+            </tui-badge>
+            <hr class="mb-2">
+          </ng-container>
+          <ng-container *ngIf="user?.status == 'rejected'">
             <tui-badge
               class="px-2 font-semibold text-white bg-red-600 tui-space_right-2 tui-space_bottom-4"
               [value]="'Rejected'"
@@ -36,7 +81,7 @@
             </tui-badge>
             <hr class="mb-2">
           </ng-container>
-          <ng-container *ngIf="user?.stepStatus == 'approved'">
+          <ng-container *ngIf="user?.status == 'approved'">
             <tui-badge
               class="px-2 font-semibold text-white bg-green-600 tui-space_right-2 tui-space_bottom-4"
               [value]="'Approved'"
@@ -52,7 +97,7 @@
               <li class="tui-list__item">
                 <div class="flex justify-between">
                   <span class="text-base font-semibold">{{approvers}}</span>
-                  <div *ngIf="first" class="flex justify-end gap-5">
+                  <div *ngIf="currentUser?.fullName === approvers" class="flex justify-end gap-5">
                     <span>Approve &nbsp; <tui-toggle (click)="showDialog(template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
                     <span>Reject &nbsp; <tui-toggle (click)="showDialog(template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                   </div>
@@ -73,16 +118,15 @@
     <div class="grid grid-cols-12 gap-3">
       <div class="col-span-2">
         <label
-          *ngIf="value$ | async as value"
           tuiProgressLabel
         >
-          <span class="text">COMPLETED</span>
-          <span class="percent">{{ value }}%</span>
+          <span class="text-gray-600 font-semibold">COMPLETED</span>
+          <span class="text-gray-700 font-semibold">{{ workflowProgress | async }}%</span>
 
           <tui-progress-circle
             size="xl"
             [max]="max"
-            [value]="value"
+            [value]="workflowProgress | async"
             color="#f15b41"
           ></tui-progress-circle>
         </label>
@@ -90,27 +134,18 @@
 
       <div class="col-span-10">
         <tui-island size="l" class="shadow-lg w-full">
-          <div class="grid grid-cols-12 gap-2">
-            <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
-            <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
-            <p class="font-semibold col-span-6">Comments: <br>
-              <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
-            </p>
-          </div>
-          <div class="grid grid-cols-12 gap-2">
-            <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
-            <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
-            <p class="font-semibold col-span-6">Comments: <br>
-              <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
-            </p>
-          </div>
-          <div class="grid grid-cols-12 gap-2">
-            <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
-            <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
-            <p class="font-semibold col-span-6">Comments: <br>
-              <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
-            </p>
-          </div>
+          <ng-container *ngIf="approvalLogs?.length == 0">
+            <p class="text-center text-gray-500 text-base font-semibold py-5">Approval logs are empty!</p>
+          </ng-container>
+          <ng-container *ngFor="let log of approvalLogs; let i = index">
+            <div class="grid grid-cols-12 gap-2">
+              <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
+              <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
+              <p class="font-semibold col-span-6">Comments: <br>
+                <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
+              </p>
+            </div>
+          </ng-container>
         </tui-island>
       </div>
     </div>

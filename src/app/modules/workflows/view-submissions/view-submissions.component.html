@@ -1,0 +1,49 @@
+<app-header></app-header>
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-52">
+  <div class="relative overflow-x-auto rounded-lg shadow-lg">
+    <table class="w-full text-sm text-left text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
+        <tr>
+          <th class="px-6 py-3 text-sm">Submodule ID</th>
+          <th class="px-2 py-3 text-sm">Total No. of Forms</th>
+          <th class="px-2 py-3 text-sm">Status</th>
+          <th class="px-2 py-3 text-sm">Workflow progress</th>
+          <th scope="col" class="px-6 py-3 text-sm">
+            Actions
+          </th>
+        </tr>
+        <ng-container *ngFor="let data of (submissionData | async); let i = index">
+          <tr class="bg-white border-b border-gray-300">
+            <td class="px-6 py-4">
+              {{data?.id}}
+            </td>
+            <td class="px-3 py-4">
+              {{data?.formIds?.length}}
+            </td>
+            <td class="px-2 py-4">
+              {{data?.submissionStatus == 1 ? 'Created' : 'Pending'}}
+            </td>
+            <td class="px-3 py-4">
+              {{data?.summaryData?.progress}}%
+            </td>
+            <td class="w-3/12 py-4">
+              <a [routerLink]="['/workflows/view-workflow', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
+              </a>
+              <a class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+                <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> Delete
+              </a>
+            </td>
+          </tr>
+        </ng-container>
+      </thead>
+    </table>
+    <div class="pt-10 pb-6">
+      <tui-pagination
+        [length]="10"
+        [index]="0"
+      ></tui-pagination>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

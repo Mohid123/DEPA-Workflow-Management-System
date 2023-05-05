@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { TuiPaginationModule } from '@taiga-ui/kit';
-import { Observable, of } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -96,7 +97,7 @@ export class TableViewComponent {
 
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {
     if(subModuleID) {
-      this.submoduleID = subModuleID
+      this.submoduleID = subModuleID;
       this.dialogs.open(content).subscribe();
     }
   }

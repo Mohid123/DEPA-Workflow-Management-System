@@ -58,7 +58,7 @@
       <tbody>
         <ng-container *ngIf="(tableData | async)?.length == 0; else showSubModules">
           <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
-            It seems there are no submodules to show here!
+            It seems there is no data to show here!
           </th>
         </ng-container>
 
@@ -78,7 +78,7 @@
                 {{data?.status === 1 ? 'Published' : 'Draft'}}
               </td>
               <td class="w-3/12 py-4">
-                <a [routerLink]="['/workflows/view-workflow', data?.moduleId?.workFlowId]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                <a [routerLink]="['/workflows/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
                 </a>
                 <a (click)="showDialog(data?.id, template)" class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">

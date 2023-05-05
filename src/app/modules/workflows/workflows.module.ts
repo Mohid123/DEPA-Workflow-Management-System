@@ -7,15 +7,18 @@ import { ViewWorkflowComponent } from './view-workflow/view-workflow.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import { FormioModule } from '@formio/angular';
-import { TuiBadgeModule, TuiIslandModule, TuiProgressModule, TuiToggleModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiIslandModule, TuiPaginationModule, TuiProgressModule, TuiTabsModule, TuiToggleModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
+import { ViewSubmissionsComponent } from './view-submissions/view-submissions.component';
+import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 
 
 @NgModule({
   declarations: [
     WorkflowsComponent,
-    ViewWorkflowComponent
+    ViewWorkflowComponent,
+    ViewSubmissionsComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +32,10 @@ import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
     TuiToggleModule,
     TuiBadgeModule,
     TuiSvgModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiTabsModule,
+    TableViewComponent,
+    TuiPaginationModule
   ]
 })
 export class WorkflowsModule { }

@@ -9,6 +9,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { Module } from 'src/core/models/module.model';
 import { User } from 'src/core/models/user.model';
+import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Interface for Breadcrumb navigation
@@ -37,6 +38,8 @@ export class DashboardService extends ApiService<any> {
   creatingModule = new Subject<boolean>();
 
   moduleEditData = new BehaviorSubject<any>(null);
+
+  submissionId = new BehaviorSubject<any>('');
 
   /**
    * Breadcrumb array to display
@@ -217,7 +220,7 @@ export class DashboardService extends ApiService<any> {
     this.creatingModule.next(true);
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        this.creatingModule.next(false)
+        this.creatingModule.next(false);
         this.notif.displayNotification('Submodule created successfully', 'Create SubModule', TuiNotification.Success);
         return res.data
       }

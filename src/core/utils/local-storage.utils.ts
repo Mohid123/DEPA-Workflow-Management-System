@@ -14,7 +14,8 @@ export enum StorageItem {
   Theme = 'App/theme',
   publishAppValue = 'App/publish_app_value',
   activeIndex = 'App/active_index',
-  subModuleData = 'App/submodule_data'
+  subModuleData = 'App/submodule_data',
+  submissionID = 'App/submissionID'
 }
 
 /**
