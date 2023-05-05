@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { TuiPaginationModule } from '@taiga-ui/kit';
 import { Observable, of } from 'rxjs';
-import { TuiLoaderModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
+import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -13,7 +16,7 @@ import { TuiLoaderModule } from '@taiga-ui/core';
 @Component({
   selector: 'app-table-view',
   standalone: true,
-  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule],
+  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule],
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -59,6 +62,8 @@ export class TableViewComponent {
     {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
   ];
 
+  submoduleID: string;
+
    /**
    * The filter parameters to show in the dropdown
    */
@@ -79,8 +84,27 @@ export class TableViewComponent {
 
   moduleId: string;
 
-  constructor(private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.params.subscribe(val => this.moduleId = val['id'])
+  @Output() emitDeleteEvent = new EventEmitter()
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private dashboardService: DashboardService
+  ) {
+    this.activatedRoute.params.subscribe(val => this.moduleId = val['id']);
+  }
+
+  showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {
+    if(subModuleID) {
+      this.submoduleID = subModuleID
+      this.dialogs.open(content).subscribe();
+    }
+  }
+
+  deleteModule() {
+    this.dashboardService.deleteSubModule(this.submoduleID).subscribe((res: any) => {
+      this.emitDeleteEvent.emit(true);
+    });
   }
 
   /**

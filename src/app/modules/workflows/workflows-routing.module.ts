@@ -10,7 +10,7 @@ const routes: Routes = [
     data: {breadcrumb:'Workflows'},
     children:[
       {
-        path: 'view-workflow',
+        path: 'view-workflow/:id',
         component: ViewWorkflowComponent,
         data: {breadcrumb:'View Workflow'},
       },

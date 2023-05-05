@@ -253,28 +253,38 @@ export const subModuleForm = {
   "title": "Submodule Form",
   "components": [
     {
-        "label": "Submodule Url",
-        "tableView": true,
-        "validate": {
-            "required": true
-        },
-        "key": "submoduleUrl",
-        "type": "url",
-        "input": true
+      "label": "Submodule Url",
+      "tableView": true,
+      "validate": {
+          "required": true
+      },
+      "key": "submoduleUrl",
+      "type": "url",
+      "input": true
     },
     {
-        "label": "Company Name",
-        "widget": "html5",
-        "tableView": true,
-        "validate": {
+      "label": "Company Name",
+      "widget": "html5",
+      "tableView": true,
+      "validate": {
+        "required": true
+      },
+      "key": "companyName",
+      "type": "select",
+      "data": {
+        "values": []
+      },
+      "input": true
+    },
+    {
+      "label": "Code",
+      "tableView": true,
+      "validate": {
           "required": true
-        },
-        "key": "companyName",
-        "type": "select",
-        "data": {
-          "values": []
-        },
-        "input": true
-    }
+      },
+      "key": "code",
+      "type": "textfield",
+      "input": true
+  },
   ]
 }

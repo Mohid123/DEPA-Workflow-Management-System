@@ -86,7 +86,7 @@ export class FormBuilderComponent {
     }
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
-    this.form.key = this.formTitleControl?.value?.replace(/\s/g, '').toLowerCase() + '-' + Array(8).fill(null).map(() => Math.round(Math.random() * 4).toString(4)).join('')
+    this.form.key = this.formTitleControl?.value?.replace(/\s/g, '').toLowerCase() + '-' + Array(4).fill(null).map(() => Math.round(Math.random() * 16).toString(4)).join('')
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];

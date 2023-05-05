@@ -157,7 +157,7 @@
               <select formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
                 <option value="and">AND</option>
                 <option value="or">OR</option>
-                <option value="any">ANY</option>
+                <!-- <option value="any">ANY</option> -->
               </select>
             </div>
             <div class="col-span-2 mt-8" *ngIf="i > 0">
@@ -190,19 +190,26 @@
         size="m"
         appearance="primary"
         (click)="saveSubModule()"
-        [showLoader]="isCreatingSubModule | async"
-      >Publish</button>
+        [showLoader]="(isCreatingSubModule | async) == true"
+      >
+        Publish
+      </button>
       <button
         tuiButton
         type="button"
         size="m"
         appearance="outline"
-      >Save as Draft</button>
+        (click)="saveSubModule('draft')"
+        [showLoader]="(isCreatingSubModule | async) == true"
+      >
+        Save as Draft
+      </button>
       <button
         tuiButton
         type="button"
         size="m"
         appearance="accent"
+        [routerLink]="['/appListing/submodules', redirectToModuleID]"
       >Cancel</button>
     </div>
   </form>

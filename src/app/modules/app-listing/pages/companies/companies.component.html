@@ -1,5 +1,5 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52">
-  <app-table-view [tableData]="subModuleData"></app-table-view>
+  <app-table-view (emitDeleteEvent)="itemDeleted($event)" [tableData]="subModuleData"></app-table-view>
 </section>
 <app-footer></app-footer>

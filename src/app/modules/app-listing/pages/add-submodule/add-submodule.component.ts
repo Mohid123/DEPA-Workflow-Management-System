@@ -54,6 +54,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   subModuleFormIoValue = new BehaviorSubject<any>({});
   destroy$ = new Subject();
   isCreatingSubModule = new Subject<boolean>();
+  redirectToModuleID: string
 
   constructor(
     private fb: FormBuilder,
@@ -68,7 +69,8 @@ export class AddSubmoduleComponent implements OnDestroy {
     //get default workflow
     this.activatedRoute.queryParams.subscribe(val => {
       if(val['id']) {
-        this.transportService.moduleID.next(val['id'])
+        this.redirectToModuleID = val['id']
+        this.transportService.moduleID.next(val['id']);
         this.dashboard.getWorkflowFromModule(val['id']).subscribe((response: any) => {
           if(response) {
             this.initSubModuleForm(response)
@@ -86,7 +88,8 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.prePopulatedDataDetails = {
       "data": {
         "submoduleUrl": this.submoduleFromLS?.subModuleUrl,
-        "companyName": this.submoduleFromLS?.companyName
+        "companyName": this.submoduleFromLS?.companyName,
+        "code": this.submoduleFromLS?.code
       }
     };
 
@@ -102,29 +105,39 @@ export class AddSubmoduleComponent implements OnDestroy {
         "title": "Submodule Form",
         "components": [
           {
-              "label": "Submodule Url",
-              "tableView": true,
-              "validate": {
-                  "required": true
-              },
-              "key": "submoduleUrl",
-              "type": "url",
-              "input": true
+            "label": "Submodule Url",
+            "tableView": true,
+            "validate": {
+                "required": true
+            },
+            "key": "submoduleUrl",
+            "type": "url",
+            "input": true
           },
           {
-              "label": "Company Name",
-              "widget": "html5",
-              "tableView": true,
-              "validate": {
+            "label": "Company Name",
+            "widget": "html5",
+            "tableView": true,
+            "validate": {
+              "required": true
+            },
+            "key": "companyName",
+            "type": "select",
+            "data": {
+              "values": companies
+            },
+            "input": true
+          },
+          {
+            "label": "Code",
+            "tableView": true,
+            "validate": {
                 "required": true
-              },
-              "key": "companyName",
-              "type": "select",
-              "data": {
-                "values": companies
-              },
-              "input": true
-          }
+            },
+            "key": "code",
+            "type": "textfield",
+            "input": true
+          },
         ]
       }
     })
@@ -139,6 +152,7 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.subModuleForm = this.fb.group({
       subModuleUrl: [item?.subModuleUrl || '', Validators.compose([Validators.required, Validators.pattern(/^(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}$/)])],
       companies: this.fb.array([]),
+      code: [item?.code || ''],
       companyName: [item?.companyName || '', Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
@@ -215,8 +229,9 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   saveDraft() {
-    this.subModuleForm.get('subModuleUrl')?.setValue(this.subModuleFormIoValue?.value.submoduleUrl)
-    this.subModuleForm.get('companyName')?.setValue(this.subModuleFormIoValue?.value.companyName)
+    this.subModuleForm.get('subModuleUrl')?.setValue(this.subModuleFormIoValue?.value?.submoduleUrl)
+    this.subModuleForm.get('companyName')?.setValue(this.subModuleFormIoValue?.value?.companyName)
+    this.subModuleForm.get('code')?.setValue(this.subModuleFormIoValue?.value?.code)
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
     this.router.navigate(['/form-builder']);
@@ -233,20 +248,38 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.language.emit(lang);
   }
 
-  saveSubModule() {
-    this.isCreatingSubModule = this.dashboard.creatingModule
-    console.log(this.workflows?.value)
+  saveSubModule(statusStr?: string) {
+    this.isCreatingSubModule.next(true)
     const payload = {
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: 'subMod' + '-' + Array(8).fill(null).map(() => Math.round(Math.random() * 4).toString(4)).join(''),
+      code: this.subModuleForm.get('code')?.value,
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
-      steps: this.workflows?.value
+      steps: this.workflows?.value?.map(data => {
+        return {
+          approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
+          condition: data?.condition
+        }
+      })
+    }
+    if(statusStr) {
+      const status = statusStr;
+      Object.assign(payload, {status})
     }
     console.log('FINAL PAYLOAD', payload);
-    this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe()
+    this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if(res) {
+        this.isCreatingSubModule.next(false);
+        this.transportService.saveDraftLocally({});
+        this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+        this.router.navigate(['/appListing/submodules', this.transportService.moduleID?.value]);
+      }
+      else {
+        this.isCreatingSubModule.next(false);
+      }
+    })
   }
 
   setAdminUsers(users: string[]) {

@@ -215,10 +215,8 @@ export class DashboardService extends ApiService<any> {
 
   createSubModule(payload: any): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
-    debugger
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        debugger
         this.creatingModule.next(false)
         this.notif.displayNotification('Submodule created successfully', 'Create SubModule', TuiNotification.Success);
         return res.data
@@ -237,6 +235,18 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch data', 'Fetch companies', TuiNotification.Error);
+      }
+    }))
+  }
+
+  deleteSubModule(id: string): Observable<ApiResponse<any>> {
+    return this.delete(`/subModules/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Submodule removed successfully', 'Delete SubModule', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to remove submodule', 'Delete SubModule', TuiNotification.Error);
       }
     }))
   }
