@@ -67,9 +67,9 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     //get default workflow
-    this.activatedRoute.queryParams.subscribe(val => {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['id']) {
-        this.redirectToModuleID = val['id']
+        this.redirectToModuleID = val['id'];
         this.transportService.moduleID.next(val['id']);
         this.dashboard.getWorkflowFromModule(val['id']).subscribe((response: any) => {
           if(response) {
@@ -183,6 +183,11 @@ export class AddSubmoduleComponent implements OnDestroy {
 
   getFormIoValueOnChange(value: any) {
     this.subModuleFormIoValue.next(value?.data);
+    setTimeout(() => {
+      this.subModuleForm.get('subModuleUrl')?.setValue(this.subModuleFormIoValue?.value?.submoduleUrl)
+      this.subModuleForm.get('companyName')?.setValue(this.subModuleFormIoValue?.value?.companyName)
+      this.subModuleForm.get('code')?.setValue(this.subModuleFormIoValue?.value?.code)
+    }, 2000)
   }
 
   get f() {

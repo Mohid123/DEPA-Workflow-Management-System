@@ -1,8 +1,7 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, map, of, pluck, switchMap, takeUntil } from 'rxjs';
-import { emailLoginForm } from 'src/app/forms/forms';
+import { BehaviorSubject, Subject, Subscription, first, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
@@ -29,7 +28,8 @@ export class ViewWorkflowComponent implements OnDestroy {
   workflowID: string;
   formTabs: any[] = [];
   currentUser: any;
-  workflowProgress = new BehaviorSubject<number>(0)
+  workflowProgress = new BehaviorSubject<number>(0);
+  saveDialogSubscription: Subscription[] = []
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -37,7 +37,8 @@ export class ViewWorkflowComponent implements OnDestroy {
     private workflowService: WorkflowsService,
     private auth: AuthService
   ) {
-    this.currentUser = this.auth.currentUserValue
+    this.currentUser = this.auth.currentUserValue;
+    this.fetchData()
     this.approve.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === true) {
         this.reject.disable();
@@ -59,7 +60,9 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.approve.enable()
       }
     });
+  }
 
+  fetchData() {
     this.workflowData = this.activatedRoute.params.pipe(
       pluck('id'),
       map(id => this.workflowID = id),
@@ -72,7 +75,12 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.formWithWorkflow = this.workflowData?.formIds;
         this.workflowUsers = this.workflowData?.workflowStatus?.map(users => {
           return {
-            approverIds: users?.allUserIds,
+            approverIds: users?.allUserIds?.map(val => {
+              return {
+                name: val?.fullName,
+                id: val?._id
+              }
+            }),
             condition: users?.condition,
             status: users?.status
           }
@@ -86,9 +94,13 @@ export class ViewWorkflowComponent implements OnDestroy {
   showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
     this.showLoader.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === false) {
-        this.dialogs.open(content).subscribe();
+        this.saveDialogSubscription.push(this.dialogs.open(content).pipe(take(1)).subscribe())
       }
     })
+  }
+
+  sendDecisionData() {
+    this.saveDialogSubscription.forEach(val => val.unsubscribe());
   }
 
   ngOnDestroy(): void {

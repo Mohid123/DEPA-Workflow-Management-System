@@ -96,8 +96,8 @@
             <ng-container *ngFor="let approvers of user?.approverIds; let j = index; let first = first; let last = last">
               <li class="tui-list__item">
                 <div class="flex justify-between">
-                  <span class="text-base font-semibold">{{approvers}}</span>
-                  <div *ngIf="currentUser?.fullName === approvers" class="flex justify-end gap-5">
+                  <span class="text-base font-semibold">{{approvers?.name}}</span>
+                  <div *ngIf="currentUser?.fullName === approvers?.name" class="flex justify-end gap-5">
                     <span>Approve &nbsp; <tui-toggle (click)="showDialog(template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
                     <span>Reject &nbsp; <tui-toggle (click)="showDialog(template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                   </div>
@@ -168,7 +168,7 @@
     tuiButton
     type="button"
     size="m"
-    (click)="observer.complete()"
+    (click)="sendDecisionData(); observer.complete()"
     >
       Send
     </button>
