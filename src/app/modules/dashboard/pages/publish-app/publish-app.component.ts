@@ -68,6 +68,7 @@ export class PublishAppComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute
   ) {
     //edit module case
+    console.log(this.dashboard.moduleEditData?.value)
     this.dashboard.moduleEditData.pipe(takeUntil(this.destroy$), take(1)).subscribe(val => {
       if(val) {
         const category = {
@@ -321,6 +322,7 @@ export class PublishAppComponent implements OnDestroy {
           setTimeout(() => {
             removeItem(StorageItem.publishAppValue);
             removeItem(StorageItem.activeIndex);
+            this.dashboard.moduleEditData.next(null)
             this.router.navigate(['/dashboard/home'])
           }, 1400)
         }

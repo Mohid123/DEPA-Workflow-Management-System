@@ -201,7 +201,7 @@ export class DashboardService extends ApiService<any> {
   getWorkflowFromModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        this.moduleEditData.next(res.data);
+        // this.moduleEditData.next(res.data);
         const response = res.data?.workFlowId?.stepIds?.map(data => {
           return {
             approverIds: data?.approverIds?.map(ids => ids.id),
