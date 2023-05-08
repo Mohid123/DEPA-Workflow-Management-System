@@ -15,13 +15,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
+import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 
 
 @NgModule({
   declarations: [
     AppListingComponent,
     CompaniesComponent,
-    AddSubmoduleComponent
+    AddSubmoduleComponent,
+    EditSubmoduleComponent
   ],
   imports: [
     CommonModule,

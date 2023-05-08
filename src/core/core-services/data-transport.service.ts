@@ -31,7 +31,9 @@ export class DataTransportService {
    */
   public subModuleDraft: BehaviorSubject<any> = new BehaviorSubject({});
 
-  moduleID = new BehaviorSubject<string>('')
+  moduleID = new BehaviorSubject<string>('');
+  
+  subModuleID = new BehaviorSubject<string>('');
 
   /**
    * @ignore

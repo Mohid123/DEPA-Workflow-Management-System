@@ -1,0 +1,182 @@
+<app-header></app-header>
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
+  <section>
+    <h3 class="text-xl font-semibold">Edit submodule</h3>
+  </section>
+  <form class="block pt-5" [formGroup]="subModuleForm">
+    <div class="my-3">
+      <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">https://example.com/users/</span>
+        </div>
+        <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
+        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+          validation: 'required',
+          message: 'Submodule URL is required',
+          control: f['subModuleUrl']
+        }"></ng-container>
+        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+          validation: 'pattern',
+          message: 'Please provide a valid URL',
+          control: f['subModuleUrl']
+        }"></ng-container>
+      </div>
+    </div>
+
+    <div class="my-7">
+      <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
+      <select required [ngClass]="f['companyName']?.invalid && f['companyName']?.dirty ? 'is-invalid' : ''" formControlName="companyName" class="form-control" type="text">
+        <ng-container *ngFor="let company of companyList;">
+          <option [value]="company?.value">{{company?.label}}</option>
+        </ng-container>
+      </select>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'Company is required',
+        control: f['companyName']
+      }"></ng-container>
+    </div>
+
+    <!--Admin and View only users-->
+    <div class="grid grid-cols-12 gap-3 my-8">
+      <div class="col-span-6">
+        <label class="block pb-1 text-sm">Admin users <span class="text-red-500">*</span></label>
+        <custom-multi-select
+          formControlName="adminUsers"
+          (approverList)="setAdminUsers($event)"
+        ></custom-multi-select>
+      </div>
+
+      <div class="col-span-6">
+        <label class="block pb-1 text-sm">View Only users <span class="text-red-500">*</span></label>
+        <custom-multi-select
+          formControlName="viewOnlyUsers"
+          (approverList)="setViewUsers($event)"
+        ></custom-multi-select>
+      </div>
+    </div>
+
+    <!--Form preview-->
+    <div class="mb-5 mt-7">
+      <h3 class="mb-5 text-lg font-semibold">Create Form</h3>
+      <h4 class="text-base font-semibold text-center">Form/s Preview</h4>
+      <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
+        <ng-container *ngIf="formComponents[0]?.components?.length > 0">
+          <section class="flex justify-between my-8">
+            <nav
+              tuiTabs
+              vertical="left"
+              class="w-32 mr-5"
+            >
+              <ng-container *ngFor="let tab of formTabs; let j = index">
+                <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+              </ng-container>
+            </nav>
+            <ng-container *ngFor="let form of formComponents; let i = index;">
+              <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+                <div class="flex justify-end">
+                  <a (click)="sendFormForEdit(i)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
+                    <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
+                  </a>
+                </div>
+                <formio [language]="language" [options]="options" [form]="form"></formio>
+              </div>
+            </ng-container>
+
+          </section>
+        </ng-container>
+        <ng-container *ngIf="formComponents[0]?.components?.length == 0">
+          <div class="grid grid-cols-12 gap-2">
+            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            <div data-placeholder class="h-32 col-span-12 mb-3 overflow-hidden bg-gray-200 rounded-md"></div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="w-full mx-auto my-1">
+        <p class="text-xs text-gray-500">The form you add will appear here</p>
+      </div>
+    </div>
+
+    <!--Add new Form-->
+    <div class="mt-7">
+      <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
+        {{formComponents[0]?.components?.length == 0 ? 'Add form' : 'Add another'}}
+      </a>
+    </div>
+
+    <!--Edit Workflow-->
+    <div class="mt-12">
+      <h4 class="text-lg font-semibold">Edit workflow</h4>
+      <ng-container formArrayName="workflows">
+        <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
+          <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
+          <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
+            <div class="col-span-5">
+              <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+              <custom-multi-select formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+            </div>
+            <div class="col-span-5">
+              <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+              <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                <option value="and">AND</option>
+                <option value="or">OR</option>
+                <option value="none">NONE</option>
+              </select>
+            </div>
+            <div class="col-span-2 mt-8" *ngIf="i > 0">
+              <button
+                tuiIconButton
+                type="button"
+                size="s"
+                appearance="secondary-destructive"
+                icon="tuiIconTrash2Large"
+                (click)="removeWorkflowStep(i)"
+              ></button>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <button
+        tuiIconButton
+        type="button"
+        size="m"
+        appearance="primary"
+        icon="tuiIconPlusLarge"
+        (click)="addWorkflowStep()"
+      ></button>
+    </div>
+
+    <div class="flex justify-center gap-2 mt-10">
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        appearance="primary"
+        (click)="saveSubModule()"
+        [showLoader]="(isCreatingSubModule | async) == true"
+      >
+        Save Changes
+      </button>
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        appearance="accent"
+        [routerLink]="['/appListing/submodules', redirectToModuleID]"
+      >Cancel</button>
+    </div>
+  </form>
+</section>
+<app-footer></app-footer>
+
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
+      <span class="text-red-400 fv-help-block text-xxs 2xl:text-xs 2xl:mb-2" role="alert">
+        {{ message }}
+      </span>
+    </div>
+  </ng-container>
+</ng-template>

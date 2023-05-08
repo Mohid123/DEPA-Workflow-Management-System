@@ -7,7 +7,6 @@ import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { subModuleForm } from 'src/app/forms/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { options } from 'src/app/modules/form-builder/options';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 
@@ -22,33 +21,17 @@ export class AddSubmoduleComponent implements OnDestroy {
   activeIndex: number = 0;
   public options: FormioOptions;
   public language: EventEmitter<string> = new EventEmitter();
-  readonly categoryOptions = [
-    'Human Resources',
-    'Networking',
-    'Games',
-    'E-Commerce',
-    'Finance',
-    'Management'
-  ];
   langItems = [{name: 'en',}, {name: 'ar'}];
   languageForm = new FormGroup({
     languages: new FormControl(this.langItems[0]),
   });
 
-  readonly approverNames = [
-    'Ahtasham',
-    'Fida',
-    'Fadii',
-    'Tabii',
-    'Jani'
-  ];
   readonly conditions = [
     'OR',
     'AND',
     'ANY'
   ];
   formTabs: any[] = [];
-  subModForm = subModuleForm;
   subModuleFormIoValue = new BehaviorSubject<any>({});
   destroy$ = new Subject();
   isCreatingSubModule = new Subject<boolean>();
@@ -66,9 +49,10 @@ export class AddSubmoduleComponent implements OnDestroy {
   ) {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
+    console.log('SUBMODULE DRAFT LOCAL', this.submoduleFromLS);
 
     //get default workflow
-    this.getDefaultWorkflow()
+    this.getDefaultWorkflow();
 
     this.formComponents = this.transportService.formBuilderData.value;
     this.formTabs = this.formComponents.map(val => val.title);
@@ -82,11 +66,11 @@ export class AddSubmoduleComponent implements OnDestroy {
   // }
 
   getDefaultWorkflow() {
-    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val['id']) {
-        this.redirectToModuleID = val['id'];
-        this.transportService.moduleID.next(val['id']);
-        this.dashboard.getWorkflowFromModule(val['id']).subscribe((response: any) => {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      if(params['moduleID']) {
+        this.redirectToModuleID = params['moduleID'];
+        this.transportService.moduleID.next(params['moduleID']);
+        this.dashboard.getWorkflowFromModule(params['moduleID']).subscribe((response: any) => {
           if(response) {
             this.initSubModuleForm(response)
           }
@@ -206,7 +190,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   saveSubModule(statusStr?: number) {
     if(this.dataSubmitValidation() == false) {
       this.subModuleForm.markAllAsTouched();
-      return this.notif.displayNotification('Please complete the submodule', 'Create Submodule', TuiNotification.Warning)
+      return this.notif.displayNotification('Please provide all data', 'Create Submodule', TuiNotification.Warning)
     }
     this.isCreatingSubModule.next(true)
     const payload = {

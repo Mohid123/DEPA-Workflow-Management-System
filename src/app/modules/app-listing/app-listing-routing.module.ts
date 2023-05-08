@@ -4,6 +4,7 @@ import { AppListingComponent } from './app-listing.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
 import { SubmoduleGuard } from '../auth/guards/submodule.guard';
+import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,11 @@ const routes: Routes = [
         path: 'add-submodule',
         component: AddSubmoduleComponent,
         data: {breadcrumb:'Add Submodule'},
+      },
+      {
+        path: 'edit-submodule/:id',
+        component: EditSubmoduleComponent,
+        data: {breadcrumb:'Edit Submodule'},
       },
       {
         path: '',

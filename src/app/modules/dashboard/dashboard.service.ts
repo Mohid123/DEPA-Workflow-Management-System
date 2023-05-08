@@ -253,4 +253,15 @@ export class DashboardService extends ApiService<any> {
       }
     }))
   }
+
+  getSubModuleByID(submodID: string): Observable<ApiResponse<any>> {
+    return this.get(`/subModules/${submodID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Fetch Submodule', TuiNotification.Error);
+      }
+    }))
+  }
 }
