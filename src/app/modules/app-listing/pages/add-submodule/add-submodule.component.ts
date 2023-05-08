@@ -2,12 +2,14 @@ import { Component, EventEmitter, HostListener, OnDestroy } from '@angular/core'
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
+import { TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { subModuleForm } from 'src/app/forms/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { options } from 'src/app/modules/form-builder/options';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { NotificationsService } from 'src/core/core-services/notifications.service';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -47,14 +49,11 @@ export class AddSubmoduleComponent implements OnDestroy {
   ];
   formTabs: any[] = [];
   subModForm = subModuleForm;
-  formOptions: any = {
-    "disableAlerts": true
-  };
-  prePopulatedDataDetails: any;
   subModuleFormIoValue = new BehaviorSubject<any>({});
   destroy$ = new Subject();
   isCreatingSubModule = new Subject<boolean>();
-  redirectToModuleID: string
+  redirectToModuleID: string;
+  companyList: any[];
 
   constructor(
     private fb: FormBuilder,
@@ -62,11 +61,27 @@ export class AddSubmoduleComponent implements OnDestroy {
     private transportService: DataTransportService,
     private router: Router,
     private dashboard: DashboardService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private notif: NotificationsService
   ) {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
+
     //get default workflow
+    this.getDefaultWorkflow()
+
+    this.formComponents = this.transportService.formBuilderData.value;
+    this.formTabs = this.formComponents.map(val => val.title);
+
+    this.getAllCompanies();
+  }
+
+  // @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
+  //   event.preventDefault();
+  //   event.returnValue = false;
+  // }
+
+  getDefaultWorkflow() {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['id']) {
         this.redirectToModuleID = val['id'];
@@ -78,83 +93,29 @@ export class AddSubmoduleComponent implements OnDestroy {
           if(Object.keys(this.submoduleFromLS)?.length > 0) {
             this.initSubModuleForm(this.submoduleFromLS);
           }
-          console.log(this.submoduleFromLS)
         })
       }
     });
+  }
 
-    this.options = options;
-    this.formComponents = this.transportService.formBuilderData.value;
-    this.formTabs = this.formComponents.map(val => val.title);
-    this.prePopulatedDataDetails = {
-      "data": {
-        "submoduleUrl": this.submoduleFromLS?.subModuleUrl,
-        "companyName": this.submoduleFromLS?.companyName,
-        "code": this.submoduleFromLS?.code
-      }
-    };
-
+  getAllCompanies() {
     this.dashboard.getAllCompanies()
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      const companies = res.results?.map(data => {
+      this.companyList = res.results?.map(data => {
         return {
           value: data?.id,
           label: data?.title
         }
       });
-      this.subModForm = {
-        "title": "Submodule Form",
-        "components": [
-          {
-            "label": "Submodule Url",
-            "tableView": true,
-            "validate": {
-                "required": true
-            },
-            "key": "submoduleUrl",
-            "type": "url",
-            "input": true
-          },
-          {
-            "label": "Company Name",
-            "widget": "html5",
-            "tableView": true,
-            "validate": {
-              "required": true
-            },
-            "key": "companyName",
-            "type": "select",
-            "data": {
-              "values": companies
-            },
-            "input": true
-          },
-          {
-            "label": "Code",
-            "tableView": true,
-            "validate": {
-                "required": true
-            },
-            "key": "code",
-            "type": "textfield",
-            "input": true
-          },
-        ]
-      }
-    })
-  }
-
-  @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
-    event.preventDefault();
-    event.returnValue = false;
+    });
   }
 
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.subModuleUrl || '', Validators.compose([Validators.required, Validators.pattern(/^(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}$/)])],
+      subModuleUrl: [item?.subModuleUrl || null, Validators.compose([Validators.required, Validators.pattern(/^[a-zA-Z0-9\-\/:.]+\.[a-zA-Z]{2,}$/)])],
       companies: this.fb.array([]),
-      code: [item?.code || ''],
-      companyName: [item?.companyName || '', Validators.required],
+      code: [{value: item?.code, disabled: true} || {value: null, disabled: true}],
+      companyName: [item?.companyName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       workflows: this.fb.array(
@@ -174,18 +135,12 @@ export class AddSubmoduleComponent implements OnDestroy {
         ||
         [
           this.fb.group({
-            condition: ['', Validators.required],
+            condition: [null, Validators.required],
             approverIds: [[], Validators.required]
           })
         ]
       )
     })
-  }
-
-  getFormIoValueOnChange(value: any) {
-    if(value && value?.data) {
-      this.subModuleFormIoValue.next(value?.data);
-    }
   }
 
   get f() {
@@ -232,9 +187,6 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   saveDraft() {
-    this.subModuleForm.get('subModuleUrl')?.setValue(this.subModuleFormIoValue?.value?.submoduleUrl)
-    this.subModuleForm.get('companyName')?.setValue(this.subModuleFormIoValue?.value?.companyName)
-    this.subModuleForm.get('code')?.setValue(this.subModuleFormIoValue?.value?.code)
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
     this.router.navigate(['/form-builder']);
@@ -252,11 +204,15 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   saveSubModule(statusStr?: number) {
+    if(this.dataSubmitValidation() == false) {
+      this.subModuleForm.markAllAsTouched();
+      return this.notif.displayNotification('Please complete the submodule', 'Create Submodule', TuiNotification.Warning)
+    }
     this.isCreatingSubModule.next(true)
     const payload = {
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: this.subModuleForm.get('code')?.value,
+      code: 'subModule-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join(''),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
@@ -283,6 +239,27 @@ export class AddSubmoduleComponent implements OnDestroy {
         this.isCreatingSubModule.next(false);
       }
     })
+  }
+
+  dataSubmitValidation() {
+    if(
+      this.f['subModuleUrl']?.invalid ||
+      this.f['companyName']?.invalid ||
+      this.f['adminUsers']?.value?.length == 0 ||
+      this.f['viewOnlyUsers']?.value?.length == 0 ||
+      this.workflows?.length == 0 ||
+      Object.values(this.formComponents)[0]?.components?.length == 0
+    ) {
+      return false
+    }
+    return true
+  }
+
+  validateSelection(index: number) {
+    if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
+      this.workflows.at(index)?.get('condition')?.setValue('none')
+      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Warning)
+    }
   }
 
   setAdminUsers(users: string[]) {

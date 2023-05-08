@@ -4,7 +4,34 @@
     <h3 class="text-xl font-semibold">Create new submodule</h3>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
-    <formio (change)="getFormIoValueOnChange($event)" [form]="subModForm" [options]="formOptions" [submission]="prePopulatedDataDetails"></formio>
+    <div class="my-3">
+      <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
+      <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'Submodule URL is required',
+        control: f['subModuleUrl']
+      }"></ng-container>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'pattern',
+        message: 'Please provide a valid URL',
+        control: f['subModuleUrl']
+      }"></ng-container>
+    </div>
+
+    <div class="my-7">
+      <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
+      <select required [ngClass]="f['companyName']?.invalid && f['companyName']?.dirty ? 'is-invalid' : ''" formControlName="companyName" class="form-control" type="text">
+        <ng-container *ngFor="let company of companyList;">
+          <option [value]="company?.value">{{company?.label}}</option>
+        </ng-container>
+      </select>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'Company is required',
+        control: f['companyName']
+      }"></ng-container>
+    </div>
     <div class="my-2">
       <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
     </div>
@@ -154,10 +181,10 @@
             </div>
             <div class="col-span-5">
               <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
-              <select formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
+              <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
                 <option value="and">AND</option>
                 <option value="or">OR</option>
-                <!-- <option value="any">ANY</option> -->
+                <option value="none">NONE</option>
               </select>
             </div>
             <div class="col-span-2 mt-8" *ngIf="i > 0">

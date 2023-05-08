@@ -181,7 +181,7 @@ export class ApiService<T> {
     response: Observable<any>
   ): Observable<ApiResponse<TData>> {
     return response.pipe(
-      retry(2),
+      retry(1),
       map((r: ApiResponse<TData>) => {
         const result = new ApiResponse<TData>();
         Object.assign(result, r);
