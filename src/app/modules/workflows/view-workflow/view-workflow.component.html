@@ -139,10 +139,9 @@
           </ng-container>
           <ng-container *ngFor="let log of approvalLogs; let i = index">
             <div class="grid grid-cols-12 gap-2">
-              <p class="font-semibold col-span-3">Approved By: <span class="text-green-500">Name</span></p>
-              <p class="font-semibold col-span-3">Approved on: <span class="text-green-500">Date</span></p>
-              <p class="font-semibold col-span-6">Comments: <br>
-                <span class="text-green-500 font-normal">Name NameName Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name Name </span>
+              <p class="font-normal col-span-6">Decision performed by: &nbsp; <span class="text-green-500 font-semibold">{{log?.id}}</span></p>
+              <p class="font-normal col-span-6">Comments:
+                <span class="text-green-500 font-semibold">&nbsp;{{log?.remarks}}</span>
               </p>
             </div>
           </ng-container>

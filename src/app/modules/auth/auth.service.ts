@@ -190,6 +190,8 @@ export class AuthService extends ApiService<AuthApiData> {
     .pipe(shareReplay(), tap((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         removeItem(StorageItem.RefreshToken);
+        removeItem(StorageItem.publishAppValue);
+        removeItem(StorageItem.activeIndex);
         setItem(StorageItem.User, null);
         setItem(StorageItem.JwtToken, null);
         this.router.navigate(['/auth/login'], {
@@ -197,6 +199,8 @@ export class AuthService extends ApiService<AuthApiData> {
         });
       }
       else {
+        removeItem(StorageItem.publishAppValue);
+        removeItem(StorageItem.activeIndex);
         removeItem(StorageItem.RefreshToken);
         setItem(StorageItem.User, null);
         setItem(StorageItem.JwtToken, null);

@@ -9,12 +9,14 @@ import { TuiInputPasswordModule, TuiInputModule, TuiCheckboxModule } from '@taig
 import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { SubmoduleGuardComponent } from './templates/submodule-guard/submodule-guard.component';
 import { FormioModule } from '@formio/angular';
+import { ModuleGuardComponent } from './templates/module-guard/module-guard.component';
 
 @NgModule({
   declarations: [
     AuthComponent,
     LoginComponent,
-    SubmoduleGuardComponent
+    SubmoduleGuardComponent,
+    ModuleGuardComponent
   ],
   imports: [
     CommonModule,

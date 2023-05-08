@@ -19,7 +19,38 @@
       </div>
       <form>
         <ng-container *ngIf="activeIndex == 0">
-          <formio (submit)="nextStep($event)" [form]="moduleDetailsForm" [options]="options" [submission]="prePopulatedDataDetails"></formio>
+          <form [formGroup]="moduleDetailsForm">
+            <div class="my-3">
+              <label class="block pb-1">Module Title <span class="text-xs text-red-400">*</span></label>
+              <input required [ngClass]="f['moduleTitle']?.invalid && f['moduleTitle']?.dirty ? 'is-invalid' : ''" formControlName="moduleTitle" class="form-control" type="text">
+              <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'Module Title is required',
+                control: f['moduleTitle']
+              }"></ng-container>
+            </div>
+            <div class="my-7">
+              <label class="block pb-1">Module URL <span class="text-xs text-red-400">*</span></label>
+              <input formControlName="moduleURL" class="form-control" type="text">
+            </div>
+            <div class="my-7">
+              <label class="block pb-1">Module Description <span class="text-xs text-red-400">*</span></label>
+              <textarea required [ngClass]="f['moduleDescription']?.invalid && f['moduleDescription']?.dirty ? 'is-invalid' : ''" formControlName="moduleDescription" class="form-control" type="text" rows="4"></textarea>
+              <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'Module Description is required',
+                control: f['moduleDescription']
+              }"></ng-container>
+            </div>
+            <div class="my-7">
+              <label class="block pb-1">Module Code <span class="text-xs text-red-400">*</span></label>
+              <input formControlName="moduleCode" class="form-control" type="text">
+            </div>
+
+            <div class="flex justify-end mt-5">
+              <button (click)="nextStep()" type="button" class="btn btn-primary">Proceed to Default Workflow</button>
+            </div>
+          </form>
         </ng-container>
 
         <ng-container *ngIf="activeIndex == 1">
@@ -34,10 +65,10 @@
                   </div>
                   <div class="col-span-5">
                     <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
-                    <select formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                    <select (change)="validateSelection(i)" formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
                       <option value="and">AND</option>
                       <option value="or">OR</option>
-                      <!-- <option value="any">ANY</option> -->
+                      <option value="none">NONE</option>
                     </select>
                   </div>
                   <div class="col-span-2 mt-8" *ngIf="i > 0">

@@ -113,20 +113,6 @@ export const createModuleDetailsForm = {
       "input": true
     },
     {
-      "label": "Module Category",
-      "widget": "html5",
-      "tableView": true,
-      "data": {
-        "values": []
-      },
-      "validate": {
-          "required": true
-      },
-      "key": "moduleCategory",
-      "type": "select",
-      "input": true
-    },
-    {
       "label": "Code",
       "tableView": true,
       "validate": {

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
+import { ModuleGuard } from '../auth/guards/module.guard';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
       {
         path: 'home',
         component: HomeComponent,
+        canActivate: [ModuleGuard],
         data: {breadcrumb:'Home'},
       },
       {

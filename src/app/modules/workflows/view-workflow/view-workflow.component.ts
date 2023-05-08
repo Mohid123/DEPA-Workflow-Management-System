@@ -73,7 +73,6 @@ export class ViewWorkflowComponent implements OnDestroy {
     ).subscribe(data => {
       if(data) {
         this.workflowData = data;
-        console.log(this.workflowData);
         this.formTabs = this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = this.workflowData?.formIds;
         this.workflowUsers = this.workflowData?.workflowStatus?.map(users => {
@@ -89,7 +88,6 @@ export class ViewWorkflowComponent implements OnDestroy {
             status: users?.status
           }
         });
-        console.log(this.workflowUsers)
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
         this.approvalLogs = this.workflowData?.approvalLog;
       }
@@ -109,14 +107,13 @@ export class ViewWorkflowComponent implements OnDestroy {
     this.savingDecision.next(true)
     const payload: any = {
       stepId: this.decisionData?.value?.stepId,
-      userId: this.decisionData?.value?.id,
+      userId: this.currentUser?.id,
       remarks: this.remarks?.value,
       isApproved: this.approve?.value == true ? true : false
     }
-    console.log(payload);
     this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
-      console.log(res)
+      this.fetchData()
       this.savingDecision.next(false);
       this.remarks.reset();
       this.saveDialogSubscription.forEach(val => val.unsubscribe());
