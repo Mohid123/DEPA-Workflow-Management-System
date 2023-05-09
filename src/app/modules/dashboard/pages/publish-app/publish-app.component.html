@@ -46,6 +46,69 @@
               <label class="block pb-1">Module Code <span class="text-xs text-red-400">*</span></label>
               <input formControlName="moduleCode" class="form-control" type="text">
             </div>
+            <div class="my-7">
+              <label class="block pb-1">Module Category <span class="text-xs text-red-400">*</span></label>
+              <select formControlName="moduleCategory" class="form-control form-select" type="text">
+                <ng-container *ngFor="let cat of (categories | async)">
+                  <option [value]="cat?.id">{{cat?.name}}</option>
+                </ng-container>
+              </select>
+              <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'Module Category is required',
+                control: f['moduleCategory']
+              }"></ng-container>
+            </div>
+
+            <div class="my-2">
+              <p class="text-xs text-gray-500">You can add a new category below</p>
+            </div>
+            <!-- add new category-->
+            <div class="my-5">
+              <ng-container formArrayName="category">
+                <ng-container *ngFor="let categ of category.controls; let i = index; let first = first; let last = last">
+                  <div class="w-7/12 px-8" [formGroupName]="i">
+                    <div class="flex items-center justify-between w-full gap-2 mb-3">
+                      <div class="w-full">
+                        <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
+                          <input
+                            class="form-control"
+                            formControlName="title"
+                            type="text"
+                          />
+                      </div>
+                      <div [ngClass]="first ? 'mt-7': 'mt-0'">
+                        <button
+                          tuiIconButton
+                          type="button"
+                          size="s"
+                          appearance="secondary-destructive"
+                          icon="tuiIconTrash2Large"
+                          (click)="removeCategory(i)"
+                        ></button>
+                      </div>
+                    </div>
+                    <div class="flex justify-end">
+                      <button
+                        *ngIf="last"
+                        tuiButton
+                        type="button"
+                        class="mb-3"
+                        size="m"
+                      >Submit</button>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+              <button
+                tuiIconButton
+                type="button"
+                size="m"
+                appearance="secondary"
+                icon="tuiIconPlusLarge"
+                (click)="addCategory()"
+              ></button>
+            </div>
 
             <div class="flex justify-end mt-5">
               <button (click)="nextStep()" type="button" class="btn btn-primary">Proceed to Default Workflow</button>

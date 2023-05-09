@@ -68,7 +68,6 @@ export class PublishAppComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute
   ) {
     //edit module case
-    console.log(this.dashboard.moduleEditData?.value)
     this.dashboard.moduleEditData.pipe(takeUntil(this.destroy$), take(1)).subscribe(val => {
       if(val) {
         const category = {
@@ -108,6 +107,9 @@ export class PublishAppComponent implements OnDestroy {
       this.moduleDetailsForm?.get('moduleURL')?.setValue('http://localhost:4200/'+ value.replace(/\s/g, '-').toLowerCase());
       this.moduleDetailsForm?.get('moduleCode')?.setValue('mod' + '-' + value.replace(/\s/g, '-').toLowerCase())
     })
+    
+    // get all categories
+    this.categories = this.dashboard.getAllCategories()
   }
 
   initModuleDetailsForm(item?: any) {
@@ -115,8 +117,25 @@ export class PublishAppComponent implements OnDestroy {
       moduleTitle: [item?.title || null, Validators.required],
       moduleURL: [{value: item?.url || null, disabled: true}],
       moduleDescription: [item?.description || null, Validators.required],
-      moduleCode: [{value: item?.code || null, disabled: true}]
+      moduleCode: [{value: item?.code || null, disabled: true}],
+      moduleCategory: [item?.categoryId || null, Validators.required],
+      category: this.fb.array([]),
     })
+  }
+
+  get category() {
+    return this.f["category"] as FormArray;
+  }
+
+  addCategory() {
+    const companyForm = this.fb.group({
+      title: ['', Validators.required]
+    });
+    this.category.push(companyForm)
+  }
+
+  removeCategory(index: number) {
+    this.category.removeAt(index);
   }
 
   initWorkflowForm(item?: any) {
@@ -179,11 +198,11 @@ export class PublishAppComponent implements OnDestroy {
     if(this.activeIndex !== 3) {
       switch(this.activeIndex) {
         case 0:
-          if(this.f['moduleTitle']?.invalid || this.f['moduleDescription']?.invalid) {
+          if(this.f['moduleTitle']?.invalid || this.f['moduleDescription']?.invalid || this.f['moduleCategory']?.invalid) {
             return this.notif.displayNotification('Please fill in all fields', 'Create Module', TuiNotification.Warning);
           }
           const moduleDetails = {
-            categoryId: '645095aaf4215122c4678d20',
+            categoryId: this.f['moduleCategory']?.value,
             title: this.f['moduleTitle']?.value,
             description: this.f['moduleDescription']?.value,
             url: this.f['moduleURL']?.value,
