@@ -5,6 +5,7 @@ import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.compo
 import { SubmoduleGuard } from '../auth/guards/submodule.guard';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
+import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,11 @@ const routes: Routes = [
         path: 'edit-submodule/:id',
         component: EditSubmoduleComponent,
         data: {breadcrumb:'Edit Submodule'},
+      },
+      {
+        path: 'submodule-details/:name',
+        component: SubmoduleDetailsComponent,
+        data: {breadcrumb:'Submodule Details'},
       },
       {
         path: '',

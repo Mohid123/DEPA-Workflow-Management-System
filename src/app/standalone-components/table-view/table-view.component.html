@@ -56,14 +56,14 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="(tableData | async)?.length == 0; else showSubModules">
+        <ng-container *ngIf="tableData?.length == 0; else showSubModules">
           <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
             It seems there is no data to show here!
           </th>
         </ng-container>
 
         <ng-template #showSubModules>
-          <ng-container *ngFor="let data of (tableData | async); let i = index; let first = first; let last = last">
+          <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last">
             <tr class="bg-white border-b border-gray-300">
               <td class="px-6 py-4">
                 {{data?.companyId?.title}}
@@ -78,14 +78,17 @@
                 {{data?.status === 1 ? 'Published' : 'Draft'}}
               </td>
               <td class="w-3/12 py-4">
-                <a [routerLink]="['/workflows/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer mr-2 hover:text-white">
-                  <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
+                <a [routerLink]="['/workflows/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
+                  <i class="fa fa-print fa-lg" aria-hidden="true"></i> Submissions
                 </a>
                 <a [routerLink]="['/appListing/edit-submodule', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-pencil fa-lg" aria-hidden="true"></i> Edit
                 </a>
                 <a (click)="showDialog(data?.id, template)" class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
                   <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> Delete
+                </a>
+                <a [routerLink]="['/appListing/submodule-details', 'some-name']" class="px-2 py-1 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer ml-2 hover:text-white">
+                  <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
                 </a>
               </td>
             </tr>

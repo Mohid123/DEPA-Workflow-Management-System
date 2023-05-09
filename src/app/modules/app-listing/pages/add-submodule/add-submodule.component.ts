@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
 import { TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { subModuleForm } from 'src/app/forms-schema/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -96,7 +95,7 @@ export class AddSubmoduleComponent implements OnDestroy {
 
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.subModuleUrl || null, Validators.compose([Validators.required, Validators.pattern(/^[a-zA-Z0-9\-\/:.]+\.[a-zA-Z]{2,}$/)])],
+      subModuleUrl: [item?.subModuleUrl || null, Validators.compose([Validators.required])],
       companies: this.fb.array([]),
       code: [{value: item?.code, disabled: true} || {value: null, disabled: true}],
       companyName: [item?.companyName || null, Validators.required],

@@ -26,8 +26,15 @@
 <tui-breadcrumbs size="l"
   class="text-[#9a9ba3] fixed w-full z-30 shadow-md border-b-2 border-b-gray-300 bg-white px-5 tui-space_bottom-3 top-20 py-10">
   <ng-container *ngFor="let item of dashboardService.items; let i = index;">
-    <a *tuiItem tuiLink [routerLink]="item.routerLink" class="hover:text-[#76777f]">
-      {{ item.caption }}
-    </a>
+    <ng-container *ngIf="i == 0 || dashboardService.items?.length == 0">
+      <a *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[#76777f]">
+        <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+      </a>
+    </ng-container>
+    <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
+      <a *tuiItem tuiLink [routerLink]="item.routerLink" class="hover:text-[#76777f]">
+        {{ item.caption }}
+      </a>
+    </ng-container>
   </ng-container>
 </tui-breadcrumbs>

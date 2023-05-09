@@ -31,7 +31,7 @@ export class TableViewComponent {
   /**
    * The data to display inside the table
    */
-  @Input() tableData: Observable<any> = of([]);
+  @Input() tableData: any = [];
 
   /**
    * The filter parameters to show in the dropdown

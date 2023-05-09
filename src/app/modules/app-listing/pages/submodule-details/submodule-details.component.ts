@@ -1,0 +1,21 @@
+import { Component } from '@angular/core';
+
+@Component({
+  templateUrl: './submodule-details.component.html',
+  styleUrls: ['./submodule-details.component.scss']
+})
+export class SubmoduleDetailsComponent {
+  formTabs: any[] = [];
+  activeIndex: number = 0;
+  formWithWorkflow: any;
+  carouselIndex = 0;
+
+  readonly items = [
+    'John Cleese',
+    'Eric Idle',
+    'Michael Palin',
+    'Graham Chapman',
+    'Terry Gilliam',
+    'Terry Jones',
+];
+}
