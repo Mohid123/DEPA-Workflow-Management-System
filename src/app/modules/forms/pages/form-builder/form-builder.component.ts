@@ -1,13 +1,14 @@
-import { Component, ViewChild, EventEmitter, ElementRef, HostListener } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef, HostListener, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
 import { TuiNotification } from '@taiga-ui/core';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
+import { Subject, takeUntil } from 'rxjs';
+import { FormsService } from '../../services/forms.service';
 
 @Component({
-  selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
@@ -33,24 +34,37 @@ export class FormBuilderComponent {
       icon: 'fa fa-file-code-o fa-lg',
     }
   ];
-
   formTitleControl = new FormControl({value: '', disabled: this.editMode});
   formDisplayType = new FormControl('form');
+  destroy$ = new Subject();
 
   constructor(
     private transportService: DataTransportService,
     private notif: NotificationsService,
-    private router: Router
-  ) {
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private formService: FormsService)
+  {
     this.editMode = this.transportService.isFormEdit.value;
-    if(this.editMode === true) {
-      this.form = this.transportService.sendFormDataForEdit.value;
-      this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
-      this.formTitleControl.disable();
-    }
-    else {
-      this.form = {title: this.formTitleControl?.value, key: '', display: this.formDisplayType.value, components: []};
-    }
+    this.activatedRoute.queryParams?.subscribe(data => {
+      if(data['formID']) {
+        this.formService.getFormById(data['formID'])
+        .pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
+          if(response) {
+            this.form = response;
+            this.formTitleControl.setValue(response?.title);
+          }
+        })
+      }
+      if(this.editMode === true) {
+        this.form = this.transportService.sendFormDataForEdit.value;
+        this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
+        this.formTitleControl.disable();
+      }
+      else {
+        this.form = {title: this.formTitleControl?.value, key: '', display: this.formDisplayType.value, components: []};
+      }
+    })
   }
 
   @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
@@ -131,4 +145,8 @@ export class FormBuilderComponent {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
+  }
 }

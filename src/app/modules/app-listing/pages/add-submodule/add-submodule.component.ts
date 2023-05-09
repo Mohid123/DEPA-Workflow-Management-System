@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
 import { TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { subModuleForm } from 'src/app/forms/forms';
+import { subModuleForm } from 'src/app/forms-schema/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -173,14 +173,14 @@ export class AddSubmoduleComponent implements OnDestroy {
   saveDraft() {
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
-    this.router.navigate(['/form-builder']);
+    this.router.navigate(['/forms/form-builder']);
   }
 
   sendFormForEdit(index: number) {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
-    this.router.navigate(['/form-builder']);
+    this.router.navigate(['/forms/form-builder']);
   }
 
   changeLanguage(lang: string) {

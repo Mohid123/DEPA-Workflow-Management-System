@@ -6,7 +6,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { Router } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
 import { ApiResponse } from 'src/core/models/api-response.model';
-import { activeDirectoryLoginForm, emailLoginForm } from 'src/app/forms/forms';
+import { activeDirectoryLoginForm, emailLoginForm } from 'src/app/forms-schema/forms';
 
 @Component({
   templateUrl: './login.component.html',

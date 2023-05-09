@@ -4,7 +4,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
-import { createModuleDetailsForm } from 'src/app/forms/forms';
+import { createModuleDetailsForm } from 'src/app/forms-schema/forms';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';

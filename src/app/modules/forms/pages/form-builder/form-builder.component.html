@@ -1,0 +1,64 @@
+<section class="py-5">
+  <tui-tabs tuiMobileTabs class="mx-2 lg:mx-20 md:mx-10 flex justify-center" [activeItemIndex]="activeIndex">
+    <ng-container *ngFor="let item of items; let i = index">
+      <button
+        tuiTab
+        tuiRipple="var(--tui-text-01)"
+        (click)="activeIndex = i; onJsonView()"
+      >
+      <i [class]="item.icon" alt="svg-icon" class="pr-1"></i> &nbsp; {{item.text}}
+    </button>
+    </ng-container>
+  </tui-tabs>
+</section>
+
+<section *ngIf="activeIndex == 0" class="px-5">
+  <div class="grid grid-cols-12 gap-3 w-8/12 mx-auto px-1 my-4">
+    <div class="col-span-6">
+      <label for="titleField">Title</label>
+      <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">
+    </div>
+    <!-- <div class="col-span-6">
+      <label for="titleField">Display as: </label>
+      <select (change)="setSelectValue($event)" [formControl]="formDisplayType" class="form-select form-control" aria-label="Default select">
+        <option value="form">Form</option>
+        <option value="pdf">PDF</option>
+      </select>
+    </div> -->
+  </div>
+  <form-builder [form]="form" (change)="onChange($event)"></form-builder>
+  <div class="flex justify-center py-3">
+    <button
+      (click)="submitFormData()"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      class="tui-space_right-3 tui-space_bottom-3"
+      >
+      Submit Form
+    </button>
+    <button
+      (click)="cancelFormData()"
+      tuiButton
+      type="button"
+      size="m"
+      appearance="secondary-destructive"
+      class="tui-space_right-3 tui-space_bottom-3"
+      >
+      Cancel
+    </button>
+  </div>
+</section>
+
+<section *ngIf="activeIndex === 1" class="px-5">
+  <div class="well jsonviewer">
+    <formio [form]="form" [refresh]="refreshForm"></formio>
+  </div>
+</section>
+
+<section *ngIf="activeIndex === 2" class="px-5">
+  <div class="well jsonviewer">
+    <pre id="json"><code id="json_code" class="language-json"></code></pre>
+  </div>
+</section>

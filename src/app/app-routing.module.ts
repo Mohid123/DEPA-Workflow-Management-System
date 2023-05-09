@@ -21,9 +21,9 @@ const routes: Routes = [
     loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
-    path: 'form-builder',
+    path: 'forms',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/form-builder/form-builder.module').then(m => m.FormBuilderModule)
+    loadChildren: () => import('./modules/forms/forms.module').then(m => m.FormsModule)
   },
   {
     path: 'appListing',
