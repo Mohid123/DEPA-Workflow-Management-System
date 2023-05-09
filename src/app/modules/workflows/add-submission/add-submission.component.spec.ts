@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewFormsComponent } from './view-forms.component';
+import { AddSubmissionComponent } from './add-submission.component';
 
-describe('ViewFormsComponent', () => {
-  let component: ViewFormsComponent;
-  let fixture: ComponentFixture<ViewFormsComponent>;
+describe('AddSubmissionComponent', () => {
+  let component: AddSubmissionComponent;
+  let fixture: ComponentFixture<AddSubmissionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ViewFormsComponent ]
+      declarations: [ AddSubmissionComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ViewFormsComponent);
+    fixture = TestBed.createComponent(AddSubmissionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

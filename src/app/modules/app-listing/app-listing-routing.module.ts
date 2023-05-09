@@ -30,7 +30,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'submodules/:id',
+        redirectTo: 'home',
         pathMatch: 'full'
       }
     ]

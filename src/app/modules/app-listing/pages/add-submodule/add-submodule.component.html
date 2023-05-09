@@ -8,7 +8,7 @@
       <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text">https://example.com/users/</span>
+          <span class="input-group-text">http://localhost:4200/appListing/</span>
         </div>
         <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{

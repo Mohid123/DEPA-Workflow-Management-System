@@ -1,0 +1,90 @@
+<app-header></app-header>
+
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
+  <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
+    <section class="flex justify-between my-8">
+      <nav
+        tuiTabs
+        vertical="left"
+        class="w-32 mr-5"
+      >
+        <ng-container *ngFor="let tab of formTabs; let j = index">
+          <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+        </ng-container>
+      </nav>
+      <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
+        <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+          <formio [form]="form"></formio>
+        </div>
+      </ng-container>
+
+    </section>
+  </div>
+
+  <!--Submodue workflow-->
+  <div class="mt-12" [formGroup]="workflowForm">
+    <h4 class="text-lg font-semibold">Modify submodule workflow</h4>
+    <ng-container formArrayName="workflows">
+      <ng-container *ngFor="let workflow of workflows.controls; let i = index">
+        <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
+        <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
+          <div class="col-span-5">
+            <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+            <custom-multi-select formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+          </div>
+          <div class="col-span-5">
+            <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+            <select (change)="validateSelection(i)" formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
+              <option value="and">AND</option>
+              <option value="or">OR</option>
+              <option value="none">NONE</option>
+            </select>
+          </div>
+          <div class="col-span-2 mt-9" *ngIf="i > 0">
+            <button
+              tuiIconButton
+              type="button"
+              size="s"
+              appearance="secondary-destructive"
+              icon="tuiIconTrash2Large"
+              (click)="removeWorkflowStep(i)"
+            ></button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <button
+      tuiIconButton
+      type="button"
+      size="m"
+      appearance="primary"
+      icon="tuiIconPlusLarge"
+      (click)="addWorkflowStep()"
+    ></button>
+  </div>
+
+  <div class="flex justify-end gap-5 mt-8">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+    >
+      Create submission
+    </button>
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="outline"
+    >
+      Save as Draft
+    </button>
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+    >Cancel</button>
+  </div>
+</section>

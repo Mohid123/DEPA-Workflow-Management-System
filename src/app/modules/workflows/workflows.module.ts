@@ -12,13 +12,16 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
 import { ViewSubmissionsComponent } from './view-submissions/view-submissions.component';
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
+import { AddSubmissionComponent } from './add-submission/add-submission.component';
+import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 
 
 @NgModule({
   declarations: [
     WorkflowsComponent,
     ViewWorkflowComponent,
-    ViewSubmissionsComponent
+    ViewSubmissionsComponent,
+    AddSubmissionComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +38,8 @@ import { TableViewComponent } from 'src/app/standalone-components/table-view/tab
     TuiButtonModule,
     TuiTabsModule,
     TableViewComponent,
-    TuiPaginationModule
+    TuiPaginationModule,
+    CustomMultiSelectComponent
   ]
 })
 export class WorkflowsModule { }
