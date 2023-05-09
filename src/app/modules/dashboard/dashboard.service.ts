@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Observable, Subject, map, shareReplay, tap } from 'rxjs';
 import { ApiService } from 'src/core/core-services/api.service';
@@ -61,24 +61,29 @@ export class DashboardService extends ApiService<any> {
    * @param breadcrumbs Array fo breadcrumbs
    * @returns {BreadCrumbs[]} An array of breadcrumbs
    */
-  public createBreadcrumbs(route: ActivatedRoute, routerLink: string = '', breadcrumbs: BreadCrumbs[] = []) {
-    const children: ActivatedRoute[] = route.children;
-    if (children.length === 0) {
-      return breadcrumbs;
-    }
-
-    for (const child of children) {
-      const routeURL: string = child.snapshot.url.map(segment => segment.path).join('/');
-      if (routeURL !== '') {
-        routerLink += `/${routeURL}`;
-      }
-      const caption = child.snapshot.data['breadcrumb'];
-      if (caption) {
-        breadcrumbs.push({caption, routerLink});
-      }
-      return this.createBreadcrumbs(child, routerLink, breadcrumbs);
-    }
+  public createBreadcrumbs(route: ActivatedRouteSnapshot, parentUrl: string[], breadcrumbs: BreadCrumbs[] = []) {
+    if (route) { 
+      // Construct the route URL 
+      const routeUrl = parentUrl.concat(route.url.map(url => url.path)); 
+ 
+      // Add an element for the current route part 
+      if (route.data['breadcrumb']) { 
+        const breadcrumb = { 
+          caption: this.getLabel(route.data), 
+          routerLink: '/' + routeUrl.join('/') 
+        }; 
+        breadcrumbs.push(breadcrumb); 
+      } 
+ 
+      // Add another element for the next route part 
+      this.createBreadcrumbs(route.firstChild, routeUrl, breadcrumbs); 
+    } 
   }
+
+  private getLabel(data: any) { 
+    // The breadcrumb can be defined as a static string or as a function to construct the breadcrumb element out of the route data 
+    return typeof data.breadcrumb === 'function' ? data.breadcrumb(data) : data.breadcrumb; 
+  } 
 
   /**
    * Get method for fetching dashbaord page apps

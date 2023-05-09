@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { AppListingRoutingModule } from './app-listing-routing.module';
 import { AppListingComponent } from './app-listing.component';
-import { CompaniesComponent } from './pages/companies/companies.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
@@ -16,12 +15,13 @@ import { FormioModule } from '@formio/angular';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
+import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 
 
 @NgModule({
   declarations: [
     AppListingComponent,
-    CompaniesComponent,
+    SubmodulesListComponent,
     AddSubmoduleComponent,
     EditSubmoduleComponent
   ],

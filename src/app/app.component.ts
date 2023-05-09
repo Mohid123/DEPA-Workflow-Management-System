@@ -45,7 +45,10 @@ export class AppComponent {
     router.events
     .pipe(filter(event => event instanceof NavigationEnd))
     .subscribe(() => {
-      this.dashboardService.items = this.dashboardService.createBreadcrumbs(this.activatedRoute.root);
+      const root = router.routerState.snapshot.root;
+      const breadcrumbs: any[] = []; 
+      this.dashboardService.createBreadcrumbs(root, [], breadcrumbs);
+      this.dashboardService.items = breadcrumbs
     });
 
     const appIsStable$ = appRef.isStable.pipe(first(isStable => isStable === true));

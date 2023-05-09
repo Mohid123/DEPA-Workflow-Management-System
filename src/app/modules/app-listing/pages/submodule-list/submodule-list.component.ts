@@ -4,10 +4,10 @@ import { Observable, map, pluck, switchMap } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 
 @Component({
-  templateUrl: './companies.component.html',
-  styleUrls: ['./companies.component.scss']
+  templateUrl: './submodule-list.component.html',
+  styleUrls: ['./submodule-list.component.scss']
 })
-export class CompaniesComponent {
+export class SubmodulesListComponent {
   subModuleData: Observable<any>;
   moduleId: string;
 
