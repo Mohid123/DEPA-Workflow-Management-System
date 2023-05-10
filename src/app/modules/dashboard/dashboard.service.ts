@@ -103,8 +103,9 @@ export class DashboardService extends ApiService<any> {
         return res.data
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)   
+        }
       }
     }))
   }
@@ -126,8 +127,9 @@ export class DashboardService extends ApiService<any> {
         })
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch users', 'Get Users', TuiNotification.Error)
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch users', 'Get Users', TuiNotification.Error)
+        }
       }
     }))
   }
@@ -145,8 +147,9 @@ export class DashboardService extends ApiService<any> {
         return response
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch categories', 'Get categories', TuiNotification.Error)
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch categories', 'Get categories', TuiNotification.Error)
+        }
       }
     }))
   }
@@ -173,8 +176,9 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         this.creatingModule.next(false);
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Module', TuiNotification.Error)
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Module', TuiNotification.Error)
+        }
       }
     }))
   }
@@ -186,8 +190,9 @@ export class DashboardService extends ApiService<any> {
         return res.data
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to delete module', 'Delete Module', TuiNotification.Error);
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to delete module', 'Delete Module', TuiNotification.Error);
+        }
       }
     }))
   }
@@ -199,8 +204,9 @@ export class DashboardService extends ApiService<any> {
         return res.data;
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        }
       }
     }))
   }
@@ -214,7 +220,9 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         this.creatingModule.next(false)
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Module', TuiNotification.Error)
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Module', TuiNotification.Error)
+        }
       }
     }))
   }
@@ -232,8 +240,9 @@ export class DashboardService extends ApiService<any> {
         return response;
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        }
       }
     }))
   }
@@ -248,8 +257,9 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         this.creatingModule.next(false);
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create SubModule', TuiNotification.Error);
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create SubModule', TuiNotification.Error);
+        }
       }
     }))
   }
@@ -260,8 +270,9 @@ export class DashboardService extends ApiService<any> {
         return res.data
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch data', 'Fetch companies', TuiNotification.Error);
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch data', 'Fetch companies', TuiNotification.Error);
+        }
       }
     }))
   }
@@ -273,8 +284,9 @@ export class DashboardService extends ApiService<any> {
         return res.data
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to remove submodule', 'Delete SubModule', TuiNotification.Error);
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to remove submodule', 'Delete SubModule', TuiNotification.Error);
+        }
       }
     }))
   }
@@ -285,8 +297,9 @@ export class DashboardService extends ApiService<any> {
         return res.data
       }
       else {
-        if (![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Fetch Submodule', TuiNotification.Error);
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Fetch Submodule', TuiNotification.Error);
+        }
       }
     }))
   }
