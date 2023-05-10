@@ -13,12 +13,17 @@ const routes: Routes = [
       {
         path: 'form-builder',
         component: FormBuilderComponent,
-        data: {breadcrumb:'List of Submodules'},
+        data: {breadcrumb:'Form builder'},
       },
       {
         path: 'edit-form/:id',
         component: EditFormComponent,
         data: {breadcrumb: 'Edit-Form'}
+      },
+      {
+        path: '',
+        redirectTo: 'form-builder',
+        pathMatch: 'full'
       }
     ]
   }

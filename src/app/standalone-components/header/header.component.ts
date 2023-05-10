@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { TuiBreadcrumbsModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
+import { NavigationService } from 'src/core/core-services/navigation.service';
 
 @Component({
   selector: 'app-header',
@@ -16,8 +17,12 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnDestroy {
   subscription: Subscription[] = [];
+  currentRoute: any;
 
-  constructor(public dashboardService: DashboardService, private auth: AuthService) {}
+  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, public nav: NavigationService) {
+    this.currentRoute = this.router.url;
+    console.log(this.currentRoute)
+  }
 
   logoutSession() {
     this.subscription.push(this.auth.logout().subscribe())

@@ -45,8 +45,9 @@ export class EditSubmoduleComponent {
     private activatedRoute: ActivatedRoute,
     private notif: NotificationsService
   ) {
+    this.initSubModuleForm();
     // get submodule for editing and initialize form
-    this.getSubmoduleByIDForEdit();
+    // this.getSubmoduleByIDForEdit();
   }
 
   getSubmoduleByIDForEdit() {
@@ -54,7 +55,7 @@ export class EditSubmoduleComponent {
       if(params['id']) {
         this.redirectToModuleID = params['id'];
         this.transportService.moduleID.next(params['id']);
-        this.dashboard.getWorkflowFromModule(params['id']).subscribe((response: any) => {
+        this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
             this.initSubModuleForm(response)
           }
@@ -66,14 +67,15 @@ export class EditSubmoduleComponent {
     });
   }
 
-  initSubModuleForm(item: any) {
+  initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.subModuleUrl, Validators.compose([Validators.required, Validators.pattern(/^[a-zA-Z0-9\-\/:.]+\.[a-zA-Z]{2,}$/)])],
-      code: [{value: item?.code, disabled: true}],
-      companyName: [item?.companyName, Validators.required],
-      adminUsers: [item?.adminUsers, Validators.required],
-      viewOnlyUsers: [item?.viewOnlyUsers, Validators.required],
-      workflows: this.fb.array(
+      subModuleUrl: [item?.subModuleUrl || null, Validators.compose([Validators.required, Validators.pattern(/^[a-zA-Z0-9\-\/:.]+\.[a-zA-Z]{2,}$/)])],
+      code: [{value: item?.code || null, disabled: true}],
+      companyName: [item?.companyName || null, Validators.required],
+      adminUsers: [item?.adminUsers || [], Validators.required],
+      viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
+      workflows: item?.workflows ?
+      this.fb.array(
         item?.workflows?.map((val: { condition: any; approverIds: any; }) => {
           return this.fb.group({
             condition: [val.condition, Validators.required],
@@ -81,6 +83,13 @@ export class EditSubmoduleComponent {
           })
         })
       )
+      :
+      this.fb.array([
+        this.fb.group({
+          condition: ['', Validators.required],
+          approverIds: [[], Validators.required]
+        })
+      ])
     })
   }
 

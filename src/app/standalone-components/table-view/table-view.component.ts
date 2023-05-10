@@ -92,7 +92,7 @@ export class TableViewComponent {
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private dashboardService: DashboardService
   ) {
-    this.activatedRoute.params.subscribe(val => this.moduleId = val['id']);
+    this.activatedRoute.params.subscribe(val => this.moduleId = val['name']);
   }
 
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {

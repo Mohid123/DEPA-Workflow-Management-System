@@ -48,7 +48,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   ) {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
-    console.log('SUBMODULE DRAFT LOCAL', this.submoduleFromLS);
+    console.log('SUBMODULE ID', this.transportService.moduleID?.value);
 
     //get default workflow
     this.getDefaultWorkflow();

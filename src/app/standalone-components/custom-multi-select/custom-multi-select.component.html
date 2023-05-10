@@ -22,16 +22,18 @@
         placeholder="Search users"
         [formControl]="searchValue"
       />
-      <ng-container *ngFor="let user of (users | async); let i = index">
-        <li class="gap-2 my-3">
-          <tui-checkbox-labeled
-            [formControl]="user.control"
-            (click)="selectValueAndPushToInput(user, $event)"
-            size="l"
-          >
-            {{user.name}}
-          </tui-checkbox-labeled>
-        </li>
+      <ng-container *ngIf="(users | async) as users">
+        <ng-container *ngFor="let user of users; let i = index">
+          <li class="gap-2 my-3">
+            <tui-checkbox-labeled
+              [formControl]="user.control"
+              (click)="selectValueAndPushToInput(user, $event)"
+              size="l"
+            >
+              {{user.name}}
+            </tui-checkbox-labeled>
+          </li>
+        </ng-container>
       </ng-container>
     </ul>
   </div>

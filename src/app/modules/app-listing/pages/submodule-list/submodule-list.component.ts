@@ -13,7 +13,7 @@ export class SubmodulesListComponent {
 
   constructor(private dashBoardService: DashboardService, private activatedRoute: ActivatedRoute) {
     this.subModuleData = this.activatedRoute.params.pipe(
-      pluck('id'),
+      pluck('name'),
       map(id => this.moduleId = id),
       switchMap((moduleID => this.dashBoardService.getSubModuleByModule(moduleID)))
     );
