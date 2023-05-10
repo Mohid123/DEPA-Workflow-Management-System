@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { emailLoginForm } from 'src/app/forms-schema/forms';
 
 @Component({
   templateUrl: './submodule-details.component.html',
@@ -7,8 +8,9 @@ import { Component } from '@angular/core';
 export class SubmoduleDetailsComponent {
   formTabs: any[] = [];
   activeIndex: number = 0;
-  formWithWorkflow: any;
+  formWithWorkflow: any = [emailLoginForm];
   carouselIndex = 0;
+  value = 30
 
   readonly items = [
     'John Cleese',
@@ -17,5 +19,5 @@ export class SubmoduleDetailsComponent {
     'Graham Chapman',
     'Terry Gilliam',
     'Terry Jones',
-];
+  ];
 }
