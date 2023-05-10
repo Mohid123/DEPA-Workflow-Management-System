@@ -21,6 +21,7 @@ export class WorkflowsService extends ApiService<any> {
         return res.data
       }
       else {
+        if (![401, 403].includes(res.errors[0].code))
         this.notif.displayNotification('Failed to fetch workflow', 'Get Submodule workflow', TuiNotification.Error)
       }
     }))
@@ -35,6 +36,7 @@ export class WorkflowsService extends ApiService<any> {
         return res.data
       }
       else {
+        if (![401, 403].includes(res.errors[0].code))
         this.notif.displayNotification('Failed to fetch workflow', 'Get Submodule workflow', TuiNotification.Error)
       }
     }))
@@ -47,6 +49,7 @@ export class WorkflowsService extends ApiService<any> {
         return res.data
       }
       else {
+        if (![401, 403].includes(res.errors[0].code))
         this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Submission', TuiNotification.Error)
       }
     }))

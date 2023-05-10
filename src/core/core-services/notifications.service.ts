@@ -35,7 +35,8 @@ export class NotificationsService {
     {
       label: label,
       status: status,
-      autoClose: true
+      autoClose: true,
+      hasIcon: true
     }
       ).subscribe();
   }

@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable, of } from 'rxjs';
-import { catchError, map, retry } from 'rxjs/operators';
+import { catchError, map, retry, shareReplay } from 'rxjs/operators';
 import { ApiResponse, ErrorCode } from '../models/api-response.model';
 
 /**
@@ -57,7 +57,7 @@ export class ApiService<T> {
       headers: this.setHeaders()
     };
     return this.mapAndCatchError<T>(
-      this.http.get<ApiResponse<T>>(`${environment.apiUrl}${path}`, options)
+      this.http.get<ApiResponse<T>>(`${environment.apiUrl}${path}`, options).pipe(shareReplay())
     );
   }
 
@@ -78,7 +78,7 @@ export class ApiService<T> {
         `${environment.apiUrl}${path}`,
         JSON.stringify(body),
         options
-      )
+      ).pipe(shareReplay())
     );
   }
 
@@ -93,7 +93,7 @@ export class ApiService<T> {
     body: any = {}
   ): Observable<ApiResponse<T>> {
     return this.mapAndCatchError<T>(
-      this.http.post<ApiResponse<T>>(`${environment.apiUrl}${path}`, body));
+      this.http.post<ApiResponse<T>>(`${environment.apiUrl}${path}`, body).pipe(shareReplay()));
   }
 
   /**
@@ -113,7 +113,7 @@ export class ApiService<T> {
         `${environment.apiUrl}${path}`,
         JSON.stringify(body),
         options
-      )
+      ).pipe(shareReplay())
     );
   }
 
@@ -134,7 +134,7 @@ export class ApiService<T> {
         `${environment.apiUrl}${path}`,
         JSON.stringify(body),
         options
-      )
+      ).pipe(shareReplay())
     );
   }
 
@@ -154,7 +154,7 @@ export class ApiService<T> {
       body: JSON.stringify(body)
     };
     return this.mapAndCatchError<T>(
-      this.http.delete<ApiResponse<T>>(`${environment.apiUrl}${path}`, options)
+      this.http.delete<ApiResponse<T>>(`${environment.apiUrl}${path}`, options).pipe(shareReplay())
     );
   }
 

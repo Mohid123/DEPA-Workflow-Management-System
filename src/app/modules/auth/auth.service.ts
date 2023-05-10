@@ -185,31 +185,36 @@ export class AuthService extends ApiService<AuthApiData> {
    * Logout user and remove all pertaining data from state
    */
   logout(): Observable<ApiResponse<any>> {
-    this.currentUserSubject.next(null);
-    return this.post('/auth/logout', {refreshToken: this.RefreshToken})
-    .pipe(shareReplay(), tap((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        removeItem(StorageItem.RefreshToken);
-        removeItem(StorageItem.publishAppValue);
-        removeItem(StorageItem.activeIndex);
-        setItem(StorageItem.User, null);
-        setItem(StorageItem.JwtToken, null);
-        this.router.navigate(['/auth/login'], {
-          queryParams: {},
-        });
-      }
-      else {
-        removeItem(StorageItem.publishAppValue);
-        removeItem(StorageItem.activeIndex);
-        removeItem(StorageItem.RefreshToken);
-        setItem(StorageItem.User, null);
-        setItem(StorageItem.JwtToken, null);
-        this.router.navigate(['/auth/login'], {
-          queryParams: {},
-        });
-        this.notif.displayNotification(res.errors[0]?.error?.message || 'Something went wrong', 'Logout Failed!', TuiNotification.Error);
-      }
-    }));
+    if(this.RefreshToken && this.RefreshToken != "") {
+      this.currentUserSubject.next(null);
+      return this.post('/auth/logout', {refreshToken: this.RefreshToken})
+      .pipe(shareReplay(), map((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          removeItem(StorageItem.RefreshToken);
+          removeItem(StorageItem.publishAppValue);
+          removeItem(StorageItem.activeIndex);
+          removeItem(StorageItem.User);
+          removeItem(StorageItem.JwtToken);
+          this.router.navigate(['/auth/login'], {
+            queryParams: {},
+          });
+          return res
+        }
+        else {
+          removeItem(StorageItem.publishAppValue);
+          removeItem(StorageItem.activeIndex);
+          removeItem(StorageItem.RefreshToken);
+          removeItem(StorageItem.User);
+          removeItem(StorageItem.JwtToken);
+          this.router.navigate(['/auth/login'], {
+            queryParams: {},
+          });
+          this.notif.displayNotification(res.errors[0]?.error?.message || 'Something went wrong', 'Logout Failed!', TuiNotification.Error);
+          return res
+        }
+      }));
+    }
+    return null
   }
 
   /**
