@@ -190,31 +190,28 @@ export class AuthService extends ApiService<AuthApiData> {
       return this.post('/auth/logout', {refreshToken: this.RefreshToken})
       .pipe(shareReplay(), map((res: ApiResponse<any>) => {
         if(!res.hasErrors()) {
-          removeItem(StorageItem.RefreshToken);
-          removeItem(StorageItem.publishAppValue);
-          removeItem(StorageItem.activeIndex);
-          removeItem(StorageItem.User);
-          removeItem(StorageItem.JwtToken);
-          this.router.navigate(['/auth/login'], {
-            queryParams: {},
-          });
+          this.responseAfterLogout()
           return res
         }
         else {
-          removeItem(StorageItem.publishAppValue);
-          removeItem(StorageItem.activeIndex);
-          removeItem(StorageItem.RefreshToken);
-          removeItem(StorageItem.User);
-          removeItem(StorageItem.JwtToken);
-          this.router.navigate(['/auth/login'], {
-            queryParams: {},
-          });
+          this.responseAfterLogout()
           this.notif.displayNotification(res.errors[0]?.error?.message || 'Something went wrong', 'Logout Failed!', TuiNotification.Error);
           return res
         }
       }));
     }
     return null
+  }
+
+  responseAfterLogout() {
+    removeItem(StorageItem.RefreshToken);
+    removeItem(StorageItem.publishAppValue);
+    removeItem(StorageItem.activeIndex);
+    removeItem(StorageItem.User);
+    removeItem(StorageItem.JwtToken);
+    this.router.navigate(['/auth/login'], {
+      queryParams: {},
+    });
   }
 
   /**
