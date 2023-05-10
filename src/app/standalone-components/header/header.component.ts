@@ -21,7 +21,6 @@ export class HeaderComponent implements OnDestroy {
 
   constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, public nav: NavigationService) {
     this.currentRoute = this.router.url;
-    console.log(this.currentRoute)
   }
 
   logoutSession() {

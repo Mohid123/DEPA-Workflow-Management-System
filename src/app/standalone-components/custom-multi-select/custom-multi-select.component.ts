@@ -150,6 +150,8 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
     this.open = !this.open;
   }
 
+  @Output() checkUsersLength = new EventEmitter();
+
   /**
    * Adds value in option list to show inside the input select field
    * @param {dropDownItems} user The user selected from the dropdown
@@ -158,10 +160,12 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
   selectValueAndPushToInput(user: any, event: any) {
     if(user?.control.value === true && this.inputFieldArr.includes(user)) {
       this.removeItem(user.name);
+      this.checkUsersLength.emit(this.inputFieldArr.length)
       this.approverList.emit(this.inputFieldArr);
     }
     if(event.target?.checked === true) {
       this.inputFieldArr.push(user);
+      this.checkUsersLength.emit(this.inputFieldArr.length)
       this.approverList.emit(this.inputFieldArr);
     }
   }
@@ -199,7 +203,8 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
           user.control.setValue(false)
         }
       })
-    })
+    });
+    this.checkUsersLength.emit(this.inputFieldArr.length)
   }
 
   /**

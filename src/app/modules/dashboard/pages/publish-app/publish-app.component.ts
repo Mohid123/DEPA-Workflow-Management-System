@@ -200,6 +200,13 @@ export class PublishAppComponent implements OnDestroy {
     this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
+  countUsers(value: number, index: number) {
+    if(value < 2) {
+      this.workflows.at(index)?.get('condition')?.setValue('none')
+      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+    }
+  }
+
   validateSelection(index: number) {
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
