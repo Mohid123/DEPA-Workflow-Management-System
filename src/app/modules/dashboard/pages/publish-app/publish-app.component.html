@@ -71,11 +71,11 @@
                     <div class="flex items-center justify-between w-full gap-2 mb-3">
                       <div class="w-full">
                         <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
-                          <input
-                            class="form-control"
-                            formControlName="title"
-                            type="text"
-                          />
+                        <input
+                          class="form-control"
+                          formControlName="title"
+                          type="text"
+                        />
                       </div>
                       <div [ngClass]="first ? 'mt-7': 'mt-0'">
                         <button
@@ -95,12 +95,14 @@
                         type="button"
                         class="mb-3"
                         size="m"
+                        (click)="submitNewCategory()"
                       >Submit</button>
                     </div>
                   </div>
                 </ng-container>
               </ng-container>
               <button
+                *ngIf="category?.length < 1"
                 tuiIconButton
                 type="button"
                 size="m"

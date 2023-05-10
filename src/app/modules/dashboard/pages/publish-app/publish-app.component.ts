@@ -58,7 +58,7 @@ export class PublishAppComponent implements OnDestroy {
   public moduleDetailsForm: FormGroup;
   categoryDataForFormIOSelect = new BehaviorSubject<any>(null);
   isEditMode = new BehaviorSubject(false);
-  storeModuleID = new BehaviorSubject<any>('')
+  storeModuleID = new BehaviorSubject<any>('');
 
   constructor(
     private fb: FormBuilder,
@@ -131,7 +131,7 @@ export class PublishAppComponent implements OnDestroy {
     const companyForm = this.fb.group({
       title: ['', Validators.required]
     });
-    this.category.push(companyForm)
+    this.category.push(companyForm);
   }
 
   removeCategory(index: number) {
@@ -161,6 +161,19 @@ export class PublishAppComponent implements OnDestroy {
         ])
       })
     }
+  }
+
+  submitNewCategory() {
+    const data = this.f['category']?.value?.map(val => {
+      return {
+        name: val.title
+      }
+    });
+    this.dashboard.postNewCategory(data[0]).pipe(takeUntil(this.destroy$))
+    .subscribe(res => {
+      this.category.removeAt(0);
+      this.categories = this.dashboard.getAllCategories();
+    })
   }
 
   get f() {

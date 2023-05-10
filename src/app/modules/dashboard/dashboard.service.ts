@@ -151,6 +151,19 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  postNewCategory(payload: {name: string}): Observable<ApiResponse<any>> {
+    return this.post(`/categories`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Category created successfully', 'Create Category', TuiNotification.Success);
+        return res?.data
+      }
+      else {
+        if (![401, 403].includes(res.errors[0].code))
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Category', TuiNotification.Error)
+      }
+    }))
+  }
+
   createModule(payload: Module): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.post(`/modules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
