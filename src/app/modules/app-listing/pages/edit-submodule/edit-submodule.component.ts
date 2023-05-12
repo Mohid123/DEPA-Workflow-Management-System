@@ -54,9 +54,10 @@ export class EditSubmoduleComponent {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
         this.redirectToModuleID = params['id'];
-        this.transportService.moduleID.next(params['id']);
+        this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
+            this.transportService.formEditId.next(response?.id)
             this.initSubModuleForm(response)
           }
           if(Object.keys(this.submoduleFromLS)?.length > 0) {
@@ -115,7 +116,7 @@ export class EditSubmoduleComponent {
   saveDraft() {
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally(this.subModuleForm.value);
-    this.router.navigate(['/form-builder']);
+    this.router.navigate(['/forms/edit-form', this.transportService.formEditId?.value]);
   }
 
   get workflows() {

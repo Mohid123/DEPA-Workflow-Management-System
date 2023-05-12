@@ -9,19 +9,20 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 })
 export class SubmodulesListComponent {
   subModuleData: Observable<any>;
-  moduleId: string;
+  moduleData: Observable<any>;
+  moduleSlug: string;
 
   constructor(private dashBoardService: DashboardService, private activatedRoute: ActivatedRoute) {
     this.subModuleData = this.activatedRoute.params.pipe(
       pluck('name'),
-      map(id => this.moduleId = id),
-      switchMap((moduleID => this.dashBoardService.getSubModuleByModule(moduleID)))
+      map(name => this.moduleSlug = name),
+      switchMap((moduleSlug => this.dashBoardService.getSubModuleBySlugName(moduleSlug)))
     );
   }
 
   itemDeleted(value: boolean) {
     if(value == true) {
-      this.subModuleData = this.dashBoardService.getSubModuleByModule(this.moduleId)
+      this.subModuleData = this.dashBoardService.getSubModuleBySlugName(this.moduleSlug)
     }
   }
 }

@@ -4,7 +4,7 @@
   <ng-template #dashboardapps>
     <section class="grid w-11/12 grid-cols-12 gap-4 mx-auto mt-52 pb-60">
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
-        <p class="col-span-12 mb-3 text-lg font-semibold" [ngClass]="!firstItem ? 'mt-7': 'mt-0'">{{app.name}}</p>
+        <p class="col-span-12 mb-3 text-lg font-semibold" [ngClass]="!firstItem ? 'mt-12': 'mt-0'">{{app.name}}</p>
         <ng-container *ngIf="app.modules.length == 0; else showApps">
           <p class="col-span-12 my-8 text-base font-semibold text-center">No modules exist against this category. You can add a new module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/publish-app">here</a> </p>
         </ng-container>

@@ -26,7 +26,7 @@ export class TableViewComponent {
   /**
    * The category names to show as table column headers
    */
-  @Input() tableColumns: string[] = ['Company Name', 'Module Name', 'Submodule Name', 'Status'];
+  @Input() tableColumns: string[] = ['Company Name', 'Module Name', 'Submodule Code', 'Status'];
 
   /**
    * The data to display inside the table

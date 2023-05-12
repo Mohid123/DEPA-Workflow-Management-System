@@ -104,8 +104,8 @@ export class PublishAppComponent implements OnDestroy {
     }
 
     this.moduleDetailsForm?.get('moduleTitle')?.valueChanges.subscribe(value => {
-      this.moduleDetailsForm?.get('moduleURL')?.setValue('http://localhost:4200/dashboard/submodules/'+ value.replace(/\s/g, '-').toLowerCase());
-      this.moduleDetailsForm?.get('moduleCode')?.setValue('mod' + '-' + value.replace(/\s/g, '-').toLowerCase())
+      this.moduleDetailsForm?.get('moduleURL')?.setValue('http://localhost:4200/appListing/submodules/'+ value.replace(/\s/g, '-').toLowerCase());
+      this.moduleDetailsForm?.get('moduleCode')?.setValue(value.replace(/\s/g, '-').toLowerCase())
     })
     
     // get all categories

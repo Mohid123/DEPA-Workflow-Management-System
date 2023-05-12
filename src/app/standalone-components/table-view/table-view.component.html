@@ -50,7 +50,7 @@
               </ng-template>
             </th>
           </ng-container>
-          <th scope="col" class="px-6 py-3 text-sm">
+          <th scope="col" class="text-center py-3 text-sm">
             Actions
           </th>
         </tr>
@@ -77,7 +77,7 @@
               <td class="px-6 py-4">
                 {{data?.status === 1 ? 'Published' : 'Draft'}}
               </td>
-              <td class="w-3/12 py-4">
+              <td class="text-center py-4">
                 <a [routerLink]="['/workflows/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
                   <i class="fa fa-print fa-lg" aria-hidden="true"></i> Submissions
                 </a>
