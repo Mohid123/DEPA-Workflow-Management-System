@@ -193,6 +193,7 @@ export class AddSubmoduleComponent implements OnDestroy {
     }
     this.isCreatingSubModule.next(true)
     const payload = {
+      url: `http://localhost:4200/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
       code: 'subModule-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join(''),

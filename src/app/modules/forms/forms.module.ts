@@ -9,6 +9,7 @@ import { TuiButtonModule } from '@taiga-ui/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { EditFormComponent } from './pages/edit-form/edit-form.component';
 import { FormBuilderComponent } from './pages/form-builder/form-builder.component';
+import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { FormBuilderComponent } from './pages/form-builder/form-builder.componen
     FormioModule,
     TuiTabsModule,
     TuiButtonModule,
+    HeaderComponent,
     ReactiveFormsModule
   ]
 })

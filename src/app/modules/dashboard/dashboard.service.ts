@@ -104,7 +104,7 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         if (![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)   
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)
         }
       }
     }))
@@ -304,18 +304,13 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  getModuleBySlugName(slugName: string): Observable<ApiResponse<any>> {
-    debugger
+  getModulesBySlugName(slugName: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/slug/${slugName}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      debugger
       if(!res.hasErrors()) {
-        debugger
         return res.data
       }
       else {
-        debugger
-        if ([401, 403, 500].includes(res.errors[0].code) == false) {
-          debugger
+        if ([401, 403].includes(res.errors[0].code) == false) {
           return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get Module by Slug Name', TuiNotification.Error)
         }
       }
@@ -323,11 +318,8 @@ export class DashboardService extends ApiService<any> {
   }
 
   getSubModuleBySlugName(slugName: string): Observable<ApiResponse<any>> {
-    debugger
     return this.get(`/subModules/slug/${slugName}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      debugger
       if(!res.hasErrors()) {
-        debugger
         return res.data
       }
     }))

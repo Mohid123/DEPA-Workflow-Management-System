@@ -1,5 +1,6 @@
-<section class="py-5">
-  <tui-tabs tuiMobileTabs class="mx-2 lg:mx-20 md:mx-10 flex justify-center" [activeItemIndex]="activeIndex">
+<app-header></app-header>
+<section class="py-5 mt-40">
+  <tui-tabs tuiMobileTabs class="flex justify-center mx-2 lg:mx-20 md:mx-10" [activeItemIndex]="activeIndex">
     <ng-container *ngFor="let item of items; let i = index">
       <button
         tuiTab
@@ -13,7 +14,7 @@
 </section>
 
 <section *ngIf="activeIndex == 0" class="px-5">
-  <div class="grid grid-cols-12 gap-3 w-8/12 mx-auto px-1 my-4">
+  <div class="grid w-8/12 grid-cols-12 gap-3 px-1 mx-auto my-4">
     <div class="col-span-6">
       <label for="titleField">Title</label>
       <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">

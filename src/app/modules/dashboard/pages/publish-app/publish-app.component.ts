@@ -90,7 +90,7 @@ export class PublishAppComponent implements OnDestroy {
         this.isEditMode.next(true);
       }
     });
-    
+
     this.localStorageApp = getItem(StorageItem.publishAppValue);
     if(this.localStorageApp) {
       this.initWorkflowForm(this.localStorageApp);
@@ -107,7 +107,7 @@ export class PublishAppComponent implements OnDestroy {
       this.moduleDetailsForm?.get('moduleURL')?.setValue('http://localhost:4200/appListing/submodules/'+ value.replace(/\s/g, '-').toLowerCase());
       this.moduleDetailsForm?.get('moduleCode')?.setValue(value.replace(/\s/g, '-').toLowerCase())
     })
-    
+
     // get all categories
     this.categories = this.dashboard.getAllCategories()
   }
@@ -118,7 +118,7 @@ export class PublishAppComponent implements OnDestroy {
       moduleURL: [{value: item?.url || null, disabled: true}],
       moduleDescription: [item?.description || null, Validators.required],
       moduleCode: [{value: item?.code || null, disabled: true}],
-      moduleCategory: [item?.categoryId || null, Validators.required],
+      moduleCategory: [item?.categoryId?.value || null, Validators.required],
       category: this.fb.array([]),
     })
   }
