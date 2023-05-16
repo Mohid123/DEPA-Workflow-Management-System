@@ -6,6 +6,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 @Component({
   templateUrl: './edit-form.component.html',
@@ -37,14 +38,17 @@ export class EditFormComponent implements OnDestroy {
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   editFormID: string;
+  submoduleIDForNewForm: string;
 
   constructor(
     private notif: NotificationsService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private formService: FormsService)
+    private formService: FormsService,
+    private transportService: DataTransportService
+  )
   {
-    this.activatedRoute.params?.subscribe(data => {
+    this.activatedRoute?.queryParams?.subscribe(data => {
       if(data['id']) {
         this.editFormID = data['id'];
         this.formService.getFormById(data['id'])
@@ -53,10 +57,13 @@ export class EditFormComponent implements OnDestroy {
             this.form = response;
             this.formTitleControl.setValue(response?.title);
           }
-          else {
-            this.form = {title: this.formTitleControl?.value, key: '', display: this.formDisplayType.value, components: []};
-          }
         })
+      }
+      else if(data['submoduleID']) {
+        this.form = {title: this.formTitleControl?.value, key: null, display: this.formDisplayType.value || null, components: []};
+      }
+      else {
+        this.form = {title: this.formTitleControl?.value, key: null, display: this.formDisplayType.value || null, components: []};
       }
     })
   }
@@ -89,11 +96,25 @@ export class EditFormComponent implements OnDestroy {
     }
     const formData = {
       title: this.formTitleControl?.value,
-      key: this.form?.key,
-      display: this.form?.display,
+      key: this.form?.key ?? this.formTitleControl?.value?.replace(/\s/g, '').toLowerCase() + '-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join(''),
+      display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
-    this.formService.updateForm(this.editFormID, formData).pipe(takeUntil(this.destroy$)).subscribe();
+    if(this.editFormID) {
+      this.formService.updateForm(this.editFormID, formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
+        if(val) {
+          setTimeout(() => this.router.navigate(['/appListing/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+        }
+      });
+    }
+    else {
+      Object.assign(formData, {subModuleId: this.transportService.subModuleID?.value})
+      this.formService.createForm(formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
+        if(val) {
+          setTimeout(() => this.router.navigate(['/appListing/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+        }
+      });
+    }
   }
 
   setSelectValue(event: any) {
@@ -101,7 +122,10 @@ export class EditFormComponent implements OnDestroy {
   }
 
   cancelFormData() {
-    // this.router.navigate(['/appListing/add-submodule']);
+    this.router.navigate(
+      ['/appListing/edit-submodule', this.transportService.subModuleID?.value],
+      {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}
+    })
   }
 
   ngOnDestroy(): void {

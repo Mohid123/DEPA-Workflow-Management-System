@@ -7,7 +7,7 @@
       <p class="leading-6 pb-11 line-clamp-10">{{appData?.description}}</p>
   </div>
   <div class="flex justify-center py-2">
-    <a [routerLink]="['/appListing/submodules', appData?.code]" class="px-2 py-1 rounded-md bg-green-500 text-white hover:text-white">
+    <a (click)="storeModuleID(appData?._id)" [routerLink]="['/appListing/submodules', appData?.code]" [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 rounded-md bg-green-500 text-white hover:text-white">
       <i class="fa fa-eye" aria-hidden="true"></i>
     </a>
     <a (click)="editModuleEvent(appData?._id)" class="px-2 py-1 rounded-md bg-blue-400 text-white mx-2 hover:text-white">

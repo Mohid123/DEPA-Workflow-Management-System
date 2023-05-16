@@ -27,7 +27,6 @@
   <tui-island
     size="l"
     class="w-full my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"
-    [hoverable]="true"
   >
     <h4 class="text-base font-semibold text-gray-700 mb-5">Workflow Steps</h4>
     <tui-carousel
@@ -37,11 +36,14 @@
     >
     <ng-container *ngFor="let item of items; let i = index; let last = last">
       <div *tuiItem class="flex justify-between w-full">
-        <div class="text-left bg-gray-50 border border-gray-200 rounded-md py-4 px-4 w-full">
+        <div class="text-left bg-gray-50 border border-gray-200 rounded-md py-4 px-4 w-full relative">
           <p class="text-lg text-gray-700 font-semibold mb-2">Step {{ i + 1}}</p>
           <ul class="px-5">
             <li class="list-disc">{{item}}</li>
           </ul>
+          <div class="absolute top-0 right-0 bg-green-500 text-white px-2 py-1 text-xxs rounded-r-md rounded-b-none">
+            Approved
+          </div>
         </div>
         <div class="mt-7 ml-4">
           <i *ngIf="!last" class="fa fa-long-arrow-right fa-lg" aria-hidden="true"></i>
@@ -52,7 +54,7 @@
     <tui-pagination
       class="pagination my-5"
       [length]="items.length - 2"
-      size="m"
+      size="s"
       [(index)]="carouselIndex"
     ></tui-pagination>
 

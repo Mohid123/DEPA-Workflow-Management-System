@@ -16,7 +16,7 @@ const routes: Routes = [
         data: {breadcrumb:'Form builder'},
       },
       {
-        path: 'edit-form/:id',
+        path: 'edit-form',
         component: EditFormComponent,
         data: {breadcrumb: 'Edit-Form'}
       },

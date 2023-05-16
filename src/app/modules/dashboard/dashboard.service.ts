@@ -291,6 +291,7 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  // needed for edit Submodule page
   getSubModuleByID(submodID: string): Observable<ApiResponse<any>> {
     return this.get(`/subModules/${submodID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -321,6 +322,32 @@ export class DashboardService extends ApiService<any> {
     return this.get(`/subModules/slug/${slugName}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
+      }
+    }))
+  }
+
+  // needed for showing submodule list by module name on submodules listing page
+  getSubModuleByModuleSlug(moduleSlug: string): Observable<ApiResponse<any>> {
+    return this.get(`/module/slug/${moduleSlug}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  updateSubModule(id: string, payload: any): Observable<ApiResponse<any>> {
+    return this.patch(`/subModules/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Submodule updated', 'Update submodule', TuiNotification.Success)
+        return res.data
+      }
+      else {
+        this.notif.displayNotification(res.errors[0]?.error?.message, 'Update submodule', TuiNotification.Error)
       }
     }))
   }

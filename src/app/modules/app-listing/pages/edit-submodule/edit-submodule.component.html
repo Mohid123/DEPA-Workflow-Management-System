@@ -16,11 +16,6 @@
           message: 'Submodule URL is required',
           control: f['subModuleUrl']
         }"></ng-container>
-        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-          validation: 'pattern',
-          message: 'Please provide a valid URL',
-          control: f['subModuleUrl']
-        }"></ng-container>
       </div>
     </div>
 
@@ -75,9 +70,12 @@
             </nav>
             <ng-container *ngFor="let form of formComponents; let i = index;">
               <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-                <div class="flex justify-end">
-                  <a (click)="sendFormForEdit(i)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
+                <div class="flex justify-end gap-x-2">
+                  <a (click)="sendFormForEdit(i, form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
                     <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
+                  </a>
+                  <a (click)="deleteForm(form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-red-100">
+                    <i class="fa fa-trash fa-2x text-red-500 hover:text-red-600" aria-hidden="true"></i>
                   </a>
                 </div>
                 <formio [language]="language" [options]="options" [form]="form"></formio>
@@ -164,7 +162,8 @@
         type="button"
         size="m"
         appearance="accent"
-        [routerLink]="['/appListing/submodules', redirectToModuleID]"
+        [routerLink]="['/appListing/submodules', transportService.moduleCode?.value]"
+        [queryParams]="{moduleID: transportService.moduleID?.value}"
       >Cancel</button>
     </div>
   </form>

@@ -237,7 +237,8 @@
         type="button"
         size="m"
         appearance="accent"
-        [routerLink]="['/appListing/submodules', redirectToModuleID]"
+        [routerLink]="['/appListing/submodules', transportService.moduleCode?.value]"
+        [queryParams]="{moduleID: transportService.moduleID?.value}"
       >Cancel</button>
     </div>
   </form>

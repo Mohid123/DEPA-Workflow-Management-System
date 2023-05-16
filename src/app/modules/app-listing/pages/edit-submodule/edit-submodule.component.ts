@@ -6,6 +6,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
+import { FormsService } from 'src/app/modules/forms/services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 
@@ -15,7 +16,6 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 })
 export class EditSubmoduleComponent {
   subModuleForm!: FormGroup;
-  submoduleFromLS: any;
   formComponents: any[] = [];
   activeIndex: number = 0;
   public options: FormioOptions;
@@ -39,45 +39,77 @@ export class EditSubmoduleComponent {
   constructor(
     private fb: FormBuilder,
     public auth: AuthService,
-    private transportService: DataTransportService,
+    public transportService: DataTransportService,
     private router: Router,
     private dashboard: DashboardService,
     private activatedRoute: ActivatedRoute,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private formService: FormsService
   ) {
     this.initSubModuleForm();
     // get submodule for editing and initialize form
-    // this.getSubmoduleByIDForEdit();
+    this.getAllCompanies();
+    this.getSubmoduleByIDForEdit();
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(val['moduleID'] && val['moduleCode']) {
+        this.transportService.moduleID.next(val['moduleID']);
+        this.transportService.moduleCode.next(val['moduleCode']);
+      }
+    })
   }
 
   getSubmoduleByIDForEdit() {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
-        this.redirectToModuleID = params['id'];
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
-            this.transportService.formEditId.next(response?.id)
-            this.initSubModuleForm(response)
-          }
-          if(Object.keys(this.submoduleFromLS)?.length > 0) {
-            this.initSubModuleForm(this.submoduleFromLS);
+            this.formComponents = response?.formIds;
+            this.formTabs = response?.formIds?.map(forms => forms.title);
+            const companyName = {
+              value: response?.companyId?.id,
+              label: response?.companyId?.title
+            }
+            const url = response?.url?.split('/').at(-1);
+            const workFlowId = response?.workFlowId?.stepIds?.map(data => {
+              return {
+                approverIds: data?.approverIds?.map(ids => ids.id),
+                condition: data?.condition
+              }
+            });
+            delete response?.workFlowId;
+            delete response?.url;
+            delete response?.companyId;
+            const finalObject = Object.assign(response, {workFlowId: workFlowId}, {url: url}, {companyId: companyName})
+            this.initSubModuleForm(finalObject)
           }
         })
       }
     });
   }
 
+  getAllCompanies() {
+    this.dashboard.getAllCompanies()
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      this.companyList = res.results?.map(data => {
+        return {
+          value: data?.id,
+          label: data?.title
+        }
+      });
+    });
+  }
+
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.subModuleUrl || null, Validators.compose([Validators.required, Validators.pattern(/^[a-zA-Z0-9\-\/:.]+\.[a-zA-Z]{2,}$/)])],
+      subModuleUrl: [item?.url || null, Validators.required],
       code: [{value: item?.code || null, disabled: true}],
-      companyName: [item?.companyName || null, Validators.required],
+      companyName: [item?.companyId?.value || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
-      workflows: item?.workflows ?
+      workflows: item?.workFlowId ?
       this.fb.array(
-        item?.workflows?.map((val: { condition: any; approverIds: any; }) => {
+        item?.workFlowId?.map((val: { condition: any; approverIds: any; }) => {
           return this.fb.group({
             condition: [val.condition, Validators.required],
             approverIds: [val.approverIds, Validators.required]
@@ -106,17 +138,27 @@ export class EditSubmoduleComponent {
     this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
   }
 
-  sendFormForEdit(index: number) {
-    this.transportService.isFormEdit.next(true);
-    this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
-    this.transportService.saveDraftLocally(this.subModuleForm.value);
-    this.router.navigate(['/form-builder']);
+  sendFormForEdit(i: number, formID: string) {
+    if(formID) {
+      this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
+    }
+  else {
+      this.transportService.isFormEdit.next(true);
+      this.transportService.sendFormDataForEdit.next(this.formComponents[i]);
+      this.router.navigate(['/forms/edit-form'], {queryParams: {submoduleID: this.transportService.subModuleID?.value}});
+    }
+  }
+
+  deleteForm(id: string) {
+    this.formService.deleteForm(id).pipe(takeUntil(this.destroy$))
+    .subscribe(res => {
+      this.getSubmoduleByIDForEdit();
+    })
   }
 
   saveDraft() {
-    this.transportService.isFormEdit.next(false);
-    this.transportService.saveDraftLocally(this.subModuleForm.value);
-    this.router.navigate(['/forms/edit-form', this.transportService.formEditId?.value]);
+    this.transportService.sendFormBuilderData(this.formComponents)
+    this.router.navigate(['/forms/edit-form']);
   }
 
   get workflows() {
@@ -174,12 +216,11 @@ export class EditSubmoduleComponent {
     }
     this.isCreatingSubModule.next(true)
     const payload = {
-      moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: 'subModule-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join(''),
+      code: this.subModuleForm.get('code')?.value,
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-      formIds: this.formComponents,
+      // formIds: this.formComponents,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
@@ -192,16 +233,17 @@ export class EditSubmoduleComponent {
       Object.assign(payload, {status})
     }
     console.log('FINAL PAYLOAD', payload);
-    // this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-    //   if(res) {
-    //     this.isCreatingSubModule.next(false);
-    //     this.transportService.saveDraftLocally({});
-    //     this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-    //     this.router.navigate(['/appListing/submodules', this.transportService.moduleID?.value]);
-    //   }
-    //   else {
-    //     this.isCreatingSubModule.next(false);
-    //   }
-    // })
+    this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if(res) {
+        this.isCreatingSubModule.next(false);
+        this.transportService.saveDraftLocally({});
+        this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+        // this.router.navigate(['/appListing/submodules', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
+      }
+      else {
+        this.isCreatingSubModule.next(false);
+      }
+    })
   }
 }

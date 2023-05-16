@@ -10,6 +10,7 @@ import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -84,15 +85,21 @@ export class TableViewComponent {
   index = 1;
 
   moduleId: string;
+  moduleCode: string;
 
   @Output() emitDeleteEvent = new EventEmitter()
 
   constructor(
     private activatedRoute: ActivatedRoute,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private transport: DataTransportService
   ) {
-    this.activatedRoute.params.subscribe(val => this.moduleId = val['name']);
+    this.activatedRoute.queryParams.subscribe(val => this.moduleId = val['moduleID']);
+    this.activatedRoute.params.subscribe(val => {
+      this.transport.moduleCode.next(val['name']);
+      this.moduleCode = val['name'];
+    });
   }
 
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {

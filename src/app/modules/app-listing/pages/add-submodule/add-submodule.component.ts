@@ -40,7 +40,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     public auth: AuthService,
-    private transportService: DataTransportService,
+    public transportService: DataTransportService,
     private router: Router,
     private dashboard: DashboardService,
     private activatedRoute: ActivatedRoute,
@@ -48,7 +48,6 @@ export class AddSubmoduleComponent implements OnDestroy {
   ) {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
-    console.log('SUBMODULE ID', this.transportService.moduleID?.value);
 
     //get default workflow
     this.getDefaultWorkflow();
@@ -58,11 +57,6 @@ export class AddSubmoduleComponent implements OnDestroy {
 
     this.getAllCompanies();
   }
-
-  // @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
-  //   event.preventDefault();
-  //   event.returnValue = false;
-  // }
 
   getDefaultWorkflow() {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
@@ -217,7 +211,7 @@ export class AddSubmoduleComponent implements OnDestroy {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/appListing/submodules', this.transportService.moduleID?.value]);
+        this.router.navigate(['/appListing/submodules', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
       }
       else {
         this.isCreatingSubModule.next(false);

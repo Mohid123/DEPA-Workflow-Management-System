@@ -37,4 +37,28 @@ export class FormsService extends ApiService<any> {
       }
     }))
   }
+
+  createForm(payload: any): Observable<ApiResponse<any>> {
+    return this.post(`/forms`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Form created successfully', 'Create Form', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Form', TuiNotification.Error)
+      }
+    }))
+  }
+
+  deleteForm(id: string): Observable<ApiResponse<any>> {
+    return this.delete(`/forms/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Form removed', 'Delete Form', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Delete Form', TuiNotification.Error)
+      }
+    }))
+  }
 }
