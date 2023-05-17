@@ -1,30 +1,33 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TuiNotification } from '@taiga-ui/core';
-import { Observable, map, pluck, switchMap } from 'rxjs';
+import { BehaviorSubject, Subject, pluck, switchMap, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { ActivatedRoute } from '@angular/router';
-import { FormioRefreshValue } from '@formio/angular';
+import { WorkflowsService } from '../workflows.service';
 
 @Component({
   templateUrl: './add-submission.component.html',
   styleUrls: ['./add-submission.component.scss']
 })
-export class AddSubmissionComponent {
+export class AddSubmissionComponent implements OnDestroy {
   formTabs: any[] = [];
   activeIndex: number = 0;
   public formWithWorkflow: any;
   workflowForm: FormGroup;
   subModuleData: any;
   subModuleId: string;
-  public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
+  formDataIds: any;
+  formSubmission = new BehaviorSubject<Array<any>>([]);
+  destroy$ = new Subject();
 
   constructor(
     private fb: FormBuilder,
     private notif: NotificationsService,
     private dashBoardService: DashboardService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private submissionService: WorkflowsService
   ) {
     this.initWorkflowForm();
     this.activatedRoute.params.subscribe(val => this.subModuleId = val['id'])
@@ -101,16 +104,33 @@ export class AddSubmissionComponent {
     }
   }
 
-  onChange(event: any) {
-    console.log(event.data);
-    this.refreshForm.emit(event.data)
+  onChange(event: any, index: number) {
+    this.formDataIds = this.subModuleData?.formIds?.map((val: any, i: number) => {
+      if(index === i) {
+        return {
+          formId: val.id,
+          data: event?.data
+        }
+      }
+      return {
+        formId: val.id,
+        data: null
+      }
+    }).filter(value => value?.data !== null);
+    if(this.formSubmission?.value?.length > 0) {
+      this.formSubmission.next([...this.formSubmission?.value, ...this.formDataIds])
+    }
+    else {
+      this.formSubmission.next(this.formDataIds)
+    }
+    console.log(this.formSubmission?.value)
   }
 
   createSubmission(data: any) {
     const payload: any = {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
-      formDataIds: [],
+      formDataIds: this.formSubmission?.value,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
@@ -118,6 +138,16 @@ export class AddSubmissionComponent {
         }
       })
     }
-    console.log(payload)
+    this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
+    .subscribe(res => {
+      if(res) {
+        console.log(res)
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }
