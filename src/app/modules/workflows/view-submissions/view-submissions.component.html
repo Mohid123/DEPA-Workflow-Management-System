@@ -9,8 +9,8 @@
     <table class="w-full text-sm text-left text-gray-500">
       <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
         <tr>
-          <th class="px-6 py-3 text-sm">Submodule ID</th>
-          <th class="px-2 py-3 text-sm">Total No. of Forms</th>
+          <th class="px-6 py-3 text-sm">Submodule Code</th>
+          <th class="px-2 py-3 text-sm">No. of Forms</th>
           <th class="px-2 py-3 text-sm">Status</th>
           <th class="px-2 py-3 text-sm">Workflow progress</th>
           <th scope="col" class="px-6 py-3 text-sm">
@@ -29,7 +29,28 @@
             <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last">
               <tr class="bg-white border-b border-gray-300">
                 <td class="px-6 py-4">
-                  ABC
+                  {{data?.subModuleId}}
+                </td>
+                <td class="px-6 py-4">
+                  {{data?.formDataIds?.length}}
+                </td>
+                <td class="px-2 py-4">
+                  {{data?.submissionStatus === 1 ? 'Active' : 'Deleted'}}
+                </td>
+                <td class="flex justify-between px-2 py-4">
+                  <progress
+                    tuiProgressBar
+                    max="100"
+                    size="s"
+                    class="w-10/12 mt-1.5"
+                    [value]="data?.summaryData?.progress"
+                  ></progress>
+                  <span>{{data?.summaryData?.progress}} %</span>
+                </td>
+                <td class="px-6 py-4">
+                  <a [routerLink]="['/workflows/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
+                  </a>
                 </td>
               </tr>
             </ng-container>

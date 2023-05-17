@@ -16,5 +16,6 @@ export class ViewSubmissionsComponent {
     this.submissionData = this.activatedRoute.params.pipe(
       switchMap(() => this.workflowService.getSubmissionFromSubModule(this.submoduleId))
     );
+    this.submissionData.subscribe(val => console.log(val))
   }
 }
