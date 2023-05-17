@@ -4,7 +4,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, pluck, switchMap, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 
 @Component({
@@ -27,13 +27,20 @@ export class AddSubmissionComponent implements OnDestroy {
     private notif: NotificationsService,
     private dashBoardService: DashboardService,
     private activatedRoute: ActivatedRoute,
-    private submissionService: WorkflowsService
+    private submissionService: WorkflowsService,
+    private router: Router
   ) {
     this.initWorkflowForm();
-    this.activatedRoute.params.subscribe(val => this.subModuleId = val['id'])
+    this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => this.subModuleId = val['id']);
+    this.populateData();
+
+  }
+
+  populateData() {
     this.activatedRoute.params.pipe(
       pluck('id'),
-      switchMap((submoduleID => this.dashBoardService.getSubModuleByID(submoduleID)))
+      switchMap((submoduleID => this.dashBoardService.getSubModuleByID(submoduleID))),
+      takeUntil(this.destroy$)
     ).subscribe((res: any) => {
       if(res) {
         this.subModuleData = res;
@@ -141,7 +148,7 @@ export class AddSubmissionComponent implements OnDestroy {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
-        console.log(res)
+        this.router.navigate(['/workflows/view-submissions', this.subModuleId])
       }
     })
   }
