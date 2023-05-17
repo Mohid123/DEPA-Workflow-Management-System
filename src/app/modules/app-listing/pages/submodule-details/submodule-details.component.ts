@@ -11,24 +11,34 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 export class SubmoduleDetailsComponent implements OnDestroy {
   formTabs: any[] = [];
   activeIndex: number = 0;
-  formWithWorkflow: any = [emailLoginForm];
+  formWithWorkflow: any = [];
   carouselIndex = 0;
-  value = 30
 
-  readonly items = [];
+  items = [];
   subscriptions: Subscription[] = [];
 
   constructor(private dashboard: DashboardService, private activatedRoute: ActivatedRoute) {
+    this.fetchAndPopulateData()
+  }
+
+  fetchAndPopulateData() {
     this.subscriptions.push(this.activatedRoute.params.subscribe(val => {
       if(val['name']) {
-        this.dashboard.getSubModuleBySlugName(val['name']).subscribe(res => {
-          console.log(res)
+        this.dashboard.getSubModuleBySlugName(val['name']).subscribe((res: any) => {
+          this.formWithWorkflow = res?.formIds;
+          this.formTabs = res?.formIds?.map(forms => forms.title);
+          this.items = res?.workFlowId?.stepIds?.map(data => {
+            return {
+              approvers: data?.approverIds?.map(appr => appr?.fullName),
+              condition: data?.condition
+            }
+          })
         })
       }
     }))
   }
 
   ngOnDestroy(): void {
-    
+    this.subscriptions.forEach(subscr => subscr.unsubscribe());
   }
 }

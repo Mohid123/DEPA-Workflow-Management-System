@@ -195,7 +195,6 @@ export class AuthService extends ApiService<AuthApiData> {
         }
         else {
           this.responseAfterLogout()
-          this.notif.displayNotification(res.errors[0]?.error?.message || 'Something went wrong', 'Logout Failed!', TuiNotification.Error);
           return res
         }
       }));
