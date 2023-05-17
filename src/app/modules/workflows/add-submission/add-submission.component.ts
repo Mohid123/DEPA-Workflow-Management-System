@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TuiNotification } from '@taiga-ui/core';
 import { Observable, map, pluck, switchMap } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { ActivatedRoute } from '@angular/router';
+import { FormioRefreshValue } from '@formio/angular';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -16,6 +17,8 @@ export class AddSubmissionComponent {
   public formWithWorkflow: any;
   workflowForm: FormGroup;
   subModuleData: any;
+  subModuleId: string;
+  public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
 
   constructor(
     private fb: FormBuilder,
@@ -23,24 +26,34 @@ export class AddSubmissionComponent {
     private dashBoardService: DashboardService,
     private activatedRoute: ActivatedRoute
   ) {
-    this.initWorkflowForm()
+    this.initWorkflowForm();
+    this.activatedRoute.params.subscribe(val => this.subModuleId = val['id'])
     this.activatedRoute.params.pipe(
       pluck('id'),
       switchMap((submoduleID => this.dashBoardService.getSubModuleByID(submoduleID)))
-    ).subscribe(res => {
+    ).subscribe((res: any) => {
       if(res) {
         this.subModuleData = res;
-        console.log(this.subModuleData)
-        // this.initWorkflowForm()
+        this.formWithWorkflow = res?.formIds;
+        this.formTabs = res?.formIds?.map(forms => forms.title);
+        const workFlowId = res?.workFlowId?.stepIds?.map(data => {
+          return {
+            approverIds: data?.approverIds?.map(ids => ids.id),
+            condition: data?.condition
+          }
+        });
+        delete this.subModuleData?.workFlowId;
+        Object.assign(this.subModuleData, {workFlowId: workFlowId})
+        this.initWorkflowForm(workFlowId)
       }
     })
   }
 
   initWorkflowForm(item?: any) {
-    if(item?.steps) {
+    if(item) {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array(
-          item?.steps?.map((val: { condition: any; approverIds: any; id?: any }) => {
+          item?.map((val: { condition: any; approverIds: any; id?: any }) => {
             return this.fb.group({
               condition: [val.condition, Validators.required],
               approverIds: [val.approverIds, Validators.required],
@@ -86,5 +99,25 @@ export class AddSubmissionComponent {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
     }
+  }
+
+  onChange(event: any) {
+    console.log(event.data);
+    this.refreshForm.emit(event.data)
+  }
+
+  createSubmission(data: any) {
+    const payload: any = {
+      subModuleId: this.subModuleId,
+      formIds: this.subModuleData?.formIds?.map(val => val.id),
+      formDataIds: [],
+      steps: this.workflows?.value?.map(data => {
+        return {
+          approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
+          condition: data?.condition
+        }
+      })
+    }
+    console.log(payload)
   }
 }

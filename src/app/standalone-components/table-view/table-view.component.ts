@@ -115,6 +115,10 @@ export class TableViewComponent {
     });
   }
 
+  splitURL(url: string) {
+    return url.split('/').at(-1)
+  }
+
   /**
    *
    * @param {number} index

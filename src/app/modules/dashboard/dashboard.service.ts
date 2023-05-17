@@ -337,6 +337,11 @@ export class DashboardService extends ApiService<any> {
       if(!res.hasErrors()) {
         return res.data
       }
+      else {
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodule', TuiNotification.Error)
+        }
+      }
     }))
   }
 

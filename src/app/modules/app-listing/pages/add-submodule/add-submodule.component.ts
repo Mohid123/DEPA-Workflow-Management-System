@@ -199,7 +199,7 @@ export class AddSubmoduleComponent implements OnDestroy {
       url: `http://localhost:4200/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: 'subModule-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join(''),
+      code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,

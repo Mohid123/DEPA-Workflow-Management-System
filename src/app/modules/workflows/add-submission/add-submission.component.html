@@ -14,7 +14,7 @@
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <formio [form]="form"></formio>
+          <formio [form]="form" (change)="onChange($event)"></formio>
         </div>
       </ng-container>
 
@@ -69,6 +69,7 @@
       type="button"
       size="m"
       appearance="primary"
+      (click)="createSubmission($event)"
     >
       Create submission
     </button>

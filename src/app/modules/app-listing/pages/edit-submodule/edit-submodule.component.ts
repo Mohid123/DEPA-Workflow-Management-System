@@ -239,7 +239,7 @@ export class EditSubmoduleComponent {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        // this.router.navigate(['/appListing/submodules', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
+        this.router.navigate(['/appListing/submodules', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
       }
       else {
         this.isCreatingSubModule.next(false);

@@ -12,10 +12,9 @@ export class ViewSubmissionsComponent {
   submoduleId: string;
 
   constructor(private activatedRoute: ActivatedRoute, private workflowService: WorkflowsService) {
+    this.activatedRoute.params.subscribe(val => this.submoduleId = val['id']);
     this.submissionData = this.activatedRoute.params.pipe(
-      pluck('id'),
-      map(id => this.submoduleId = id),
-      switchMap((subId => this.workflowService.getSubmissionFromSubModule(subId)))
+      switchMap(() => this.workflowService.getSubmissionFromSubModule(this.submoduleId))
     );
   }
 }
