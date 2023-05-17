@@ -32,7 +32,8 @@ export class ViewWorkflowComponent implements OnDestroy {
   workflowProgress = new BehaviorSubject<number>(0);
   saveDialogSubscription: Subscription[] = [];
   decisionData = new BehaviorSubject<any>(null);
-  savingDecision = new Subject<boolean>()
+  savingDecision = new Subject<boolean>();
+  activeUsers: any[] = [];
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -75,6 +76,9 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.workflowData = data;
         this.formTabs = this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = this.workflowData?.formIds;
+        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.pendingUserIds)?.map(user => user?.fullName);
+        // console.log(this.activeUsers)
+        // console.log('WORKFLO DATA: ', this.workflowData)
         this.workflowUsers = this.workflowData?.workflowStatus?.map(users => {
           return {
             approverIds: users?.allUserIds?.map(val => {
@@ -118,6 +122,10 @@ export class ViewWorkflowComponent implements OnDestroy {
       this.remarks.reset();
       this.saveDialogSubscription.forEach(val => val.unsubscribe());
     })
+  }
+
+  checkIfUserIsActive(value: any): boolean {
+    return this.activeUsers.includes(value)
   }
 
   ngOnDestroy(): void {
