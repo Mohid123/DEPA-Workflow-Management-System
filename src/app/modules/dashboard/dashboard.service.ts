@@ -277,6 +277,20 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  addCompany(payload: any): Observable<ApiResponse<any>> {
+    return this.post(`/companies`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('New company added', 'Add company', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        if (![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Add company', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
   deleteSubModule(id: string): Observable<ApiResponse<any>> {
     return this.delete(`/subModules/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

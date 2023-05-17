@@ -160,7 +160,16 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   submitNewCompany() {
-    console.log(this.f["companies"]?.value)
+    const payload: any = {
+      title: this.f["companies"]?.value[0]?.title,
+      groupCode: this.f["companies"]?.value[0]?.title.replace(/\s/g, '-')
+    }
+    this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if(res) {
+        this.companies.reset();
+        this.getAllCompanies();
+      }
+    })
   }
 
   saveDraft() {
@@ -211,7 +220,7 @@ export class AddSubmoduleComponent implements OnDestroy {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/appListing/submodules', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
+        this.router.navigate(['/dashboard/home']);
       }
       else {
         this.isCreatingSubModule.next(false);
