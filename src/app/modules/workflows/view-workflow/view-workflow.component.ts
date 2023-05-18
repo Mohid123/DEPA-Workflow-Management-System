@@ -76,7 +76,7 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.workflowData = data;
         this.formTabs = this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = this.workflowData?.formIds;
-        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.pendingUserIds)?.map(user => user?.fullName);
+        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUserIds)?.map(user => user?.fullName);
         // console.log(this.activeUsers)
         // console.log('WORKFLO DATA: ', this.workflowData)
         this.workflowUsers = this.workflowData?.workflowStatus?.map(users => {
