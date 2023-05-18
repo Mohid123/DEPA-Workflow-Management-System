@@ -79,6 +79,11 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
           return {
             ...data,
+            formDataId: this.workflowData?.formDataIds?.map(val => {
+              if(val.formId == data?._id) {
+                return val?._id
+              }
+            }).filter(val => val)[0],
             data: this.workflowData?.formDataIds?.map(val => {
               if(val.formId == data?._id) {
                 return val?.data
@@ -137,6 +142,20 @@ export class ViewWorkflowComponent implements OnDestroy {
 
   checkIfUserIsActive(value: any): boolean {
     return this.activeUsers.includes(value)
+  }
+
+  updateFormData(event: any) {
+    const payload: any = {
+      formId: event?._id,
+      data: event?.data
+    }
+    this.workflowService.updateFormsData(payload, event?.formDataId)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      if(res) {
+        this.fetchData();
+      }
+    })
   }
 
   ngOnDestroy(): void {
