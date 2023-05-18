@@ -34,6 +34,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   decisionData = new BehaviorSubject<any>(null);
   savingDecision = new Subject<boolean>();
   activeUsers: any[] = [];
+  formDataSubmission: any;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -67,7 +68,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   }
 
   fetchData() {
-    this.workflowData = this.activatedRoute.params.pipe(
+   this.activatedRoute.params.pipe(
       pluck('id'),
       map(id => this.workflowID = id),
       switchMap((subId => this.workflowService.getWorkflowSubmission(subId)))
@@ -75,7 +76,17 @@ export class ViewWorkflowComponent implements OnDestroy {
       if(data) {
         this.workflowData = data;
         this.formTabs = this.workflowData?.formIds?.map(val => val.title);
-        this.formWithWorkflow = this.workflowData?.formIds;
+        this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
+          return {
+            ...data,
+            data: this.workflowData?.formDataIds?.map(val => {
+              if(val.formId == data?._id) {
+                return val?.data
+              }
+            }).filter(val => val)[0]
+          }
+        });
+        console.log(this.formWithWorkflow)
         this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUserIds)?.map(user => user?.fullName);
         // console.log(this.activeUsers)
         // console.log('WORKFLO DATA: ', this.workflowData)
