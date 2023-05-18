@@ -68,7 +68,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   }
 
   fetchData() {
-    this.workflowData = this.activatedRoute.params.pipe(
+   this.activatedRoute.params.pipe(
       pluck('id'),
       map(id => this.workflowID = id),
       switchMap((subId => this.workflowService.getWorkflowSubmission(subId)))
