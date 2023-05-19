@@ -167,6 +167,7 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if(res) {
         this.companies.reset();
+        this.companies.removeAt(0);
         this.getAllCompanies();
       }
     })
