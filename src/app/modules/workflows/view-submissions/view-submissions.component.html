@@ -35,7 +35,7 @@
                   {{data?.formDataIds?.length}}
                 </td>
                 <td class="px-2 py-4">
-                  {{data?.submissionStatus === 1 ? 'Active' : 'Deleted'}}
+                  {{showStatus(data?.submissionStatus)}}
                 </td>
                 <td class="flex justify-between px-2 py-4">
                   <progress
