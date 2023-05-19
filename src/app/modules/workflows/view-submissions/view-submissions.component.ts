@@ -18,4 +18,14 @@ export class ViewSubmissionsComponent {
     );
     this.submissionData.subscribe(val => console.log(val))
   }
-}
+
+  showStatus(submissionStatus: number): string {
+    if(submissionStatus === 1) {
+      return 'Active'
+    }
+    if(submissionStatus === 3) {
+      return 'Completed'
+    }
+    return 'Rejected'
+  }
+ }

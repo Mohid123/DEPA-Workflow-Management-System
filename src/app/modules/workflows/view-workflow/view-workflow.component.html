@@ -49,7 +49,7 @@
           size="l"
           class="w-1/2 my-4 shadow-lg"
           [hoverable]="true"
-          [ngClass]="(user?.status == 'approved') ? 'border border-green-00' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
+          [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
         >
           <ng-container *ngIf="user?.status == 'pending'">
             <tui-badge
@@ -138,10 +138,11 @@
             <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>
           </ng-container>
           <ng-container *ngFor="let log of approvalLogs; let i = index">
-            <div class="grid grid-cols-12 gap-2">
-              <p class="col-span-6 font-normal">Decision performed by: &nbsp; <span class="font-semibold text-green-500">{{log?.id}}</span></p>
-              <p class="col-span-6 font-normal">Comments:
-                <span class="font-semibold text-green-500">&nbsp;{{log?.remarks}}</span>
+            <div class="grid grid-cols-12">
+              <p class="col-span-4 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">{{log?.id}}</span></p>
+              <p class="col-span-3 font-normal">Decision: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
+              <p class="col-span-5 font-normal">Comments:
+                <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">&nbsp;{{log?.remarks}}</span>
               </p>
             </div>
           </ng-container>
