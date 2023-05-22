@@ -1,7 +1,7 @@
 <app-header></app-header>
 
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
-  <p class="text-lg font-semibold">Form Title</p>
+  <p class="text-lg font-semibold">Forms</p>
   <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
     <!-- <div class="inline-flex gap-3 mt-3 mb-8" [formGroup]="languageForm">
       <tui-radio-labeled
@@ -34,7 +34,7 @@
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <formio [options]="{'disableAlerts': true}" (submit)="updateFormData($event)" [submission]="form" [form]="form"></formio>
+          <formio [readOnly]="checkIfAllApproved() == true" [options]="{'disableAlerts': true}" (submit)="updateFormData($event)" [submission]="form" [form]="form"></formio>
         </div>
       </ng-container>
 
@@ -97,7 +97,7 @@
               <li class="tui-list__item">
                 <div class="flex justify-between">
                   <span class="text-base font-semibold">{{approvers?.name}}</span>
-                  <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserIsActive(currentUser?.fullName) && user?.status == 'inProgress'" class="flex justify-end gap-5">
+                  <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserIsApproved(currentUser?.fullName) == false && user?.status == 'inProgress'" class="flex justify-end gap-5">
                     <span>Approve &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
                     <span>Reject &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                   </div>
@@ -139,7 +139,7 @@
           </ng-container>
           <ng-container *ngFor="let log of approvalLogs; let i = index">
             <div class="grid grid-cols-12">
-              <p class="col-span-4 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">{{log?.id}}</span></p>
+              <p class="col-span-4 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
               <p class="col-span-3 font-normal">Decision: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
               <p class="col-span-5 font-normal">Comments:
                 <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">&nbsp;{{log?.remarks}}</span>

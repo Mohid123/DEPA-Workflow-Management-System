@@ -26,6 +26,9 @@ export class ViewSubmissionsComponent {
     if(submissionStatus === 3) {
       return 'Completed'
     }
+    if(submissionStatus === 2) {
+      return 'In Progress'
+    }
     return 'Rejected'
   }
  }

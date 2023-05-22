@@ -33,8 +33,9 @@ export class ViewWorkflowComponent implements OnDestroy {
   saveDialogSubscription: Subscription[] = [];
   decisionData = new BehaviorSubject<any>(null);
   savingDecision = new Subject<boolean>();
-  activeUsers: any[] = [];
+  approvedUsers: any[] = [];
   formDataSubmission: any;
+  allApproved: any;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -75,6 +76,7 @@ export class ViewWorkflowComponent implements OnDestroy {
     ).subscribe(data => {
       if(data) {
         this.workflowData = data;
+        console.log(this.workflowData);
         this.formTabs = this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
           return {
@@ -91,25 +93,23 @@ export class ViewWorkflowComponent implements OnDestroy {
             }).filter(val => val)[0]
           }
         });
-        console.log(this.formWithWorkflow)
-        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUserIds)?.map(user => user?.fullName);
-        // console.log(this.activeUsers)
-        // console.log('WORKFLO DATA: ', this.workflowData)
-        this.workflowUsers = this.workflowData?.workflowStatus?.map(users => {
+        this.approvedUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.approvedUsers)?.map(user => user?.fullName);
+        this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
-            approverIds: users?.allUserIds?.map(val => {
+            approverIds: userData?.allUsers?.map(val => {
               return {
                 name: val?.fullName,
                 id: val?._id,
-                stepId: users?.stepId
+                stepId: userData?.stepId
               }
             }),
-            condition: users?.condition,
-            status: users?.status
+            condition: userData?.condition,
+            status: userData?.status
           }
         });
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
         this.approvalLogs = this.workflowData?.approvalLog;
+        this.allApproved = this.workflowData?.workflowStatus?.map(userData => userData?.status == 'approved' ? true: false);
       }
     });
   }
@@ -118,7 +118,10 @@ export class ViewWorkflowComponent implements OnDestroy {
     this.showLoader.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === false) {
         this.decisionData.next(data)
-        this.saveDialogSubscription.push(this.dialogs.open(content).pipe(take(1)).subscribe())
+        this.saveDialogSubscription.push(this.dialogs.open(content, {
+          dismissible: false,
+          closeable: false
+        }).pipe(take(1)).subscribe())
       }
     })
   }
@@ -140,8 +143,12 @@ export class ViewWorkflowComponent implements OnDestroy {
     })
   }
 
-  checkIfUserIsActive(value: any): boolean {
-    return this.activeUsers.includes(value)
+  checkIfUserIsApproved(value: any): boolean {
+    return this.approvedUsers.includes(value)
+  }
+
+  checkIfAllApproved(): boolean {
+    return this.allApproved.includes(true)
   }
 
   updateFormData(event: any) {
