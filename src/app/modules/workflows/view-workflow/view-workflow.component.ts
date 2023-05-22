@@ -148,7 +148,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   }
 
   checkIfAllApproved(): boolean {
-    return this.allApproved.includes(true)
+    return !this.allApproved.includes(false)
   }
 
   updateFormData(event: any) {
