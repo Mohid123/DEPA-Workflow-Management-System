@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { EditFormComponent } from './pages/edit-form/edit-form.component';
 import { FormBuilderComponent } from './pages/form-builder/form-builder.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
+import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { HeaderComponent } from 'src/app/standalone-components/header/header.com
     TuiTabsModule,
     TuiButtonModule,
     HeaderComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CustomMultiSelectComponent
   ]
 })
 export class FormsModule { }

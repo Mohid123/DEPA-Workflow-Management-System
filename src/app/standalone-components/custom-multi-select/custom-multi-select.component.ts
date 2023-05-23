@@ -181,7 +181,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
           val.control.setValue(true);
           return val
         }
-        else if(approverIds.map(user => user?.id).includes(val.id)) {
+        else if(approverIds?.map(user => user?.id)?.includes(val.id)) {
           val.control.setValue(true);
           return val
         }

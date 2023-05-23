@@ -15,7 +15,7 @@ import { FormsService } from '../../services/forms.service';
 export class FormBuilderComponent {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
-  public form: {title: string, key: string, display: string, components: []};
+  public form: {title: string, key: string, display: string, components: [], permissions: any};
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   activeIndex: number = 0;
   formValue: any;
@@ -37,6 +37,8 @@ export class FormBuilderComponent {
   formTitleControl = new FormControl({value: '', disabled: this.editMode});
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
+  crudUsers = new FormControl<any>([]);
+  viewUsers = new FormControl<any>([]);
 
   constructor(
     private transportService: DataTransportService,
@@ -58,19 +60,33 @@ export class FormBuilderComponent {
       }
       if(this.editMode === true) {
         this.form = this.transportService.sendFormDataForEdit.value;
+        this.transportService.sendFormDataForEdit.value?.permissions?.map(data => {
+          if(data?.options?.canAdd == true) {
+            this.crudUsers?.setValue([...this.crudUsers?.value, data?.user])
+          }
+          else if(data?.options?.canAdd == false) {
+            this.viewUsers?.setValue([...this.viewUsers?.value, data?.user])
+          }
+        })
         this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
         this.formTitleControl.disable();
       }
       else {
-        this.form = {title: this.formTitleControl?.value, key: '', display: this.formDisplayType.value, components: []};
+        this.form = {
+          title: this.formTitleControl?.value,
+          key: '',
+          display: this.formDisplayType.value,
+          components: [],
+          permissions: []
+        };
       }
     })
   }
 
-  @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
-    event.preventDefault();
-    event.returnValue = false;
-  }
+  // @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
+  //   event.preventDefault();
+  //   event.returnValue = false;
+  // }
 
   onChange(event: any) {
     this.refreshForm.emit({
@@ -98,6 +114,37 @@ export class FormBuilderComponent {
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
     }
+    if(this.viewUsers?.value?.length == 0 || this.crudUsers?.value?.length == 0) {
+      return this.notif.displayNotification('You have not set permissions for the form!', 'Create Form', TuiNotification.Warning)
+    }
+    if(this.checkIfArrayMatch()?.includes(true)) {
+      return this.notif.displayNotification('View users and CRUD users cannot be same!', 'Create Form', TuiNotification.Warning)
+    }
+    const CRUDusers = this.crudUsers?.value?.map(val => {
+      return {
+        user: {id: val?.id, name: val?.name},
+        options: {
+          canEdit: true,
+          canDelete: true,
+          canView: true,
+          canSave: true,
+          canAdd: true
+        }
+      }
+    });
+    const viewOnlyUsers = this.viewUsers?.value?.map(val => {
+      return {
+        user: {id: val?.id, name: val?.name},
+        options: {
+          canEdit: false,
+          canDelete: false,
+          canView: true,
+          canSave: false,
+          canAdd: false
+        }
+      }
+    });
+    this.form.permissions = [...CRUDusers, ...viewOnlyUsers]
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
     this.form.key = this.formTitleControl?.value?.replace(/\s/g, '').toLowerCase() + '-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join('')
@@ -130,7 +177,7 @@ export class FormBuilderComponent {
 
   cancelFormData() {
     if(this.editMode == false) {
-      this.transportService.sendFormBuilderData([{title: '', components: []}]);
+      this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: [], permissions: []}]);
       this.router.navigate(['/appListing/add-submodule'], { queryParams: { moduleID: this.transportService.moduleID?.value } });
     }
     else {
@@ -143,6 +190,24 @@ export class FormBuilderComponent {
       this.transportService.sendFormBuilderData(data);
       this.router.navigate(['/appListing/add-submodule'], { queryParams: { moduleID: this.transportService.moduleID?.value } });
     }
+  }
+
+  setCRUDUsers(users: any[]) {
+    this.crudUsers?.setValue(users);
+  }
+
+  setReadOnlyUsers(users: any[]) {
+    this.viewUsers?.setValue(users)
+  }
+
+  checkIfArrayMatch(): boolean[] {
+    const viewUserNames = this.viewUsers?.value?.map(data => data?.name);
+    return this.crudUsers?.value?.map(data => {
+      if(viewUserNames.includes(data?.name)) {
+        return true
+      }
+      return false
+    })
   }
 
   ngOnDestroy(): void {
