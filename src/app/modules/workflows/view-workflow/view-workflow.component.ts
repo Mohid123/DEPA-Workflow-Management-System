@@ -77,7 +77,6 @@ export class ViewWorkflowComponent implements OnDestroy {
     ).subscribe(data => {
       if(data) {
         this.workflowData = data;
-        console.log(this.workflowData);
         this.formTabs = this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
           return {
@@ -96,8 +95,8 @@ export class ViewWorkflowComponent implements OnDestroy {
         });
         this.approvedUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.approvedUsers)?.map(user => user?.fullName);
         this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
-        console.log(this.approvedUsers)
-        console.log(this.activeUsers)
+        console.log('ACtive', this.activeUsers)
+        console.log('Approved', this.approvedUsers)
         this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
             approverIds: userData?.allUsers?.map(val => {
@@ -152,7 +151,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   }
 
   checkIfUserisStillActive(value: any): boolean {
-    return this.activeUsers.includes(value)
+    return this.activeUsers.includes(value) && !this.approvedUsers.includes(value)
   }
 
   checkIfAllApproved(): boolean {

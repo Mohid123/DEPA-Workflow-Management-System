@@ -10,8 +10,8 @@
       <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
         <tr>
           <th class="px-6 py-3 text-sm">Submodule Code</th>
-          <th class="px-2 py-3 text-sm">No. of Forms</th>
           <th class="px-2 py-3 text-sm">Status</th>
+          <th class="px-2 py-3 text-sm">Last Activity By</th>
           <th class="px-2 py-3 text-sm">Workflow progress</th>
           <th scope="col" class="px-6 py-3 text-sm">
             Actions
@@ -29,13 +29,13 @@
             <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last">
               <tr class="bg-white border-b border-gray-300">
                 <td class="px-6 py-4">
-                  {{data?.subModuleId}}
-                </td>
-                <td class="px-6 py-4">
-                  {{data?.formDataIds?.length}}
+                  {{data?.subModuleId?.code}}
                 </td>
                 <td class="px-2 py-4">
                   {{showStatus(data?.submissionStatus)}}
+                </td>
+                <td class="px-6 py-4">
+                  {{data?.summaryData?.userName || ''}}
                 </td>
                 <td class="flex justify-between px-2 py-4">
                   <progress
@@ -45,7 +45,7 @@
                     class="w-10/12 mt-1.5"
                     [value]="data?.summaryData?.progress"
                   ></progress>
-                  <span>{{data?.summaryData?.progress | number : '1.2-2'}} %</span>
+                  <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
                 </td>
                 <td class="px-6 py-4">
                   <a [routerLink]="['/workflows/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">

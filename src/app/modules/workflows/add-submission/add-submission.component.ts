@@ -6,6 +6,8 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
+import { AuthService } from '../../auth/auth.service';
+import { Location } from '@angular/common';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -21,6 +23,8 @@ export class AddSubmissionComponent implements OnDestroy {
   formDataIds: any;
   formSubmission = new BehaviorSubject<Array<any>>([]);
   destroy$ = new Subject();
+  currentUser: any;
+  createdByUser: any;
 
   constructor(
     private fb: FormBuilder,
@@ -28,8 +32,11 @@ export class AddSubmissionComponent implements OnDestroy {
     private dashBoardService: DashboardService,
     private activatedRoute: ActivatedRoute,
     private submissionService: WorkflowsService,
-    private router: Router
+    private router: Router,
+    private auth: AuthService,
+    public _location: Location
   ) {
+    this.currentUser = this.auth.currentUserValue;
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => this.subModuleId = val['id']);
     this.populateData();
@@ -46,6 +53,7 @@ export class AddSubmissionComponent implements OnDestroy {
         this.subModuleData = res;
         this.formWithWorkflow = res?.formIds;
         this.formTabs = res?.formIds?.map(forms => forms.title);
+        this.createdByUser = res?.createdBy;
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
           return {
             approverIds: data?.approverIds?.map(ids => ids.id),
@@ -54,7 +62,7 @@ export class AddSubmissionComponent implements OnDestroy {
         });
         delete this.subModuleData?.workFlowId;
         Object.assign(this.subModuleData, {workFlowId: workFlowId})
-        this.initWorkflowForm(workFlowId)
+        this.initWorkflowForm(workFlowId);
       }
     })
   }
