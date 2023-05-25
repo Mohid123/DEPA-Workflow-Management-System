@@ -73,6 +73,7 @@ export class EditSubmoduleComponent {
             const url = response?.url?.split('/').at(-1);
             const workFlowId = response?.workFlowId?.stepIds?.map(data => {
               return {
+                id: data?.id,
                 approverIds: data?.approverIds?.map(ids => ids.id),
                 condition: data?.condition
               }
@@ -109,8 +110,9 @@ export class EditSubmoduleComponent {
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       workflows: item?.workFlowId ?
       this.fb.array(
-        item?.workFlowId?.map((val: { condition: any; approverIds: any; }) => {
+        item?.workFlowId?.map((val: { condition: any; approverIds: any; id: any }) => {
           return this.fb.group({
+            id: val.id,
             condition: [val.condition, Validators.required],
             approverIds: [val.approverIds, Validators.required]
           })
@@ -223,6 +225,7 @@ export class EditSubmoduleComponent {
       // formIds: this.formComponents,
       steps: this.workflows?.value?.map(data => {
         return {
+          id: data?.id ? data?.id : undefined,
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
           condition: data?.condition
         }

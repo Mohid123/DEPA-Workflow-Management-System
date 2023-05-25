@@ -54,8 +54,6 @@ export class AddSubmissionComponent implements OnDestroy {
         this.formWithWorkflow = res?.formIds;
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.createdByUser = res?.createdBy;
-        console.log('Curerent', this.currentUser?.id)
-        console.log('Createdby', this.createdByUser)
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
           return {
             approverIds: data?.approverIds?.map(ids => ids.id),
