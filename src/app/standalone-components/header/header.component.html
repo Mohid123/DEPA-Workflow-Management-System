@@ -19,6 +19,15 @@
             <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; Logout
           </a>
         </li>
+        <li>
+          <tui-avatar
+            [text]="currentUser?.userName"
+            [tuiHint]="tooltip"
+            size="s"
+            class="tui-space_bottom-1"
+            [rounded]="true"
+          ></tui-avatar>
+        </li>
       </ul>
     </div>
   </div>
@@ -44,3 +53,7 @@
     <i class="fa fa-angle-left font-semibold" aria-hidden="true"></i>&nbsp; Go to previous page
   </p>
 </div>
+
+<ng-template #tooltip>
+  <p>User {{currentUser?.userName}} is logged in</p>
+</ng-template>

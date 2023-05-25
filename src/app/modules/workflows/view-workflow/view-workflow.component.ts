@@ -95,8 +95,6 @@ export class ViewWorkflowComponent implements OnDestroy {
         });
         this.approvedUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.approvedUsers)?.map(user => user?.fullName);
         this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
-        console.log('ACtive', this.activeUsers)
-        console.log('Approved', this.approvedUsers)
         this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
             approverIds: userData?.allUsers?.map(val => {
