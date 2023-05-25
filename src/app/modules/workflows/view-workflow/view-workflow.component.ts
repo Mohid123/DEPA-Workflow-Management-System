@@ -34,6 +34,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   decisionData = new BehaviorSubject<any>(null);
   savingDecision = new Subject<boolean>();
   approvedUsers: any[] = [];
+  activeUsers: any[] = [];
   formDataSubmission: any;
   allApproved: any;
 
@@ -94,6 +95,9 @@ export class ViewWorkflowComponent implements OnDestroy {
           }
         });
         this.approvedUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.approvedUsers)?.map(user => user?.fullName);
+        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
+        console.log(this.approvedUsers)
+        console.log(this.activeUsers)
         this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
             approverIds: userData?.allUsers?.map(val => {
@@ -145,6 +149,10 @@ export class ViewWorkflowComponent implements OnDestroy {
 
   checkIfUserIsApproved(value: any): boolean {
     return this.approvedUsers.includes(value)
+  }
+
+  checkIfUserisStillActive(value: any): boolean {
+    return this.activeUsers.includes(value)
   }
 
   checkIfAllApproved(): boolean {

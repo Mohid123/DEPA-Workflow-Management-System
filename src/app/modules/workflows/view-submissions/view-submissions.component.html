@@ -45,7 +45,7 @@
                     class="w-10/12 mt-1.5"
                     [value]="data?.summaryData?.progress"
                   ></progress>
-                  <span>{{data?.summaryData?.progress}} %</span>
+                  <span>{{data?.summaryData?.progress | number : '1.2-2'}} %</span>
                 </td>
                 <td class="px-6 py-4">
                   <a [routerLink]="['/workflows/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">

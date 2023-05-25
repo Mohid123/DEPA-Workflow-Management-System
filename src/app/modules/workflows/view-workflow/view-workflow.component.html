@@ -97,7 +97,7 @@
               <li class="tui-list__item">
                 <div class="flex justify-between">
                   <span class="text-base font-semibold">{{approvers?.name}}</span>
-                  <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserIsApproved(currentUser?.fullName) == false && user?.status == 'inProgress'" class="flex justify-end gap-5">
+                  <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && user?.status == 'inProgress'" class="flex justify-end gap-5">
                     <span>Approve &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
                     <span>Reject &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                   </div>
@@ -121,7 +121,7 @@
           tuiProgressLabel
         >
           <span class="font-semibold text-gray-600">COMPLETED</span>
-          <span class="font-semibold text-gray-700">{{ workflowProgress | async }}%</span>
+          <span class="font-semibold text-gray-700">{{ (workflowProgress | async) | number : '1.2-2' }}%</span>
 
           <tui-progress-circle
             size="xl"
