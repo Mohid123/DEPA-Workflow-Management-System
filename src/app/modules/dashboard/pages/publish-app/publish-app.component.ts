@@ -187,8 +187,8 @@ export class PublishAppComponent implements OnDestroy {
 
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
-      approverIds: [[], Validators.required],
-      condition: [{value: '', disabled: ''}, Validators.required],
+      condition: ['', Validators.required],
+      approverIds: [[], Validators.required]
     });
     this.workflows.push(workflowStepForm);
   }
@@ -259,30 +259,20 @@ export class PublishAppComponent implements OnDestroy {
           if(this.isEditMode.value == false) {
             const defaultFlow = this.workflows?.value?.map(data => {
               return {
-                approverIds: data.approverIds?.map(approvers => {
-                  if(approvers?.id) {
-                    return approvers?.id
-                  }
-                  return approvers
-                }),
+                approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
                 condition: data?.condition
               }
-            });
+            })
             this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
           }
           else {
             const newSteps = this.workflows?.value?.map(data => {
               return {
-                approverIds: data.approverIds?.map(approvers => {
-                  if(approvers?.id) {
-                    return approvers?.id
-                  }
-                  return approvers
-                }),
+                approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
                 condition: data?.condition,
-                id: data?.id || undefined
+                id: data?.id ? data?.id : undefined
               }
-            });
+            })
             const defaultFlow = newSteps;
             this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
           }
