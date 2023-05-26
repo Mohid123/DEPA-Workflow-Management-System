@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { ModuleGuard } from '../auth/guards/module.guard';
+import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,11 @@ const routes: Routes = [
         path: 'publish-app',
         component: PublishAppComponent,
         data: {breadcrumb:'Create new Module'},
+      },
+      {
+        path: 'categories',
+        component: CategoriesListComponent,
+        data: {breadcrumb:'Categories'},
       },
       {
         path: '',

@@ -167,6 +167,33 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  updateCategory(payload: any, categoryId: string): Observable<ApiResponse<any>> {
+    return this.patch(`/categories/${categoryId}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Category updated', 'Update Category', TuiNotification.Success);
+        return res?.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Category', TuiNotification.Error)
+      }
+    }))
+  }
+
+  deleteCategory(categoryId: string): Observable<ApiResponse<any>> {
+    return this.delete(`/categories/${categoryId}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Category deleted', 'Delete Category', TuiNotification.Success);
+        return res?.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Delete Category', TuiNotification.Error)
+      }
+    }))
+  }
+
+
   createModule(payload: Module): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.post(`/modules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
