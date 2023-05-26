@@ -18,13 +18,15 @@ import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/
 import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-app/grid-side-app.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 import { FormioModule } from '@formio/angular';
+import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     HomeComponent,
     PublishAppComponent,
-    GridViewLoaderComponent
+    GridViewLoaderComponent,
+    CategoriesListComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +45,8 @@ import { FormioModule } from '@formio/angular';
     GridTopAppComponent,
     GridSideAppComponent,
     CustomMultiSelectComponent,
-    FormioModule
+    FormioModule,
+    TuiTableModule
   ]
 })
 export class DashboardModule { }

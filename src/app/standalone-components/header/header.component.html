@@ -12,7 +12,7 @@
             class="block py-2 px-4 text-white no-underline hover:text-gray-100">Create Module</a>
         </li>
         <li>
-          <a class="block py-2 text-white px-4 no-underline hover:text-gray-100">Settings</a>
+          <a [routerLink]="['/dashboard/categories']" routerLinkActive="router-link-active" class="block py-2 text-white px-4 no-underline hover:text-gray-100">Categories</a>
         </li>
         <li>
           <a (click)="logoutSession()" class="block py-2 text-white px-4 no-underline bg-[#cf2729] rounded-lg hover:text-gray-100 cursor-pointer">
@@ -55,5 +55,5 @@
 </div>
 
 <ng-template #tooltip>
-  <p>User {{currentUser?.userName}} is logged in</p>
+  <p>{{currentUser?.fullName}} is logged in</p>
 </ng-template>

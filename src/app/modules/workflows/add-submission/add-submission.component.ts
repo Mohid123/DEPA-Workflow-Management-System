@@ -112,13 +112,6 @@ export class AddSubmissionComponent implements OnDestroy {
     this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
-  validateSelection(index: number) {
-    if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
-    }
-  }
-
   onChange(event: any, index: number) {
     this.formDataIds = this.subModuleData?.formIds?.map((val: any, i: number) => {
       if(index === i) {
@@ -159,6 +152,26 @@ export class AddSubmissionComponent implements OnDestroy {
         this.router.navigate(['/workflows/view-submissions', this.subModuleId])
       }
     })
+  }
+
+  countUsers(value: number, index: number) {
+    if(value < 2) {
+      this.workflows.at(index)?.get('condition')?.setValue('none')
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+    }
+    if(value >= 2) {
+      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+    }
+  }
+
+  validateSelection(index: number) {
+    if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
+      this.workflows.at(index)?.get('condition')?.setValue('none')
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning);
+    }
+    if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+    }
   }
 
   ngOnDestroy(): void {

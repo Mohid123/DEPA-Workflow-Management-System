@@ -205,6 +205,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
       })
     });
     this.checkUsersLength.emit(this.inputFieldArr.length)
+    this.approverList.emit(this.inputFieldArr);
   }
 
   /**

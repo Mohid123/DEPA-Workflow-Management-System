@@ -136,7 +136,7 @@
                       <option value="none">NONE</option>
                     </select>
                   </div>
-                  <div class="col-span-2 mt-8" *ngIf="i > 0">
+                  <div class="col-span-2 mt-8">
                     <button
                       tuiIconButton
                       type="button"
@@ -160,7 +160,7 @@
 
             <div class="flex justify-end gap-5 mt-5">
               <button (click)="previousStep()" type="button" class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
-              <button (click)="nextStep()" type="button" class="btn btn-primary">Proceed to Module Graphics</button>
+              <button #btn (click)="nextStep()" type="button" class="btn btn-primary">Proceed to Module Graphics</button>
             </div>
           </div>
         </ng-container>

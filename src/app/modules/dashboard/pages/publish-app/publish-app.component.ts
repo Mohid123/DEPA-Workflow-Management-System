@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
 import  { Subject, Observable, of, map, takeUntil, BehaviorSubject, take, first } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
@@ -59,6 +59,7 @@ export class PublishAppComponent implements OnDestroy {
   categoryDataForFormIOSelect = new BehaviorSubject<any>(null);
   isEditMode = new BehaviorSubject(false);
   storeModuleID = new BehaviorSubject<any>('');
+  @ViewChild('btn') btn: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -186,8 +187,8 @@ export class PublishAppComponent implements OnDestroy {
 
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
-      approverIds: [[], Validators.required],
-      condition: [{value: '', disabled: ''}, Validators.required],
+      condition: ['', Validators.required],
+      approverIds: [[], Validators.required]
     });
     this.workflows.push(workflowStepForm);
   }
@@ -203,15 +204,25 @@ export class PublishAppComponent implements OnDestroy {
   countUsers(value: number, index: number) {
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
     }
+    if(value >= 2) {
+      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.btn.nativeElement.disabled = true
+    }
+    return this.btn.nativeElement.disabled = false
   }
 
   validateSelection(index: number) {
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning);
     }
+    if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.btn.nativeElement.disabled = true
+    }
+    return this.btn.nativeElement.disabled = false
   }
 
   nextStep(submission?: any): void {
@@ -248,30 +259,20 @@ export class PublishAppComponent implements OnDestroy {
           if(this.isEditMode.value == false) {
             const defaultFlow = this.workflows?.value?.map(data => {
               return {
-                approverIds: data.approverIds?.map(approvers => {
-                  if(approvers?.id) {
-                    return approvers?.id
-                  }
-                  return approvers
-                }),
+                approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
                 condition: data?.condition
               }
-            });
+            })
             this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
           }
           else {
             const newSteps = this.workflows?.value?.map(data => {
               return {
-                approverIds: data.approverIds?.map(approvers => {
-                  if(approvers?.id) {
-                    return approvers?.id
-                  }
-                  return approvers
-                }),
+                approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
                 condition: data?.condition,
-                id: data?.id || undefined
+                id: data?.id ? data?.id : undefined
               }
-            });
+            })
             const defaultFlow = newSteps;
             this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
           }

@@ -6,6 +6,7 @@ import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { ModuleGuardComponent } from '../templates/module-guard/module-guard.component';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Guard that protects the Submodule page from rerouting without user feedback on the unsaved data
@@ -38,7 +39,7 @@ export class ModuleGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
   {
     let currentDialogState: DialogState;
-    if(this.dashboard.moduleEditData.value !== null) {
+    if(this.dashboard.moduleEditData.value !== null || getItem(StorageItem.activeIndex) > 0) {
       this.dialog.open(new PolymorpheusComponent(ModuleGuardComponent), {
         dismissible: false,
         closeable: false
