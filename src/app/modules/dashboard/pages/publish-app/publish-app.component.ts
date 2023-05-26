@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
 import  { Subject, Observable, of, map, takeUntil, BehaviorSubject, take, first } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
@@ -59,6 +59,7 @@ export class PublishAppComponent implements OnDestroy {
   categoryDataForFormIOSelect = new BehaviorSubject<any>(null);
   isEditMode = new BehaviorSubject(false);
   storeModuleID = new BehaviorSubject<any>('');
+  @ViewChild('btn') btn: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -203,15 +204,25 @@ export class PublishAppComponent implements OnDestroy {
   countUsers(value: number, index: number) {
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
     }
+    if(value >= 2) {
+      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.btn.nativeElement.disabled = true
+    }
+    return this.btn.nativeElement.disabled = false
   }
 
   validateSelection(index: number) {
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning);
     }
+    if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.btn.nativeElement.disabled = true
+    }
+    return this.btn.nativeElement.disabled = false
   }
 
   nextStep(submission?: any): void {
