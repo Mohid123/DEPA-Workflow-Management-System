@@ -46,7 +46,7 @@ export class ViewWorkflowComponent implements OnDestroy {
     private auth: AuthService
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.fetchData()
+    this.fetchData();
     this.approve.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === true) {
         this.reject.disable();
