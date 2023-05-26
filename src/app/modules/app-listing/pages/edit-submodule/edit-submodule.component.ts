@@ -195,6 +195,9 @@ export class EditSubmoduleComponent {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
     }
+    if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+    }
   }
 
   dataSubmitValidation() {
