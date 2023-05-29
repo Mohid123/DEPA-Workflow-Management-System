@@ -249,6 +249,9 @@ export class PublishAppComponent implements OnDestroy {
           this.moveNext();
           break;
         case 1:
+          if(this.workflows?.length == 0) {
+            return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
+          }
           if(this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true)) {
             return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
           }

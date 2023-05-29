@@ -189,6 +189,9 @@ export class EditSubmoduleComponent {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Warning)
     }
+    if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      return this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+    }
   }
 
   countUsers(value: number, index: number) {
@@ -208,6 +211,8 @@ export class EditSubmoduleComponent {
       this.f['adminUsers']?.value?.length == 0 ||
       this.f['viewOnlyUsers']?.value?.length == 0 ||
       this.workflows?.length == 0 ||
+      this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
+      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||
       Object.values(this.formComponents)[0]?.components?.length == 0
     ) {
       return false
@@ -219,6 +224,11 @@ export class EditSubmoduleComponent {
     if(this.dataSubmitValidation() == false) {
       this.subModuleForm.markAllAsTouched();
       return this.notif.displayNotification('Please provide all data', 'Create Submodule', TuiNotification.Warning)
+    }
+    if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1).includes(true)) {
+      if(this.workflows.controls.map(val => val.get('condition')?.value).includes('none') === true) {
+        return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
+      }
     }
     this.isCreatingSubModule.next(true)
     const payload = {
