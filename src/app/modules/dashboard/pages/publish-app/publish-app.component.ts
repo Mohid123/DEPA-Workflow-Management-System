@@ -353,9 +353,11 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   submitNewModule() {
+    const moduleURL = this.f['moduleURL']?.value.split(window.location.origin).pop();
+    const payload = {...this.moduleData.value, url: moduleURL}
     if(this.isEditMode.value == false) {
       this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard.createModule(this.moduleData.value).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      this.dashboard.createModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if(res) {
           this.moveNext();
           setTimeout(() => {
@@ -369,7 +371,7 @@ export class PublishAppComponent implements OnDestroy {
     }
     else {
       this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard.editModule(this.storeModuleID?.value, this.moduleData.value)
+      this.dashboard.editModule(this.storeModuleID?.value, payload)
       .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if(res) {
           this.moveNext();

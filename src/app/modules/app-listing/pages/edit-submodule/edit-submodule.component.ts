@@ -222,8 +222,9 @@ export class EditSubmoduleComponent {
     }
     this.isCreatingSubModule.next(true)
     const payload = {
+      url: `/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: this.subModuleForm.get('code')?.value,
+      code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       // formIds: this.formComponents,
