@@ -134,6 +134,66 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  getAllUsersForListing(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
+    const params: any = {
+      limit: limit,
+      page: page,
+      name: name ?? undefined
+    }
+    return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data?.results
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch users', 'Get Users', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  updateUser(id: string, payload: any): Observable<ApiResponse<any>> {
+    return this.patch(`/users/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('User updated successfully', 'Update User', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update User', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  deleteUser(id: string): Observable<ApiResponse<any>> {
+    return this.delete(`/users/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('User removed', 'Remove User', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Delete User', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  addNewUser(payload: any): Observable<ApiResponse<any>> {
+    return this.post(`/users`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('User created', 'Add User', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Add User', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
   getAllCategories(): Observable<ApiResponse<any>> {
     return this.get(`/categories`)
     .pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -192,7 +252,6 @@ export class DashboardService extends ApiService<any> {
       }
     }))
   }
-
 
   createModule(payload: Module): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
