@@ -27,23 +27,6 @@
     </div> -->
   </div>
   <form-builder [form]="form" (change)="onChange($event)"></form-builder>
-  <div class="grid grid-cols-12 gap-3 my-6">
-    <div class="col-span-6">
-      <label class="block pb-1 text-sm">Users that can perform CRUD on this form</label>
-      <custom-multi-select
-        [formControl]="crudUsers"
-        (approverList)="setCRUDUsers($event)"
-      ></custom-multi-select>
-    </div>
-
-    <div class="col-span-6">
-      <label class="block pb-1 text-sm">Users that can View-Only</label>
-      <custom-multi-select
-        [formControl]="viewUsers"
-        (approverList)="setReadOnlyUsers($event)"
-      ></custom-multi-select>
-    </div>
-  </div>
   <div class="flex justify-center py-3">
     <button
       (click)="submitFormData()"
