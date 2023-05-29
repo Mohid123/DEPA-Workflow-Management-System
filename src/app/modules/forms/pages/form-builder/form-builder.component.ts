@@ -47,8 +47,8 @@ export class FormBuilderComponent {
   {
     this.editMode = this.transportService.isFormEdit.value;
     this.activatedRoute.queryParams?.subscribe(data => {
-      if(data['formID']) {
-        this.formService.getFormById(data['formID'])
+      if(data['key']) {
+        this.formService.getFormByKey(data['key'])
         .pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
           if(response) {
             this.form = response;
