@@ -84,8 +84,9 @@ export class PublishAppComponent implements OnDestroy {
         const workFlow = val?.workFlowId?.id;
         this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
           this.storeModuleID.next(val['id'])
-        })
-        const editableValue = Object.assign(val, {categoryId: category, workFlowId: workFlow, steps: stepsArr});
+        });
+        const url = `${window.location.origin}${val?.url}`
+        const editableValue = Object.assign(val, {categoryId: category, workFlowId: workFlow, steps: stepsArr, url: url});
         setItem(StorageItem.publishAppValue, editableValue);
         this.isEditMode.next(true);
       }

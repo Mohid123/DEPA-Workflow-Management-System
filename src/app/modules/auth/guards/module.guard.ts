@@ -39,7 +39,7 @@ export class ModuleGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
   {
     let currentDialogState: DialogState;
-    if(this.dashboard.moduleEditData.value !== null || getItem(StorageItem.activeIndex) > 0) {
+    if(this.dashboard.moduleEditData.value !== null || getItem(StorageItem.publishAppValue)) {
       this.dialog.open(new PolymorpheusComponent(ModuleGuardComponent), {
         dismissible: false,
         closeable: false
