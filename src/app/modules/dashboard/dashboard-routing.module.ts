@@ -22,7 +22,7 @@ const routes: Routes = [
       {
         path: 'publish-app',
         component: PublishAppComponent,
-        data: {breadcrumb:'Create new Module'},
+        data: {breadcrumb:'Create/Edit Module'},
       },
       {
         path: 'categories',

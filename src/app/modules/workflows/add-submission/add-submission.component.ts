@@ -134,7 +134,26 @@ export class AddSubmissionComponent implements OnDestroy {
     console.log(this.formSubmission?.value)
   }
 
+  dataSubmitValidation() {
+    if(
+      this.workflows?.length == 0 ||
+      this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
+      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true
+    ) {
+      return false
+    }
+    return true
+  }
+
   createSubmission(data: any) {
+    if(this.dataSubmitValidation() == false) {
+      return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
+    }
+    if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1).includes(true)) {
+      if(this.workflows.controls.map(val => val.get('condition')?.value).includes('none') === true) {
+        return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
+      }
+    }
     const payload: any = {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
