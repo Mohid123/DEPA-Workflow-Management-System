@@ -23,7 +23,7 @@ export class DataTransportService {
    * @ignore
    */
   public formBuilderData: BehaviorSubject<any> = new BehaviorSubject([
-    {title: '', key: '', display: '', components: [], permissions: []}
+    {title: '', key: '', display: '', components: []}
   ]);
 
   /**
@@ -52,7 +52,7 @@ export class DataTransportService {
   /**
    * @ignore
    */
-  public sendFormDataForEdit: BehaviorSubject<any> = new BehaviorSubject({title: '', key: '', display: '', components: [], permissions: []})
+  public sendFormDataForEdit: BehaviorSubject<any> = new BehaviorSubject({title: '', key: '', display: '', components: []})
 
   /**
    * Data transport constructor definition
