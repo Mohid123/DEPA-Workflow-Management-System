@@ -35,6 +35,7 @@ export class EditSubmoduleComponent {
   isCreatingSubModule = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  domainUrl = window.location.origin
 
   constructor(
     private fb: FormBuilder,

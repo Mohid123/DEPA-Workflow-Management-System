@@ -150,7 +150,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   }
 
   checkIfUserisStillActive(value: any): boolean {
-    return this.activeUsers.includes(value) && !this.approvedUsers.includes(value)
+    return this.activeUsers.includes(value)
   }
 
   checkIfLoggedInUserIsPartOfActiveUsers(): boolean {

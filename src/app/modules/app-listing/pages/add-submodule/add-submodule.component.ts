@@ -36,6 +36,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   isCreatingSubModule = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  domainURL = window.location.origin
 
   constructor(
     private fb: FormBuilder,
@@ -197,7 +198,7 @@ export class AddSubmoduleComponent implements OnDestroy {
     }
     this.isCreatingSubModule.next(true)
     const payload = {
-      url: `https://depa-frontend.pages.dev/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
+      url: `${window.location.origin}/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
       code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
