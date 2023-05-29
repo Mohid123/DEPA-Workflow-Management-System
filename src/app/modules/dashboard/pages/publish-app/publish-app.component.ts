@@ -1,13 +1,12 @@
 import { Component, ElementRef, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
-import  { Subject, Observable, of, map, takeUntil, BehaviorSubject, take, first } from 'rxjs';
+import  { Subject, Observable, of, takeUntil, BehaviorSubject, take } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
-import { createModuleDetailsForm } from 'src/app/forms-schema/forms';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -105,7 +104,7 @@ export class PublishAppComponent implements OnDestroy {
     }
 
     this.moduleDetailsForm?.get('moduleTitle')?.valueChanges.subscribe(value => {
-      this.moduleDetailsForm?.get('moduleURL')?.setValue('https://depa-frontend.pages.dev/appListing/submodules/'+ value.replace(/\s/g, '-').toLowerCase());
+      this.moduleDetailsForm?.get('moduleURL')?.setValue(`${window.location.origin}/appListing/submodules/`+ value.replace(/\s/g, '-').toLowerCase());
       this.moduleDetailsForm?.get('moduleCode')?.setValue(value.replace(/\s/g, '-').toLowerCase())
     })
 
@@ -250,6 +249,9 @@ export class PublishAppComponent implements OnDestroy {
           this.moveNext();
           break;
         case 1:
+          if(this.workflows?.length == 0) {
+            return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
+          }
           if(this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true)) {
             return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
           }
@@ -354,9 +356,11 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   submitNewModule() {
+    const moduleURL = this.f['moduleURL']?.value.split(window.location.origin).pop();
+    const payload = {...this.moduleData.value, url: moduleURL}
     if(this.isEditMode.value == false) {
       this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard.createModule(this.moduleData.value).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      this.dashboard.createModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if(res) {
           this.moveNext();
           setTimeout(() => {
@@ -370,7 +374,7 @@ export class PublishAppComponent implements OnDestroy {
     }
     else {
       this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard.editModule(this.storeModuleID?.value, this.moduleData.value)
+      this.dashboard.editModule(this.storeModuleID?.value, payload)
       .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if(res) {
           this.moveNext();

@@ -36,6 +36,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   isCreatingSubModule = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  domainURL = window.location.origin
 
   constructor(
     private fb: FormBuilder,
@@ -195,9 +196,14 @@ export class AddSubmoduleComponent implements OnDestroy {
       this.subModuleForm.markAllAsTouched();
       return this.notif.displayNotification('Please provide all data', 'Create Submodule', TuiNotification.Warning)
     }
+    if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1).includes(true)) {
+      if(this.workflows.controls.map(val => val.get('condition')?.value).includes('none') === true) {
+        return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
+      }
+    }
     this.isCreatingSubModule.next(true)
     const payload = {
-      url: `https://depa-frontend.pages.dev/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
+      url: `/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
       code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
@@ -236,6 +242,8 @@ export class AddSubmoduleComponent implements OnDestroy {
       this.f['adminUsers']?.value?.length == 0 ||
       this.f['viewOnlyUsers']?.value?.length == 0 ||
       this.workflows?.length == 0 ||
+      this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
+      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||
       Object.values(this.formComponents)[0]?.components?.length == 0
     ) {
       return false

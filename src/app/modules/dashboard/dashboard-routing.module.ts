@@ -5,6 +5,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { ModuleGuard } from '../auth/guards/module.guard';
 import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
+import { UsersListComponent } from './pages/users-list/users-list.component';
 
 const routes: Routes = [
   {
@@ -21,12 +22,17 @@ const routes: Routes = [
       {
         path: 'publish-app',
         component: PublishAppComponent,
-        data: {breadcrumb:'Create new Module'},
+        data: {breadcrumb:'Create/Edit Module'},
       },
       {
         path: 'categories',
         component: CategoriesListComponent,
         data: {breadcrumb:'Categories'},
+      },
+      {
+        path: 'users',
+        component: UsersListComponent,
+        data: {breadcrumb:'Users'},
       },
       {
         path: '',

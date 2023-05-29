@@ -26,6 +26,17 @@ export class FormsService extends ApiService<any> {
     }))
   }
 
+  getFormByKey(key: string): Observable<ApiResponse<any>> {
+    return this.get(`/forms/slug/${key}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Fetch Form', TuiNotification.Error)
+      }
+    }))
+  }
+
   updateForm(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/forms/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

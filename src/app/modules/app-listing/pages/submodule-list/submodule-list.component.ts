@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, map, pluck, switchMap } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';

@@ -35,6 +35,7 @@ export class EditSubmoduleComponent {
   isCreatingSubModule = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  domainUrl = window.location.origin
 
   constructor(
     private fb: FormBuilder,
@@ -188,6 +189,9 @@ export class EditSubmoduleComponent {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Warning)
     }
+    if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      return this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+    }
   }
 
   countUsers(value: number, index: number) {
@@ -207,6 +211,8 @@ export class EditSubmoduleComponent {
       this.f['adminUsers']?.value?.length == 0 ||
       this.f['viewOnlyUsers']?.value?.length == 0 ||
       this.workflows?.length == 0 ||
+      this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
+      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||
       Object.values(this.formComponents)[0]?.components?.length == 0
     ) {
       return false
@@ -217,12 +223,18 @@ export class EditSubmoduleComponent {
   saveSubModule(statusStr?: number) {
     if(this.dataSubmitValidation() == false) {
       this.subModuleForm.markAllAsTouched();
-      return this.notif.displayNotification('Please provide all data', 'Create Submodule', TuiNotification.Warning)
+      return this.notif.displayNotification('Please provide all data', 'Edit Submodule', TuiNotification.Warning)
+    }
+    if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1).includes(true)) {
+      if(this.workflows.controls.map(val => val.get('condition')?.value).includes('none') === true) {
+        return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Edit Submodule', TuiNotification.Warning)
+      }
     }
     this.isCreatingSubModule.next(true)
     const payload = {
+      url: `/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: this.subModuleForm.get('code')?.value,
+      code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       // formIds: this.formComponents,
