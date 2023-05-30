@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 import { WorkflowsRoutingModule } from './workflows-routing.module';
 import { WorkflowsComponent } from './workflows.component';
@@ -14,6 +14,7 @@ import { ViewSubmissionsComponent } from './view-submissions/view-submissions.co
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
+import { EmailSubmissionComponent } from './email-submission/email-submission.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom
     WorkflowsComponent,
     ViewWorkflowComponent,
     ViewSubmissionsComponent,
-    AddSubmissionComponent
+    AddSubmissionComponent,
+    EmailSubmissionComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +41,8 @@ import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom
     TuiTabsModule,
     TableViewComponent,
     TuiPaginationModule,
-    CustomMultiSelectComponent
+    CustomMultiSelectComponent,
+    NgOptimizedImage
   ]
 })
 export class WorkflowsModule { }
