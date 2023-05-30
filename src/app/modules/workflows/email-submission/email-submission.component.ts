@@ -22,7 +22,7 @@ export class EmailSubmissionComponent implements OnDestroy {
         const payload: any = {
           stepId: res['stepId'],
           userId: res['userId'],
-          isApproved: res['isApproved']
+          isApproved: Boolean(res['isApproved'])
         }
         this.userDecision = payload.isApproved
         this.savingDecision.next(true)
