@@ -5,6 +5,7 @@ import { ViewWorkflowComponent } from './view-workflow/view-workflow.component';
 import { ViewSubmissionsComponent } from './view-submissions/view-submissions.component';
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { EmailSubmissionComponent } from './email-submission/email-submission.component';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -13,16 +14,19 @@ const routes: Routes = [
     children:[
       {
         path: 'view-workflow/:id',
+        canActivate: [AuthGuard],
         component: ViewWorkflowComponent,
         data: {breadcrumb:'View Workflow'},
       },
       {
         path: 'view-submissions/:id',
+        canActivate: [AuthGuard],
         component: ViewSubmissionsComponent,
         data: {breadcrumb:'View Submissions'},
       },
       {
         path: 'add-submission/:id',
+        canActivate: [AuthGuard],
         component: AddSubmissionComponent,
         data: {breadcrumb:'Add Submission'},
       },

@@ -32,7 +32,6 @@ const routes: Routes = [
   },
   {
     path: 'workflows',
-    canActivate: [AuthGuard],
     loadChildren: () => import('./modules/workflows/workflows.module').then(m => m.WorkflowsModule)
   }
 ];

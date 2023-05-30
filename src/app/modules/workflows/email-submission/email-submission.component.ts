@@ -17,8 +17,9 @@ export class EmailSubmissionComponent implements OnDestroy {
     this.activatedRoute.queryParams
     .pipe(takeUntil(this.destory$))
     .subscribe(res => {
+      debugger
+      this.savingDecision.next(true)
       if(res) {
-        this.savingDecision.next(true)
         const payload: any = {
           stepId: res['stepId'],
           userId: res['userId'],
@@ -32,6 +33,7 @@ export class EmailSubmissionComponent implements OnDestroy {
         // })
       }
       else {
+        this.savingDecision.next(false)
         this.notif.displayNotification('Something Went Wrong', 'Update Submission', TuiNotification.Error)
       }
     })
