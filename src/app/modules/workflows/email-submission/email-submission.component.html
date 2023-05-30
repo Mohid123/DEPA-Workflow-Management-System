@@ -6,7 +6,7 @@
       </div>
       <div class="my-16 px-4">
         <h2 class="pt-2 text-4xl tracking-widest font-semibold">Hello!</h2>
-        <p class="py-4 text-lg tracking-widest">You have chosen to approve this step. Your decision has been saved and the workflow has been updated. You may now close this page</p>
+        <p class="py-4 text-lg tracking-widest">You have chosen to <span class="text-gray-600 font-semibold">{{userDecision === 'true' ? 'Approve': 'Reject'}}</span> this step. Your decision has been saved and the workflow has been updated. You may now close this page</p>
       </div>
     </div>
   </section>
