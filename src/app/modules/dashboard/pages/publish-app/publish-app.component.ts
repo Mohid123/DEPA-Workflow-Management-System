@@ -319,7 +319,7 @@ export class PublishAppComponent implements OnDestroy {
           reader.readAsDataURL(file);
           reader.onload = (e) => {
             this.file = reader.result;
-            this.file = 'https://images.pexels.com/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            this.file = '/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
           };
       //   }
       // });
