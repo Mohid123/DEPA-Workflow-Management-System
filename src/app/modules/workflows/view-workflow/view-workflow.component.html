@@ -15,7 +15,7 @@
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <formio [readOnly]="checkIfAllApproved() == true || checkIfLoggedInUserIsPartOfActiveUsers() == false || checkIfUserisStillActive(currentUser?.fullName) == false" [options]="{'disableAlerts': true}" (submit)="updateFormData($event)" [submission]="form" [form]="form"></formio>
+          <formio [readOnly]="checkIfAllApproved() == true || checkIfLoggedInUserIsPartOfActiveUsers() == false" [options]="{'disableAlerts': true}" (submit)="updateFormData($event)" [submission]="form" [form]="form"></formio>
         </div>
       </ng-container>
 
