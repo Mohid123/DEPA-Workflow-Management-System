@@ -159,6 +159,8 @@ export class ViewWorkflowComponent implements OnDestroy {
       this.savingDecision.next(false);
       this.remarks.reset();
       this.saveDialogSubscription.forEach(val => val.unsubscribe());
+      this.reject.reset()
+      this.approve.reset()
     })
   }
 
