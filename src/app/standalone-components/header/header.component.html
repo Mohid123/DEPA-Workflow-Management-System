@@ -1,21 +1,21 @@
 <nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <div class="flex flex-wrap items-center justify-between max-w-screen-xl p-4 mx-auto">
     <img ngSrc="../../../assets/depa_logo.svg" width="40" height="37">
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
       <ul class="flex flex-col px-4 py-2 font-medium rounded-lg md:flex-row md:space-x-6">
         <li class="mt-2">
           <a [routerLink]="['/dashboard/home']" routerLinkActive="router-link-active"
-            class="block py-2 px-4 text-white no-underline hover:text-gray-100">Home</a>
+            class="block px-4 py-2 text-white no-underline hover:text-gray-100">Home</a>
         </li>
         <li class="mt-2">
-          <a [routerLink]="['/dashboard/publish-app']" routerLinkActive="router-link-active"
-            class="block py-2 px-4 text-white no-underline hover:text-gray-100">Create Module</a>
+          <a [routerLink]="['/dashboard/create-edit-module']" routerLinkActive="router-link-active"
+            class="block px-4 py-2 text-white no-underline hover:text-gray-100">Create Module</a>
         </li>
         <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
-          <a [routerLink]="['/dashboard/categories']" routerLinkActive="router-link-active" class="block py-2 text-white px-4 no-underline hover:text-gray-100">Categories</a>
+          <a [routerLink]="['/dashboard/categories']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Categories</a>
         </li>
         <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
-          <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block py-2 text-white px-4 no-underline hover:text-gray-100">Users</a>
+          <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Users</a>
         </li>
         <li class="mt-2">
           <a (click)="logoutSession()" class="block py-2 text-white px-4 no-underline bg-[#cf2729] rounded-lg hover:text-gray-100 cursor-pointer">
@@ -35,7 +35,7 @@
   </div>
 </nav>
 
-<div class="fixed flex justify-between w-full z-30 shadow-md border-b-2 border-b-gray-300 bg-white px-5 top-16 mt-8 pt-2">
+<div class="fixed z-30 flex justify-between w-full px-5 pt-2 mt-8 bg-white border-b-2 shadow-md border-b-gray-300 top-16">
   <tui-breadcrumbs size="l"
     class="text-[#9a9ba3] tui-space_bottom-3">
     <ng-container *ngFor="let item of dashboardService.items; let i = index; let last = last">
@@ -52,7 +52,7 @@
     </ng-container>
   </tui-breadcrumbs>
   <p *ngIf="currentRoute !== '/dashboard/home'" (click)="nav.goBack()" class="text-[#9a9ba3] font-semibold px-4 my-2 cursor-pointer">
-    <i class="fa fa-angle-left font-semibold" aria-hidden="true"></i>&nbsp; Go to previous page
+    <i class="font-semibold fa fa-angle-left" aria-hidden="true"></i>&nbsp; Go to previous page
   </p>
 </div>
 

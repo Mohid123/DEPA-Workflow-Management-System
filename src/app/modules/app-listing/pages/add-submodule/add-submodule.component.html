@@ -6,9 +6,9 @@
   <form class="block pt-5" [formGroup]="subModuleForm">
     <div class="my-3">
       <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
-      <div class="input-group mb-3">
+      <div class="mb-3 input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text">{{domainURL}}/appListing/submodule-details/</span>
+          <span class="input-group-text">{{domainURL}}/submodule/submodule-details/</span>
         </div>
         <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
@@ -17,7 +17,7 @@
           control: f['subModuleUrl']
         }"></ng-container>
       </div>
-      <p class="text-xs text-gray-600 mb-2 block">Please provide an endpoint for your submodule</p>
+      <p class="block mb-2 text-xs text-gray-600">Please provide an endpoint for your submodule</p>
     </div>
 
     <div class="my-7">
@@ -237,7 +237,7 @@
         type="button"
         size="m"
         appearance="accent"
-        [routerLink]="['/appListing/submodules', transportService.moduleCode?.value]"
+        [routerLink]="['/submodule/submodules-list', transportService.moduleCode?.value]"
         [queryParams]="{moduleID: transportService.moduleID?.value}"
       >Cancel</button>
     </div>

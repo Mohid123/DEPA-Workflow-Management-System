@@ -6,9 +6,9 @@
   <form class="block pt-5" [formGroup]="subModuleForm">
     <div class="my-3">
       <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
-      <div class="input-group mb-3">
+      <div class="mb-3 input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text">{{domainUrl}}/appListing/submodule-details/</span>
+          <span class="input-group-text">{{domainUrl}}/submodule/submodule-details/</span>
         </div>
         <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
@@ -74,8 +74,8 @@
                   <a (click)="sendFormForEdit(i, form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
                     <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
                   </a>
-                  <a (click)="deleteForm(form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-red-100">
-                    <i class="fa fa-trash fa-2x text-red-500 hover:text-red-600" aria-hidden="true"></i>
+                  <a (click)="deleteForm(form?.id)" class="px-2 py-1 bg-red-100 rounded-md cursor-pointer">
+                    <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
                   </a>
                 </div>
                 <formio [language]="language" [options]="options" [form]="form"></formio>
@@ -162,7 +162,7 @@
         type="button"
         size="m"
         appearance="accent"
-        [routerLink]="['/appListing/submodules', transportService.moduleCode?.value]"
+        [routerLink]="['/submodule/submodules-list', transportService.moduleCode?.value]"
         [queryParams]="{moduleID: transportService.moduleID?.value}"
       >Cancel</button>
     </div>

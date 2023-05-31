@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AppListingComponent } from './app-listing.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
 import { SubmoduleGuard } from '../auth/guards/submodule.guard';
@@ -11,9 +11,10 @@ const routes: Routes = [
   {
     path: '',
     component: AppListingComponent,
+    data: {breadcrumb:'Submodule'},
     children:[
       {
-        path: 'submodules/:name',
+        path: 'submodules-list/:name',
         component: SubmodulesListComponent,
         canActivate: [SubmoduleGuard],
         data: {breadcrumb:'List of Submodules'},
@@ -35,7 +36,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '',
+        redirectTo: 'submodules-list/:name',
         pathMatch: 'full'
       }
     ]

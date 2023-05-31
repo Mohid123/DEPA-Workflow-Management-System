@@ -26,7 +26,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/forms/forms.module').then(m => m.FormsModule)
   },
   {
-    path: 'appListing',
+    path: 'submodule',
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
   },

@@ -35,7 +35,7 @@ export class HomeComponent implements OnDestroy {
     if(moduleID) {
       this.subscription.push(this.dashboard.getModuleByID(moduleID).subscribe((res: any) => {
         if(res) {
-          this.router.navigate(['/dashboard/publish-app'], { queryParams: { id: moduleID } });
+          this.router.navigate(['/dashboard/create-edit-module'], { queryParams: { id: moduleID } });
         }
       }))
     }

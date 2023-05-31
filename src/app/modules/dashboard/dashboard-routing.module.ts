@@ -20,7 +20,7 @@ const routes: Routes = [
         data: {breadcrumb:'Home'},
       },
       {
-        path: 'publish-app',
+        path: 'create-edit-module',
         component: PublishAppComponent,
         data: {breadcrumb:'Create/Edit Module'},
       },
@@ -37,7 +37,7 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: 'home',
-        pathMatch: 'full' 
+        pathMatch: 'full'
       }
     ]
   }
@@ -50,6 +50,6 @@ const routes: Routes = [
 export class DashboardRoutingModule { }
 
 // {
-      //   path: '**', pathMatch: 'full', 
-      //   component: PagenotfoundComponent
-      // },
+//   path: '**', pathMatch: 'full',
+//   component: PagenotfoundComponent
+// },

@@ -66,7 +66,6 @@ export class DashboardService extends ApiService<any> {
     if (children.length === 0) {
       return breadcrumbs;
     }
-
     for (const child of children) {
       const routeURL: string = child.snapshot.url.map(segment => segment.path).join('/');
       if (routeURL !== '') {

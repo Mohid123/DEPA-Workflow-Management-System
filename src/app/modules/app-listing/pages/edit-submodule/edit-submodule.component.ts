@@ -230,7 +230,7 @@ export class EditSubmoduleComponent {
     }
     this.isCreatingSubModule.next(true)
     const payload = {
-      url: `/appListing/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
+      url: `/submodule/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       companyId: this.subModuleForm.get('companyName')?.value,
       code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
@@ -255,7 +255,7 @@ export class EditSubmoduleComponent {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/appListing/submodules', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
+        this.router.navigate(['/submodule/submodules-list', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
       }
       else {
         this.isCreatingSubModule.next(false);

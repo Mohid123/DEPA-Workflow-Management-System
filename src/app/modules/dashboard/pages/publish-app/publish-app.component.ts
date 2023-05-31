@@ -105,7 +105,7 @@ export class PublishAppComponent implements OnDestroy {
     }
 
     this.moduleDetailsForm?.get('moduleTitle')?.valueChanges.subscribe(value => {
-      this.moduleDetailsForm?.get('moduleURL')?.setValue(`${window.location.origin}/appListing/submodules/`+ value.replace(/\s/g, '-').toLowerCase());
+      this.moduleDetailsForm?.get('moduleURL')?.setValue(`${window.location.origin}/submodule/submodules-list/`+ value.replace(/\s/g, '-').toLowerCase());
       this.moduleDetailsForm?.get('moduleCode')?.setValue(value.replace(/\s/g, '-').toLowerCase())
     })
 
