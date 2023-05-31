@@ -35,6 +35,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   savingDecision = new Subject<boolean>();
   approvedUsers: any[] = [];
   activeUsers: any[] = [];
+  formAllowedForEditUsers: any[] = [];
   formDataSubmission: any;
   allApproved: any;
   activeStep: any;
@@ -79,6 +80,18 @@ export class ViewWorkflowComponent implements OnDestroy {
     ).subscribe(data => {
       if(data) {
         this.workflowData = data;
+        this.formAllowedForEditUsers = this.workflowData?.workflowStatus?.map(data => {
+          return {
+            users: data?.activeUsers?.map(val => val?.fullName),
+            status: data?.status
+          }
+        });
+        this.approvedUsers = this.workflowData?.workflowStatus?.map(data => {
+          return {
+            users: data?.approvedUsers?.map(user => user?.fullName),
+            status: data?.status
+          }
+        });
         this.lastApprovalCheck = {
           status: this.workflowData?.approvalLog.at(-1)?.approvalStatus,
           user: this.workflowData?.approvalLog.at(-1)?.performedById?.fullName
@@ -99,7 +112,6 @@ export class ViewWorkflowComponent implements OnDestroy {
             }).filter(val => val)[0]
           }
         });
-        this.approvedUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.approvedUsers)?.map(user => user?.fullName);
         this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
         this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
@@ -150,8 +162,30 @@ export class ViewWorkflowComponent implements OnDestroy {
     })
   }
 
-  checkIfUserIsApproved(value: any): boolean {
-    return this.approvedUsers.includes(value)
+  checkIfUserCanEditForm(): any[] {
+    return this.formAllowedForEditUsers?.map(val => {
+      if(val.users?.includes(this.currentUser?.fullName) && val.status == 'inProgress') {
+        return true
+      }
+      return false
+    })
+  }
+
+  checkIfUserIsInEditUsers(): boolean {
+    return this.checkIfUserCanEditForm().includes(true)
+  }
+
+  checkIfUserIsApproved(value: any): any[] {
+    return this.approvedUsers?.map(val => {
+      if(val.users?.includes(value) && val.status == 'inProgress') {
+        return true
+      }
+      return false
+    })
+  }
+
+  userApprovedCheckResult(): boolean {
+    return this.checkIfUserIsApproved(this.currentUser?.fullName).includes(true)
   }
 
   checkIfUserisStillActive(value: any): boolean {
