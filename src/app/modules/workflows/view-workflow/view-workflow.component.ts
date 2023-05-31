@@ -38,6 +38,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   formDataSubmission: any;
   allApproved: any;
   activeStep: any;
+  lastApprovalCheck: any;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -78,6 +79,10 @@ export class ViewWorkflowComponent implements OnDestroy {
     ).subscribe(data => {
       if(data) {
         this.workflowData = data;
+        this.lastApprovalCheck = {
+          status: this.workflowData?.approvalLog.at(-1)?.approvalStatus,
+          user: this.workflowData?.approvalLog.at(-1)?.performedById?.fullName
+        };
         this.formTabs = this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
           return {
@@ -151,6 +156,10 @@ export class ViewWorkflowComponent implements OnDestroy {
 
   checkIfUserisStillActive(value: any): boolean {
     return this.activeUsers.includes(value)
+  }
+
+  checkIfUserRejected() {
+    return this.lastApprovalCheck?.status == 'rejected' && this.currentUser?.fullName == this.lastApprovalCheck?.user
   }
 
   checkIfLoggedInUserIsPartOfActiveUsers(): boolean {
