@@ -1,6 +1,6 @@
 <nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md">
   <div class="flex flex-wrap items-center justify-between max-w-screen-xl p-4 mx-auto">
-    <img ngSrc="../../../assets/depa_logo.svg" width="40" height="37">
+    <img ngSrc="../../../assets/depa_logo.svg" width="40" height="36">
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
       <ul class="flex flex-col px-4 py-2 font-medium rounded-lg md:flex-row md:space-x-6">
         <li class="mt-2">
@@ -51,9 +51,9 @@
       </ng-container>
     </ng-container>
   </tui-breadcrumbs>
-  <p *ngIf="currentRoute !== '/dashboard/home'" (click)="nav.goBack()" class="text-[#9a9ba3] font-semibold px-4 my-2 cursor-pointer">
+  <!-- <p *ngIf="currentRoute !== '/dashboard/home'" (click)="nav.goBack()" class="text-[#9a9ba3] font-semibold px-4 my-2 cursor-pointer">
     <i class="font-semibold fa fa-angle-left" aria-hidden="true"></i>&nbsp; Go to previous page
-  </p>
+  </p> -->
 </div>
 
 <ng-template #tooltip>

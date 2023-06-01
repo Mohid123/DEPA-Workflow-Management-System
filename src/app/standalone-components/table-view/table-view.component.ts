@@ -11,6 +11,7 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -86,6 +87,7 @@ export class TableViewComponent {
 
   moduleId: string;
   moduleCode: string;
+  currentUser: any;
 
   @Output() emitDeleteEvent = new EventEmitter()
 
@@ -93,8 +95,10 @@ export class TableViewComponent {
     private activatedRoute: ActivatedRoute,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private dashboardService: DashboardService,
-    private transport: DataTransportService
+    private transport: DataTransportService,
+    private auth: AuthService
   ) {
+    this.currentUser = this.auth.currentUserValue
     this.activatedRoute.queryParams.subscribe(val => this.moduleId = val['moduleID']);
     this.activatedRoute.params.subscribe(val => {
       this.transport.moduleCode.next(val['name']);
