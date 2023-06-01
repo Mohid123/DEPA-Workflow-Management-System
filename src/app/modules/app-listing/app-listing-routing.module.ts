@@ -35,6 +35,10 @@ const routes: Routes = [
         data: {breadcrumb:'Submodule Details'},
       },
       {
+        path: 'submissions',
+        loadChildren: () => import('../workflows/workflows.module').then(m => m.WorkflowsModule)
+      },
+      {
         path: '',
         component: AppListingComponent
       }

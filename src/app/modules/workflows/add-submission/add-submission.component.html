@@ -14,7 +14,7 @@
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <formio [form]="form" (submit)="onChange($event, i)"></formio>
+          <formio [options]="options" [form]="form" (change)="onChange($event, i)"></formio>
           <!--[readOnly]="currentUser?.id !== createdByUser"-->
         </div>
       </ng-container>
@@ -23,7 +23,28 @@
   </div>
 
   <!--Submodue workflow-->
-  <div class="mt-12" [formGroup]="workflowForm">
+  <tui-tabs [(activeItemIndex)]="activeItemIndex">
+    <button
+      tuiTab
+    >
+      <tui-svg
+        src="tuiIconEye"
+        class="tui-space_right-2"
+      ></tui-svg>
+      Preview
+    </button>
+    <button
+      tuiTab
+    >
+      <tui-svg
+        src="tuiIconEdit"
+        class="tui-space_right-2"
+      ></tui-svg>
+      Modify Workflow
+    </button>
+  </tui-tabs>
+
+  <div *ngIf="activeItemIndex == 1" class="mt-12" [formGroup]="workflowForm">
     <h4 class="text-lg font-semibold">Modify submodule workflow</h4>
     <ng-container formArrayName="workflows">
       <ng-container *ngFor="let workflow of workflows.controls; let i = index">

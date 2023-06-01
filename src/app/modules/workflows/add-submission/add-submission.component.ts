@@ -25,6 +25,11 @@ export class AddSubmissionComponent implements OnDestroy {
   destroy$ = new Subject();
   currentUser: any;
   createdByUser: any;
+  activeItemIndex: number = 0;
+  options: any = {
+    "disableAlerts": true,
+    "noDefaultSubmitButton": true
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -40,7 +45,6 @@ export class AddSubmissionComponent implements OnDestroy {
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => this.subModuleId = val['id']);
     this.populateData();
-
   }
 
   populateData() {
@@ -113,25 +117,27 @@ export class AddSubmissionComponent implements OnDestroy {
   }
 
   onChange(event: any, index: number) {
-    this.formDataIds = this.subModuleData?.formIds?.map((val: any, i: number) => {
-      if(index === i) {
+    if(event?.data) {
+      this.formDataIds = this.subModuleData?.formIds?.map((val: any, i: number) => {
+        if(index === i) {
+          return {
+            formId: val.id,
+            data: event?.data
+          }
+        }
         return {
           formId: val.id,
-          data: event?.data
+          data: null
         }
+      }).filter(value => value?.data !== null);
+      if(this.formSubmission?.value?.length > 0) {
+        this.formSubmission.next([...this.formSubmission?.value, ...this.formDataIds])
       }
-      return {
-        formId: val.id,
-        data: null
+      else {
+        this.formSubmission.next(this.formDataIds)
       }
-    }).filter(value => value?.data !== null);
-    if(this.formSubmission?.value?.length > 0) {
-      this.formSubmission.next([...this.formSubmission?.value, ...this.formDataIds])
+      console.log(this.formSubmission?.value)
     }
-    else {
-      this.formSubmission.next(this.formDataIds)
-    }
-    console.log(this.formSubmission?.value)
   }
 
   dataSubmitValidation() {

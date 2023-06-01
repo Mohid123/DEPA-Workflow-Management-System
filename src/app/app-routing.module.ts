@@ -28,10 +28,6 @@ const routes: Routes = [
     path: 'submodule',
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
-  },
-  {
-    path: 'workflows',
-    loadChildren: () => import('./modules/workflows/workflows.module').then(m => m.WorkflowsModule)
   }
 ];
 

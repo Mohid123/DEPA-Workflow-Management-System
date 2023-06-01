@@ -2,7 +2,7 @@
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52">
   <div class="flex justify-end mb-7">
     <div class="cursor-pointer">
-      <a [routerLink]="['/workflows/add-submission', submoduleId]"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
+      <a [routerLink]="['/submodule/submissions/add-submission', submoduleId]"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
     </div>
   </div>
   <div class="relative overflow-x-auto rounded-lg shadow-lg">
@@ -48,7 +48,7 @@
                   <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
                 </td>
                 <td class="px-6 py-4">
-                  <a [routerLink]="['/workflows/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                  <a [routerLink]="['/submodule/submissions/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
                   </a>
                 </td>
