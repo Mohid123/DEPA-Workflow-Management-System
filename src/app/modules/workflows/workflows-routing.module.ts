@@ -34,6 +34,11 @@ const routes: Routes = [
       {
         path: 'email-submission',
         component: EmailSubmissionComponent
+      },
+      {
+        path: '',
+        canActivate: [AuthGuard],
+        component: WorkflowsComponent
       }
     ]
   }

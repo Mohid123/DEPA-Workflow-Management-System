@@ -36,8 +36,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'submodules-list/:name',
-        pathMatch: 'full'
+        component: AppListingComponent
       }
     ]
   }
@@ -47,4 +46,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AppListingRoutingModule { }
+export class AppListingRoutingModule {
+}

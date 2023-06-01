@@ -203,11 +203,7 @@ export class AuthService extends ApiService<AuthApiData> {
   }
 
   responseAfterLogout() {
-    removeItem(StorageItem.RefreshToken);
-    removeItem(StorageItem.publishAppValue);
-    removeItem(StorageItem.activeIndex);
-    removeItem(StorageItem.User);
-    removeItem(StorageItem.JwtToken);
+    localStorage.clear()
     this.router.navigate(['/auth/login'], {
       queryParams: {},
     });

@@ -15,7 +15,10 @@ export enum StorageItem {
   publishAppValue = 'App/publish_app_value',
   activeIndex = 'App/active_index',
   subModuleData = 'App/submodule_data',
-  submissionID = 'App/submissionID'
+  submissionID = 'App/submissionID',
+  moduleSlug = 'App/moduleSlug',
+  moduleID = 'App/moduleID',
+  workflowID = 'App/workflowID'
 }
 
 /**
