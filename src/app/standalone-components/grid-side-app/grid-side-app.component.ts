@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Module } from 'src/core/models/module.model';
 import { RouterModule } from '@angular/router';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 /**
  * Right side component to display Module data inside Grid View on the Home Page. Will display when no. of items in the grid are greater than 3
@@ -16,7 +17,11 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridSideAppComponent {
-  constructor(private transport: DataTransportService) {}
+  currentUser: any;
+  
+  constructor(private transport: DataTransportService, private auth: AuthService) {
+    this.currentUser = this.auth.currentUserValue;
+  }
    /**
    * Used to display the relevant data inside the card view
    */

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Module } from 'src/core/models/module.model';
 import { RouterModule } from '@angular/router';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 /**
  * Smaller card component to display Module data inside Grid View on the Home Page.
@@ -16,7 +17,11 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridSmallComponent {
-  constructor(private transport: DataTransportService) {}
+  currentUser: any;
+
+  constructor(private transport: DataTransportService, private auth: AuthService) {
+    this.currentUser = this.auth.currentUserValue;
+  }
   /**
    * Used to display the relevant data inside the card view
    */
