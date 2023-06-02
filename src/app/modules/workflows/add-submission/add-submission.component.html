@@ -14,7 +14,7 @@
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <formio [options]="options" [form]="form" (change)="onChange($event, i)"></formio>
+          <formio [submission]="formValues[activeIndex]" [options]="options" [form]="form" (change)="onChange($event, i)"></formio>
           <!--[readOnly]="currentUser?.id !== createdByUser"-->
         </div>
       </ng-container>
@@ -109,7 +109,7 @@
       type="button"
       size="m"
       appearance="accent"
-      (click)="_location.back()"
+      (click)="cancelSubmission()"
     >
       Cancel
     </button>

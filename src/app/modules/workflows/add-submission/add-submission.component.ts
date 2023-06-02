@@ -20,7 +20,7 @@ export class AddSubmissionComponent implements OnDestroy {
   workflowForm: FormGroup;
   subModuleData: any;
   subModuleId: string;
-  formDataIds: any;
+  formDataIds: any[] = [];
   formSubmission = new BehaviorSubject<Array<any>>([]);
   destroy$ = new Subject();
   currentUser: any;
@@ -30,6 +30,7 @@ export class AddSubmissionComponent implements OnDestroy {
     "disableAlerts": true,
     "noDefaultSubmitButton": true
   }
+  formValues: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -55,7 +56,18 @@ export class AddSubmissionComponent implements OnDestroy {
     ).subscribe((res: any) => {
       if(res) {
         this.subModuleData = res;
-        this.formWithWorkflow = res?.formIds;
+        this.formWithWorkflow = res?.formIds?.map(comp => {
+          return {
+            ...comp,
+            components: comp.components?.map(data => {
+              if(data?.label && data?.label == 'Submit') {
+                data.hidden = true;
+                return data
+              }
+              return data
+            })
+          }
+        })
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.createdByUser = res?.createdBy;
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
@@ -117,26 +129,16 @@ export class AddSubmissionComponent implements OnDestroy {
   }
 
   onChange(event: any, index: number) {
-    if(event?.data) {
-      this.formDataIds = this.subModuleData?.formIds?.map((val: any, i: number) => {
-        if(index === i) {
-          return {
-            formId: val.id,
-            data: event?.data
-          }
-        }
+    if(event?.data && event?.changed) {
+      const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
+      this.formValues[this.activeIndex] = {...event, formId};
+      const finalData = this.formValues?.map(value => {
         return {
-          formId: val.id,
-          data: null
+          formId: value?.formId,
+          data: value?.data
         }
-      }).filter(value => value?.data !== null);
-      if(this.formSubmission?.value?.length > 0) {
-        this.formSubmission.next([...this.formSubmission?.value, ...this.formDataIds])
-      }
-      else {
-        this.formSubmission.next(this.formDataIds)
-      }
-      console.log(this.formSubmission?.value)
+      })
+      this.formSubmission.next(finalData)
     }
   }
 
@@ -156,7 +158,10 @@ export class AddSubmissionComponent implements OnDestroy {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
-      return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
+      return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
+    }
+    if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
+      return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
     }
     const payload: any = {
       subModuleId: this.subModuleId,
@@ -172,7 +177,7 @@ export class AddSubmissionComponent implements OnDestroy {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
-        this.router.navigate(['/workflows/view-submissions', this.subModuleId])
+        this.router.navigate(['/submodule/submissions/view-submissions', this.subModuleId])
       }
     })
   }
@@ -195,6 +200,10 @@ export class AddSubmissionComponent implements OnDestroy {
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
       this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
     }
+  }
+
+  cancelSubmission() {
+    this.router.navigate(['/submodule/submissions/view-submissions', this.subModuleId])
   }
 
   ngOnDestroy(): void {
