@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -219,18 +220,21 @@ export class AddSubmoduleComponent implements OnDestroy {
       const status = statusStr;
       Object.assign(payload, {status})
     }
-    console.log('FINAL PAYLOAD', payload);
     this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if(res) {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/dashboard/home']);
+        this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
       else {
         this.isCreatingSubModule.next(false);
       }
     })
+  }
+
+  cancelSubmodule() {
+    this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
   dataSubmitValidation() {
