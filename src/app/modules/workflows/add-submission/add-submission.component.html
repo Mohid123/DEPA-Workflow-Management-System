@@ -15,7 +15,6 @@
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
           <formio [submission]="formValues[activeIndex]" [options]="options" [form]="form" (change)="onChange($event, i)"></formio>
-          <!--[readOnly]="currentUser?.id !== createdByUser"-->
         </div>
       </ng-container>
 
@@ -31,7 +30,7 @@
         src="tuiIconEye"
         class="tui-space_right-2"
       ></tui-svg>
-      Preview
+      Approval Workflow
     </button>
     <button
       tuiTab
@@ -84,6 +83,43 @@
       (click)="addWorkflowStep()"
     ></button>
   </div>
+
+  <ng-container *ngIf="activeItemIndex == 0">
+    <tui-island
+      size="l"
+      class="w-full my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"
+    >
+      <h4 class="mb-5 text-base font-semibold text-gray-700">Workflow Steps</h4>
+      <tui-carousel
+        [draggable]="true"
+        [itemsCount]="3"
+        [(index)]="carouselIndex"
+      >
+      <ng-container *ngFor="let item of items; let i = index; let last = last">
+        <div *tuiItem class="flex justify-between w-full">
+          <div class="relative w-full px-4 py-4 text-left border border-gray-200 rounded-md bg-gray-50">
+            <p class="mb-2 text-lg font-semibold text-gray-700">Step {{ i + 1}}</p>
+            <ul *ngFor="let approver of item?.approvers" class="px-5">
+              <li class="list-disc">{{approver}}</li>
+            </ul>
+            <div class="absolute top-0 right-0 px-3 py-1 text-sm font-semibold bg-gray-200 rounded-b-none text-slate-700 rounded-r-md">
+              {{item?.condition}}
+            </div>
+          </div>
+          <div class="ml-4 mt-7">
+            <i *ngIf="!last" class="fa fa-long-arrow-right fa-lg" aria-hidden="true"></i>
+          </div>
+        </div>
+      </ng-container>
+      </tui-carousel>
+      <tui-pagination
+        class="my-5 pagination"
+        [length]="items?.length > 2 ? items?.length - 2 : items?.length"
+        size="s"
+        [(index)]="carouselIndex"
+      ></tui-pagination>
+    </tui-island>
+  </ng-container>
 
   <div class="flex justify-end gap-5 mt-8">
     <button

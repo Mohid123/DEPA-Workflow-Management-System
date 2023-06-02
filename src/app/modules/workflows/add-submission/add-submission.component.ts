@@ -7,7 +7,6 @@ import { DashboardService } from '../../dashboard/dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
-import { Location } from '@angular/common';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -31,6 +30,8 @@ export class AddSubmissionComponent implements OnDestroy {
     "noDefaultSubmitButton": true
   }
   formValues: any[] = [];
+  carouselIndex = 0;
+  items: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -39,8 +40,7 @@ export class AddSubmissionComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute,
     private submissionService: WorkflowsService,
     private router: Router,
-    private auth: AuthService,
-    public _location: Location
+    private auth: AuthService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.initWorkflowForm();
@@ -69,6 +69,13 @@ export class AddSubmissionComponent implements OnDestroy {
           }
         })
         this.formTabs = res?.formIds?.map(forms => forms.title);
+        this.items = res?.workFlowId?.stepIds?.map(data => {
+          return {
+            approvers: data?.approverIds?.map(appr => appr?.fullName),
+            condition: data?.condition
+          }
+        });
+        console.log(this.items)
         this.createdByUser = res?.createdBy;
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
           return {
