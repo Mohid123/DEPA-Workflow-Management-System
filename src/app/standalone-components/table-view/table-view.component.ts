@@ -123,6 +123,10 @@ export class TableViewComponent {
     return url.split('/').at(-1)
   }
 
+  checkIfUserisViewOnly(value: any[]): boolean {
+    return value.includes(this.currentUser?.id)
+  }
+
   /**
    *
    * @param {number} index

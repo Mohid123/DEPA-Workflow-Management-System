@@ -9,6 +9,7 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { FormsService } from 'src/app/modules/forms/services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
@@ -220,6 +221,10 @@ export class EditSubmoduleComponent {
     return true
   }
 
+  cancelSubmodule() {
+    this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+  }
+
   saveSubModule(statusStr?: number) {
     if(this.dataSubmitValidation() == false) {
       this.subModuleForm.markAllAsTouched();
@@ -248,14 +253,13 @@ export class EditSubmoduleComponent {
       const status = statusStr;
       Object.assign(payload, {status})
     }
-    console.log('FINAL PAYLOAD', payload);
     this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if(res) {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/submodule/submodules-list', this.transportService.moduleCode?.value], {queryParams: {moduleID: this.transportService.moduleID?.value}});
+        this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
       else {
         this.isCreatingSubModule.next(false);

@@ -12,6 +12,7 @@
           <th class="px-6 py-3 text-sm">Submodule Code</th>
           <th class="px-2 py-3 text-sm">Status</th>
           <th class="px-2 py-3 text-sm">Last Activity By</th>
+          <th class="px-2 py-3 text-sm">Now Pending With</th>
           <th class="px-2 py-3 text-sm">Workflow progress</th>
           <th scope="col" class="px-6 py-3 text-sm">
             Actions
@@ -34,7 +35,10 @@
                 <td class="px-2 py-4">
                   {{showStatus(data?.submissionStatus)}}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-2 py-4">
+                  {{data?.summaryData?.userName || ''}}
+                </td>
+                <td class="px-2 py-4">
                   {{data?.summaryData?.userName || ''}}
                 </td>
                 <td class="flex justify-between px-2 py-4">
@@ -48,7 +52,7 @@
                   <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
                 </td>
                 <td class="px-6 py-4">
-                  <a [routerLink]="['/submodule/submissions/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                  <a *ngIf="checkIfUsersAreActive() == true || currentUser?.role == 'admin' || currentUser?.id == data?.createdBy" [routerLink]="['/submodule/submissions/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
                   </a>
                 </td>

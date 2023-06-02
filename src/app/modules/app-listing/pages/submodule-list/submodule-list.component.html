@@ -3,7 +3,7 @@
   <ng-container *ngIf="(subModuleData | async) as data">
     <p class="text-left font-semibold text-lg mb-5">Title:&nbsp; <span class="text-[#374151]">{{data[0]?.moduleId?.title}}</span> </p>
     <p class="text-left font-semibold text-base">Code:&nbsp; <span class="text-[#374151]">{{data[0]?.moduleId?.code}}</span></p>
-    <app-table-view  (emitDeleteEvent)="itemDeleted($event)" [tableData]="data"></app-table-view>
+    <app-table-view (emitDeleteEvent)="itemDeleted($event)" [tableData]="data"></app-table-view>
   </ng-container>
 </section>
 <app-footer></app-footer>
