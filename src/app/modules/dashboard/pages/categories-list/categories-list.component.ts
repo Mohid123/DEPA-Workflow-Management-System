@@ -14,12 +14,19 @@ export class CategoriesListComponent implements OnDestroy {
   categoryEditControl: FormControl = new FormControl('');
   categoryId: string;
   destroy$ = new Subject();
+  limit: number = 6;
+  page: number = 0;
 
   constructor(
     private dashboard: DashboardService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
-    this.categories = this.dashboard.getAllCategories();
+    this.categories = this.dashboard.getAllCategories(this.limit, this.page);
+  }
+
+  changePage(page: number) {
+    this.page = page;
+    this.categories = this.dashboard.getAllCategories(this.limit, this.page);
   }
 
   editOrAddCategory() {
@@ -28,7 +35,7 @@ export class CategoriesListComponent implements OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
         if(res) {
-          this.categories = this.dashboard.getAllCategories();
+          this.categories = this.dashboard.getAllCategories(this.limit, this.page);
         }
       });
     }
@@ -37,7 +44,7 @@ export class CategoriesListComponent implements OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
         if(res) {
-          this.categories = this.dashboard.getAllCategories();
+          this.categories = this.dashboard.getAllCategories(this.limit, this.page);
         }
       });
     }
@@ -45,7 +52,7 @@ export class CategoriesListComponent implements OnDestroy {
 
   deleteCategory() {
     this.dashboard.deleteCategory(this.categoryId).pipe(takeUntil(this.destroy$))
-    .subscribe(() => this.categories = this.dashboard.getAllCategories())
+    .subscribe(() => this.categories = this.dashboard.getAllCategories(this.limit, this.page))
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {

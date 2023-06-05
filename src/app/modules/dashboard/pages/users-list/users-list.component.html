@@ -43,7 +43,7 @@
           [data]="data"
         >
           <tr
-            *ngFor="let item of data"
+            *ngFor="let item of data?.results"
             tuiTr
           >
             <td
@@ -82,6 +82,18 @@
             </td>
           </tr>
         </tbody>
+        <tfoot class="bg-white">
+          <tr>
+            <td [colSpan]="12" class="py-6 px-3 border border-gray-300">
+              <tui-table-pagination
+                [total]="data?.totalResults"
+                [size]="limit"
+                [page]="page"
+                (pageChange)="changePage($event)"
+              ></tui-table-pagination>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </ng-container>
   </section>

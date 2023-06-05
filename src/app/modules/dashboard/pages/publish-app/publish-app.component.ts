@@ -53,6 +53,9 @@ export class PublishAppComponent implements OnDestroy {
   categories: any;
   isCreatingModule = new Subject<boolean>();
 
+  limit: number = 10;
+  page: number = 0;
+
   workflowForm: FormGroup;
 
   public moduleDetailsForm: FormGroup;
@@ -112,7 +115,7 @@ export class PublishAppComponent implements OnDestroy {
     })
 
     // get all categories
-    this.categories = this.dashboard.getAllCategories()
+    this.categories = this.dashboard.getAllCategories(this.limit, this.page)
   }
 
   initModuleDetailsForm(item?: any) {
@@ -175,7 +178,7 @@ export class PublishAppComponent implements OnDestroy {
     this.dashboard.postNewCategory(data[0]).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       this.category.removeAt(0);
-      this.categories = this.dashboard.getAllCategories();
+      this.categories = this.dashboard.getAllCategories(this.limit, this.page);
     })
   }
 

@@ -135,11 +135,11 @@ export class DashboardService extends ApiService<any> {
   getAllUsersForListing(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
     const params: any = {
       limit: limit,
-      page: page
+      page: page+ 1
     }
     return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        return res.data?.results
+        return res.data
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
@@ -191,17 +191,21 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  getAllCategories(): Observable<ApiResponse<any>> {
+  getAllCategories(limit: number, page: number): Observable<ApiResponse<any>> {
+    const params: any = {
+      limit: limit,
+      page: page+ 1
+    }
     return this.get(`/categories`)
     .pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        const response = res.data?.results?.map((data: any) => {
+        const results = res.data?.results?.map((data: any) => {
           return {
             id: data?.id,
             name: data?.name
           }
         });
-        return response
+        return Object.assign(res?.data, {results: results})
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {

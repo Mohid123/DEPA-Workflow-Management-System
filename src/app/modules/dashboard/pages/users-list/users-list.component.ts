@@ -14,8 +14,8 @@ export class UsersListComponent implements OnDestroy {
   users: Observable<any>;
   userId: string;
   destroy$ = new Subject();
-  limit: number = 10;
-  page: number = 1;
+  limit: number = 6;
+  page: number = 0;
   userForm = userAddForm;
   formData = new BehaviorSubject<any>({isValid: false});
   formSubmission: any;
@@ -25,6 +25,11 @@ export class UsersListComponent implements OnDestroy {
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService) {
       this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
     }
+  
+  changePage(page: number) {
+    this.page = page;
+    this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+  }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
     this.dialogs.open(content, {
