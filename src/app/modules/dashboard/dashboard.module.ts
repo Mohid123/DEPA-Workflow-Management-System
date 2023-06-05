@@ -6,11 +6,11 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
-import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import {TuiTableModule} from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
-import { TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
+import { TuiDataListWrapperModule, TuiInputTagModule, TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
 import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
@@ -48,7 +48,10 @@ import { UsersListComponent } from './pages/users-list/users-list.component';
     GridSideAppComponent,
     CustomMultiSelectComponent,
     FormioModule,
-    TuiTableModule
+    TuiTableModule,
+    TuiInputTagModule,
+    TuiDataListWrapperModule,
+    TuiTextfieldControllerModule
   ]
 })
 export class DashboardModule { }

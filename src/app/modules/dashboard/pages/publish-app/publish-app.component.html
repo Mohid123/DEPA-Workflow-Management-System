@@ -136,7 +136,17 @@
                       <option value="none">NONE</option>
                     </select>
                   </div>
-                  <div class="col-span-2 mt-8">
+                  <div class="col-span-1 mt-8">
+                    <button
+                      tuiIconButton
+                      type="button"
+                      size="s"
+                      appearance="outline"
+                      icon="tuiIconMailLarge"
+                      (click)="openEmailNotifyModal(template)"
+                    ></button>
+                  </div>
+                  <div class="col-span-1 mt-8">
                     <button
                       tuiIconButton
                       type="button"
@@ -222,4 +232,29 @@
       </span>
     </div>
   </ng-container>
+</ng-template>
+
+<ng-template #template let-observer>
+  <p class="text-lg font-semibold text-center">Email Notification Users</p>
+  <p class="mt-3 text-base font-medium text-gray-500">Please specify the users you want to send the notification email to</p>
+  <div class="flex flex-col justify-center my-5">
+    <tui-input-tag
+      class="b-form"
+      [tuiTextfieldLabelOutside]="true"
+    >
+      Start typing to select users...
+      <tui-data-list-wrapper
+        *tuiDataList
+        [items]=""
+      ></tui-data-list-wrapper>
+    </tui-input-tag>
+  </div>
+  <button
+    tuiButton
+    type="button"
+    size="m"
+    (click)="observer.complete()"
+    >
+      Confirm
+    </button>
 </ng-template>

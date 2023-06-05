@@ -1,12 +1,13 @@
-import { Component, ElementRef, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, OnDestroy, ViewChild } from '@angular/core';
 import  { Subject, Observable, of, takeUntil, BehaviorSubject, take } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
-import { TuiNotification } from '@taiga-ui/core';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -65,7 +66,8 @@ export class PublishAppComponent implements OnDestroy {
     private notif: NotificationsService,
     private dashboard: DashboardService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
     //edit module case
     this.dashboard.moduleEditData.pipe(takeUntil(this.destroy$), take(1)).subscribe(val => {
@@ -223,6 +225,13 @@ export class PublishAppComponent implements OnDestroy {
       return this.btn.nativeElement.disabled = true
     }
     return this.btn.nativeElement.disabled = false
+  }
+
+  openEmailNotifyModal(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe()
   }
 
   nextStep(submission?: any): void {

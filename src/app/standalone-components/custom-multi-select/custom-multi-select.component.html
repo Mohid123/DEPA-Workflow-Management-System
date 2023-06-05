@@ -8,7 +8,7 @@
   >
     <ng-container *ngIf="inputFieldArr.length > 0">
       <ng-container *ngFor="let selected of inputFieldArr; let j = index">
-        <option (click)="removeItem(selected)" class="rounded-xl bg-[#6C86E2] text-xs px-3 py-1 h-6 text-white my-1 mx-1 w-auto inline-block" [value]="selected?.id">
+        <option (click)="removeItem(selected)" class="rounded-lg bg-[#6C86E2] text-xs px-3 py-1 h-6 text-white my-1 mx-1 w-auto inline-block" [value]="selected?.id">
           {{selected?.name}} &nbsp; &nbsp; <span>&#10005;</span>
         </option>
       </ng-container>

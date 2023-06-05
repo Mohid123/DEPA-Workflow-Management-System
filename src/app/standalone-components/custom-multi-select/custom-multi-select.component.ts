@@ -137,7 +137,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
     if(!this.customElem.nativeElement.contains(event.target)) {
       const windowHeight = window.innerHeight;
       const boundingRectangle = this.customElem.nativeElement.getBoundingClientRect();
-      if(boundingRectangle.bottom >= windowHeight) {
+      if(boundingRectangle.bottom <= windowHeight) {
         this.open = false;
       }
     }
@@ -159,7 +159,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    */
   selectValueAndPushToInput(user: any, event: any) {
     if(user?.control.value === true && this.inputFieldArr.includes(user)) {
-      this.removeItem(user.name);
+      this.removeItem(user);
       this.checkUsersLength.emit(this.inputFieldArr.length)
       this.approverList.emit(this.inputFieldArr);
     }

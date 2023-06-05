@@ -31,15 +31,7 @@
                   >
                 </filter>
                 </ng-container>
-                <ng-container *ngIf="column === 'Module Name'">
-                  <filter
-                    [filterBy]="column"
-                    [items]="filterMenuModule"
-                    (applyStatus)="sendFilterValue($event)"
-                  >
-                </filter>
-                </ng-container>
-                <ng-container *ngIf="column === 'Submodule Name'">
+                <ng-container *ngIf="column === 'Submodule Code'">
                   <filter
                     [filterBy]="column"
                     [items]="filterMenuSubmodule"
@@ -67,9 +59,6 @@
             <tr class="bg-white border-b border-gray-300">
               <td class="px-6 py-4">
                 {{data?.companyId?.title}}
-              </td>
-              <td class="px-6 py-4">
-                {{data?.moduleId?.title}}
               </td>
               <td class="px-6 py-4">
                 {{data?.code}}
