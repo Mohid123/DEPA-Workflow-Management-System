@@ -1,7 +1,15 @@
 <app-header></app-header>
 <div class="bg_img_main">
   <section class="mt-52 pb-60 mx-auto w-11/12">
-    <div class="flex justify-end mb-5">
+    <div class="flex justify-between mb-5">
+      <div class="w-2/5">
+        <input
+          appTrim
+          class="form-control"
+          placeholder="Search users"
+          [formControl]="searchValue"
+        />
+      </div>
       <div class="cursor-pointer">
         <a (click)="showDialog(template, null)" class="px-4 py-2 rounded-lg bg-[#a58f81] text-white no-underline hover:text-white text-sm">+ Add new user</a>
       </div>

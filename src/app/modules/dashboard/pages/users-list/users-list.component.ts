@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { userAddForm } from 'src/app/forms-schema/forms';
@@ -19,11 +19,21 @@ export class UsersListComponent implements OnDestroy {
   userForm = userAddForm;
   formData = new BehaviorSubject<any>({isValid: false});
   formSubmission: any;
+  searchValue = new FormControl();
 
   constructor(
     private dashboard: DashboardService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService) {
       this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+
+      this.searchValue.valueChanges.pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged(),
+        debounceTime(400),
+        switchMap(searchStr => searchStr == '' ?
+        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page) :
+        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page, searchStr))
+      ).subscribe()
     }
   
   changePage(page: number) {

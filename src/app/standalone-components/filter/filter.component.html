@@ -18,16 +18,31 @@
       <app-search-bar *ngIf="searchEnabled" class="mb-5" (searchStr)="searchTableData($event)"></app-search-bar>
       <ul class="my-3">
         <ng-container *ngFor="let item of items; let i = index; trackBy:trackByFn">
-          <li
-            class="px-2 py-3 my-1 text-sm rounded-lg cursor-pointer"
-            [ngClass]="item.status === 'active' ? 'bg-blue-100 hover:bg-blue-100': 'bg-white hover:bg-gray-100'"
-            (click)="setFilterAndApplyActive({index: i, applyOn: item.name})"
-          >
-          <div class="flex justify-between">
-            <span>{{item.name}}</span>
-            <i [ngClass]="item.icon" aria-hidden="true"></i>
-          </div>
-        </li>
+          <ng-container *ngIf="(item?.name == 'Sort by Latest' || item?.name == 'Sort by Oldest'); else otherFilter">
+            <li
+              *ngIf="showSortCategories == true"
+              class="px-2 py-3 my-1 text-sm rounded-lg cursor-pointer"
+              [ngClass]="item.status === 'active' ? 'bg-blue-100 hover:bg-blue-100': 'bg-white hover:bg-gray-100'"
+              (click)="setFilterAndApplyActive({index: i, sortType: item.name, applyOn: filterBy})"
+            >
+              <div class="flex justify-between">
+                <span>{{item.name}}</span>
+                <i [ngClass]="item.icon" aria-hidden="true"></i>
+              </div>
+            </li>
+          </ng-container>
+          <ng-template #otherFilter>
+            <li
+              class="px-2 py-3 my-1 text-sm rounded-lg cursor-pointer"
+              [ngClass]="item.status === 'active' ? 'bg-blue-100 hover:bg-blue-100': 'bg-white hover:bg-gray-100'"
+              (click)="setFilterAndApplyActive({index: i, sortType: item.name, applyOn: filterBy})"
+            >
+              <div class="flex justify-between">
+                <span>{{item.name}}</span>
+                <i [ngClass]="item.icon" aria-hidden="true"></i>
+              </div>
+            </li>
+          </ng-template>
         </ng-container>
       </ul>
       <div *ngIf="isFilterApplied === true" class="cursor-pointer mt-5 mb-3 text-center">

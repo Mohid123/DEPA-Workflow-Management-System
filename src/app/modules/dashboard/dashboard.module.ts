@@ -21,6 +21,7 @@ import { FormioModule } from '@formio/angular';
 import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
 import { UsersListComponent } from './pages/users-list/users-list.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
+import { TrimDirective } from 'src/core/directives/trim.directive';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { CompaniesComponent } from './pages/companies/companies.component';
     TuiInputTagModule,
     TuiDataListWrapperModule,
     TuiTextfieldControllerModule,
-    TuiTablePaginationModule
+    TuiTablePaginationModule,
+    TrimDirective
   ]
 })
 export class DashboardModule { }

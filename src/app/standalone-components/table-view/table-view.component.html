@@ -26,6 +26,7 @@
                 <ng-container *ngIf="column === 'Company Name'">
                   <filter
                     [filterBy]="column"
+                    [showSortCategories]="false"
                     [items]="filterMenuCompany"
                     (applyStatus)="sendFilterValue($event)"
                   >
@@ -67,7 +68,7 @@
                 {{data?.status === 1 ? 'Published' : 'Draft'}}
               </td>
               <td class="py-4 text-center">
-                <a *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
+                <a [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
                   <i class="fa fa-print fa-lg" aria-hidden="true"></i> Submissions
                 </a>
                 <a *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/edit-submodule', data?.id]" [queryParams]="{moduleID: moduleId, moduleCode: moduleCode}" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">

@@ -88,7 +88,7 @@ export class FilterComponent {
    * @param {any} value
    * @returns void
    */
-  setFilterAndApplyActive(value: {applyOn: string, index: number}) {
+  setFilterAndApplyActive(value: {applyOn: string, sortType: string, index: number}) {
     this.applyStatus.emit(value);
     if(this.items?.some(val => val.name === value.applyOn)) {
       this.items.forEach(val => {
