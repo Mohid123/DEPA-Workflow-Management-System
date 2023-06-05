@@ -78,7 +78,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   getAllCompanies() {
-    this.dashboard.getAllCompanies()
+    this.dashboard.getAllCompanies(10, 0)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       this.companyList = res.results?.map(data => {
         return {

@@ -20,6 +20,7 @@ import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom
 import { FormioModule } from '@formio/angular';
 import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
 import { UsersListComponent } from './pages/users-list/users-list.component';
+import { CompaniesComponent } from './pages/companies/companies.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { UsersListComponent } from './pages/users-list/users-list.component';
     PublishAppComponent,
     GridViewLoaderComponent,
     CategoriesListComponent,
-    UsersListComponent
+    UsersListComponent,
+    CompaniesComponent
   ],
   imports: [
     CommonModule,

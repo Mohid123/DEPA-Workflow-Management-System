@@ -6,6 +6,7 @@ import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { ModuleGuard } from '../auth/guards/module.guard';
 import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
 import { UsersListComponent } from './pages/users-list/users-list.component';
+import { CompaniesComponent } from './pages/companies/companies.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,11 @@ const routes: Routes = [
         path: 'users',
         component: UsersListComponent,
         data: {breadcrumb:'Users'},
+      },
+      {
+        path: 'companies',
+        component: CompaniesComponent,
+        data: {breadcrumb:'Companies'},
       },
       {
         path: '',

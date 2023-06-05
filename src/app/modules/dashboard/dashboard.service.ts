@@ -109,6 +109,8 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  //Users
+
   getAllUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
     const params: any = {
       limit: limit,
@@ -191,6 +193,8 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  // Categories
+
   getAllCategories(limit: number, page: number): Observable<ApiResponse<any>> {
     const params: any = {
       limit: limit,
@@ -253,6 +257,67 @@ export class DashboardService extends ApiService<any> {
       }
     }))
   }
+
+  // Companies
+
+  getAllCompanies(limit: number, page: number): Observable<ApiResponse<any>> {
+    const params: any = {
+      limit: limit,
+      page: page+ 1
+    }
+    return this.get(`/companies`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch data', 'Fetch companies', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
+  addCompany(payload: any): Observable<ApiResponse<any>> {
+    return this.post(`/companies`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('New company added', 'Add company', TuiNotification.Success);
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Add company', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
+  updateCompany(payload: any, companyId: string): Observable<ApiResponse<any>> {
+    return this.patch(`/companies/${companyId}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Company updated', 'Update Company', TuiNotification.Success);
+        return res?.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Company', TuiNotification.Error)
+      }
+    }))
+  }
+
+  deleteCompany(companyId: string): Observable<ApiResponse<any>> {
+    return this.delete(`/companies/${companyId}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Company deleted', 'Delete Company', TuiNotification.Success);
+        return res?.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
+        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Delete Category', TuiNotification.Error)
+      }
+    }))
+  }
+
+  // Modules
 
   createModule(payload: Module): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
@@ -346,33 +411,6 @@ export class DashboardService extends ApiService<any> {
         this.creatingModule.next(false);
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
           return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create SubModule', TuiNotification.Error);
-        }
-      }
-    }))
-  }
-
-  getAllCompanies(): Observable<ApiResponse<any>> {
-    return this.get(`/companies`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        return res.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch data', 'Fetch companies', TuiNotification.Error);
-        }
-      }
-    }))
-  }
-
-  addCompany(payload: any): Observable<ApiResponse<any>> {
-    return this.post(`/companies`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('New company added', 'Add company', TuiNotification.Success);
-        return res.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Add company', TuiNotification.Error);
         }
       }
     }))
