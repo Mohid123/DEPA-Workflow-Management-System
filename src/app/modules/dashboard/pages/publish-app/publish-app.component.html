@@ -6,14 +6,10 @@
       <div class="flex justify-center my-6">
         <tui-tabs tuiMobileTabs [(activeItemIndex)]="activeIndex">
           <ng-container *ngFor="let tab of tabs; let i = index; let last = last; let first = first">
-            <button
-              disabled
-              tuiTab
-              class="text-base font-semibold text-black"
-              [ngClass]="{'mr-10': first, 'ml-10': last, 'mx-10' : !last && !first}"
-            >
-            {{tab.text}}
-          </button>
+            <button disabled tuiTab class="text-base font-semibold text-black"
+              [ngClass]="{'mr-10': first, 'ml-10': last, 'mx-10' : !last && !first}">
+              {{tab.text}}
+            </button>
           </ng-container>
         </tui-tabs>
       </div>
@@ -22,7 +18,8 @@
           <form [formGroup]="moduleDetailsForm">
             <div class="my-3">
               <label class="block pb-1">Module Title <span class="text-xs text-red-400">*</span></label>
-              <input required [ngClass]="f['moduleTitle']?.invalid && f['moduleTitle']?.dirty ? 'is-invalid' : ''" formControlName="moduleTitle" class="form-control" type="text">
+              <input required [ngClass]="f['moduleTitle']?.invalid && f['moduleTitle']?.dirty ? 'is-invalid' : ''"
+                formControlName="moduleTitle" class="form-control" type="text">
               <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
                 validation: 'required',
                 message: 'Module Title is required',
@@ -35,7 +32,9 @@
             </div>
             <div class="my-7">
               <label class="block pb-1">Module Description <span class="text-xs text-red-400">*</span></label>
-              <textarea required [ngClass]="f['moduleDescription']?.invalid && f['moduleDescription']?.dirty ? 'is-invalid' : ''" formControlName="moduleDescription" class="form-control" type="text" rows="4"></textarea>
+              <textarea required
+                [ngClass]="f['moduleDescription']?.invalid && f['moduleDescription']?.dirty ? 'is-invalid' : ''"
+                formControlName="moduleDescription" class="form-control" type="text" rows="4"></textarea>
               <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
                 validation: 'required',
                 message: 'Module Description is required',
@@ -49,8 +48,10 @@
             <div class="my-7">
               <label class="block pb-1">Module Category <span class="text-xs text-red-400">*</span></label>
               <select formControlName="moduleCategory" class="form-control form-select" type="text">
-                <ng-container *ngFor="let cat of (categories | async)">
-                  <option [value]="cat?.id">{{cat?.name}}</option>
+                <ng-container *ngIf="(categories | async) as categories">
+                  <ng-container *ngFor="let cat of categories?.results">
+                    <option [value]="cat?.id">{{cat?.name}}</option>
+                  </ng-container>
                 </ng-container>
               </select>
               <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
@@ -66,50 +67,28 @@
             <!-- add new category-->
             <div class="my-5">
               <ng-container formArrayName="category">
-                <ng-container *ngFor="let categ of category.controls; let i = index; let first = first; let last = last">
+                <ng-container
+                  *ngFor="let categ of category.controls; let i = index; let first = first; let last = last">
                   <div class="w-7/12 px-8" [formGroupName]="i">
                     <div class="flex items-center justify-between w-full gap-2 mb-3">
                       <div class="w-full">
                         <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
-                        <input
-                          class="form-control"
-                          formControlName="title"
-                          type="text"
-                        />
+                        <input class="form-control" formControlName="title" type="text" />
                       </div>
                       <div [ngClass]="first ? 'mt-7': 'mt-0'">
-                        <button
-                          tuiIconButton
-                          type="button"
-                          size="s"
-                          appearance="secondary-destructive"
-                          icon="tuiIconTrash2Large"
-                          (click)="removeCategory(i)"
-                        ></button>
+                        <button tuiIconButton type="button" size="s" appearance="secondary-destructive"
+                          icon="tuiIconTrash2Large" (click)="removeCategory(i)"></button>
                       </div>
                     </div>
                     <div class="flex justify-end">
-                      <button
-                        *ngIf="last"
-                        tuiButton
-                        type="button"
-                        class="mb-3"
-                        size="m"
-                        (click)="submitNewCategory()"
-                      >Submit</button>
+                      <button *ngIf="last" tuiButton type="button" class="mb-3" size="m"
+                        (click)="submitNewCategory()">Submit</button>
                     </div>
                   </div>
                 </ng-container>
               </ng-container>
-              <button
-                *ngIf="category?.length < 1"
-                tuiIconButton
-                type="button"
-                size="m"
-                appearance="secondary"
-                icon="tuiIconPlusLarge"
-                (click)="addCategory()"
-              ></button>
+              <button *ngIf="category?.length < 1" tuiIconButton type="button" size="m" appearance="secondary"
+                icon="tuiIconPlusLarge" (click)="addCategory()"></button>
             </div>
 
             <div class="flex justify-end mt-5">
@@ -126,65 +105,52 @@
                 <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
                   <div class="col-span-5">
                     <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
-                    <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+                    <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds"
+                      (approverList)="getApproverList($event, i)"></custom-multi-select>
                   </div>
                   <div class="col-span-5">
-                    <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
-                    <select (change)="validateSelection(i)" formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                    <label for="conditionSelect" class="block pb-1">Condition <span
+                        class="text-xs text-red-400">*</span></label>
+                    <select (change)="validateSelection(i)" formControlName="condition"
+                      class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
                       <option value="and">AND</option>
                       <option value="or">OR</option>
                       <option value="none">NONE</option>
                     </select>
                   </div>
                   <div class="col-span-1 mt-8">
-                    <button
-                      tuiIconButton
-                      type="button"
-                      size="s"
-                      appearance="outline"
-                      icon="tuiIconMailLarge"
-                      (click)="openEmailNotifyModal(template)"
-                    ></button>
+                    <tui-badged-content [contentTop]="workflows.at(i).get('emailNotifyTo')?.value?.length" [colorTop]="'green'">
+                      <button tuiIconButton type="button" size="s" appearance="outline" icon="tuiIconMailLarge"
+                        (click)="openEmailNotifyModal(template, workflows, i);"></button>
+                    </tui-badged-content>
                   </div>
                   <div class="col-span-1 mt-8">
-                    <button
-                      tuiIconButton
-                      type="button"
-                      size="s"
-                      appearance="secondary-destructive"
-                      icon="tuiIconTrash2Large"
-                      (click)="removeWorkflowStep(i)"
-                    ></button>
+                    <button tuiIconButton type="button" size="s" appearance="secondary-destructive"
+                      icon="tuiIconTrash2Large" (click)="removeWorkflowStep(i)"></button>
                   </div>
                 </div>
               </ng-container>
             </ng-container>
-            <button
-              tuiIconButton
-              type="button"
-              size="m"
-              appearance="primary"
-              icon="tuiIconPlusLarge"
-              (click)="addWorkflowStep()"
-            ></button>
+            <button tuiIconButton type="button" size="m" appearance="primary" icon="tuiIconPlusLarge"
+              (click)="addWorkflowStep()"></button>
 
             <div class="flex justify-end gap-5 mt-5">
-              <button (click)="previousStep()" type="button" class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
-              <button #btn (click)="nextStep()" type="button" class="btn btn-primary">Proceed to Module Graphics</button>
+              <button (click)="previousStep()" type="button"
+                class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
+              <button #btn (click)="nextStep()" type="button" class="btn btn-primary">Proceed to Module
+                Graphics</button>
             </div>
           </div>
         </ng-container>
 
         <ng-container *ngIf="activeIndex == 2">
-          <label (change)="onFileSelect($event)" for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 mt-10 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-            <tui-loader
-              [inheritColor]="true"
-              [size]="'l'"
-              [showLoader]="false"
-              [overlay]="true"
-            >
+          <label (change)="onFileSelect($event)" for="dropzone-file"
+            class="flex flex-col items-center justify-center w-full h-64 mt-10 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+            <tui-loader [inheritColor]="true" [size]="'l'" [showLoader]="false" [overlay]="true">
               <div *ngIf="file" class="flex justify-center">
-                <img [src]="'https://images.pexels.com/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'" alt="app_icon" width="200" height="200" class="rounded-md">
+                <img
+                  [src]="'https://images.pexels.com/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
+                  alt="app_icon" width="200" height="200" class="rounded-md">
               </div>
               <div *ngIf="!file" class="flex justify-start">
                 <div class="mx-8">
@@ -204,7 +170,8 @@
           </label>
 
           <div class="flex justify-end gap-5 mt-5">
-            <button (click)="previousStep()" type="button" class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
+            <button (click)="previousStep()" type="button"
+              class="px-4 py-2 text-base font-medium border border-gray-400 rounded-md bg-gray-50">Back</button>
             <button (click)="nextStep()" type="button" class="btn btn-primary">
               {{(isCreatingModule | async) ? 'Please wait...' : 'Publish Module'}}
             </button>
@@ -236,25 +203,15 @@
 
 <ng-template #template let-observer>
   <p class="text-lg font-semibold text-center">Email Notification Users</p>
-  <p class="mt-3 text-base font-medium text-gray-500">Please specify the users you want to send the notification email to</p>
+  <p class="mt-3 text-base font-medium text-gray-500">Please specify the users you want to send the notification email
+    to</p>
   <div class="flex flex-col justify-center my-5">
-    <tui-input-tag
-      class="b-form"
-      [tuiTextfieldLabelOutside]="true"
-    >
-      Start typing to select users...
-      <tui-data-list-wrapper
-        *tuiDataList
-        [items]=""
-      ></tui-data-list-wrapper>
+    <tui-input-tag [formControl]="currentFieldArray.controls[activeEmailIndex]?.controls['emailNotifyTo']" class="b-form" [tuiTextfieldLabelOutside]="true">
+      Type to search and press Enter to select...
+      <tui-data-list-wrapper *tuiDataList [items]=""></tui-data-list-wrapper>
     </tui-input-tag>
   </div>
-  <button
-    tuiButton
-    type="button"
-    size="m"
-    (click)="observer.complete()"
-    >
-      Confirm
-    </button>
+  <button tuiButton type="button" size="m" (click)="saveEmailNotifyUsers(); observer.complete()">
+    Confirm
+  </button>
 </ng-template>

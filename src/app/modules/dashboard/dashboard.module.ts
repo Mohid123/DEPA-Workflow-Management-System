@@ -10,7 +10,7 @@ import { TuiButtonModule, TuiLoaderModule, TuiTextfieldControllerModule } from '
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import {TuiTableModule, TuiTablePaginationModule} from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
-import { TuiDataListWrapperModule, TuiInputTagModule, TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
+import { TuiBadgedContentModule, TuiDataListWrapperModule, TuiInputTagModule, TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
 import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
@@ -56,7 +56,8 @@ import { TrimDirective } from 'src/core/directives/trim.directive';
     TuiDataListWrapperModule,
     TuiTextfieldControllerModule,
     TuiTablePaginationModule,
-    TrimDirective
+    TrimDirective,
+    TuiBadgedContentModule
   ]
 })
 export class DashboardModule { }

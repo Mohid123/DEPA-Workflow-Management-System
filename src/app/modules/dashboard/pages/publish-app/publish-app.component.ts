@@ -4,7 +4,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {TUI_ARROW} from '@taiga-ui/kit';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
@@ -50,19 +50,18 @@ export class PublishAppComponent implements OnDestroy {
     'ANY'
   ];
 
-  categories: any;
+  categories: Observable<any>;
   isCreatingModule = new Subject<boolean>();
-
   limit: number = 10;
   page: number = 0;
-
   workflowForm: FormGroup;
-
   public moduleDetailsForm: FormGroup;
   categoryDataForFormIOSelect = new BehaviorSubject<any>(null);
   isEditMode = new BehaviorSubject(false);
   storeModuleID = new BehaviorSubject<any>('');
   @ViewChild('btn') btn: ElementRef;
+  currentFieldArray: any;
+  activeEmailIndex: number
 
   constructor(
     private fb: FormBuilder,
@@ -129,6 +128,10 @@ export class PublishAppComponent implements OnDestroy {
     })
   }
 
+  saveEmailNotifyUsers() {
+    console.log(this.workflows.value)
+  }
+
   get category() {
     return this.f["category"] as FormArray;
   }
@@ -148,10 +151,11 @@ export class PublishAppComponent implements OnDestroy {
     if(item?.steps) {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array(
-          item?.steps?.map((val: { condition: any; approverIds: any; id?: any }) => {
+          item?.steps?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; id?: any }) => {
             return this.fb.group({
               condition: [val.condition, Validators.required],
               approverIds: [val.approverIds, Validators.required],
+              emailNotifyTo: [val.emailNotifyTo, Validators.required],
               id: [val.id || undefined]
             })
           }))
@@ -162,7 +166,8 @@ export class PublishAppComponent implements OnDestroy {
         workflows: this.fb.array([
           this.fb.group({
             condition: ['', Validators.required],
-            approverIds: [[], Validators.required]
+            approverIds: [[], Validators.required],
+            emailNotifyTo: [[], Validators.required]
           })
         ])
       })
@@ -193,7 +198,8 @@ export class PublishAppComponent implements OnDestroy {
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       condition: ['', Validators.required],
-      approverIds: [[], Validators.required]
+      approverIds: [[], Validators.required],
+      emailNotifyTo: [[], Validators.required]
     });
     this.workflows.push(workflowStepForm);
   }
@@ -230,7 +236,9 @@ export class PublishAppComponent implements OnDestroy {
     return this.btn.nativeElement.disabled = false
   }
 
-  openEmailNotifyModal(content: PolymorpheusContent<TuiDialogContext>): void {
+  openEmailNotifyModal(content: PolymorpheusContent<TuiDialogContext>, fieldArray: FormArray, index: number): void {
+    this.activeEmailIndex = index;
+    this.currentFieldArray = fieldArray;
     this.dialogs.open(content, {
       dismissible: true,
       closeable: true
@@ -275,7 +283,8 @@ export class PublishAppComponent implements OnDestroy {
             const defaultFlow = this.workflows?.value?.map(data => {
               return {
                 approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
-                condition: data?.condition
+                condition: data?.condition,
+                emailNotifyTo: data?.emailNotifyTo
               }
             })
             this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
@@ -285,6 +294,7 @@ export class PublishAppComponent implements OnDestroy {
               return {
                 approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
                 condition: data?.condition,
+                emailNotifyTo: data?.emailNotifyTo,
                 id: data?.id ? data?.id : undefined
               }
             })
