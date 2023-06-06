@@ -3,6 +3,9 @@
   <app-grid-view-loader *ngIf="!(dashboardApps | async); else dashboardapps"></app-grid-view-loader>
   <ng-template #dashboardapps>
     <section class="grid w-11/12 grid-cols-12 gap-4 mx-auto mt-52 pb-60">
+      <ng-container *ngIf="(dashboardApps | async)?.length == 0">
+        <p class="col-span-12 my-8 text-base font-semibold text-center">There are currently no modules. Add your first Module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/create-edit-module">here</a> </p>
+      </ng-container>
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
         <p class="col-span-12 mb-3 text-lg font-semibold" [ngClass]="!firstItem ? 'mt-12': 'mt-0'">{{app.name}}</p>
         <ng-container *ngIf="app.modules.length == 0; else showApps">

@@ -1,17 +1,49 @@
-import { Component, ElementRef, EventEmitter, Inject, OnDestroy, ViewChild } from '@angular/core';
-import  { Subject, Observable, of, takeUntil, BehaviorSubject, take } from 'rxjs';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
+import {
+  Subject,
+  Observable,
+  of,
+  takeUntil,
+  BehaviorSubject,
+  take,
+  switchMap,
+  Subscription,
+} from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { setItem, StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
-import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import {TUI_ARROW} from '@taiga-ui/kit';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  setItem,
+  StorageItem,
+  getItem,
+  removeItem,
+} from 'src/core/utils/local-storage.utils';
+import {
+  TuiDialogContext,
+  TuiDialogService,
+  TuiNotification,
+} from '@taiga-ui/core';
+import { TUI_ARROW } from '@taiga-ui/kit';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   templateUrl: './publish-app.component.html',
-  styleUrls: ['./publish-app.component.scss']
+  styleUrls: ['./publish-app.component.scss'],
 })
 export class PublishAppComponent implements OnDestroy {
   destroy$ = new Subject();
@@ -24,17 +56,17 @@ export class PublishAppComponent implements OnDestroy {
   readonly arrow = TUI_ARROW;
   readonly tabs = [
     {
-      text: 'Module Details'
+      text: 'Module Details',
     },
     {
-      text: 'Default Workflow'
+      text: 'Default Workflow',
     },
     {
-      text: 'Module Graphics'
+      text: 'Module Graphics',
     },
     {
-      text: 'Published'
-    }
+      text: 'Published',
+    },
   ];
   readonly categoryOptions = [
     'Human Resources',
@@ -42,13 +74,9 @@ export class PublishAppComponent implements OnDestroy {
     'Games',
     'E-Commerce',
     'Finance',
-    'Management'
+    'Management',
   ];
-  readonly conditions = [
-    'OR',
-    'AND',
-    'ANY'
-  ];
+  readonly conditions = ['OR', 'AND', 'ANY'];
 
   categories: Observable<any>;
   isCreatingModule = new Subject<boolean>();
@@ -61,7 +89,10 @@ export class PublishAppComponent implements OnDestroy {
   storeModuleID = new BehaviorSubject<any>('');
   @ViewChild('btn') btn: ElementRef;
   currentFieldArray: any;
-  activeEmailIndex: number
+  activeEmailIndex: number;
+  userListForEmail: any[] = [];
+  private readonly search$ = new Subject<string>();
+  saveDialogSubscription: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -72,73 +103,133 @@ export class PublishAppComponent implements OnDestroy {
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
     //edit module case
-    this.dashboard.moduleEditData.pipe(takeUntil(this.destroy$), take(1)).subscribe(val => {
-      if(val) {
-        const category = {
-          value: val.categoryId?.id,
-          label: val.categoryId?.name
-        };
-        const stepsArr = val?.workFlowId?.stepIds?.map(data => {
-          return {
-            id: data?.id,
-            approverIds: data?.approverIds?.map(ids => ids.id),
-            condition: data?.condition
-          }
-        });
-        const workFlow = val?.workFlowId?.id;
-        this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-          this.storeModuleID.next(val['id'])
-        });
-        const url = `${window.location.origin}${val?.url}`
-        const editableValue = Object.assign(val, {categoryId: category, workFlowId: workFlow, steps: stepsArr, url: url});
-        setItem(StorageItem.publishAppValue, editableValue);
-        this.isEditMode.next(true);
-      }
-    });
+    this.dashboard.moduleEditData
+      .pipe(takeUntil(this.destroy$), take(1))
+      .subscribe((val) => {
+        if (val) {
+          const category = {
+            value: val.categoryId?.id,
+            label: val.categoryId?.name,
+          };
+          const stepsArr = val?.workFlowId?.stepIds?.map((data) => {
+            return {
+              id: data?.id,
+              approverIds: data?.approverIds?.map((ids) => ids.id),
+              condition: data?.condition,
+            };
+          });
+          const workFlow = val?.workFlowId?.id;
+          this.activatedRoute.queryParams
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((val) => {
+              this.storeModuleID.next(val['id']);
+            });
+          const url = `${window.location.origin}${val?.url}`;
+          const editableValue = Object.assign(val, {
+            categoryId: category,
+            workFlowId: workFlow,
+            steps: stepsArr,
+            url: url,
+          });
+          setItem(StorageItem.publishAppValue, editableValue);
+          this.isEditMode.next(true);
+        }
+      });
 
     this.localStorageApp = getItem(StorageItem.publishAppValue);
-    if(this.localStorageApp) {
+    if (this.localStorageApp) {
       this.initWorkflowForm(this.localStorageApp);
       this.initModuleDetailsForm(this.localStorageApp);
       this.moduleData.next(this.localStorageApp);
       this.file = this.localStorageApp?.image;
-    }
-    else {
+    } else {
       this.initWorkflowForm();
-      this.initModuleDetailsForm()
+      this.initModuleDetailsForm();
     }
 
-    this.moduleDetailsForm?.get('moduleTitle')?.valueChanges.subscribe(value => {
-      this.moduleDetailsForm?.get('moduleURL')?.setValue(`${window.location.origin}/submodule/submodules-list/`+ value.replace(/\s/g, '-').toLowerCase());
-      this.moduleDetailsForm?.get('moduleCode')?.setValue(value.replace(/\s/g, '-').toLowerCase())
-    })
+    this.moduleDetailsForm
+      ?.get('moduleTitle')
+      ?.valueChanges.subscribe((value) => {
+        this.moduleDetailsForm
+          ?.get('moduleURL')
+          ?.setValue(
+            `${window.location.origin}/submodule/submodules-list/` +
+              value.replace(/\s/g, '-').toLowerCase()
+          );
+        this.moduleDetailsForm
+          ?.get('moduleCode')
+          ?.setValue(value.replace(/\s/g, '-').toLowerCase());
+      });
 
     // get all categories
-    this.categories = this.dashboard.getAllCategories(this.limit, this.page)
+    this.categories = this.dashboard.getAllCategories(this.limit, this.page);
+
+    // searchUsers
+    this.search$.pipe(
+      switchMap(search =>
+        this.dashboard
+          .getAllUsersForListing(this.limit, this.page, search)
+      )
+    ).subscribe((res: any) => {
+      if (res) {
+        this.userListForEmail = res?.results?.map((data) => data?.email);
+      }
+    });
+
+    // get users for email search
+    this.dashboard
+      .getAllUsersForListing(this.limit, this.page)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if (res) {
+          this.userListForEmail = res?.results?.map((data) => data?.email);
+        }
+      });
+  }
+
+  onSearchChange(search: string) {
+    this.search$.next(search);
+  }
+
+  validateEmails() {
+    let emails = this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.value;
+    emails = emails.map(element => {
+      if(!/\S+@\S+\.\S+/.test(element)) {
+        return false
+      }
+      return true
+    });
+    if(emails.includes(false)) {
+      this.notif.displayNotification('Please provide valid email addresses', 'Email Notify', TuiNotification.Warning)
+    }
+    else {
+      this.saveDialogSubscription.forEach(val => val.unsubscribe())
+    }
+  }
+
+  cancelEmailNotify() {
+    this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.setValue([]);
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
   initModuleDetailsForm(item?: any) {
     this.moduleDetailsForm = this.fb.group({
       moduleTitle: [item?.title || null, Validators.required],
-      moduleURL: [{value: item?.url || null, disabled: true}],
+      moduleURL: [{ value: item?.url || null, disabled: true }],
       moduleDescription: [item?.description || null, Validators.required],
-      moduleCode: [{value: item?.code || null, disabled: true}],
+      moduleCode: [{ value: item?.code || null, disabled: true }],
       moduleCategory: [item?.categoryId?.value || null, Validators.required],
       category: this.fb.array([]),
-    })
-  }
-
-  saveEmailNotifyUsers() {
-    console.log(this.workflows.value)
+    });
   }
 
   get category() {
-    return this.f["category"] as FormArray;
+    return this.f['category'] as FormArray;
   }
 
   addCategory() {
     const companyForm = this.fb.group({
-      title: ['', Validators.required]
+      title: ['', Validators.required],
     });
     this.category.push(companyForm);
   }
@@ -148,58 +239,70 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   initWorkflowForm(item?: any) {
-    if(item?.steps) {
+    if (item?.steps) {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array(
-          item?.steps?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; id?: any }) => {
-            return this.fb.group({
-              condition: [val.condition, Validators.required],
-              approverIds: [val.approverIds, Validators.required],
-              emailNotifyTo: [val.emailNotifyTo, Validators.required],
-              id: [val.id || undefined]
-            })
-          }))
-        })
-    }
-    else {
+          item?.steps?.map(
+            (val: {
+              condition: any;
+              approverIds: any;
+              emailNotifyTo: any;
+              id?: any;
+            }) => {
+              return this.fb.group({
+                condition: [val.condition, Validators.required],
+                approverIds: [val.approverIds, Validators.required],
+                emailNotifyTo: [val.emailNotifyTo, Validators.required],
+                id: [val.id || undefined],
+              });
+            }
+          )
+        ),
+      });
+    } else {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array([
           this.fb.group({
             condition: ['', Validators.required],
             approverIds: [[], Validators.required],
-            emailNotifyTo: [[], Validators.required]
-          })
-        ])
-      })
+            emailNotifyTo: [[], Validators.required],
+          }),
+        ]),
+      });
     }
   }
 
   submitNewCategory() {
-    const data = this.f['category']?.value?.map(val => {
+    const data = this.f['category']?.value?.map((val) => {
       return {
-        name: val.title
-      }
+        name: val.title,
+      };
     });
-    this.dashboard.postNewCategory(data[0]).pipe(takeUntil(this.destroy$))
-    .subscribe(res => {
-      this.category.removeAt(0);
-      this.categories = this.dashboard.getAllCategories(this.limit, this.page);
-    })
+    this.dashboard
+      .postNewCategory(data[0])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.category.removeAt(0);
+        this.categories = this.dashboard.getAllCategories(
+          this.limit,
+          this.page
+        );
+      });
   }
 
   get f() {
-    return this.moduleDetailsForm.controls
+    return this.moduleDetailsForm.controls;
   }
 
   get workflows() {
-    return this.workflowForm.controls['workflows'] as FormArray
+    return this.workflowForm.controls['workflows'] as FormArray;
   }
 
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       condition: ['', Validators.required],
       approverIds: [[], Validators.required],
-      emailNotifyTo: [[], Validators.required]
+      emailNotifyTo: [[], Validators.required],
     });
     this.workflows.push(workflowStepForm);
   }
@@ -213,120 +316,192 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   countUsers(value: number, index: number) {
-    if(value < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
-      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+    if (value < 2) {
+      this.workflows.at(index)?.get('condition')?.setValue('none');
+      this.notif.displayNotification(
+        'Default condition of "None" will be used if the number of approvers is less than 2',
+        'Create Module',
+        TuiNotification.Warning
+      );
     }
-    if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
-      return this.btn.nativeElement.disabled = true
+    if (
+      value >= 2 &&
+      this.workflows.at(index)?.get('condition')?.value == 'none'
+    ) {
+      this.notif.displayNotification(
+        'Please select either AND or OR as the condition',
+        'Create Module',
+        TuiNotification.Warning
+      );
+      return (this.btn.nativeElement.disabled = true);
     }
-    return this.btn.nativeElement.disabled = false
+    return (this.btn.nativeElement.disabled = false);
   }
 
   validateSelection(index: number) {
-    if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
-      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning);
+    if (this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
+      this.workflows.at(index)?.get('condition')?.setValue('none');
+      this.notif.displayNotification(
+        'Default condition of "None" will be used if the number of approvers is less than 2',
+        'Create Module',
+        TuiNotification.Warning
+      );
     }
-    if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
-      return this.btn.nativeElement.disabled = true
+    if (
+      this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 &&
+      this.workflows.at(index)?.get('condition')?.value == 'none'
+    ) {
+      this.notif.displayNotification(
+        'Please select either AND or OR as the condition',
+        'Create Module',
+        TuiNotification.Warning
+      );
+      return (this.btn.nativeElement.disabled = true);
     }
-    return this.btn.nativeElement.disabled = false
+    return (this.btn.nativeElement.disabled = false);
   }
 
-  openEmailNotifyModal(content: PolymorpheusContent<TuiDialogContext>, fieldArray: FormArray, index: number): void {
+  openEmailNotifyModal(
+    content: PolymorpheusContent<TuiDialogContext>,
+    fieldArray: FormArray,
+    index: number
+  ): void {
     this.activeEmailIndex = index;
     this.currentFieldArray = fieldArray;
-    this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
-    }).subscribe()
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+      })
+      .subscribe());
   }
 
   nextStep(submission?: any): void {
-    if(this.activeIndex !== 3) {
-      switch(this.activeIndex) {
+    if (this.activeIndex !== 3) {
+      switch (this.activeIndex) {
         case 0:
-          if(this.f['moduleTitle']?.invalid || this.f['moduleDescription']?.invalid || this.f['moduleCategory']?.invalid) {
-            return this.notif.displayNotification('Please fill in all fields', 'Create Module', TuiNotification.Warning);
+          if (
+            this.f['moduleTitle']?.invalid ||
+            this.f['moduleDescription']?.invalid ||
+            this.f['moduleCategory']?.invalid
+          ) {
+            return this.notif.displayNotification(
+              'Please fill in all fields',
+              'Create Module',
+              TuiNotification.Warning
+            );
           }
           const moduleDetails = {
             categoryId: this.f['moduleCategory']?.value,
             title: this.f['moduleTitle']?.value,
             description: this.f['moduleDescription']?.value,
             url: this.f['moduleURL']?.value,
-            code: this.f['moduleCode']?.value
-          }
-          if(this.isEditMode.value == true) {
+            code: this.f['moduleCode']?.value,
+          };
+          if (this.isEditMode.value == true) {
             const catId = this.localStorageApp?.categoryId?.value;
             const workFlowId = this.localStorageApp?.workFlowId;
             const steps = this.localStorageApp?.steps;
-            Object.assign(moduleDetails, {workFlowId, categoryId: catId, steps})
+            Object.assign(moduleDetails, {
+              workFlowId,
+              categoryId: catId,
+              steps,
+            });
           }
-          setItem(StorageItem.publishAppValue, moduleDetails)
+          setItem(StorageItem.publishAppValue, moduleDetails);
           this.moduleData.next(moduleDetails);
           this.moveNext();
           break;
         case 1:
-          if(this.workflows?.length == 0) {
-            return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
+          if (this.workflows?.length == 0) {
+            return this.notif.displayNotification(
+              'Please complete the default workflow',
+              'Create Module',
+              TuiNotification.Warning
+            );
           }
-          if(this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true)) {
-            return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
+          if (
+            this.workflows.controls
+              .map((val) => val.get('approverIds')?.value.length == 0)
+              .includes(true)
+          ) {
+            return this.notif.displayNotification(
+              'Please complete the default workflow',
+              'Create Module',
+              TuiNotification.Warning
+            );
           }
-          if(this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true) {
-            return this.notif.displayNotification('Please complete the default workflow', 'Create Module', TuiNotification.Warning);
+          if (
+            this.workflows.controls
+              .map((val) => val.get('condition')?.value)
+              .includes('') === true
+          ) {
+            return this.notif.displayNotification(
+              'Please complete the default workflow',
+              'Create Module',
+              TuiNotification.Warning
+            );
           }
-          if(this.isEditMode.value == false) {
-            const defaultFlow = this.workflows?.value?.map(data => {
+          if (this.isEditMode.value == false) {
+            const defaultFlow = this.workflows?.value?.map((data) => {
               return {
-                approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
-                condition: data?.condition,
-                emailNotifyTo: data?.emailNotifyTo
-              }
-            })
-            this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
-          }
-          else {
-            const newSteps = this.workflows?.value?.map(data => {
-              return {
-                approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
+                approverIds: data?.approverIds?.map((ids) =>
+                  ids.id ? ids.id : ids
+                ),
                 condition: data?.condition,
                 emailNotifyTo: data?.emailNotifyTo,
-                id: data?.id ? data?.id : undefined
-              }
-            })
+              };
+            });
+            this.moduleData.next({
+              ...this.moduleData?.value,
+              steps: defaultFlow,
+            });
+          } else {
+            const newSteps = this.workflows?.value?.map((data) => {
+              return {
+                approverIds: data?.approverIds?.map((ids) =>
+                  ids.id ? ids.id : ids
+                ),
+                condition: data?.condition,
+                emailNotifyTo: data?.emailNotifyTo,
+                id: data?.id ? data?.id : undefined,
+              };
+            });
             const defaultFlow = newSteps;
-            this.moduleData.next({...this.moduleData?.value, steps: defaultFlow});
+            this.moduleData.next({
+              ...this.moduleData?.value,
+              steps: defaultFlow,
+            });
           }
           setItem(StorageItem.publishAppValue, this.moduleData?.value);
-          this.moveNext()
+          this.moveNext();
           break;
         case 2:
-          if(!this.file) {
-            return this.notif.displayNotification('Please provide a valid image for your module', 'Create Module', TuiNotification.Warning)
+          if (!this.file) {
+            return this.notif.displayNotification(
+              'Please provide a valid image for your module',
+              'Create Module',
+              TuiNotification.Warning
+            );
           }
-          this.moduleData.next({...this.moduleData?.value, image: this.file});
+          this.moduleData.next({ ...this.moduleData?.value, image: this.file });
           setItem(StorageItem.publishAppValue, this.moduleData?.value);
-          this.submitNewModule()
+          this.submitNewModule();
           break;
         default:
-          this.moveNext()
+          this.moveNext();
       }
     }
   }
 
   previousStep(): void {
-    if(this.activeIndex !== 0)
-    this.activeIndex--;
-    setItem(StorageItem.activeIndex, this.activeIndex)
+    if (this.activeIndex !== 0) this.activeIndex--;
+    setItem(StorageItem.activeIndex, this.activeIndex);
   }
 
   moveNext(): void {
     this.activeIndex++;
-    setItem(StorageItem.activeIndex, this.activeIndex)
+    setItem(StorageItem.activeIndex, this.activeIndex);
   }
 
   onFileSelect(event: any) {
@@ -337,14 +512,15 @@ export class PublishAppComponent implements OnDestroy {
     //       this.notif.displayNotification('Image width and height should be 500px (1:1 aspect ratio)', 'File Upload', TuiNotification.Warning)
     //     }
     //     else {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = (e) => {
-            this.file = reader.result;
-            this.file = '/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-          };
-      //   }
-      // });
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      this.file = reader.result;
+      this.file =
+        '/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
+    };
+    //   }
+    // });
     // }
     // else {
     //   this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 1MB', 'File Upload', TuiNotification.Warning)
@@ -361,54 +537,65 @@ export class PublishAppComponent implements OnDestroy {
         img.onload = async () => {
           let height = img.naturalHeight;
           let width = img.naturalWidth;
-          if ((height > 500 || width > 500) && width/height !== 1) {
-            resolve(false)
+          if ((height > 500 || width > 500) && width / height !== 1) {
+            resolve(false);
           }
-          resolve(true)
+          resolve(true);
         };
-      }
-    })
+      };
+    });
   }
 
   calculateFileSize(file: any): boolean {
     const maxSize = 1024 * 1024;
-    if((file.type == 'image/jpg' || file.type == 'image/png' || file.type == 'image/webp') && file.size <= maxSize) {
-      return true
+    if (
+      (file.type == 'image/jpg' ||
+        file.type == 'image/png' ||
+        file.type == 'image/webp') &&
+      file.size <= maxSize
+    ) {
+      return true;
     }
-    return false
+    return false;
   }
 
   submitNewModule() {
-    const moduleURL = this.f['moduleURL']?.value.split(window.location.origin).pop();
-    const payload = {...this.moduleData.value, url: moduleURL}
-    if(this.isEditMode.value == false) {
+    const moduleURL = this.f['moduleURL']?.value
+      .split(window.location.origin)
+      .pop();
+    const payload = { ...this.moduleData.value, url: moduleURL };
+    if (this.isEditMode.value == false) {
       this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard.createModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-        if(res) {
-          this.moveNext();
-          setTimeout(() => {
-            removeItem(StorageItem.publishAppValue);
-            removeItem(StorageItem.activeIndex);
-            this.dashboard.moduleEditData.next(null)
-            this.router.navigate(['/dashboard/home'])
-          }, 1400)
-        }
-      })
-    }
-    else {
+      this.dashboard
+        .createModule(payload)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((res: any) => {
+          if (res) {
+            this.moveNext();
+            setTimeout(() => {
+              removeItem(StorageItem.publishAppValue);
+              removeItem(StorageItem.activeIndex);
+              this.dashboard.moduleEditData.next(null);
+              this.router.navigate(['/dashboard/home']);
+            }, 1400);
+          }
+        });
+    } else {
       this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard.editModule(this.storeModuleID?.value, payload)
-      .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-        if(res) {
-          this.moveNext();
-          setTimeout(() => {
-            removeItem(StorageItem.publishAppValue);
-            removeItem(StorageItem.activeIndex);
-            this.dashboard.moduleEditData.next(null)
-            this.router.navigate(['/dashboard/home'])
-          }, 1400)
-        }
-      })
+      this.dashboard
+        .editModule(this.storeModuleID?.value, payload)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((res: any) => {
+          if (res) {
+            this.moveNext();
+            setTimeout(() => {
+              removeItem(StorageItem.publishAppValue);
+              removeItem(StorageItem.activeIndex);
+              this.dashboard.moduleEditData.next(null);
+              this.router.navigate(['/dashboard/home']);
+            }, 1400);
+          }
+        });
     }
   }
 
