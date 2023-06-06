@@ -1,0 +1,16 @@
+<section class="w-screen h-screen bg-gradient-to-r from-indigo-500 to-amber-500 flex justify-center flex-col align-middle items-center">
+  <div class="bg-white rounded-lg py-5 px-6 text-center w-1/2">
+    <h4 class="text-xl font-semibold my-3">Oops!</h4>
+    <h4 class="text-lg font-medium">It seems the page you are trying to access does not exist</h4>
+    <div class="flex justify-center items-center align-middle">
+      <img
+        alt="not found"
+        src="../../../assets/not-found.png"
+        class="image"
+        width="400"
+        height="350"
+      />
+    </div>
+    <button [routerLink]="['/dashboard/home']" class="px-4 py-2 rounded-md bg-[#F15B41] text-white font-medium">Return Home</button>
+  </div>
+</section>

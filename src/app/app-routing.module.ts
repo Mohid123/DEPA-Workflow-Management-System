@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CustomPreloadingStrategyService } from 'src/core/core-services/preloading-strategy.service';
 import { AuthGuard } from './modules/auth/guards/auth.guard';
 import { SubmoduleGuard } from './modules/auth/guards/submodule.guard';
+import { NotFoundComponent } from './standalone-components/not-found/not-found.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
     path: 'submodule',
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
+  },
+  {
+    path: '**',
+    component: NotFoundComponent
   }
 ];
 
