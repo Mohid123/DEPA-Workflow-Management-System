@@ -93,7 +93,6 @@ export class AddSubmoduleComponent implements OnDestroy {
             this.initSubModuleForm(response)
           }
           if(Object.keys(this.submoduleFromLS)?.length > 0) {
-            debugger
             this.initSubModuleForm(this.submoduleFromLS);
           }
         })

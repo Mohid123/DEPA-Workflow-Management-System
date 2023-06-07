@@ -7,9 +7,9 @@ import { ViewWorkflowComponent } from './view-workflow/view-workflow.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import { FormioModule } from '@formio/angular';
-import { TuiBadgeModule, TuiCarouselModule, TuiIslandModule, TuiPaginationModule, TuiProgressModule, TuiTabsModule, TuiToggleModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputTagModule, TuiIslandModule, TuiPaginationModule, TuiProgressModule, TuiTabsModule, TuiToggleModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TuiButtonModule, TuiLoaderModule, TuiSvgModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { ViewSubmissionsComponent } from './view-submissions/view-submissions.component';
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
@@ -44,7 +44,11 @@ import { EmailSubmissionComponent } from './email-submission/email-submission.co
     CustomMultiSelectComponent,
     NgOptimizedImage,
     TuiLoaderModule,
-    TuiCarouselModule
+    TuiCarouselModule,
+    TuiInputTagModule,
+    TuiDataListWrapperModule,
+    TuiBadgedContentModule,
+    TuiTextfieldControllerModule
   ]
 })
 export class WorkflowsModule { }

@@ -1,15 +1,16 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
-import { TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { FormsService } from 'src/app/modules/forms/services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
@@ -36,7 +37,14 @@ export class EditSubmoduleComponent {
   isCreatingSubModule = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
-  domainUrl = window.location.origin
+  domainUrl = window.location.origin;
+  currentFieldArray: any;
+  activeEmailIndex: number;
+  userListForEmail: any[] = [];
+  private readonly search$ = new Subject<string>();
+  saveDialogSubscription: Subscription[] = [];
+  limit: number = 10;
+  page: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +54,8 @@ export class EditSubmoduleComponent {
     private dashboard: DashboardService,
     private activatedRoute: ActivatedRoute,
     private notif: NotificationsService,
-    private formService: FormsService
+    private formService: FormsService,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
     this.initSubModuleForm();
     // get submodule for editing and initialize form
@@ -57,7 +66,61 @@ export class EditSubmoduleComponent {
         this.transportService.moduleID.next(val['moduleID']);
         this.transportService.moduleCode.next(val['moduleCode']);
       }
-    })
+    });
+
+    // get users for email
+
+    this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
+      if (res) {
+        this.userListForEmail = res?.results?.map((data) => data?.email);
+      }
+    });
+
+    this.dashboard.getAllUsersForListing(this.limit, this.page).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if (res) {
+        this.userListForEmail = res?.results?.map((data) => data?.email);
+      }
+    });
+  }
+
+  openEmailNotifyModal(
+    content: PolymorpheusContent<TuiDialogContext>,
+    fieldArray: FormArray,
+    index: number
+  ): void {
+    this.activeEmailIndex = index;
+    this.currentFieldArray = fieldArray;
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+      })
+      .subscribe());
+  }
+
+  onSearchChange(search: string) {
+    this.search$.next(search);
+  }
+
+  validateEmails() {
+    let emails = this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.value;
+    emails = emails.map(element => {
+      if(!/\S+@\S+\.\S+/.test(element)) {
+        return false
+      }
+      return true
+    });
+    if(emails.includes(false)) {
+      this.notif.displayNotification('Please provide valid email addresses', 'Email Notify', TuiNotification.Warning)
+    }
+    else {
+      this.saveDialogSubscription.forEach(val => val.unsubscribe())
+    }
+  }
+
+  cancelEmailNotify() {
+    this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.setValue([]);
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
   getSubmoduleByIDForEdit() {
@@ -77,7 +140,8 @@ export class EditSubmoduleComponent {
               return {
                 id: data?.id,
                 approverIds: data?.approverIds?.map(ids => ids.id),
-                condition: data?.condition
+                condition: data?.condition,
+                emailNotifyTo: data?.emailNotifyTo || []
               }
             });
             delete response?.workFlowId;
@@ -112,11 +176,12 @@ export class EditSubmoduleComponent {
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       workflows: item?.workFlowId ?
       this.fb.array(
-        item?.workFlowId?.map((val: { condition: any; approverIds: any; id: any }) => {
+        item?.workFlowId?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; id: any }) => {
           return this.fb.group({
             id: val.id,
             condition: [val.condition, Validators.required],
-            approverIds: [val.approverIds, Validators.required]
+            approverIds: [val.approverIds, Validators.required],
+            emailNotifyTo: [val.emailNotifyTo || [], Validators.required]
           })
         })
       )
@@ -124,7 +189,8 @@ export class EditSubmoduleComponent {
       this.fb.array([
         this.fb.group({
           condition: ['', Validators.required],
-          approverIds: [[], Validators.required]
+          approverIds: [[], Validators.required],
+          emailNotifyTo: [[], Validators.required]
         })
       ])
     })

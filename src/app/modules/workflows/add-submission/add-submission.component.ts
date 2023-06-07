@@ -1,12 +1,13 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, pluck, switchMap, takeUntil } from 'rxjs';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -32,6 +33,13 @@ export class AddSubmissionComponent implements OnDestroy {
   formValues: any[] = [];
   carouselIndex = 0;
   items: any[] = [];
+  currentFieldArray: any;
+  activeEmailIndex: number;
+  userListForEmail: any[] = [];
+  private readonly search$ = new Subject<string>();
+  saveDialogSubscription: Subscription[] = [];
+  limit: number = 10;
+  page: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -40,12 +48,70 @@ export class AddSubmissionComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute,
     private submissionService: WorkflowsService,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private dashboard: DashboardService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => this.subModuleId = val['id']);
     this.populateData();
+
+     // get users for email
+
+     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
+      if (res) {
+        this.userListForEmail = res?.results?.map((data) => data?.email);
+      }
+    });
+
+    this.dashboard.getAllUsersForListing(this.limit, this.page).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if (res) {
+        this.userListForEmail = res?.results?.map((data) => data?.email);
+      }
+    });
+  }
+
+   // email notify functions
+
+   openEmailNotifyModal(
+    content: PolymorpheusContent<TuiDialogContext>,
+    fieldArray: FormArray,
+    index: number
+  ): void {
+    this.activeEmailIndex = index;
+    this.currentFieldArray = fieldArray;
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+      })
+      .subscribe());
+  }
+
+  onSearchChange(search: string) {
+    this.search$.next(search);
+  }
+
+  validateEmails() {
+    let emails = this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.value;
+    emails = emails.map(element => {
+      if(!/\S+@\S+\.\S+/.test(element)) {
+        return false
+      }
+      return true
+    });
+    if(emails.includes(false)) {
+      this.notif.displayNotification('Please provide valid email addresses', 'Email Notify', TuiNotification.Warning)
+    }
+    else {
+      this.saveDialogSubscription.forEach(val => val.unsubscribe())
+    }
+  }
+
+  cancelEmailNotify() {
+    this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.setValue([]);
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
   populateData() {
@@ -72,14 +138,16 @@ export class AddSubmissionComponent implements OnDestroy {
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
             approvers: data?.approverIds?.map(appr => appr?.fullName),
-            condition: data?.condition
+            condition: data?.condition,
+            emailNotifyTo: data?.emailNotifyTo || []
           }
         });
         this.createdByUser = res?.createdBy;
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
           return {
             approverIds: data?.approverIds?.map(ids => ids.id),
-            condition: data?.condition
+            condition: data?.condition,
+            emailNotifyTo: data?.emailNotifyTo || []
           }
         });
         delete this.subModuleData?.workFlowId;
@@ -93,10 +161,11 @@ export class AddSubmissionComponent implements OnDestroy {
     if(item) {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array(
-          item?.map((val: { condition: any; approverIds: any; id?: any }) => {
+          item?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; id?: any }) => {
             return this.fb.group({
               condition: [val.condition, Validators.required],
               approverIds: [val.approverIds, Validators.required],
+              emailNotifyTo: [val?.emailNotifyTo || [], Validators.required],
               id: [val.id || undefined]
             })
           }))
@@ -107,7 +176,8 @@ export class AddSubmissionComponent implements OnDestroy {
         workflows: this.fb.array([
           this.fb.group({
             condition: ['', Validators.required],
-            approverIds: [[], Validators.required]
+            approverIds: [[], Validators.required],
+            emailNotifyTo: [[], Validators.required]
           })
         ])
       })
@@ -122,6 +192,7 @@ export class AddSubmissionComponent implements OnDestroy {
     const workflowStepForm = this.fb.group({
       approverIds: [[], Validators.required],
       condition: [{value: '', disabled: ''}, Validators.required],
+      emailNotifyTo: [[], Validators.required]
     });
     this.workflows.push(workflowStepForm);
   }
@@ -176,7 +247,8 @@ export class AddSubmissionComponent implements OnDestroy {
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
-          condition: data?.condition
+          condition: data?.condition,
+          // emailNotifyTo: data?.emailNotifyTo || [],
         }
       })
     }
