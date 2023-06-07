@@ -230,7 +230,7 @@ export class AddSubmissionComponent implements OnDestroy {
     return true
   }
 
-  createSubmission(data: any) {
+  createSubmission(status?: any) {
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
@@ -244,6 +244,7 @@ export class AddSubmissionComponent implements OnDestroy {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
       formDataIds: this.formSubmission?.value,
+      submissionStatus: status ? status : undefined,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),

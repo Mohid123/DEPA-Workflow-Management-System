@@ -15,6 +15,8 @@ export class ViewSubmissionsComponent implements OnDestroy {
   workflowUsers: any[] = [];
   subscriptions: Subscription[] = [];
   currentUser: any;
+  adminUsers: any[] = [];
+  createdByUsers: any[] = [];
 
   // filters
   filterMenuCompany =  [
@@ -45,17 +47,9 @@ export class ViewSubmissionsComponent implements OnDestroy {
     );
 
     this.subscriptions.push(this.submissionData.subscribe(val => {
-      val.flatMap(data => {
-        this.workflowUsers = data?.workflowStatus?.flatMap(value => {
-          return value.activeUsers
-        })
-        return this.workflowUsers
-      })
+      this.adminUsers = val?.flatMap(data => data?.subModuleId?.adminUsers);
+      this.createdByUsers = val?.map(data => data?.subModuleId?.createdBy);
     }))
-  }
-
-  checkIfUsersAreActive(): boolean {
-    return this.workflowUsers.includes(this.currentUser?.id)
   }
 
   showStatus(submissionStatus: number): string {
@@ -68,7 +62,18 @@ export class ViewSubmissionsComponent implements OnDestroy {
     if(submissionStatus === 2) {
       return 'In Progress'
     }
+    if(submissionStatus === 4) {
+      return 'Draft'
+    }
     return 'Rejected'
+  }
+
+  checkIfUserisAdmin(): boolean {
+    return this.adminUsers?.includes(this.currentUser?.id)
+  }
+
+  checkIfUserisCreator(): boolean {
+    return this.createdByUsers?.includes(this.currentUser?.id)
   }
 
   sendFilterValue(value: any) {

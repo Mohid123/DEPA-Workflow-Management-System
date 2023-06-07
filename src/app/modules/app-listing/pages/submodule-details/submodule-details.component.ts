@@ -16,6 +16,7 @@ export class SubmoduleDetailsComponent implements OnDestroy {
 
   items = [];
   subscriptions: Subscription[] = [];
+  submoduleDetails: any;
 
   constructor(private dashboard: DashboardService, private activatedRoute: ActivatedRoute) {
     this.fetchAndPopulateData()
@@ -25,6 +26,7 @@ export class SubmoduleDetailsComponent implements OnDestroy {
     this.subscriptions.push(this.activatedRoute.params.subscribe(val => {
       if(val['name']) {
         this.dashboard.getSubModuleBySlugName(val['name']).subscribe((res: any) => {
+          this.submoduleDetails = res;
           this.formWithWorkflow = res?.formIds;
           this.formTabs = res?.formIds?.map(forms => forms.title);
           this.items = res?.workFlowId?.stepIds?.map(data => {

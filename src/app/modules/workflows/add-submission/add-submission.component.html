@@ -144,19 +144,19 @@
       type="button"
       size="m"
       appearance="primary"
-      (click)="createSubmission($event)"
+      (click)="createSubmission()"
     >
       Create submission
     </button>
-    <!--[disabled]="currentUser?.id !== createdByUser"-->
-    <!-- <button
+    <button
       tuiButton
       type="button"
       size="m"
       appearance="outline"
+      (click)="createSubmission(4)"
     >
       Save as Draft
-    </button> -->
+    </button>
     <button
       tuiButton
       type="button"

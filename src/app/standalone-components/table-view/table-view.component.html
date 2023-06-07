@@ -65,11 +65,11 @@
                 {{data?.code}}
               </td>
               <td class="px-6 py-4">
-                {{data?.status === 1 ? 'Published' : 'Draft'}}
+                {{data?.status === 1 ? 'Published' : 'Rejected'}}
               </td>
               <td class="py-4 text-center">
                 <div style="all: unset;" *ngIf="data?.status == 1">
-                  <a *ngIf="checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
+                  <a [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
                     <i class="fa fa-print fa-lg" aria-hidden="true"></i> Submissions
                   </a>
                 </div>
