@@ -127,6 +127,10 @@ export class TableViewComponent {
     return value.includes(this.currentUser?.id)
   }
 
+  checkIfUserisAdmin(value: any[]): boolean {
+    return value.includes(this.currentUser?.id)
+  }
+
   /**
    *
    * @param {number} index

@@ -90,9 +90,9 @@ export class FilterComponent {
    */
   setFilterAndApplyActive(value: {applyOn: string, sortType: string, index: number}) {
     this.applyStatus.emit(value);
-    if(this.items?.some(val => val.name === value.applyOn)) {
+    if(this.items?.some(val => val.name === value.sortType)) {
       this.items.forEach(val => {
-        if(value.applyOn === val.name) {
+        if(value.sortType === val.name) {
           val.status = 'active'
         }
         else {

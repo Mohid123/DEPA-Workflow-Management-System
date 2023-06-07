@@ -68,16 +68,16 @@
                 {{data?.status === 1 ? 'Published' : 'Draft'}}
               </td>
               <td class="py-4 text-center">
-                <a [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
+                <a *ngIf="checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
                   <i class="fa fa-print fa-lg" aria-hidden="true"></i> Submissions
                 </a>
-                <a *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/edit-submodule', data?.id]" [queryParams]="{moduleID: moduleId, moduleCode: moduleCode}" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                <a *ngIf="checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/edit-submodule', data?.id]" [queryParams]="{moduleID: moduleId, moduleCode: moduleCode}" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-pencil fa-lg" aria-hidden="true"></i> Edit
                 </a>
-                <a *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" (click)="showDialog(data?.id, template)" class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+                <a *ngIf="checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" (click)="showDialog(data?.id, template)" class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
                   <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> Delete
                 </a>
-                <a *ngIf="checkIfUserisViewOnly(data?.viewOnlyUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/submodule-details', data?.code]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                <a *ngIf="checkIfUserisViewOnly(data?.viewOnlyUsers) || checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/submodule-details', data?.code]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
                 </a>
               </td>
