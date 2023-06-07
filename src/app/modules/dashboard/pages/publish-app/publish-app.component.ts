@@ -511,19 +511,19 @@ export class PublishAppComponent implements OnDestroy {
     //       this.notif.displayNotification('Image width and height should be 500px (1:1 aspect ratio)', 'File Upload', TuiNotification.Warning)
     //     }
     //     else {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      this.file = reader.result;
-      this.file =
-        '/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
-    };
-    //   }
-    // });
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (e) => {
+            this.file = reader.result;
+            this.file =
+              '/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
+    //       };
+    //     }
+    //   });
     // }
     // else {
-    //   this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 1MB', 'File Upload', TuiNotification.Warning)
-    // }
+    //   this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
+    }
   }
 
   calculateAspectRatio(image: any): Promise<boolean> {
@@ -546,12 +546,13 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   calculateFileSize(file: any): boolean {
-    const maxSize = 1024 * 1024;
+    const maxSize = (1024 * 1024) * 2;
+    console.log('max: ', maxSize, 'fileSize: ', file.size)
     if (
-      (file.type == 'image/jpg' ||
-        file.type == 'image/png' ||
-        file.type == 'image/webp') &&
-      file.size <= maxSize
+      (file?.type == 'image/jpg' ||
+        file?.type == 'image/png' ||
+        file?.type == 'image/webp') &&
+      file?.size <= maxSize
     ) {
       return true;
     }
