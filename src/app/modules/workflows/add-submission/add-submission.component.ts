@@ -75,7 +75,6 @@ export class AddSubmissionComponent implements OnDestroy {
             condition: data?.condition
           }
         });
-        console.log(this.items)
         this.createdByUser = res?.createdBy;
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
           return {

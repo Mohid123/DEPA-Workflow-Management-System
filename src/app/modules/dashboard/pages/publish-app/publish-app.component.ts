@@ -32,14 +32,12 @@ import { TUI_ARROW } from '@taiga-ui/kit';
 import {
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
 import { DashboardService } from '../../dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -450,7 +448,7 @@ export class PublishAppComponent implements OnDestroy {
                   ids.id ? ids.id : ids
                 ),
                 condition: data?.condition,
-                emailNotifyTo: data?.emailNotifyTo,
+                // emailNotifyTo: data?.emailNotifyTo,
               };
             });
             this.moduleData.next({
@@ -464,7 +462,7 @@ export class PublishAppComponent implements OnDestroy {
                   ids.id ? ids.id : ids
                 ),
                 condition: data?.condition,
-                emailNotifyTo: data?.emailNotifyTo,
+                // emailNotifyTo: data?.emailNotifyTo,
                 id: data?.id ? data?.id : undefined,
               };
             });

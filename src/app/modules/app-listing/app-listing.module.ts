@@ -8,7 +8,7 @@ import { FooterComponent } from 'src/app/standalone-components/footer/footer.com
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { SearchBarComponent } from 'src/app/standalone-components/search-bar/search-bar.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
-import { TuiCarouselModule, TuiDataListWrapperModule, TuiInputModule, TuiIslandModule, TuiMultiSelectModule, TuiPaginationModule, TuiProgressModule, TuiRadioLabeledModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit';
+import { TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputModule, TuiInputTagModule, TuiIslandModule, TuiMultiSelectModule, TuiPaginationModule, TuiProgressModule, TuiRadioLabeledModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
@@ -50,7 +50,9 @@ import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-d
     TuiIslandModule,
     TuiCarouselModule,
     TuiPaginationModule,
-    TuiProgressModule
+    TuiProgressModule,
+    TuiBadgedContentModule,
+    TuiInputTagModule
   ]
 })
 export class AppListingModule { }

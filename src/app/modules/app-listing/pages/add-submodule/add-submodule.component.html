@@ -176,11 +176,11 @@
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
-            <div class="col-span-5">
+            <div class="col-span-4">
               <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
               <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
             </div>
-            <div class="col-span-5">
+            <div class="col-span-4">
               <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
               <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
                 <option value="and">AND</option>
@@ -188,7 +188,24 @@
                 <option value="none">NONE</option>
               </select>
             </div>
-            <div class="col-span-2 mt-8">
+            <div class="col-span-1 mt-8">
+              <tui-badged-content
+                [contentTop]="
+                  workflows.at(i).get('emailNotifyTo')?.value?.length
+                "
+                [colorTop]="'green'"
+              >
+                <button
+                  tuiIconButton
+                  type="button"
+                  size="s"
+                  appearance="outline"
+                  icon="tuiIconMailLarge"
+                  (click)="openEmailNotifyModal(template, workflows, i)"
+                ></button>
+              </tui-badged-content>
+            </div>
+            <div class="col-span-1 mt-8 -ml-10">
               <button
                 tuiIconButton
                 type="button"
@@ -252,4 +269,36 @@
       </span>
     </div>
   </ng-container>
+</ng-template>
+
+<!--Email Notify Modal-->
+<ng-template #template>
+  <p class="text-lg font-semibold text-center">Email Notification Users</p>
+  <p class="mt-3 text-base font-medium text-gray-500">
+    Please specify the users you want to send the notification email to
+  </p>
+  <div class="flex flex-col justify-center my-5">
+    <tui-input-tag
+      [formControl]="
+        currentFieldArray?.controls[activeEmailIndex]?.controls['emailNotifyTo']
+      "
+      class="b-form"
+      [tuiTextfieldLabelOutside]="true"
+      (searchChange)="onSearchChange($event)"
+    >
+      Type to search and press Enter to select...
+      <tui-data-list-wrapper
+        *tuiDataList
+        [items]="userListForEmail"
+      ></tui-data-list-wrapper>
+    </tui-input-tag>
+  </div>
+  <div class="flex justify-start gap-x-3">
+    <button tuiButton type="button" size="m" (click)="validateEmails()">
+      Confirm
+    </button>
+    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">
+      Remove & Close
+    </button>
+  </div>
 </ng-template>

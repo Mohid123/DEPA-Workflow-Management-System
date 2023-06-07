@@ -1,14 +1,15 @@
-import { Component, EventEmitter, HostListener, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
-import { TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -37,7 +38,14 @@ export class AddSubmoduleComponent implements OnDestroy {
   isCreatingSubModule = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
-  domainURL = window.location.origin
+  domainURL = window.location.origin;
+  currentFieldArray: any;
+  activeEmailIndex: number;
+  userListForEmail: any[] = [];
+  private readonly search$ = new Subject<string>();
+  saveDialogSubscription: Subscription[] = [];
+  limit: number = 10;
+  page: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +54,8 @@ export class AddSubmoduleComponent implements OnDestroy {
     private router: Router,
     private dashboard: DashboardService,
     private activatedRoute: ActivatedRoute,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
@@ -58,6 +67,20 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.formTabs = this.formComponents.map(val => val.title);
 
     this.getAllCompanies();
+
+    // get users for email
+
+    this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
+      if (res) {
+        this.userListForEmail = res?.results?.map((data) => data?.email);
+      }
+    });
+
+    this.dashboard.getAllUsersForListing(this.limit, this.page).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if (res) {
+        this.userListForEmail = res?.results?.map((data) => data?.email);
+      }
+    });
   }
 
   getDefaultWorkflow() {
@@ -70,11 +93,54 @@ export class AddSubmoduleComponent implements OnDestroy {
             this.initSubModuleForm(response)
           }
           if(Object.keys(this.submoduleFromLS)?.length > 0) {
+            debugger
             this.initSubModuleForm(this.submoduleFromLS);
           }
         })
       }
     });
+  }
+
+  // email notify functions
+
+  openEmailNotifyModal(
+    content: PolymorpheusContent<TuiDialogContext>,
+    fieldArray: FormArray,
+    index: number
+  ): void {
+    this.activeEmailIndex = index;
+    this.currentFieldArray = fieldArray;
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+      })
+      .subscribe());
+  }
+
+  onSearchChange(search: string) {
+    this.search$.next(search);
+  }
+
+  validateEmails() {
+    let emails = this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.value;
+    emails = emails.map(element => {
+      if(!/\S+@\S+\.\S+/.test(element)) {
+        return false
+      }
+      return true
+    });
+    if(emails.includes(false)) {
+      this.notif.displayNotification('Please provide valid email addresses', 'Email Notify', TuiNotification.Warning)
+    }
+    else {
+      this.saveDialogSubscription.forEach(val => val.unsubscribe())
+    }
+  }
+
+  cancelEmailNotify() {
+    this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.setValue([]);
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
   getAllCompanies() {
@@ -99,23 +165,26 @@ export class AddSubmoduleComponent implements OnDestroy {
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       workflows: this.fb.array(
         item?.workflows ?
-        item?.workflows?.map((val: { condition: any; approverIds: any; }) => {
+        item?.workflows?.map((val: { condition: any; emailNotifyTo: any; approverIds: any; }) => {
           return this.fb.group({
             condition: [val.condition, Validators.required],
-            approverIds: [val.approverIds, Validators.required]
+            approverIds: [val.approverIds, Validators.required],
+            emailNotifyTo: [val.emailNotifyTo || [], Validators.required]
           })
         }) :
-        item?.map((val: { condition: any; approverIds: any; }) => {
+        item?.map((val: { condition: any; emailNotifyTo: any; approverIds: any; }) => {
           return this.fb.group({
             condition: [val.condition, Validators.required],
-            approverIds: [val.approverIds, Validators.required]
+            approverIds: [val.approverIds, Validators.required],
+            emailNotifyTo: [val.emailNotifyTo || [], Validators.required]
           })
         })
         ||
         [
           this.fb.group({
             condition: [null, Validators.required],
-            approverIds: [[], Validators.required]
+            approverIds: [[], Validators.required],
+            emailNotifyTo: [[], Validators.required]
           })
         ]
       )
@@ -148,7 +217,8 @@ export class AddSubmoduleComponent implements OnDestroy {
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       condition: ['', Validators.required],
-      approverIds: [[], Validators.required]
+      approverIds: [[], Validators.required],
+      emailNotifyTo: [[], Validators.required]
     });
     this.workflows.push(workflowStepForm)
   }
@@ -212,7 +282,8 @@ export class AddSubmoduleComponent implements OnDestroy {
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
-          condition: data?.condition
+          condition: data?.condition,
+          // emailNotifyTo: data?.emailNotifyTo
         }
       })
     }
