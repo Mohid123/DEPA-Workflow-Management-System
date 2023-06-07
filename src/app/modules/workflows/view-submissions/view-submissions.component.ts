@@ -16,6 +16,21 @@ export class ViewSubmissionsComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
   currentUser: any;
 
+  // filters
+  filterMenuCompany =  [
+    {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
+    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg'},
+    {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg'},
+    {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
+  ];
+
+  statusMenu = [
+    {name: 'Active', status: 'idle', icon: ''},
+    {name: 'Completed', status: 'idle', icon: ''},
+    {name: 'In Progress', status: 'idle', icon: ''},
+    {name: 'Draft', status: 'idle', icon: ''}
+  ];
+
   constructor(private activatedRoute: ActivatedRoute, private workflowService: WorkflowsService, private auth: AuthService) {
     this.currentUser = this.auth.currentUserValue
 
@@ -54,6 +69,11 @@ export class ViewSubmissionsComponent implements OnDestroy {
       return 'In Progress'
     }
     return 'Rejected'
+  }
+
+  sendFilterValue(value: any) {
+    console.log(value);
+    //send api call here
   }
 
   ngOnDestroy(): void {

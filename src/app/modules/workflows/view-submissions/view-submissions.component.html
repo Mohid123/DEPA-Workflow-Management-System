@@ -5,22 +5,41 @@
       <a [routerLink]="['/submodule/submissions/add-submission', submoduleId]"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
     </div>
   </div>
-  <div class="relative overflow-x-auto rounded-lg shadow-lg">
-    <table class="w-full text-sm text-left text-gray-500">
-      <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
-        <tr>
-          <th class="px-6 py-3 text-sm">Submodule Code</th>
-          <th class="px-2 py-3 text-sm">Status</th>
-          <th class="px-2 py-3 text-sm">Last Activity By</th>
-          <th class="px-2 py-3 text-sm">Now Pending With</th>
-          <th class="px-2 py-3 text-sm">Workflow progress</th>
-          <th scope="col" class="px-6 py-3 text-sm">
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngIf="(submissionData | async) as tableData">
+  <ng-container *ngIf="(submissionData | async) as tableData; else noData">
+    <div class="relative overflow-x-auto rounded-lg shadow-lg">
+      <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
+          <tr>
+            <th class="px-6 py-3 text-sm">
+              Submodule Code&nbsp;
+              <filter
+                [filterBy]="'Submodule Code'"
+                [showSortCategories]="false"
+                [items]="filterMenuCompany"
+                (applyStatus)="sendFilterValue($event)"
+              >
+              </filter>
+            </th>
+            <th class="px-2 py-3 text-sm">
+              Status&nbsp;
+              <filter
+                [filterBy]="'Status'"
+                [showSortCategories]="false"
+                [items]="statusMenu"
+                [searchEnabled]="false"
+                (applyStatus)="sendFilterValue($event)"
+              >
+              </filter>
+            </th>
+            <th class="px-2 py-3 text-sm">Last Activity By</th>
+            <th class="px-2 py-3 text-sm">Now Pending With</th>
+            <th class="px-2 py-3 text-sm">Workflow progress</th>
+            <th scope="col" class="px-6 py-3 text-sm">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
           <ng-container *ngIf="tableData?.length == 0; else showSubmissions">
             <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
               It seems there is no data to show here!
@@ -59,15 +78,19 @@
               </tr>
             </ng-container>
           </ng-template>
-        </ng-container>
-      </tbody>
-    </table>
-    <div class="pt-10 pb-6">
-      <tui-pagination
-        [length]="10"
-        [index]="0"
-      ></tui-pagination>
+        </tbody>
+      </table>
+      <div class="pt-10 pb-6">
+        <tui-pagination
+          [length]="1"
+          [index]="0"
+        ></tui-pagination>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-template #noData>
+    <app-table-loader></app-table-loader>
+  </ng-template>
 </section>
 <app-footer></app-footer>

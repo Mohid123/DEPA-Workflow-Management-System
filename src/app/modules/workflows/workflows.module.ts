@@ -15,6 +15,8 @@ import { TableViewComponent } from 'src/app/standalone-components/table-view/tab
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 import { EmailSubmissionComponent } from './email-submission/email-submission.component';
+import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 
 
 @NgModule({
@@ -48,7 +50,9 @@ import { EmailSubmissionComponent } from './email-submission/email-submission.co
     TuiInputTagModule,
     TuiDataListWrapperModule,
     TuiBadgedContentModule,
-    TuiTextfieldControllerModule
+    TuiTextfieldControllerModule,
+    TableLoaderComponent,
+    FilterComponent
   ]
 })
 export class WorkflowsModule { }

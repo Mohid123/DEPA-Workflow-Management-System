@@ -17,6 +17,7 @@ import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
+import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-d
     TuiPaginationModule,
     TuiProgressModule,
     TuiBadgedContentModule,
-    TuiInputTagModule
+    TuiInputTagModule,
+    TableLoaderComponent
   ]
 })
 export class AppListingModule { }

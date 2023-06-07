@@ -1,0 +1,50 @@
+<div class="rounded-lg shadow-lg">
+  <table class="w-full mt-10">
+    <thead class="text-center border-b-2 border-gray-300 border-dotted bg-[#eae4d8]">
+      <th class="py-2">
+        <span class="inline-block py-1 mt-2 mb-2 bg-gray-300 border-2 rounded-sm px-14"></span>
+      </th>
+      <th class="py-2">
+        <span class="inline-block py-1 mt-2 mb-2 bg-gray-300 border-2 rounded-sm px-14"></span>
+      </th>
+      <th class="py-2">
+        <span class="inline-block py-1 mt-2 mb-2 bg-gray-300 border-2 rounded-sm px-14"></span>
+      </th>
+      <th class="py-2">
+        <span class="inline-block py-1 mt-2 mb-2 bg-gray-300 border-2 rounded-sm px-14"></span>
+      </th>
+      <th class="py-2">
+        <span class="inline-block py-1 mt-2 mb-2 bg-gray-300 border-2 rounded-sm px-14"></span>
+      </th>
+      <th class="py-2">
+        <span class="inline-block py-1 mt-2 mb-2 bg-gray-300 border-2 rounded-sm px-14"></span>
+      </th>
+    </thead>
+    <ng-container *ngFor="let i of Arr(num).fill(1)">
+      <tr class="z-50 h-16 text-center bg-white border-b-2 border-gray-300 border-dotted rounded-lg animate-pulse">
+        <td class="shadow-lg">
+          <span class="z-50 inline-block px-16 py-2 mt-2 mb-2 bg-gray-300 rounded-sm"></span>
+        </td>
+        <td class="shadow-lg">
+          <span class="z-50 inline-block px-16 py-2 mt-2 mb-2 bg-gray-300 rounded-sm"></span>
+          <br>
+          <span class="z-50 inline-block px-10 py-1 mt-1 mb-1 bg-gray-300 rounded-sm"></span>
+        </td>
+        <td class="shadow-lg">
+          <span class="z-50 inline-block px-16 py-2 mt-2 mb-2 bg-gray-300 rounded-sm"></span>
+        </td>
+        <td class="shadow-lg">
+          <span class="z-50 inline-block px-16 py-2 mt-2 mb-2 bg-gray-300 rounded-sm"></span>
+        </td>
+        <td class="shadow-lg">
+          <span class="z-50 inline-block px-16 py-2 mt-1 mb-1 bg-gray-300 rounded-sm"></span>
+          <br>
+          <span class="z-50 inline-block px-10 py-1 mt-1 mb-1 bg-gray-300 rounded-sm"></span>
+        </td>
+        <td class="shadow-lg">
+          <span class="z-50 inline-block px-12 py-4 mt-2 mb-2 bg-gray-300 rounded-2xl"></span>
+        </td>
+      </tr>
+    </ng-container>
+  </table>
+</div>

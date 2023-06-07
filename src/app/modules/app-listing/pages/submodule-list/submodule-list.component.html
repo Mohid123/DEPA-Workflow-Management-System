@@ -1,9 +1,12 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52">
-  <ng-container *ngIf="(subModuleData | async) as data">
+  <ng-container *ngIf="(subModuleData | async) as data; else noData">
     <p class="text-left font-semibold text-lg mb-5">Title:&nbsp; <span class="text-[#374151]">{{data[0]?.moduleId?.title}}</span> </p>
     <p class="text-left font-semibold text-base">Code:&nbsp; <span class="text-[#374151]">{{data[0]?.moduleId?.code}}</span></p>
     <app-table-view (emitDeleteEvent)="itemDeleted($event)" [tableData]="data"></app-table-view>
   </ng-container>
+  <ng-template #noData>
+    <app-table-loader></app-table-loader>
+  </ng-template>
 </section>
 <app-footer></app-footer>

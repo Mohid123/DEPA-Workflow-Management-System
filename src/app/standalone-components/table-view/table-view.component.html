@@ -13,14 +13,14 @@
             <th scope="col" class="px-6 py-3 text-sm">
               {{column}} &nbsp;
               <ng-container *ngIf="column === 'Status'; else notStatus">
-                <filter
+                <!-- <filter
                   [filterBy]="column"
                   [searchEnabled]="false"
                   [showSortCategories]="false"
                   [items]="statusMenu"
                   (applyStatus)="sendFilterValue($event)"
                 >
-              </filter>
+                </filter> -->
               </ng-container>
               <ng-template #notStatus>
                 <ng-container *ngIf="column === 'Company Name'">
@@ -30,7 +30,7 @@
                     [items]="filterMenuCompany"
                     (applyStatus)="sendFilterValue($event)"
                   >
-                </filter>
+                  </filter>
                 </ng-container>
                 <ng-container *ngIf="column === 'Submodule Code'">
                   <filter
@@ -38,7 +38,7 @@
                     [items]="filterMenuSubmodule"
                     (applyStatus)="sendFilterValue($event)"
                   >
-                </filter>
+                  </filter>
                 </ng-container>
               </ng-template>
             </th>
@@ -68,9 +68,11 @@
                 {{data?.status === 1 ? 'Published' : 'Draft'}}
               </td>
               <td class="py-4 text-center">
-                <a *ngIf="checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
-                  <i class="fa fa-print fa-lg" aria-hidden="true"></i> Submissions
-                </a>
+                <div style="all: unset;" *ngIf="data?.status == 1">
+                  <a *ngIf="checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/submissions/view-submissions', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
+                    <i class="fa fa-print fa-lg" aria-hidden="true"></i> Submissions
+                  </a>
+                </div>
                 <a *ngIf="checkIfUserisAdmin(data?.adminUsers) || currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/edit-submodule', data?.id]" [queryParams]="{moduleID: moduleId, moduleCode: moduleCode}" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-pencil fa-lg" aria-hidden="true"></i> Edit
                 </a>
