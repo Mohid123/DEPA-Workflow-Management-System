@@ -14,23 +14,7 @@
 
         <ng-template #showApps>
           <ng-container *ngFor="let appdata of app?.modules; let i = index; let firstModule = first; let last = last;">
-            <ng-container *ngIf="app?.modules?.length == 1">
-              <grid-small-app
-                (deleteModule)="showDialog($event, template)"
-                (editModule)="editModule($event)"
-                [appData]="appdata"
-                class="col-span-8 row-span-2"
-              ></grid-small-app>
-            </ng-container>
-            <ng-container *ngIf="app?.modules?.length == 2">
-              <grid-small-app
-                (editModule)="editModule($event)"
-                (deleteModule)="showDialog($event, template)"
-                [appData]="appdata"
-                class="col-span-6 row-span-2"
-              ></grid-small-app>
-            </ng-container>
-            <ng-container *ngIf="app?.modules?.length == 3">
+            <ng-container *ngIf="app?.modules?.length <= 3">
               <grid-small-app
                 (deleteModule)="showDialog($event, template)"
                 (editModule)="editModule($event)"
