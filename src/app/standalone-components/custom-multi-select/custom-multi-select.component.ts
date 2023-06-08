@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { TuiCheckboxLabeledModule, TuiInputModule } from '@taiga-ui/kit';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, filter, map, of, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, debounceTime, distinctUntilChanged, of, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { ApiResponse } from 'src/core/models/api-response.model';
-import { User } from 'src/core/models/user.model';
+import { TrimDirective } from 'src/core/directives/trim.directive';
 
 /**
  * @ignore
@@ -37,7 +36,7 @@ export class dropDownItems {
 @Component({
   selector: 'custom-multi-select',
   standalone: true,
-  imports: [CommonModule, TuiCheckboxLabeledModule, ReactiveFormsModule, TuiInputModule, TuiTextfieldControllerModule],
+  imports: [CommonModule, TuiCheckboxLabeledModule, ReactiveFormsModule, TuiInputModule, TuiTextfieldControllerModule, TrimDirective],
   templateUrl: './custom-multi-select.component.html',
   styleUrls: ['./custom-multi-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

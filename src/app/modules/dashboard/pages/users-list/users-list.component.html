@@ -14,7 +14,7 @@
         <a (click)="showDialog(template, null)" class="px-4 py-2 rounded-lg bg-[#a58f81] text-white no-underline hover:text-white text-sm">+ Add new user</a>
       </div>
     </div>
-    <ng-container *ngIf="(users | async) as data">
+    <ng-container *ngIf="(users | async) as data; else loading">
       <table
         tuiTable
         class="rounded-lg w-full"
@@ -109,6 +109,10 @@
         </tfoot>
       </table>
     </ng-container>
+    <ng-template #loading>
+      <tui-loader class="mt-14" [overlay]="false" size="xl" [inheritColor]="false"></tui-loader>
+      <p class="text-base font-medium text-center my-2 text-[#6C86E2]">Fetching Data...</p>
+    </ng-template>
   </section>
 </div>
 

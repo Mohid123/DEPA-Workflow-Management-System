@@ -22,6 +22,7 @@ import { CategoriesListComponent } from './pages/categories-list/categories-list
 import { UsersListComponent } from './pages/users-list/users-list.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
 import { TrimDirective } from 'src/core/directives/trim.directive';
+import { WithLoadingPipe } from 'src/core/pipes/with-loading.pipe';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { TrimDirective } from 'src/core/directives/trim.directive';
     TuiTextfieldControllerModule,
     TuiTablePaginationModule,
     TrimDirective,
-    TuiBadgedContentModule
+    TuiBadgedContentModule,
+    WithLoadingPipe
   ]
 })
 export class DashboardModule { }

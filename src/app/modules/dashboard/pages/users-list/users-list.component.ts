@@ -20,6 +20,7 @@ export class UsersListComponent implements OnDestroy {
   formData = new BehaviorSubject<any>({isValid: false});
   formSubmission: any;
   searchValue = new FormControl();
+  fetchingUsers = new Subject<boolean>();
 
   constructor(
     private dashboard: DashboardService,
