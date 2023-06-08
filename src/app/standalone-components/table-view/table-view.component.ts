@@ -1,15 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { TuiPaginationModule } from '@taiga-ui/kit';
-import { Observable, Subject, of } from 'rxjs';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 

@@ -3,13 +3,12 @@ import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, map, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, map, shareReplay } from 'rxjs';
 import { ApiService } from 'src/core/core-services/api.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { Module } from 'src/core/models/module.model';
 import { User } from 'src/core/models/user.model';
-import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Interface for Breadcrumb navigation

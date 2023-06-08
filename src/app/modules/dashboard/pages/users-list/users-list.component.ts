@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { userAddForm } from 'src/app/forms-schema/forms';

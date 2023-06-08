@@ -1,7 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { emailLoginForm } from 'src/app/forms-schema/forms';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 
 @Component({
