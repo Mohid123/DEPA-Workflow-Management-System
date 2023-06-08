@@ -23,7 +23,7 @@ const routes: Routes = [
         path: 'view-submissions/:id',
         canActivate: [AuthGuard],
         component: ViewSubmissionsComponent,
-        data: {breadcrumb:'View Submissions'},
+        data: {breadcrumb:'List of Submissions'},
       },
       {
         path: 'add-submission/:id',

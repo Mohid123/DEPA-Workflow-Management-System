@@ -1,27 +1,19 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52">
-  <div class="flex justify-end mb-7">
-    <div *ngIf="checkIfUserisAdmin() || checkIfUserisCreator() || currentUser?.role == 'admin' || (submissionData | async)?.length == 0" class="cursor-pointer">
-      <a [routerLink]="['/submodule/submissions/add-submission', submoduleId]"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
-    </div>
-  </div>
   <ng-container *ngIf="(submissionData | async) as tableData; else noData">
+    <p class="text-left font-semibold text-base mb-7">Code:&nbsp; <span class="text-[#374151]">{{tableData[0]?.subModuleId?.code}}</span> </p>
+    <div class="flex justify-between mb-5">
+      <p class="text-left font-semibold text-lg">List of Submissions</p>
+      <div *ngIf="checkIfUserisAdmin() || checkIfUserisCreator() || currentUser?.role == 'admin' || (submissionData | async)?.length == 0" class="cursor-pointer">
+        <a [routerLink]="['/submodule/submissions/add-submission', submoduleId]"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
+      </div>
+    </div>
     <div class="relative overflow-x-auto rounded-lg shadow-lg">
       <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
           <tr>
-            <th class="px-6 py-3 text-sm">
-              Submodule Code&nbsp;
-              <filter
-                [filterBy]="'Submodule Code'"
-                [showSortCategories]="false"
-                [items]="filterMenuCompany"
-                (applyStatus)="sendFilterValue($event)"
-              >
-              </filter>
-            </th>
-            <th class="px-2 py-3 text-sm">
-              Status&nbsp;
+            <th class="px-4 py-3 text-sm">
+              Submission Status&nbsp;
               <filter
                 [filterBy]="'Status'"
                 [showSortCategories]="false"
@@ -48,10 +40,7 @@
           <ng-template #showSubmissions>
             <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last">
               <tr class="bg-white border-b border-gray-300">
-                <td class="px-6 py-4">
-                  {{data?.subModuleId?.code}}
-                </td>
-                <td class="px-2 py-4">
+                <td class="px-4 py-4">
                   {{showStatus(data?.submissionStatus)}}
                 </td>
                 <td class="px-2 py-4">

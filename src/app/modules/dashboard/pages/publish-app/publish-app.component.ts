@@ -102,7 +102,7 @@ export class PublishAppComponent implements OnDestroy {
   ) {
     //edit module case
     this.dashboard.moduleEditData
-      .pipe(takeUntil(this.destroy$), take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((val) => {
         if (val) {
           const category = {

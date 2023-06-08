@@ -27,12 +27,12 @@ export class UsersListComponent implements OnDestroy {
       this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
 
       this.searchValue.valueChanges.pipe(
-        takeUntil(this.destroy$),
         distinctUntilChanged(),
         debounceTime(400),
         switchMap(searchStr => searchStr == '' ?
         this.users = this.dashboard.getAllUsersForListing(this.limit, this.page) :
-        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page, searchStr))
+        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page, searchStr)),
+        takeUntil(this.destroy$)
       ).subscribe()
     }
   
