@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TuiCheckboxLabeledModule, TuiInputModule } from '@taiga-ui/kit';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, filter, map, of, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { User } from 'src/core/models/user.model';
@@ -95,12 +95,20 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
       distinctUntilChanged(),
       debounceTime(400),
       switchMap(searchStr => searchStr == '' ?
-        null :
+        of(null) :
         this.dashboard.getAllUsers(this.limit, this.page, searchStr)),
       takeUntil(this.destroy$)
     ).subscribe((users: any) => {
-      this.users.next([...users, ...this.users?.value])
+      if(users !== null) {
+        const userData = [...users, ...this.users?.value];
+        const result = this.getUniqueListBy(userData, 'name')
+        this.users.next(result)
+      }
     })
+  }
+
+  getUniqueListBy(arr: any, key: any) {
+    return [...new Map(arr.map((item: any) => [item[key], item])).values()]
   }
 
   getUserData(limit: number, page: number) {
