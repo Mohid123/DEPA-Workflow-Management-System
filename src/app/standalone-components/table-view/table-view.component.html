@@ -1,11 +1,11 @@
-<div class="flex justify-end">
+<div class="flex justify-between mt-5 mb-2">
+  <p class="text-left font-semibold text-lg mb-5">List of Submodules</p>
   <div class="cursor-pointer">
     <a [routerLink]="['/submodule/add-submodule']" [queryParams]="{moduleID: moduleId}"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
   </div>
 </div>
 
 <!-- <tui-loader [overlay]="true" size="xl"> -->
-  <p class="text-left font-semibold text-lg mb-5">List of Submodules</p>
   <div class="relative overflow-x-auto rounded-lg shadow-lg">
     <table class="w-full text-sm text-left text-gray-500">
       <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
