@@ -112,10 +112,16 @@ export class DashboardService extends ApiService<any> {
   //Users
 
   getAllUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
-    const params: any = {
+    let params: any = {
       limit: limit,
       page: page+ 1,
       fullName: name ? name : ' '
+    }
+    if(name) {
+      params = {
+        limit: limit,
+        fullName: name ? name : ' '
+      }
     }
     return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -135,11 +141,17 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  getAllUsersForListing(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
-    const params: any = {
+  getAllUsersForListing(limit: number, page?: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
+    let params: any = {
       limit: limit,
       page: page+ 1,
       fullName: name ? name : ' '
+    }
+    if(name) {
+      params = {
+        limit: limit,
+        fullName: name ? name : ' '
+      }
     }
     return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
