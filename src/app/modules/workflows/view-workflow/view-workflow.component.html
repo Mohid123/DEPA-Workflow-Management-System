@@ -145,14 +145,25 @@
     <label class="block" for="Textarea1">Comments</label>
     <textarea [formControl]="remarks" class="form-control" id="Textarea1" rows="4"></textarea>
   </div>
-  <button
-    tuiButton
-    type="button"
-    [showLoader]="(savingDecision | async)"
-    size="m"
-    (click)="sendDecisionData(); observer.complete()"
+  <div class="flex justify-start gap-x-3">
+    <button
+      tuiButton
+      type="button"
+      [showLoader]="(savingDecision | async)"
+      size="m"
+      (click)="sendDecisionData(); observer.complete()"
     >
       Send
     </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="accent"
+      size="m"
+      (click)="cancelDecision(); observer.complete()"
+    >
+      Cancel
+    </button>
+  </div>
 </ng-template>
 

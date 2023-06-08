@@ -448,7 +448,7 @@ export class PublishAppComponent implements OnDestroy {
                   ids.id ? ids.id : ids
                 ),
                 condition: data?.condition,
-                // emailNotifyTo: data?.emailNotifyTo,
+                emailNotifyTo: data?.emailNotifyTo,
               };
             });
             this.moduleData.next({
@@ -462,7 +462,7 @@ export class PublishAppComponent implements OnDestroy {
                   ids.id ? ids.id : ids
                 ),
                 condition: data?.condition,
-                // emailNotifyTo: data?.emailNotifyTo,
+                emailNotifyTo: data?.emailNotifyTo,
                 id: data?.id ? data?.id : undefined,
               };
             });

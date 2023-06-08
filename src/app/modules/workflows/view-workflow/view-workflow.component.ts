@@ -161,7 +161,18 @@ export class ViewWorkflowComponent implements OnDestroy {
       this.saveDialogSubscription.forEach(val => val.unsubscribe());
       this.reject.reset()
       this.approve.reset()
+      this.reject.enable();
+      this.approve.enable();
     })
+  }
+
+  cancelDecision() {
+    this.remarks.reset();
+    this.saveDialogSubscription.forEach(val => val.unsubscribe());
+    this.reject.reset()
+    this.approve.reset()
+    this.reject.enable();
+    this.approve.enable();
   }
 
   checkIfUserCanEditForm(): any[] {
