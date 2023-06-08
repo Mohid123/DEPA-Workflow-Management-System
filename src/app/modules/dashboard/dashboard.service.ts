@@ -114,7 +114,8 @@ export class DashboardService extends ApiService<any> {
   getAllUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
     const params: any = {
       limit: limit,
-      page: page
+      page: page+ 1,
+      fullName: name ? name : ' '
     }
     return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

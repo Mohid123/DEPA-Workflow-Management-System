@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TuiCheckboxLabeledModule, TuiInputModule } from '@taiga-ui/kit';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, debounceTime, filter, map, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { User } from 'src/core/models/user.model';
@@ -80,8 +80,8 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    */
   @Input() users: BehaviorSubject<any> = new BehaviorSubject([]);
 
-  limit: number = 10;
-  page: number = 1;
+  limit: number = 6;
+  page: number = 0;
 
   /**
    * List of approvers that will be sent to server as part of workflow 
@@ -91,14 +91,15 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
   constructor(private dashboard: DashboardService) {
     this.getUserData(this.limit, this.page)
 
-    this.searchValue.valueChanges
-    .pipe(
-      takeUntil(this.destroy$),
+    this.searchValue.valueChanges.pipe(
+      distinctUntilChanged(),
       debounceTime(400),
-      map(val => val.trim()),
-      switchMap(searchStr => searchStr == '' ? this.dashboard.getAllUsers(this.limit, this.page, undefined) : this.dashboard.getAllUsers(this.limit, this.page, searchStr))
-    ).subscribe(users => {
-      this.users.next(users);
+      switchMap(searchStr => searchStr == '' ?
+        null :
+        this.dashboard.getAllUsers(this.limit, this.page, searchStr)),
+      takeUntil(this.destroy$)
+    ).subscribe((users: any) => {
+      this.users.next([...users, ...this.users?.value])
     })
   }
 
