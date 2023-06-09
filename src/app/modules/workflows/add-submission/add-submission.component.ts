@@ -139,7 +139,7 @@ export class AddSubmissionComponent implements OnDestroy {
           return {
             approvers: data?.approverIds?.map(appr => appr?.fullName),
             condition: data?.condition,
-            emailNotifyTo: data?.emailNotifyTo || []
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers || []
           }
         });
         this.createdByUser = res?.createdBy;
@@ -147,7 +147,7 @@ export class AddSubmissionComponent implements OnDestroy {
           return {
             approverIds: data?.approverIds?.map(ids => ids.id),
             condition: data?.condition,
-            emailNotifyTo: data?.emailNotifyTo || []
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers || []
           }
         });
         delete this.subModuleData?.workFlowId;

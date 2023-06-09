@@ -20,7 +20,7 @@
         <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
           <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Users</a>
         </li>
-        <li>
+        <li class="cursor-pointer">
           <tui-hosted-dropdown
             [content]="dropdown"
             [(open)]="open"

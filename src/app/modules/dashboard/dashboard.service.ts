@@ -399,7 +399,8 @@ export class DashboardService extends ApiService<any> {
         const response = res.data?.workFlowId?.stepIds?.map(data => {
           return {
             approverIds: data?.approverIds?.map(ids => ids.id),
-            condition: data?.condition
+            condition: data?.condition,
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers
           }
         });
         return response;

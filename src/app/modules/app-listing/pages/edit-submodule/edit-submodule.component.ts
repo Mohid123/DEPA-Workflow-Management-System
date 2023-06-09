@@ -141,8 +141,8 @@ export class EditSubmoduleComponent {
                 id: data?.id,
                 approverIds: data?.approverIds?.map(ids => ids.id),
                 condition: data?.condition,
-                emailNotifyTo: data?.emailNotifyTo || [],
-                emailNotifyToId: data?.emailNotifyToId
+                emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
+                emailNotifyToId: data?.emailNotifyToId?.id
               }
             });
             delete response?.workFlowId;

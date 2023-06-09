@@ -113,9 +113,9 @@ export class PublishAppComponent implements OnDestroy {
             return {
               id: data?.id,
               approverIds: data?.approverIds?.map((ids) => ids.id),
-              emailNotifyTo: data?.emailNotifyTo || [],
+              emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
               condition: data?.condition,
-              emailNotifyToId: data?.emailNotifyToId
+              emailNotifyToId: data?.emailNotifyToId?.id
             };
           });
           const workFlow = val?.workFlowId?.id;
