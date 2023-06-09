@@ -23,6 +23,7 @@ import { UsersListComponent } from './pages/users-list/users-list.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
 import { TrimDirective } from 'src/core/directives/trim.directive';
 import { WithLoadingPipe } from 'src/core/pipes/with-loading.pipe';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { WithLoadingPipe } from 'src/core/pipes/with-loading.pipe';
     GridViewLoaderComponent,
     CategoriesListComponent,
     UsersListComponent,
-    CompaniesComponent
+    CompaniesComponent,
+    ProfileComponent
   ],
   imports: [
     CommonModule,

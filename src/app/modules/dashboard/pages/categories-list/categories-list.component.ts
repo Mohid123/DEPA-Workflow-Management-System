@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
@@ -7,7 +7,8 @@ import { FormControl } from '@angular/forms';
 
 @Component({
   templateUrl: './categories-list.component.html',
-  styleUrls: ['./categories-list.component.scss']
+  styleUrls: ['./categories-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategoriesListComponent implements OnDestroy {
   categories: Observable<any>;

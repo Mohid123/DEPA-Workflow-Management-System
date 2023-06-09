@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
@@ -8,7 +8,8 @@ import { userAddForm } from 'src/app/forms-schema/forms';
 
 @Component({
   templateUrl: './users-list.component.html',
-  styleUrls: ['./users-list.component.scss']
+  styleUrls: ['./users-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersListComponent implements OnDestroy {
   users: Observable<any>;
@@ -24,17 +25,21 @@ export class UsersListComponent implements OnDestroy {
 
   constructor(
     private dashboard: DashboardService,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService) {
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private cf: ChangeDetectorRef
+  ) {
       this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
 
       this.searchValue.valueChanges.pipe(
-        distinctUntilChanged(),
         debounceTime(400),
+        distinctUntilChanged(),
         switchMap(searchStr => searchStr == '' ?
         this.users = this.dashboard.getAllUsersForListing(this.limit, this.page) :
         this.users = this.dashboard.getAllUsersForListing(this.limit, this.page, searchStr)),
         takeUntil(this.destroy$)
-      ).subscribe()
+      ).subscribe(() => {
+        this.cf.detectChanges()
+      })
     }
   
   changePage(page: number) {

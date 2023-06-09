@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
@@ -7,7 +7,8 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 
 @Component({
   templateUrl: './companies.component.html',
-  styleUrls: ['./companies.component.scss']
+  styleUrls: ['./companies.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompaniesComponent {
   companies: Observable<any>;

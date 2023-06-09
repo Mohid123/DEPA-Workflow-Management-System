@@ -7,6 +7,7 @@ import { ModuleGuard } from '../auth/guards/module.guard';
 import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
 import { UsersListComponent } from './pages/users-list/users-list.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,11 @@ const routes: Routes = [
         path: 'companies',
         component: CompaniesComponent,
         data: {breadcrumb:'Companies'},
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        data: {breadcrumb:'Profile'},
       },
       {
         path: '',
