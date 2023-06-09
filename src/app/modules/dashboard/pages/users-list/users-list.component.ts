@@ -86,6 +86,7 @@ export class UsersListComponent implements OnDestroy {
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
         this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
+        this.cf.detectChanges()
       })
     }
     else {
@@ -96,14 +97,18 @@ export class UsersListComponent implements OnDestroy {
       }
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
-        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
+        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+        this.cf.detectChanges()
       })
     }
   }
 
   deleteUser() {
     this.dashboard.deleteUser(this.userId).pipe(takeUntil(this.destroy$))
-    .subscribe(() => this.users = this.dashboard.getAllUsersForListing(this.limit, this.page))
+    .subscribe(() => {
+      this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+      this.cf.detectChanges()
+    })
   }
 
   ngOnDestroy(): void {

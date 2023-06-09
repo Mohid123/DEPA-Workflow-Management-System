@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
@@ -20,7 +20,8 @@ export class CategoriesListComponent implements OnDestroy {
 
   constructor(
     private dashboard: DashboardService,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private cf: ChangeDetectorRef
   ) {
     this.categories = this.dashboard.getAllCategories(this.limit, this.page);
   }
@@ -37,6 +38,7 @@ export class CategoriesListComponent implements OnDestroy {
       .subscribe(res => {
         if(res) {
           this.categories = this.dashboard.getAllCategories(this.limit, this.page);
+          this.cf.detectChanges()
         }
       });
     }
@@ -46,6 +48,7 @@ export class CategoriesListComponent implements OnDestroy {
       .subscribe(res => {
         if(res) {
           this.categories = this.dashboard.getAllCategories(this.limit, this.page);
+          this.cf.detectChanges();
         }
       });
     }
@@ -53,7 +56,10 @@ export class CategoriesListComponent implements OnDestroy {
 
   deleteCategory() {
     this.dashboard.deleteCategory(this.categoryId).pipe(takeUntil(this.destroy$))
-    .subscribe(() => this.categories = this.dashboard.getAllCategories(this.limit, this.page))
+    .subscribe(() => {
+      this.categories = this.dashboard.getAllCategories(this.limit, this.page);
+      this.cf.detectChanges()
+    })
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {

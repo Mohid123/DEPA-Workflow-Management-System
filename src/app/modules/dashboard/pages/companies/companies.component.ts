@@ -7,8 +7,7 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 
 @Component({
   templateUrl: './companies.component.html',
-  styleUrls: ['./companies.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./companies.component.scss']
 })
 export class CompaniesComponent {
   companies: Observable<any>;

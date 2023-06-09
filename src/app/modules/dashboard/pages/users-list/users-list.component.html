@@ -18,11 +18,12 @@
       <table
         tuiTable
         class="rounded-lg w-full"
-        [columns]="['full name', 'email', 'role', 'actions']"
+        [columns]="['fullName', 'email', 'role', 'actions']"
       >
         <thead>
           <tr tuiThGroup>
             <th
+              *tuiHead="'fullName'"
               tuiTh
               [resizable]="true"
               class="text-base"
@@ -30,6 +31,7 @@
               Full Name
             </th>
             <th
+              *tuiHead="'email'"
               tuiTh
               [resizable]="true"
               class="text-base"
@@ -37,25 +39,27 @@
               Email
             </th>
             <th
+              *tuiHead="'role'"
               tuiTh
               [resizable]="true"
               class="text-base"
             >
               Role
             </th>
-            <th class="text-base" tuiTh>Actions</th>
+            <th class="text-base" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
           </tr>
         </thead>
         <tbody
+          *tuiLet="data?.results | tuiTableSort as sortedData"
           tuiTbody
-          [data]="data"
+          [data]="sortedData"
         >
-          <tr *ngIf="data?.results?.length == 0; else showData">
+          <tr *ngIf="sortedData?.length == 0; else showData">
             <td colspan="12" class="px-4 py-8 text-lg text-gray-500 text-center bg-white border border-gray-300 font-medium">No results found!</td>
           </tr>
           <ng-template #showData>
             <tr
-              *ngFor="let item of data?.results"
+              *ngFor="let item of sortedData; let i = index"
               tuiTr
             >
               <td
@@ -83,14 +87,14 @@
                 *tuiCell="'actions'"
                 tuiTd
               >
-              <div class="flex justify-start">
-                <!-- <a (click)="showDialog(template, item)" class="px-2 py-1 cursor-pointer rounded-md bg-blue-400 text-white mx-2 hover:text-white">
-                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                </a> -->
-                <button (click)="showDeleteDialog(item, deltemplate)" class="px-2 py-1 rounded-md bg-red-500 text-white">
-                  <i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
-              </div>
+                <div class="flex justify-start">
+                  <!-- <a (click)="showDialog(template, item)" class="px-2 py-1 cursor-pointer rounded-md bg-blue-400 text-white mx-2 hover:text-white">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </a> -->
+                  <button (click)="showDeleteDialog(item, deltemplate)" class="px-2 py-1 rounded-md bg-red-500 text-white">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </ng-template>
