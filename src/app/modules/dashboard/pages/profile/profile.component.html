@@ -1,1 +1,31 @@
-<p>profile works!</p>
+<app-header></app-header>
+<div class="bg_img_main">
+  <section class="mt-52 pb-52 mx-auto w-11/12">
+    <div class="px-8 py-5 bg-white rounded-md w-full grid grid-cols-12 sahdow-lg drop-shadow-lg">
+      <div class="col-span-4 flex flex-col items-center gap-2">
+        <tui-avatar
+          new
+          [text]="currentUser?.fullName"
+          size="xxl"
+        ></tui-avatar>
+        <p class="font-semibold">{{currentUser?.fullName}}</p>
+        <p>{{currentUser?.email}}</p>
+      </div>
+
+      <div class="col-span-8">
+        <p class="pb-3 text-base font-semibold">Profile data</p>
+        <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="userForm"></formio>
+        <button
+          tuiButton
+          type="button"
+          size="m"
+          [disabled]="(formData | async)?.isValid == false"
+          (click)="editUser();"
+          >
+          Edit
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+<app-footer></app-footer>

@@ -325,3 +325,66 @@ export const userAddForm = {
       }
   ]
 }
+
+export const profileForm = {
+  "title": "Profile Form",
+  "key": "profile-form",
+  "display": "form",
+  "components": [
+      {
+          "label": "Full Name",
+          "tableView": true,
+          "key": "fullname",
+          "type": "textfield",
+          "input": true,
+          "validate": {
+            "required": true
+          },
+      },
+      {
+          "label": "Email",
+          "tableView": true,
+          "key": "email",
+          "type": "email",
+          "validate": {
+            "required": true
+          },
+          "input": true
+      },
+      {
+        "label": "Password",
+        "tableView": false,
+        "validate": {
+            "required": true,
+            "minLength": 8
+        },
+        "key": "password",
+        "type": "password",
+        "input": true,
+        "protected": true
+      },
+      {
+          "label": "Role",
+          "widget": "choicesjs",
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "data": {
+              "values": [
+                  {
+                      "label": "Admin",
+                      "value": "admin"
+                  },
+                  {
+                      "label": "User",
+                      "value": "user"
+                  }
+              ]
+          },
+          "key": "role",
+          "type": "select",
+          "input": true
+      }
+  ]
+}

@@ -10,7 +10,7 @@ import { TuiButtonModule, TuiLoaderModule, TuiTextfieldControllerModule } from '
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import {TuiTableModule, TuiTablePaginationModule} from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
-import { TuiBadgedContentModule, TuiDataListWrapperModule, TuiInputTagModule, TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
+import { TuiAvatarModule, TuiBadgedContentModule, TuiDataListWrapperModule, TuiInputTagModule, TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
 import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
@@ -22,7 +22,6 @@ import { CategoriesListComponent } from './pages/categories-list/categories-list
 import { UsersListComponent } from './pages/users-list/users-list.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
 import { TrimDirective } from 'src/core/directives/trim.directive';
-import { WithLoadingPipe } from 'src/core/pipes/with-loading.pipe';
 import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
@@ -61,7 +60,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
     TuiTablePaginationModule,
     TrimDirective,
     TuiBadgedContentModule,
-    WithLoadingPipe
+    TuiAvatarModule
   ]
 })
 export class DashboardModule { }
