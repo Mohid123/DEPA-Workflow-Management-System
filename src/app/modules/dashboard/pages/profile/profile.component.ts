@@ -55,8 +55,12 @@ export class ProfileComponent implements OnDestroy {
       this.dashboard.updateUser(this.currentUser?.id, payload)
       .pipe(takeUntil(this.destroy$)).subscribe((res: User | any) => {
         if(res) {
-          debugger
-          this.auth.updateUser(res)
+          this.auth.updateUser(res);
+          this.formData.next({
+            fullname: res?.fullName,
+            email: res?.email,
+            role: res?.role
+          });
         }
       })
     }
