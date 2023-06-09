@@ -282,7 +282,7 @@ export class AddSubmoduleComponent implements OnDestroy {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
           condition: data?.condition,
-          // emailNotifyTo: data?.emailNotifyTo
+          emailNotifyTo: data?.emailNotifyTo || []
         }
       })
     }

@@ -113,8 +113,9 @@ export class PublishAppComponent implements OnDestroy {
             return {
               id: data?.id,
               approverIds: data?.approverIds?.map((ids) => ids.id),
-              emailNotifyTo: data?.emailNotifyTo,
+              emailNotifyTo: data?.emailNotifyTo || [],
               condition: data?.condition,
+              emailNotifyToId: data?.emailNotifyToId
             };
           });
           const workFlow = val?.workFlowId?.id;
@@ -246,12 +247,14 @@ export class PublishAppComponent implements OnDestroy {
               condition: any;
               approverIds: any;
               emailNotifyTo: any;
+              emailNotifyToId?: any;
               id?: any;
             }) => {
               return this.fb.group({
                 condition: [val.condition, Validators.required],
                 approverIds: [val.approverIds, Validators.required],
-                emailNotifyTo: [val.emailNotifyTo, Validators.required],
+                emailNotifyTo: [val.emailNotifyTo || [], Validators.required],
+                emailNotifyToId: [val.emailNotifyToId || undefined],
                 id: [val.id || undefined],
               });
             }
@@ -464,6 +467,7 @@ export class PublishAppComponent implements OnDestroy {
                 condition: data?.condition,
                 emailNotifyTo: data?.emailNotifyTo,
                 id: data?.id ? data?.id : undefined,
+                emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
               };
             });
             const defaultFlow = newSteps;

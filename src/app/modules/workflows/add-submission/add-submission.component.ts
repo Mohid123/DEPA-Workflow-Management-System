@@ -161,12 +161,11 @@ export class AddSubmissionComponent implements OnDestroy {
     if(item) {
       this.workflowForm = this.fb.group({
         workflows: this.fb.array(
-          item?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; id?: any }) => {
+          item?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId?: any; id?: any }) => {
             return this.fb.group({
               condition: [val.condition, Validators.required],
               approverIds: [val.approverIds, Validators.required],
-              emailNotifyTo: [val?.emailNotifyTo || [], Validators.required],
-              id: [val.id || undefined]
+              emailNotifyTo: [val?.emailNotifyTo || [], Validators.required]
             })
           }))
         })
@@ -249,7 +248,7 @@ export class AddSubmissionComponent implements OnDestroy {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
           condition: data?.condition,
-          // emailNotifyTo: data?.emailNotifyTo || [],
+          emailNotifyTo: data?.emailNotifyTo || []
         }
       })
     }
