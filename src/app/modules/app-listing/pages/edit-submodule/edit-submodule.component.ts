@@ -141,7 +141,8 @@ export class EditSubmoduleComponent {
                 id: data?.id,
                 approverIds: data?.approverIds?.map(ids => ids.id),
                 condition: data?.condition,
-                emailNotifyTo: data?.emailNotifyTo || []
+                emailNotifyTo: data?.emailNotifyTo || [],
+                emailNotifyToId: data?.emailNotifyToId
               }
             });
             delete response?.workFlowId;
@@ -176,12 +177,13 @@ export class EditSubmoduleComponent {
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       workflows: item?.workFlowId ?
       this.fb.array(
-        item?.workFlowId?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; id: any }) => {
+        item?.workFlowId?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId: any; id: any }) => {
           return this.fb.group({
             id: val.id,
             condition: [val.condition, Validators.required],
             approverIds: [val.approverIds, Validators.required],
-            emailNotifyTo: [val.emailNotifyTo || [], Validators.required]
+            emailNotifyTo: [val.emailNotifyTo || [], Validators.required],
+            emailNotifyToId: val?.emailNotifyToId,
           })
         })
       )
@@ -238,7 +240,8 @@ export class EditSubmoduleComponent {
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       condition: ['', Validators.required],
-      approverIds: [[], Validators.required]
+      approverIds: [[], Validators.required],
+      emailNotifyTo: [[], Validators.required]
     });
     this.workflows.push(workflowStepForm)
   }
@@ -311,7 +314,9 @@ export class EditSubmoduleComponent {
         return {
           id: data?.id ? data?.id : undefined,
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
-          condition: data?.condition
+          condition: data?.condition,
+          emailNotifyTo: data?.emailNotifyTo || [],
+          emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       })
     }
