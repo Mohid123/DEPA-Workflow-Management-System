@@ -37,20 +37,20 @@ export class TableViewComponent {
    * The filter parameters to show in the dropdown
    */
   filterMenuCompany =  [
-    {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
-    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg'},
-    {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg'},
-    {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
+    {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg', sortBy: 'Company Name'},
+    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg', sortBy: 'Company Name'},
+    {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg', sortBy: 'Company Name'},
+    {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg', sortBy: 'Company Name'}
   ];
 
   /**
    * The filter parameters to show in the dropdown
    */
   filterMenuSubmodule =  [
-    {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
-    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg'},
-    {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg'},
-    {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
+    {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg', sortBy: 'Submodule Code'},
+    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg', sortBy: 'Submodule Code'},
+    {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg', sortBy: 'Submodule Code'},
+    {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg', sortBy: 'Submodule Code'}
   ];
 
   /**
@@ -76,18 +76,16 @@ export class TableViewComponent {
    /**
    * @ignore
    */
-  length = 1;
-
-   /**
-   * @ignore
-   */
-  index = 0;
+   page = 1;
 
   moduleId: string;
   moduleCode: string;
   currentUser: any;
 
-  @Output() emitDeleteEvent = new EventEmitter()
+  @Output() emitDeleteEvent = new EventEmitter();
+  @Output() emitPagination = new EventEmitter();
+  @Output() emitFilters = new EventEmitter();
+  @Output() emitSearch = new EventEmitter();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -135,8 +133,12 @@ export class TableViewComponent {
    * Handles pagination of table data
    */
   goToPage(index: number): void {
-    this.index = index;
-    console.info('New page:', index);
+    this.page = index + 1;
+    this.emitPagination.emit(this.page)
+  }
+
+  floorNumber(value: number) {
+    return Math.round(value)
   }
 
   /**
@@ -145,7 +147,10 @@ export class TableViewComponent {
    * Sends the selected filter value from the [Filter Component]{@link FilterComponent} to server and fetches result
    */
   sendFilterValue(value: any) {
-    console.log(value);
-    //send api call here
+    this.emitFilters.emit(value)
+  }
+
+  sendSearchValue(value: any) {
+    this.emitSearch.emit(value)
   }
 }

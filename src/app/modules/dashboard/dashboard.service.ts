@@ -485,8 +485,13 @@ export class DashboardService extends ApiService<any> {
   }
 
   // needed for showing submodule list by module name on submodules listing page
-  getSubModuleByModuleSlug(moduleSlug: string): Observable<ApiResponse<any>> {
-    return this.get(`/module/slug/${moduleSlug}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+  getSubModuleByModuleSlug(moduleSlug: string, limit: any, page: any, queryParams?: any): Observable<ApiResponse<any>> {
+    const params: any = {
+      limit: limit,
+      page: page,
+      ...queryParams
+    }
+    return this.get(`/module/slug/${moduleSlug}`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
       }

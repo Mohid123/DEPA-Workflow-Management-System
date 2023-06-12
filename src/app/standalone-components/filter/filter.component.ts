@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TuiButtonModule, TuiHintModule, TuiHostedDropdownModule } from '@taiga-ui/core';
 import { TuiDataListWrapperModule, TuiInputModule } from '@taiga-ui/kit';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Dynamic Filter component for handling search, sorting and other filters on the Table component Example usage:
@@ -63,6 +64,10 @@ export class FilterComponent {
    * handles the resetting of filters
    */
   @Output() resetFilters = new EventEmitter();
+  @Output() sendSearchToTable = new EventEmitter();
+
+  previousValue = new BehaviorSubject('');
+  previousFilters = new BehaviorSubject<any>([])
 
   /**
    * Boolean to indicate that filter is active or not. Default is false "Reset Filter" button appears if value is true.
@@ -76,8 +81,12 @@ export class FilterComponent {
    * @param {string} searchStr 
    * @returns void
    */
-  searchTableData(searchStr: string) {
-    console.log(searchStr)
+  searchTableData(searchStr: string, filterBy: string) {
+    const params = {
+      search: searchStr,
+      searchBy: filterBy
+    }
+    this.sendSearchToTable.emit(params)
   }
 
   /**

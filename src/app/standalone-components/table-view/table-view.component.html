@@ -26,6 +26,7 @@
               <ng-template #notStatus>
                 <ng-container *ngIf="column === 'Company Name'">
                   <filter
+                    (sendSearchToTable)="sendSearchValue($event)"
                     [filterBy]="column"
                     [showSortCategories]="false"
                     [items]="filterMenuCompany"
@@ -35,6 +36,7 @@
                 </ng-container>
                 <ng-container *ngIf="column === 'Submodule Code'">
                   <filter
+                    (sendSearchToTable)="sendSearchValue($event)"
                     [filterBy]="column"
                     [items]="filterMenuSubmodule"
                     (applyStatus)="sendFilterValue($event)"
@@ -57,7 +59,7 @@
         </ng-container>
 
         <ng-template #showSubModules>
-          <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last">
+          <ng-container *ngFor="let data of tableData?.results; let i = index; let first = first; let last = last">
             <tr class="bg-white border-b border-gray-300">
               <td class="px-6 py-4">
                 {{data?.companyId?.title}}
@@ -92,8 +94,8 @@
     </table>
     <div class="pt-10 pb-6">
       <tui-pagination
-        [length]="length"
-        [index]="index"
+        [length]="tableData?.totalPages"
+        [index]="tableData?.page - 1"
         (indexChange)="goToPage($event)"
       ></tui-pagination>
     </div>
