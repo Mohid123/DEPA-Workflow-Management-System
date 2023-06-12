@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { userAddForm } from 'src/app/forms-schema/forms';
+import { userAddFormProfile } from 'src/app/forms-schema/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { User } from 'src/core/models/user.model';
 import { DashboardService } from '../../dashboard.service';
@@ -16,7 +16,7 @@ export class ProfileComponent implements OnDestroy {
   currentUser: User;
   formSubmission: any;
   formData = new BehaviorSubject<any>({});
-  userForm = userAddForm;
+  userForm = userAddFormProfile;
   destroy$ = new Subject();
 
   constructor(private auth: AuthService, private dashboard: DashboardService, private notif: NotificationsService) {

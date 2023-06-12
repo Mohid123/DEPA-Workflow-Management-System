@@ -281,6 +281,37 @@ export const userAddForm = {
   "display": "form",
   "components": [
       {
+          "label": "Role",
+          "widget": "choicesjs",
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "data": {
+              "values": [
+                  {
+                      "label": "Admin",
+                      "value": "admin"
+                  },
+                  {
+                      "label": "User",
+                      "value": "user"
+                  }
+              ]
+          },
+          "key": "role",
+          "type": "select",
+          "input": true
+      }
+  ]
+}
+
+export const userAddFormProfile = {
+  "title": "User Form",
+  "key": "user-form",
+  "display": "form",
+  "components": [
+      {
           "label": "Full Name",
           "tableView": true,
           "key": "fullname",
@@ -304,6 +335,7 @@ export const userAddForm = {
           "label": "Role",
           "widget": "choicesjs",
           "tableView": true,
+          "disabled": true,
           "validate": {
             "required": true
           },
