@@ -1,10 +1,10 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52">
-  <ng-container *ngIf="(submissionData | async) as tableData; else noData">
-    <p class="text-left font-semibold text-base mb-7">Code:&nbsp; <span class="text-[#374151]">{{tableData[0]?.subModuleId?.code}}</span> </p>
+  <ng-container *ngIf="submissionData as tableData; else noData">
+    <p class="text-left font-semibold text-base mb-7">Code:&nbsp; <span class="text-[#374151]">{{tableData?.results[0]?.subModuleId?.code}}</span> </p>
     <div class="flex justify-between mb-5">
       <p class="text-left font-semibold text-lg">List of Submissions</p>
-      <div *ngIf="checkIfUserisAdmin() || checkIfUserisCreator() || currentUser?.role == 'admin' || (submissionData | async)?.length == 0" class="cursor-pointer">
+      <div *ngIf="checkIfUserisAdmin() || checkIfUserisCreator() || currentUser?.role == 'admin' || tableData?.results?.length == 0" class="cursor-pointer">
         <a [routerLink]="['/submodule/submissions/add-submission', submoduleId]"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
       </div>
     </div>
@@ -16,10 +16,10 @@
               Submission Status&nbsp;
               <filter
                 [filterBy]="'Status'"
-                [showSortCategories]="false"
                 [items]="statusMenu"
                 [searchEnabled]="false"
                 (applyStatus)="sendFilterValue($event)"
+                (resetFilters)="resetFilterValues($event)"
               >
               </filter>
             </th>
@@ -32,13 +32,13 @@
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngIf="tableData?.length == 0; else showSubmissions">
+          <ng-container *ngIf="tableDataValue?.length == 0; else showSubmissions">
             <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
               It seems there is no data to show here!
             </th>
           </ng-container>
           <ng-template #showSubmissions>
-            <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last; trackBy: trackByFn">
+            <ng-container *ngFor="let data of tableDataValue; let i = index; let first = first; let last = last; trackBy: trackByFn">
               <tr class="bg-white border-b border-gray-300">
                 <td class="px-4 py-4">
                   {{showStatus(data?.submissionStatus)}}
@@ -73,8 +73,9 @@
       </table>
       <div class="pt-10 pb-6">
         <tui-pagination
-          [length]="1"
-          [index]="0"
+          [length]="tableData?.totalPages"
+          [index]="tableData?.page - 1"
+          (indexChange)="goToPage($event)"
         ></tui-pagination>
       </div>
     </div>

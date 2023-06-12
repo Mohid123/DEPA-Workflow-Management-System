@@ -1,11 +1,12 @@
 <div class="flex justify-between mt-5 mb-2">
   <p class="text-left font-semibold text-lg mb-5">List of Submodules</p>
   <div class="cursor-pointer">
-    <a [routerLink]="['/submodule/add-submodule']" [queryParams]="{moduleID: moduleId}"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
+    <!-- <a *ngIf="isFilterApplied == true" class="px-6 py-3 rounded-md bg-[#CF2729] text-white no-underline hover:text-white text-base">Reset All Filters</a> -->
+    <a [routerLink]="['/submodule/add-submodule']" [queryParams]="{moduleID: moduleId}" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
   </div>
 </div>
 
-<!-- <tui-loader [overlay]="true" size="xl"> -->
+<tui-loader [overlay]="true" size="xl" [showLoader]="fetchingTableData | async">
   <div class="relative overflow-x-auto rounded-lg shadow-lg">
     <table class="w-full text-sm text-left text-gray-500">
       <thead class="text-xs text-gray-700 uppercase bg-[#eae4d8]">
@@ -14,14 +15,6 @@
             <th scope="col" class="px-6 py-3 text-sm">
               {{column}} &nbsp;
               <ng-container *ngIf="column === 'Status'; else notStatus">
-                <!-- <filter
-                  [filterBy]="column"
-                  [searchEnabled]="false"
-                  [showSortCategories]="false"
-                  [items]="statusMenu"
-                  (applyStatus)="sendFilterValue($event)"
-                >
-                </filter> -->
               </ng-container>
               <ng-template #notStatus>
                 <ng-container *ngIf="column === 'Company Name'">
@@ -30,7 +23,8 @@
                     [filterBy]="column"
                     [showSortCategories]="false"
                     [items]="filterMenuCompany"
-                    (applyStatus)="sendFilterValue($event)"
+                    (applyStatus)="sendFilters($event)"
+                    (resetFilters)="resetFilterValues($event)"
                   >
                   </filter>
                 </ng-container>
@@ -39,7 +33,8 @@
                     (sendSearchToTable)="sendSearchValue($event)"
                     [filterBy]="column"
                     [items]="filterMenuSubmodule"
-                    (applyStatus)="sendFilterValue($event)"
+                    (applyStatus)="sendFilters($event)"
+                    (resetFilters)="resetFilterValues($event)"
                   >
                   </filter>
                 </ng-container>
@@ -100,7 +95,7 @@
       ></tui-pagination>
     </div>
   </div>
-<!-- </tui-loader> -->
+</tui-loader>
 
 <ng-template #template let-observer>
   <p class="pb-2 text-xl font-semibold text-center border-b border-gray-400">Delete SubModule</p>

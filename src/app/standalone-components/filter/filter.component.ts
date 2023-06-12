@@ -66,13 +66,11 @@ export class FilterComponent {
   @Output() resetFilters = new EventEmitter();
   @Output() sendSearchToTable = new EventEmitter();
 
-  previousValue = new BehaviorSubject('');
-  previousFilters = new BehaviorSubject<any>([])
-
   /**
    * Boolean to indicate that filter is active or not. Default is false "Reset Filter" button appears if value is true.
    */
   isFilterApplied: boolean = false;
+  previousFilterValues = new BehaviorSubject<any>([])
 
   /**
    * @description
@@ -112,6 +110,28 @@ export class FilterComponent {
     }
   }
 
+  areArraysEqual(array1, array2) {
+    if (array1.length !== array2.length) {
+      return false;
+    }
+    const sortedArray1 = array1.slice().sort((a, b) => a.id - b.id);
+    const sortedArray2 = array2.slice().sort((a, b) => a.id - b.id);
+  
+    for (let i = 0; i < sortedArray1.length; i++) {
+      const obj1 = sortedArray1[i];
+      const obj2 = sortedArray2[i];
+  
+      // Compare each property of the objects
+      for (let key in obj1) {
+        if (obj1[key] !== obj2[key]) {
+          return false;
+        }
+      }
+    }
+  
+    return true;
+  }
+
   /**
    * @description
    * Function for resetting filters
@@ -119,6 +139,7 @@ export class FilterComponent {
   resetFilterValue() {
     this.isFilterApplied = false;
     this.items.forEach(val => val.status = 'idle');
+    this.resetFilters.emit('reset')
   }
 
   /**

@@ -28,9 +28,19 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
-  getSubmissionFromSubModule(id: string): Observable<ApiResponse<any>> {
+  getSubmissionFromSubModule(id: string, limit: any, page: any, submissionStatus?: number, sortBy?: string): Observable<ApiResponse<any>> {
     const params = {
-      subModuleId: id
+      subModuleId: id,
+      limit: limit,
+      page: page,
+      sortBy: sortBy ? sortBy : undefined,
+      submissionStatus: submissionStatus ? submissionStatus : undefined
+    }
+    if(params.submissionStatus == undefined) {
+      delete params.submissionStatus
+    }
+    if(params.sortBy == undefined) {
+      delete params.sortBy
     }
     return this.get(`/submissions`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

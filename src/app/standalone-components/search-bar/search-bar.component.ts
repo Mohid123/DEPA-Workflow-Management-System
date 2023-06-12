@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, Output } f
 import { CommonModule } from '@angular/common';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Subject, debounceTime, map, takeUntil } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 
 /**
@@ -44,9 +44,11 @@ export class SearchBarComponent implements OnDestroy {
     this.searchValue.valueChanges
     .pipe(
       debounceTime(400),
-      map(val => val.trim()),
+      distinctUntilChanged(),
       takeUntil(this.destroy$))
-    .subscribe(typedValue => this.searchStr.emit(typedValue))
+    .subscribe(typedValue => {
+      this.searchStr.emit(typedValue ? typedValue : null)
+    })
   }
 
   /**

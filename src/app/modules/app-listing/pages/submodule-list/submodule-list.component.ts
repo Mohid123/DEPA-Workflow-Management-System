@@ -51,46 +51,5 @@ export class SubmodulesListComponent {
       this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(this.moduleSlug, this.limit, this.page)
     }
   }
-
-  getSortType(value: any): string {
-    if(value?.sortType == 'Sort by Latest') {
-      return 'latest'
-    }
-    if(value?.sortType == 'Sort by Oldest') {
-      return 'oldest'
-    }
-    if(value?.sortType == 'Sort by Descending') {
-      return 'desc'
-    }
-    return 'asc'
-  }
-
-  sendFilters(value: any) {
-    if(value) {
-      const queryParams = {
-        field: value?.applyOn == 'Submodule Code' ? 'subModuleCode': 'companyName',
-        sortByTime: ['latest', 'oldest'].includes(this.getSortType(value)) == true ? this.getSortType(value) : undefined,
-        sortBy: ['asc', 'desc'].includes(this.getSortType(value)) == true ? this.getSortType(value) : undefined,
-      }
-      if(queryParams.sortBy == undefined) {
-        delete queryParams.sortBy
-      }
-      if(queryParams.sortByTime == undefined) {
-        delete queryParams.sortByTime
-      }
-      console.log(queryParams)
-      // this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(this.moduleSlug, this.limit, this.page, queryParams)
-    }
-  }
-
-  sendSearchValue(value: any) {
-    if(value) {
-      const queryParams = {
-        field: value?.searchBy == 'Submodule Code' ? 'subModuleCode': 'companyName',
-        search: value?.search
-      }
-      console.log(queryParams)
-      // this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(this.moduleSlug, this.limit, this.page, queryParams)
-    }
-  }
+ 
 }

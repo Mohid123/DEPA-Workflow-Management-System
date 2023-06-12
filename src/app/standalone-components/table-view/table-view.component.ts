@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -10,6 +10,8 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -22,7 +24,7 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
   styleUrls: ['./table-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableViewComponent {
+export class TableViewComponent implements OnDestroy {
   /**
    * The category names to show as table column headers
    */
@@ -33,12 +35,14 @@ export class TableViewComponent {
    */
   @Input() tableData: any = [];
 
+  fetchingTableData = new Subject<boolean>()
+
   /**
    * The filter parameters to show in the dropdown
    */
   filterMenuCompany =  [
     {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg', sortBy: 'Company Name'},
-    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg', sortBy: 'Company Name'},
+    {name: 'Sort by Descending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg', sortBy: 'Company Name'},
     {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg', sortBy: 'Company Name'},
     {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg', sortBy: 'Company Name'}
   ];
@@ -48,7 +52,7 @@ export class TableViewComponent {
    */
   filterMenuSubmodule =  [
     {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg', sortBy: 'Submodule Code'},
-    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg', sortBy: 'Submodule Code'},
+    {name: 'Sort by Descending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg', sortBy: 'Submodule Code'},
     {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg', sortBy: 'Submodule Code'},
     {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg', sortBy: 'Submodule Code'}
   ];
@@ -58,7 +62,7 @@ export class TableViewComponent {
    */
   filterMenuModule =  [
     {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
-    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg'},
+    {name: 'Sort by Descending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg'},
     {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg'},
     {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
   ];
@@ -81,6 +85,8 @@ export class TableViewComponent {
   moduleId: string;
   moduleCode: string;
   currentUser: any;
+  destroy$ =  new Subject();
+  isFilterApplied: boolean = false;
 
   @Output() emitDeleteEvent = new EventEmitter();
   @Output() emitPagination = new EventEmitter();
@@ -146,11 +152,76 @@ export class TableViewComponent {
    * @param {any} value
    * Sends the selected filter value from the [Filter Component]{@link FilterComponent} to server and fetches result
    */
-  sendFilterValue(value: any) {
-    this.emitFilters.emit(value)
+  getSortType(value: any): string {
+    if(value?.sortType == 'Sort by Latest') {
+      return 'latest'
+    }
+    if(value?.sortType == 'Sort by Oldest') {
+      return 'oldest'
+    }
+    if(value?.sortType == 'Sort by Descending') {
+      return 'desc'
+    }
+    return 'asc'
+  }
+
+  sendFilters(value: any) {
+    if(value) {
+      this.isFilterApplied = true;
+      this.fetchingTableData.next(true)
+      const queryParams = {
+        field: value?.applyOn == 'Submodule Code' ? 'subModuleCode': 'companyName',
+        sortByTime: ['latest', 'oldest'].includes(this.getSortType(value)) == true ? this.getSortType(value) : undefined,
+        sortBy: ['asc', 'desc'].includes(this.getSortType(value)) == true ? this.getSortType(value) : undefined,
+      }
+      if(queryParams.sortBy == undefined) {
+        delete queryParams.sortBy
+      }
+      if(queryParams.sortByTime == undefined) {
+        delete queryParams.sortByTime
+      }
+      this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        this.tableData = res
+        this.fetchingTableData.next(false)
+      })
+    }
   }
 
   sendSearchValue(value: any) {
-    this.emitSearch.emit(value)
+    if(value) {
+      this.fetchingTableData.next(true)
+      const queryParams = {
+        field: value?.searchBy == 'Submodule Code' ? 'subModuleCode': 'companyName',
+        search: value?.search
+      }
+      if(queryParams.search == null) {
+        delete queryParams.search
+      }
+      this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        this.tableData = res;
+        this.fetchingTableData.next(false)
+      })
+    }
+  }
+
+  resetFilterValues(value: any) {
+    this.fetchingTableData.next(true)
+    if(value) {
+      this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        this.tableData = res;
+        this.fetchingTableData.next(false);
+      })
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

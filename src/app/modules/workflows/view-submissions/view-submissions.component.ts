@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription, map, pluck, switchMap } from 'rxjs';
+import { Observable, Subject, Subscription, map, pluck, switchMap, takeUntil } from 'rxjs';
 import { WorkflowsService } from '../workflows.service';
 import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 import { AuthService } from '../../auth/auth.service';
@@ -10,13 +10,14 @@ import { AuthService } from '../../auth/auth.service';
   styleUrls: ['./view-submissions.component.scss']
 })
 export class ViewSubmissionsComponent implements OnDestroy {
-  submissionData: Observable<any>;
+  submissionData: any;
   submoduleId: string;
   workflowUsers: any[] = [];
   subscriptions: Subscription[] = [];
   currentUser: any;
   adminUsers: any[] = [];
   createdByUsers: any[] = [];
+  destroy$ = new Subject();
 
   // filters
   filterMenuCompany =  [
@@ -30,8 +31,14 @@ export class ViewSubmissionsComponent implements OnDestroy {
     {name: 'Active', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
     {name: 'In Progress', status: 'idle', icon: ''},
-    {name: 'Draft', status: 'idle', icon: ''}
+    {name: 'Draft', status: 'idle', icon: ''},
+    {name: 'Sort by Latest', status: 'idle', icon: ''},
+    {name: 'Sort by Oldest', status: 'idle', icon: ''}
   ];
+
+  page = 1;
+  tableDataValue: any;
+  limit: number = 7;
 
   constructor(private activatedRoute: ActivatedRoute, private workflowService: WorkflowsService, private auth: AuthService) {
     this.currentUser = this.auth.currentUserValue
@@ -40,15 +47,13 @@ export class ViewSubmissionsComponent implements OnDestroy {
       this.submoduleId = val['id']
       setItem(StorageItem.workflowID, val['id'])
     }));
-    
 
-    this.submissionData = this.activatedRoute.params.pipe(
-      switchMap(() => this.workflowService.getSubmissionFromSubModule(this.submoduleId))
-    );
-
-    this.subscriptions.push(this.submissionData.subscribe(val => {
-      this.adminUsers = val?.flatMap(data => data?.subModuleId?.adminUsers);
-      this.createdByUsers = val?.map(data => data?.subModuleId?.createdBy);
+    this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+      .subscribe((val: any) => {
+        this.submissionData = val;
+        this.tableDataValue = val?.results;
+        this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
+        this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
   }
 
@@ -81,13 +86,87 @@ export class ViewSubmissionsComponent implements OnDestroy {
   }
 
   sendFilterValue(value: any) {
-    console.log(value);
-    //send api call here
+    switch (value?.sortType) {
+      case 'Active':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 1)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((val: any) => {
+            this.submissionData = val;
+            this.tableDataValue = val?.results;
+          })
+        break
+      case 'Completed':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 3)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((val: any) => {
+            this.submissionData = val;
+            this.tableDataValue = val?.results;
+          })
+        break
+      case 'In Progress':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 2)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((val: any) => {
+            this.submissionData = val;
+            this.tableDataValue = val?.results;
+          })
+        break
+      case 'Draft':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 4)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((val: any) => {
+          this.submissionData = val;
+          this.tableDataValue = val?.results;
+        })
+        break
+      case 'Sort by Latest':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'latest')
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((val: any) => {
+          this.submissionData = val;
+          this.tableDataValue = val?.results;
+        })
+        break
+      case 'Sort by Oldest':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'oldest')
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((val: any) => {
+          this.submissionData = val;
+          this.tableDataValue = val?.results;
+        })
+        break
+    }
+  }
+
+  resetFilterValues(value: any) {
+    if(value) {
+      this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((val: any) => {
+          this.submissionData = val;
+          this.tableDataValue = val?.results;
+      })
+    }
   }
 
   trackByFn(index: number, item: any) {
     return item?.id
   }
+
+    /**
+   *
+   * @param {number} index
+   * Handles pagination of table data
+   */
+    goToPage(index: number): void {
+      this.page = index + 1;
+      this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((val: any) => {
+          this.submissionData = val;
+          this.tableDataValue = val?.results;
+      })
+    }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(val => val.unsubscribe());
