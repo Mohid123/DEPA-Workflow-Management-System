@@ -28,7 +28,7 @@ export class ViewSubmissionsComponent implements OnDestroy {
   ];
 
   statusMenu = [
-    {name: 'Active', status: 'idle', icon: ''},
+    {name: 'Created', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
     {name: 'In Progress', status: 'idle', icon: ''},
     {name: 'Draft', status: 'idle', icon: ''},
@@ -59,7 +59,7 @@ export class ViewSubmissionsComponent implements OnDestroy {
 
   showStatus(submissionStatus: number): string {
     if(submissionStatus === 1) {
-      return 'Active'
+      return 'Created'
     }
     if(submissionStatus === 3) {
       return 'Completed'
@@ -87,7 +87,7 @@ export class ViewSubmissionsComponent implements OnDestroy {
 
   sendFilterValue(value: any) {
     switch (value?.sortType) {
-      case 'Active':
+      case 'Created':
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 1)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
