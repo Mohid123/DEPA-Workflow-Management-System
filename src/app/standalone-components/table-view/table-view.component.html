@@ -1,9 +1,11 @@
 <div class="flex justify-between mt-5 mb-2">
   <p class="text-left font-semibold text-lg mb-5">List of Submodules</p>
-  <div class="cursor-pointer">
-    <!-- <a *ngIf="isFilterApplied == true" class="px-6 py-3 rounded-md bg-[#CF2729] text-white no-underline hover:text-white text-base">Reset All Filters</a> -->
-    <a *ngIf="currentUser.id == tableData?.results[0]?.moduleId?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/add-submodule']" [queryParams]="{moduleID: moduleId}" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
-  </div>
+  <ng-container *ngIf="moduleData | async as modData">
+    <div class="cursor-pointer">
+      <!-- <a *ngIf="isFilterApplied == true" class="px-6 py-3 rounded-md bg-[#CF2729] text-white no-underline hover:text-white text-base">Reset All Filters</a> -->
+      <a *ngIf="currentUser.id == modData?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/add-submodule']" [queryParams]="{moduleID: moduleId}" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
+    </div>
+  </ng-container>
 </div>
 
 <tui-loader [overlay]="true" size="xl" [showLoader]="fetchingTableData | async">
