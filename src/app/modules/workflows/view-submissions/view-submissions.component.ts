@@ -76,9 +76,17 @@ export class ViewSubmissionsComponent implements OnDestroy {
     return this.createdByUsers?.includes(this.currentUser?.id)
   }
 
+  getPendingOnUsers(value: any[]) {
+    return value?.map(data => data?.fullName)
+  }
+
   sendFilterValue(value: any) {
     console.log(value);
     //send api call here
+  }
+
+  trackByFn(index: number, item: any) {
+    return item?.id
   }
 
   ngOnDestroy(): void {

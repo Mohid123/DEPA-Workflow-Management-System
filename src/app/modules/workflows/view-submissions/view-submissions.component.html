@@ -38,7 +38,7 @@
             </th>
           </ng-container>
           <ng-template #showSubmissions>
-            <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last">
+            <ng-container *ngFor="let data of tableData; let i = index; let first = first; let last = last; trackBy: trackByFn">
               <tr class="bg-white border-b border-gray-300">
                 <td class="px-4 py-4">
                   {{showStatus(data?.submissionStatus)}}
@@ -46,9 +46,11 @@
                 <td class="px-2 py-4">
                   {{data?.summaryData?.userName || ''}}
                 </td>
-                <td class="px-2 py-4">
-                  {{data?.summaryData?.userName || ''}}
-                </td>
+                  <td class="px-2 py-4">
+                    <ng-container *ngFor="let pending of getPendingOnUsers(data?.summaryData?.pendingOnUsers || []); let lastUser = last">
+                      <span>{{pending}}<span *ngIf="!lastUser">,</span> &nbsp;</span>
+                    </ng-container>
+                  </td>
                 <td class="flex justify-between px-2 py-4">
                   <progress
                     tuiProgressBar
