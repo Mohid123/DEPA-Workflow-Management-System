@@ -365,7 +365,6 @@ export class DashboardService extends ApiService<any> {
   getModuleByID(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        this.moduleEditData.next(res.data)
         return res.data;
       }
       else {
