@@ -52,13 +52,13 @@ export class ViewSubmissionsComponent implements OnDestroy {
 
     this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
       this.submoduleData = val;
-      console.log(val)
     }))
 
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
       .subscribe((val: any) => {
         this.submissionData = val;
         this.tableDataValue = val?.results;
+        this.workflowUsers = val?.results?.flatMap(data => data?.workflowAllUsers);
         this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
         this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
@@ -82,6 +82,10 @@ export class ViewSubmissionsComponent implements OnDestroy {
 
   checkIfUserisAdmin(): boolean {
     return this.adminUsers?.includes(this.currentUser?.id)
+  }
+
+  checkIfUserisPartofWorkflow() {
+    return this.workflowUsers?.includes(this.currentUser?.id)
   }
 
   checkIfUserisCreator(): boolean {
