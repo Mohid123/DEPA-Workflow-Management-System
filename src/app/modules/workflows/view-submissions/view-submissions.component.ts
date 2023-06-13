@@ -64,6 +64,19 @@ export class ViewSubmissionsComponent implements OnDestroy {
     }))
   }
 
+  changeProgressColor(value: number) {
+    if(value <= 49) {
+      return '#F15B41'
+    }
+    if(value > 49 && value < 75) {
+      return '#F9B71A'
+    }
+    if(value >= 75) {
+      return '#32de84'
+    }
+    return '#fff'
+  }
+
   showStatus(submissionStatus: number): string {
     if(submissionStatus === 1) {
       return 'Created'

@@ -175,6 +175,20 @@ export class ViewWorkflowComponent implements OnDestroy {
     this.approve.enable();
   }
 
+  changeProgressColor(value: number) {
+    if(value <= 49) {
+      return '#F15B41'
+    }
+    if(value > 49 && value < 75) {
+      return '#F9B71A'
+    }
+    if(value >= 75) {
+      return '#32de84'
+    }
+    return '#fff'
+  }
+
+
   checkIfUserCanEditForm(): any[] {
     return this.formAllowedForEditUsers?.map(val => {
       if(val.users?.includes(this.currentUser?.fullName) && val.status == 'inProgress') {

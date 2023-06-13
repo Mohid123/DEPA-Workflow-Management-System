@@ -108,7 +108,7 @@
             size="xl"
             [max]="max"
             [value]="workflowProgress | async"
-            color="#f15b41"
+            [color]="changeProgressColor((workflowProgress | async))"
           ></tui-progress-circle>
         </label>
       </div>

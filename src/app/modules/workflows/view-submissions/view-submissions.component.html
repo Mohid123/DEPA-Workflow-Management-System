@@ -54,6 +54,7 @@
                 <td class="flex justify-between px-2 py-4">
                   <progress
                     tuiProgressBar
+                    [color]="changeProgressColor(data?.summaryData?.progress)"
                     max="100"
                     size="s"
                     class="w-9/12 mt-1.5"
@@ -62,9 +63,10 @@
                   <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
                 </td>
                 <td class="px-6 py-4">
-                  <a *ngIf="checkIfUserisPartofWorkflow() == true || currentUser?.role == 'admin'" [routerLink]="['/submodule/submissions/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                  <a [routerLink]="['/submodule/submissions/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
                   </a>
+                  <!--*ngIf="checkIfUserisPartofWorkflow() == true || currentUser?.role == 'admin'" -->
                 </td>
               </tr>
             </ng-container>
