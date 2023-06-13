@@ -4,6 +4,7 @@ import { Observable, Subject, Subscription, map, pluck, switchMap, takeUntil } f
 import { WorkflowsService } from '../workflows.service';
 import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 import { AuthService } from '../../auth/auth.service';
+import { DashboardService } from '../../dashboard/dashboard.service';
 
 @Component({
   templateUrl: './view-submissions.component.html',
@@ -39,14 +40,20 @@ export class ViewSubmissionsComponent implements OnDestroy {
   page = 1;
   tableDataValue: any;
   limit: number = 7;
+  submoduleData: any;
 
-  constructor(private activatedRoute: ActivatedRoute, private workflowService: WorkflowsService, private auth: AuthService) {
-    this.currentUser = this.auth.currentUserValue
+  constructor(private activatedRoute: ActivatedRoute, private workflowService: WorkflowsService, private auth: AuthService, private dashboard: DashboardService) {
+    this.currentUser = this.auth.currentUserValue;
 
     this.subscriptions.push(this.activatedRoute.params.subscribe(val => {
       this.submoduleId = val['id']
       setItem(StorageItem.workflowID, val['id'])
     }));
+
+    this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
+      this.submoduleData = val;
+      console.log(val)
+    }))
 
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
       .subscribe((val: any) => {

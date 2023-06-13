@@ -49,7 +49,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="tableData?.length == 0; else showSubModules">
+        <ng-container *ngIf="tableData?.results?.length == 0; else showSubModules">
           <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
             It seems there is no data to show here!
           </th>
