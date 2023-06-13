@@ -375,6 +375,20 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  getModuleByIDForEditModule(moduleID: string): Observable<ApiResponse<any>> {
+    return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.moduleEditData.next(res.data)
+        return res.data;
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
   editModule(moduleID: string, payload: any): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.patch(`/modules/${moduleID}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {

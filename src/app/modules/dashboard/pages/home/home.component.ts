@@ -33,7 +33,7 @@ export class HomeComponent implements OnDestroy {
 
   editModule(moduleID: string) {
     if(moduleID) {
-      this.subscription.push(this.dashboard.getModuleByID(moduleID).subscribe((res: any) => {
+      this.subscription.push(this.dashboard.getModuleByIDForEditModule(moduleID).subscribe((res: any) => {
         if(res) {
           this.router.navigate(['/dashboard/create-edit-module'], { queryParams: { id: moduleID } });
         }

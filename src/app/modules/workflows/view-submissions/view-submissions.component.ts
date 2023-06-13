@@ -59,7 +59,6 @@ export class ViewSubmissionsComponent implements OnDestroy {
         this.submissionData = val;
         this.tableDataValue = val?.results;
         this.workflowUsers = val?.results?.flatMap(data => data?.workflowAllUsers?.map(val => val?._id));
-        console.log(this.workflowUsers)
         this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
         this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
