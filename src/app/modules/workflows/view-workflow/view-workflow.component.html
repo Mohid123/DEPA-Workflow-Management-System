@@ -120,9 +120,9 @@
           </ng-container>
           <ng-container *ngFor="let log of approvalLogs; let i = index">
             <div class="grid grid-cols-12 py-3 gap-x-3 border-b border-gray-300">
-              <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
+              <p class="col-span-2 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
               <p class="col-span-2 font-normal">Decision: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
-              <p class="col-span-3 font-normal">
+              <p class="col-span-4 font-normal">
                 Approved On: <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">&nbsp;{{log?.approvedOn | date: 'medium'}}</span>
               </p>
               <p class="col-span-4 font-normal">Comments:
