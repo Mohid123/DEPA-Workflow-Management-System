@@ -15,7 +15,6 @@
   <ng-template #dropdown>
     <div class="px-5 py-3 w-80">
       <h4 class="text-sm font-semibold my-3">Filter by {{filterBy}}</h4>
-      <app-search-bar *ngIf="searchEnabled" class="mb-5" (searchStr)="searchTableData($event, filterBy)"></app-search-bar>
       <ul class="my-3">
         <ng-container *ngFor="let item of items; let i = index; trackBy:trackByFn">
           <ng-container *ngIf="(item?.name == 'Sort by Latest' || item?.name == 'Sort by Oldest'); else otherFilter">

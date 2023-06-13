@@ -1,8 +1,7 @@
 <div class="flex justify-between mt-5 mb-2">
-  <p class="text-left font-semibold text-lg mb-5">List of Submodules</p>
+  <app-search-bar class="mb-2 w-1/3" (searchStr)="sendSearchValue($event)"></app-search-bar>
   <ng-container *ngIf="moduleData | async as modData">
-    <div class="cursor-pointer">
-      <!-- <a *ngIf="isFilterApplied == true" class="px-6 py-3 rounded-md bg-[#CF2729] text-white no-underline hover:text-white text-base">Reset All Filters</a> -->
+    <div class="cursor-pointer mt-5">
       <a *ngIf="currentUser.id == modData?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/submodule/add-submodule']" [queryParams]="{moduleID: moduleId}" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submodule</a>
     </div>
   </ng-container>
@@ -20,7 +19,7 @@
               </ng-container>
               <ng-template #notStatus>
                 <ng-container *ngIf="column === 'Company Name'">
-                  <filter
+                  <!-- <filter
                     (sendSearchToTable)="sendSearchValue($event)"
                     [filterBy]="column"
                     [showSortCategories]="false"
@@ -28,11 +27,10 @@
                     (applyStatus)="sendFilters($event)"
                     (resetFilters)="resetFilterValues($event)"
                   >
-                  </filter>
+                  </filter> -->
                 </ng-container>
                 <ng-container *ngIf="column === 'Submodule Code'">
                   <filter
-                    (sendSearchToTable)="sendSearchValue($event)"
                     [filterBy]="column"
                     [items]="filterMenuSubmodule"
                     (applyStatus)="sendFilters($event)"

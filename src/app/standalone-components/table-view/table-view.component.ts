@@ -169,7 +169,6 @@ export class TableViewComponent implements OnDestroy {
 
   sendFilters(value: any) {
     if(value) {
-      this.isFilterApplied = true;
       this.fetchingTableData.next(true)
       const queryParams = {
         field: value?.applyOn == 'Submodule Code' ? 'subModuleCode': 'companyName',
@@ -192,22 +191,20 @@ export class TableViewComponent implements OnDestroy {
   }
 
   sendSearchValue(value: any) {
-    if(value) {
-      this.fetchingTableData.next(true)
-      const queryParams = {
-        field: value?.searchBy == 'Submodule Code' ? 'subModuleCode': 'companyName',
-        search: value?.search
-      }
-      if(queryParams.search == null) {
-        delete queryParams.search
-      }
-      this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        this.tableData = res;
-        this.fetchingTableData.next(false)
-      })
+    this.fetchingTableData.next(true)
+    const queryParams = {
+      field: 'subModuleCode',
+      search: value
     }
+    if(queryParams.search == null) {
+      delete queryParams.search
+    }
+    this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      this.tableData = res;
+      this.fetchingTableData.next(false)
+    })
   }
 
   resetFilterValues(value: any) {

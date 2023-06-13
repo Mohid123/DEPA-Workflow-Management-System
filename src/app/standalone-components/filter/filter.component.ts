@@ -70,7 +70,7 @@ export class FilterComponent {
    * Boolean to indicate that filter is active or not. Default is false "Reset Filter" button appears if value is true.
    */
   isFilterApplied: boolean = false;
-  previousFilterValues = new BehaviorSubject<any>([])
+  previousFilterValues = new BehaviorSubject<any>([]);
 
   /**
    * @description
@@ -84,7 +84,8 @@ export class FilterComponent {
       search: searchStr,
       searchBy: filterBy
     }
-    this.sendSearchToTable.emit(params)
+    this.sendSearchToTable.emit(params);
+    this.isFilterApplied = true;
   }
 
   /**
@@ -139,7 +140,7 @@ export class FilterComponent {
   resetFilterValue() {
     this.isFilterApplied = false;
     this.items.forEach(val => val.status = 'idle');
-    this.resetFilters.emit('reset')
+    this.resetFilters.emit('reset');
   }
 
   /**
