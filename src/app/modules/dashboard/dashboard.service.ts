@@ -411,7 +411,13 @@ export class DashboardService extends ApiService<any> {
         // this.moduleEditData.next(res.data);
         const response = res.data?.workFlowId?.stepIds?.map(data => {
           return {
-            approverIds: data?.approverIds?.map(ids => ids.id),
+            approverIds: data?.approverIds?.map(ids => {
+              return {
+                name: ids?.fullName,
+                id: ids?.id,
+                control: new FormControl<boolean>(true)
+              }
+            }),
             condition: data?.condition,
             emailNotifyTo: data?.emailNotifyToId?.notifyUsers
           }

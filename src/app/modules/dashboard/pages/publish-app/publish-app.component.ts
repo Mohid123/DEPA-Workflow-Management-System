@@ -32,6 +32,7 @@ import { TUI_ARROW } from '@taiga-ui/kit';
 import {
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
@@ -110,9 +111,16 @@ export class PublishAppComponent implements OnDestroy {
             label: val.categoryId?.name,
           };
           const stepsArr = val?.workFlowId?.stepIds?.map((data) => {
+            
             return {
               id: data?.id,
-              approverIds: data?.approverIds?.map((ids) => ids.id),
+              approverIds: data?.approverIds?.map((ids) => {
+                return {
+                  name: ids?.fullName,
+                  id: ids?.id,
+                  control: new FormControl<boolean>(true)
+                }
+              }),
               emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
               condition: data?.condition,
               emailNotifyToId: data?.emailNotifyToId?.id

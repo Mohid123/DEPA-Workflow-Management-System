@@ -168,12 +168,12 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
   selectValueAndPushToInput(user: any, event: any) {
     if(user?.control.value === true && this.inputFieldArr.includes(user)) {
       this.removeItem(user);
-      this.checkUsersLength.emit(this.inputFieldArr.length)
+      this.checkUsersLength.emit(this.inputFieldArr.length);
       this.approverList.emit(this.inputFieldArr);
     }
     if(event.target?.checked === true) {
       this.inputFieldArr.push(user);
-      this.checkUsersLength.emit(this.inputFieldArr.length)
+      this.checkUsersLength.emit(this.inputFieldArr.length);
       this.approverList.emit(this.inputFieldArr);
     }
   }
@@ -183,6 +183,9 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    * @param {any} value It can be any data type that is provided in the formControlName in the selector of this component
    */
   writeValue(approverIds: any) {
+    if(approverIds?.length > 0) {
+      this.inputFieldArr = approverIds
+    }
     this.users?.pipe(takeUntil(this.destroy$)).subscribe(user => {
       user = user?.filter((val) => {
         if(approverIds?.includes(val.id)) {
@@ -194,7 +197,12 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
           return val
         }
       });
-      this.inputFieldArr = user
+      if(this.inputFieldArr?.length > 0) {
+        this.inputFieldArr = this.getUniqueListBy([...this.inputFieldArr, ...user], 'name')
+      }
+      else {
+        this.inputFieldArr = user;
+      }
     });
   }
 

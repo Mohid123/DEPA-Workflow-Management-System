@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
@@ -145,7 +145,13 @@ export class AddSubmissionComponent implements OnDestroy {
         this.createdByUser = res?.createdBy;
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
           return {
-            approverIds: data?.approverIds?.map(ids => ids.id),
+            approverIds: data?.approverIds?.map(ids => {
+              return {
+                name: ids?.fullName,
+                id: ids?.id,
+                control: new FormControl<boolean>(true)
+              }
+            }),
             condition: data?.condition,
             emailNotifyTo: data?.emailNotifyToId?.notifyUsers || []
           }

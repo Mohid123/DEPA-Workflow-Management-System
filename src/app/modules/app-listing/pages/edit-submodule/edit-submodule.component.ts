@@ -139,7 +139,13 @@ export class EditSubmoduleComponent {
             const workFlowId = response?.workFlowId?.stepIds?.map(data => {
               return {
                 id: data?.id,
-                approverIds: data?.approverIds?.map(ids => ids.id),
+                approverIds: data?.approverIds?.map(ids => {
+                  return {
+                    name: ids?.fullName,
+                    id: ids?.id,
+                    control: new FormControl<boolean>(true)
+                  }
+                }),
                 condition: data?.condition,
                 emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
                 emailNotifyToId: data?.emailNotifyToId?.id
@@ -173,8 +179,20 @@ export class EditSubmoduleComponent {
       subModuleUrl: [item?.url || null, Validators.required],
       code: [{value: item?.code || null, disabled: true}],
       companyName: [item?.companyId?.value || null, Validators.required],
-      adminUsers: [item?.adminUsers || [], Validators.required],
-      viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
+      adminUsers: [item?.adminUsers?.map(val => {
+        return {
+          name: val?.fullName,
+          id: val?.id,
+          control: new FormControl<boolean>(true)
+        }
+      }) || [], Validators.required],
+      viewOnlyUsers: [item?.viewOnlyUsers?.map(val => {
+        return {
+          name: val?.fullName,
+          id: val?.id,
+          control: new FormControl<boolean>(true)
+        }
+      }) || [], Validators.required],
       workflows: item?.workFlowId ?
       this.fb.array(
         item?.workFlowId?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId: any; id: any }) => {
