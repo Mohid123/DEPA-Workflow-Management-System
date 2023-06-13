@@ -490,6 +490,10 @@ export class DashboardService extends ApiService<any> {
       page: page,
       ...queryParams
     }
+
+    if(queryParams?.search) {
+      delete params?.page
+    }
     return this.get(`/module/slug/${moduleSlug}`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
