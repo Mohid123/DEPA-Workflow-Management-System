@@ -623,8 +623,7 @@ export class PublishAppComponent implements OnDestroy {
       else {
         this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
           if(!res.hasErrors()) {
-            payload = {...payload, image: res?.data?.imageUrl };
-            console.log(payload);
+            payload = {...payload, image: res?.data?.imageUrl };  
             this.dashboard.editModule(this.storeModuleID?.value, payload)
             .pipe(takeUntil(this.destroy$))
             .subscribe((res: any) => {
