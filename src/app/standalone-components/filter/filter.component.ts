@@ -52,6 +52,7 @@ export class FilterComponent {
    * Shows the name of the table category on which the filter is applied
    */
   @Input() filterBy: string;
+  @Input() disabled: boolean = false;
 
   /**
    * @description
@@ -97,6 +98,9 @@ export class FilterComponent {
    * @returns void
    */
   setFilterAndApplyActive(value: {applyOn: string, sortType: string, index: number}) {
+    if(this.disabled == true) {
+      return
+    }
     this.applyStatus.emit(value);
     if(this.items?.some(val => val.name === value.sortType)) {
       this.items.forEach(val => {

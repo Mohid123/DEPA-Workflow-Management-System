@@ -35,6 +35,7 @@
                     [items]="filterMenuSubmodule"
                     (applyStatus)="sendFilters($event)"
                     (resetFilters)="resetFilterValues($event)"
+                    [disabled]="tableData?.results?.length == 0"
                   >
                   </filter>
                 </ng-container>
