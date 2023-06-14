@@ -79,8 +79,8 @@
                 <div class="flex justify-between">
                   <span class="text-base font-semibold">{{approvers?.name}}</span>
                   <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected() == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5">
-                    <span>Approve &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <span>Reject &nbsp; <tui-toggle (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    <span>Approve &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <span>Reject &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                   </div>
                 </div>
               </li>
@@ -154,7 +154,7 @@
       type="button"
       [showLoader]="(savingDecision | async)"
       size="m"
-      (click)="sendDecisionData(); observer.complete()"
+      (click)="sendDecisionData();"
     >
       Send
     </button>

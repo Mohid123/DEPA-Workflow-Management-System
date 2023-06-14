@@ -155,14 +155,19 @@ export class ViewWorkflowComponent implements OnDestroy {
     }
     this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
-      this.fetchData()
-      this.savingDecision.next(false);
-      this.remarks.reset();
-      this.saveDialogSubscription.forEach(val => val.unsubscribe());
-      this.reject.reset()
-      this.approve.reset()
-      this.reject.enable();
-      this.approve.enable();
+      if(res) {
+        this.fetchData();
+        this.savingDecision.next(false);
+        this.remarks.reset();
+        this.saveDialogSubscription.forEach(val => val.unsubscribe());
+        this.reject.reset();
+        this.approve.reset();
+        this.reject.enable();
+        this.approve.enable();
+      }
+      else {
+        this.savingDecision.next(false);
+      }
     })
   }
 
