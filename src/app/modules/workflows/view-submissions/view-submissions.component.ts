@@ -13,7 +13,6 @@ import { DashboardService } from '../../dashboard/dashboard.service';
 export class ViewSubmissionsComponent implements OnDestroy {
   submissionData: any;
   submoduleId: string;
-  workflowUsers: any[] = [];
   subscriptions: Subscription[] = [];
   currentUser: any;
   adminUsers: any[] = [];
@@ -58,7 +57,6 @@ export class ViewSubmissionsComponent implements OnDestroy {
       .subscribe((val: any) => {
         this.submissionData = val;
         this.tableDataValue = val?.results;
-        this.workflowUsers = val?.results?.flatMap(data => data?.workflowAllUsers?.map(val => val?._id));
         this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
         this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
@@ -97,8 +95,8 @@ export class ViewSubmissionsComponent implements OnDestroy {
     return this.adminUsers?.includes(this.currentUser?.id)
   }
 
-  checkIfUserisPartofWorkflow() {
-    return this.workflowUsers?.includes(this.currentUser?.id)
+  checkIfUserisPartofWorkflow(data: any) {
+    return data?.map(val => val?._id)?.includes(this.currentUser?.id)
   }
 
   checkIfUserisCreator(): boolean {
