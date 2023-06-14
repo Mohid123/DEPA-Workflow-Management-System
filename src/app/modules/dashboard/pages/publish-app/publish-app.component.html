@@ -321,7 +321,7 @@
               <div *ngIf="file" class="flex justify-center">
                 <img
                   [src]="
-                    'https://images.pexels.com/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    base64File
                   "
                   alt="app_icon"
                   width="200"
@@ -342,9 +342,9 @@
                     Module Icon
                   </p>
                   <ul class="text-sm text-gray-400 list-disc">
-                    <li>Icon should be 500x500 px (1:1) ratio</li>
+                    <li>Icon should be 1:1 ratio</li>
                     <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
-                    <li>Up to 1MB file size is allowed</li>
+                    <li>Up to 2MB file size is allowed</li>
                   </ul>
                 </div>
               </div>

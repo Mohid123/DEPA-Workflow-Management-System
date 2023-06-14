@@ -39,6 +39,8 @@ import {
 import { DashboardService } from '../../dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { MediaUploadService } from 'src/core/core-services/media-upload.service';
+import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -47,6 +49,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 export class PublishAppComponent implements OnDestroy {
   destroy$ = new Subject();
   file: any;
+  base64File: any;
   localStorageApp: any;
   appNameLength: Observable<number> = of(0);
   activeIndex: number = getItem(StorageItem.activeIndex) || 0;
@@ -99,6 +102,7 @@ export class PublishAppComponent implements OnDestroy {
     private dashboard: DashboardService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private media: MediaUploadService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
     //edit module case
@@ -131,13 +135,15 @@ export class PublishAppComponent implements OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((val) => {
               this.storeModuleID.next(val['id']);
-            });
+          });
+          this.base64File = val?.image;
+          this.file = val?.image;
           const url = `${window.location.origin}${val?.url}`;
           const editableValue = Object.assign(val, {
             categoryId: category,
             workFlowId: workFlow,
             steps: stepsArr,
-            url: url,
+            url: url
           });
           setItem(StorageItem.publishAppValue, editableValue);
           this.isEditMode.next(true);
@@ -150,6 +156,7 @@ export class PublishAppComponent implements OnDestroy {
       this.initModuleDetailsForm(this.localStorageApp);
       this.moduleData.next(this.localStorageApp);
       this.file = this.localStorageApp?.image;
+      this.base64File = this.localStorageApp?.image;
     } else {
       this.initWorkflowForm();
       this.initModuleDetailsForm();
@@ -489,13 +496,14 @@ export class PublishAppComponent implements OnDestroy {
           break;
         case 2:
           if (!this.file) {
+            debugger
             return this.notif.displayNotification(
               'Please provide a valid image for your module',
               'Create Module',
               TuiNotification.Warning
             );
           }
-          this.moduleData.next({ ...this.moduleData?.value, image: this.file });
+          this.moduleData.next({ ...this.moduleData?.value, image: this.base64File });
           setItem(StorageItem.publishAppValue, this.moduleData?.value);
           this.submitNewModule();
           break;
@@ -517,24 +525,23 @@ export class PublishAppComponent implements OnDestroy {
 
   onFileSelect(event: any) {
     const file = event?.target?.files[0];
-    // if(this.calculateFileSize(file) == true) {
-    //   this.calculateAspectRatio(file).then((res) => {
-    //     if(res == false) {
-    //       this.notif.displayNotification('Image width and height should be 500px (1:1 aspect ratio)', 'File Upload', TuiNotification.Warning)
-    //     }
-    //     else {
+    if(this.calculateFileSize(file) == true) {
+      this.calculateAspectRatio(file).then((res) => {
+        if(res == false) {
+          this.notif.displayNotification('Image should be of 1:1 aspect ratio', 'File Upload', TuiNotification.Warning)
+        }
+        else {
+          this.file = file;
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = (e) => {
-            this.file = reader.result;
-            this.file =
-              '/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
-    //       };
-    //     }
-    //   });
-    // }
-    // else {
-    //   this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
+            this.base64File = reader.result;
+          };
+        }
+      });
+    }
+    else {
+      this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
     }
   }
 
@@ -548,7 +555,7 @@ export class PublishAppComponent implements OnDestroy {
         img.onload = async () => {
           let height = img.naturalHeight;
           let width = img.naturalWidth;
-          if ((height > 500 || width > 500) && width / height !== 1) {
+          if (width / height !== 1) {
             resolve(false);
           }
           resolve(true);
@@ -559,9 +566,9 @@ export class PublishAppComponent implements OnDestroy {
 
   calculateFileSize(file: any): boolean {
     const maxSize = (1024 * 1024) * 2;
-    console.log('max: ', maxSize, 'fileSize: ', file.size)
     if (
       (file?.type == 'image/jpg' ||
+        file?.type == 'image/jpeg' ||
         file?.type == 'image/png' ||
         file?.type == 'image/webp') &&
       file?.size <= maxSize
@@ -572,14 +579,34 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   submitNewModule() {
-    const moduleURL = this.f['moduleURL']?.value
-      .split(window.location.origin)
-      .pop();
-    const payload = { ...this.moduleData.value, url: moduleURL };
+    this.isCreatingModule.next(true);
+    const moduleURL = this.f['moduleURL']?.value.split(window.location.origin).pop();
+    let payload = { ...this.moduleData.value, url: moduleURL };
     if (this.isEditMode.value == false) {
-      this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard
-        .createModule(payload)
+      this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          payload = {...payload, image: res?.data?.imageUrl };
+          this.dashboard.createModule(payload)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((res: any) => {
+            if (res) {
+              this.moveNext();
+              setTimeout(() => {
+                removeItem(StorageItem.publishAppValue);
+                removeItem(StorageItem.activeIndex);
+                this.dashboard.moduleEditData.next(null);
+                this.router.navigate(['/dashboard/home']);
+              }, 1400);
+            }
+          });
+        }
+      })
+    }
+    else {
+      if(typeof this.file == 'string') {
+        const url = 'uploads' + payload?.image.split('uploads')[1];
+        payload = {...payload, image: url };
+        this.dashboard.editModule(this.storeModuleID?.value, payload)
         .pipe(takeUntil(this.destroy$))
         .subscribe((res: any) => {
           if (res) {
@@ -592,22 +619,28 @@ export class PublishAppComponent implements OnDestroy {
             }, 1400);
           }
         });
-    } else {
-      this.isCreatingModule = this.dashboard.creatingModule;
-      this.dashboard
-        .editModule(this.storeModuleID?.value, payload)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((res: any) => {
-          if (res) {
-            this.moveNext();
-            setTimeout(() => {
-              removeItem(StorageItem.publishAppValue);
-              removeItem(StorageItem.activeIndex);
-              this.dashboard.moduleEditData.next(null);
-              this.router.navigate(['/dashboard/home']);
-            }, 1400);
+      }
+      else {
+        this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+          if(!res.hasErrors()) {
+            payload = {...payload, image: res?.data?.imageUrl };
+            console.log(payload);
+            this.dashboard.editModule(this.storeModuleID?.value, payload)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res: any) => {
+              if (res) {
+                this.moveNext();
+                setTimeout(() => {
+                  removeItem(StorageItem.publishAppValue);
+                  removeItem(StorageItem.activeIndex);
+                  this.dashboard.moduleEditData.next(null);
+                  this.router.navigate(['/dashboard/home']);
+                }, 1400);
+              }
+            });
           }
-        });
+        })
+      }
     }
   }
 

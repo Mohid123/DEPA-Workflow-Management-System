@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subject, Subscription, map, pluck, switchMap, takeUntil } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { WorkflowsService } from '../workflows.service';
 import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 import { AuthService } from '../../auth/auth.service';
