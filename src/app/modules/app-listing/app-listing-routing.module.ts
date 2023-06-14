@@ -11,13 +11,12 @@ const routes: Routes = [
   {
     path: '',
     component: AppListingComponent,
-    data: {breadcrumb:'Submodule'},
+    data: {breadcrumb:'Submodules'},
     children:[
       {
         path: 'submodules-list/:name',
         component: SubmodulesListComponent,
-        canActivate: [SubmoduleGuard],
-        data: {breadcrumb:'List of Submodules'},
+        canActivate: [SubmoduleGuard]
       },
       {
         path: 'add-submodule',
