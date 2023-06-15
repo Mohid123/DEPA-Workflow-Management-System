@@ -32,8 +32,8 @@ export class ViewSubmissionsComponent implements OnDestroy {
     {name: 'Completed', status: 'idle', icon: ''},
     {name: 'In Progress', status: 'idle', icon: ''},
     {name: 'Draft', status: 'idle', icon: ''},
-    {name: 'Sort by Latest', status: 'idle', icon: ''},
-    {name: 'Sort by Oldest', status: 'idle', icon: ''}
+    // {name: 'Sort by Latest', status: 'idle', icon: ''},
+    // {name: 'Sort by Oldest', status: 'idle', icon: ''}
   ];
 
   page = 1;
