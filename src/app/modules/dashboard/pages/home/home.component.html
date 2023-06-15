@@ -2,49 +2,48 @@
 <div class="bg_img_main">
   <app-grid-view-loader *ngIf="!(dashboardApps | async); else dashboardapps"></app-grid-view-loader>
   <ng-template #dashboardapps>
-    <section class="grid w-11/12 grid-cols-12 gap-4 mx-auto mt-52 pb-60">
+    <section class="grid w-11/12 grid-cols-12 gap-4 mx-auto mt-52 pb-20">
       <ng-container *ngIf="(dashboardApps | async)?.length == 0">
         <p class="col-span-12 my-8 text-base font-semibold text-center">There are currently no modules. Add your first Module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/create-edit-module">here</a> </p>
       </ng-container>
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
-        <p class="col-span-12 mb-3 text-lg font-semibold" [ngClass]="!firstItem ? 'mt-12': 'mt-0'">{{app.name}}</p>
+        <p class="col-span-12 mb-3 text-lg font-semibold py-3 px-2 bg-[#eae4d8] rounded-md" [ngClass]="!firstItem ? 'mt-12': 'mt-0'">{{app.name}}</p>   
         <ng-container *ngIf="app.modules.length == 0; else showApps">
           <p class="col-span-12 my-8 text-base font-semibold text-center">No modules exist against this category. You can add a new module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/create-edit-module">here</a> </p>
         </ng-container>
 
         <ng-template #showApps>
           <ng-container *ngFor="let appdata of app?.modules; let i = index; let firstModule = first; let last = last;">
-            <ng-container *ngIf="app?.modules?.length <= 3">
+            <!-- <ng-container *ngIf="app?.modules?.length <= 3">
               <grid-small-app
                 (deleteModule)="showDialog($event, template)"
                 (editModule)="editModule($event)"
                 [appData]="appdata"
                 class="col-span-4 row-span-2"
               ></grid-small-app>
-            </ng-container>
-            <ng-container *ngIf="app?.modules?.length >= 4">
+            </ng-container> -->
+            <!-- <ng-container *ngIf="app?.modules?.length >= 4"> -->
               <grid-top-app
                 (deleteModule)="showDialog($event, template)"
                 (editModule)="editModule($event)"
                 [appData]="appdata"
-                *ngIf="firstModule"
-                class="col-span-8"
+                class="col-span-6"
               ></grid-top-app>
-              <grid-side-app
+              <!-- <grid-side-app
                 (editModule)="editModule($event)"
                 (deleteModule)="showDialog($event, template)"
                 *ngIf="i == 1"
                 [appData]="appdata"
                 class="col-span-4 row-span-3"
-              ></grid-side-app>
-              <grid-small-app
+              ></grid-side-app> -->
+              <!-- <grid-small-app
                 (editModule)="editModule($event)"
                 (deleteModule)="showDialog($event, template)"
                 *ngIf="i > 1"
                 class="col-span-4 row-span-2"
                 [appData]="appdata"
               ></grid-small-app>
-            </ng-container>
+            </ng-container> -->
           </ng-container>
         </ng-template>
       </ng-container>
