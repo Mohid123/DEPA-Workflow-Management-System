@@ -555,7 +555,7 @@ export class PublishAppComponent implements OnDestroy {
         img.onload = async () => {
           let height = img.naturalHeight;
           let width = img.naturalWidth;
-          if (width / height !== 1) {
+          if (Math.round(width / height) !== 1) {
             resolve(false);
           }
           resolve(true);
