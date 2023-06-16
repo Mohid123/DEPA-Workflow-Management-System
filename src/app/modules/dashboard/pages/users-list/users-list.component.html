@@ -11,7 +11,7 @@
         />
       </div>
       <div class="cursor-pointer">
-        <a (click)="showDialog(template, null)" class="px-4 py-2 rounded-lg bg-[#a58f81] text-white no-underline hover:text-white text-sm">+ Add new user</a>
+        <a (click)="showAddDialog(addTemplate)" class="px-4 py-2 rounded-lg bg-[#a58f81] text-white no-underline hover:text-white text-sm">+ Add new user</a>
       </div>
     </div>
     <ng-container *ngIf="(users | async) as data; else loading">
@@ -122,9 +122,10 @@
 
 <app-footer></app-footer>
 
-<ng-template #template let-observer>
+<!--Edit User Dialog-->
+<ng-template #template>
   <p class="text-lg font-semibold text-center">
-    {{userId ? 'Edit': 'Add'}} User
+    Edit User
   </p>
   <div class="flex flex-col justify-center my-5">
     <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="userForm"></formio>
@@ -134,12 +135,13 @@
     type="button"
     size="m"
     [disabled]="(formData | async)?.isValid == false"
-    (click)="editOrAddUser(); observer.complete()"
+    (click)="editOrAddUser();"
     >
     Send
     </button>
 </ng-template>
 
+<!-- Delete User Dialog-->
 <ng-template #deltemplate let-observer>
   <p class="text-xl font-semibold text-center border-b border-gray-400 pb-2">Delete User</p>
   <p class="mt-4 text-base font-medium text-center">Are you sure you want to delete this user ?</p>
@@ -164,4 +166,23 @@
       Cancel
     </button>
   </div>
+</ng-template>
+
+<!-- Add User Dialog -->
+<ng-template #addTemplate>
+  <p class="text-lg font-semibold text-center">
+    Add User
+  </p>
+  <div class="flex flex-col justify-center my-5">
+    <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="addUserForm"></formio>
+  </div>
+  <button
+    tuiButton
+    type="button"
+    size="m"
+    [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
+    (click)="editOrAddUser();"
+    >
+    Send
+    </button>
 </ng-template>

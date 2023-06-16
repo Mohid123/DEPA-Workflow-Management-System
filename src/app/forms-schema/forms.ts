@@ -358,6 +358,58 @@ export const userAddFormProfile = {
   ]
 }
 
+export const userAddFormAdmin = {
+  "title": "User Form",
+  "key": "user-form",
+  "display": "form",
+  "components": [
+      {
+          "label": "Full Name",
+          "tableView": true,
+          "key": "fullname",
+          "type": "textfield",
+          "input": true,
+          "validate": {
+            "required": true
+          },
+      },
+      {
+          "label": "Email",
+          "tableView": true,
+          "key": "email",
+          "type": "email",
+          "validate": {
+            "required": true
+          },
+          "input": true
+      },
+      {
+          "label": "Role",
+          "widget": "choicesjs",
+          "tableView": true,
+          "disabled": false,
+          "validate": {
+            "required": true
+          },
+          "data": {
+              "values": [
+                  {
+                      "label": "Admin",
+                      "value": "admin"
+                  },
+                  {
+                      "label": "User",
+                      "value": "user"
+                  }
+              ]
+          },
+          "key": "role",
+          "type": "select",
+          "input": true
+      }
+  ]
+}
+
 export const profileForm = {
   "title": "Profile Form",
   "key": "profile-form",

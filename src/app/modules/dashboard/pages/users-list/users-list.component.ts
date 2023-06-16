@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { userAddForm } from 'src/app/forms-schema/forms';
+import { userAddForm, userAddFormAdmin } from 'src/app/forms-schema/forms';
 
 @Component({
   templateUrl: './users-list.component.html',
@@ -18,10 +18,12 @@ export class UsersListComponent implements OnDestroy {
   limit: number = 6;
   page: number = 0;
   userForm = userAddForm;
+  addUserForm = userAddFormAdmin;
   formData = new BehaviorSubject<any>({isValid: false});
   formSubmission: any;
   searchValue = new FormControl();
   fetchingUsers = new Subject<boolean>();
+  subscription: Subscription[] = [];
 
   constructor(
     private dashboard: DashboardService,
@@ -48,10 +50,10 @@ export class UsersListComponent implements OnDestroy {
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
-    this.dialogs.open(content, {
+    this.subscription.push(this.dialogs.open(content, {
       dismissible: true,
       closeable: true
-    }).subscribe();
+    }).subscribe());
     this.userId = data?.id || null;
     this.formSubmission = {
       data: {
@@ -60,6 +62,13 @@ export class UsersListComponent implements OnDestroy {
         role: data?.role
       }
     }
+  }
+
+  showAddDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.subscription.push(this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe());
   }
 
   showDeleteDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
@@ -79,14 +88,13 @@ export class UsersListComponent implements OnDestroy {
   editOrAddUser() {
     if(this.userId) {
       const payload: any = {
-        fullName: this.formData?.value?.data?.fullname,
-        email: this.formData?.value?.data?.email,
         role: this.formData?.value?.data?.role
       }
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
         this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
-        this.cf.detectChanges()
+        this.cf.detectChanges();
+        this.subscription.forEach(val => val.unsubscribe())
       })
     }
     else {
@@ -98,7 +106,8 @@ export class UsersListComponent implements OnDestroy {
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
         this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
-        this.cf.detectChanges()
+        this.cf.detectChanges();
+        this.subscription.forEach(val => val.unsubscribe())
       })
     }
   }
