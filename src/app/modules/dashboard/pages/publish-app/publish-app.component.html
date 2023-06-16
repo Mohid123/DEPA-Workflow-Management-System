@@ -435,18 +435,20 @@
   </div>
   <div class="flex justify-start gap-x-3">
     <button tuiButton type="button" size="m" (click)="validateEmails()">
-      Confirm
+      Confirm & Close
     </button>
     <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">
-      Remove & Close
+      Remove Users & Close
     </button>
   </div>
 </ng-template>
 
 <ng-template #hint>
-  <ul>
-    <li><strong>AND</strong> means that all users of the step must provide approval</li>
-    <li class="my-2"><strong>OR</strong> means that any one of the users may provide approval</li>
-    <li><strong>NONE</strong> means that there is only one user per step and hence no conditon is necessary</li>
+  <strong class="text-base">How conditions work?</strong>
+  <hr>
+  <ul class="mt-2">
+    <li><strong>AND</strong> implies that every user of the step must provide approval</li>
+    <li class="my-2"><strong>OR</strong> implies that any one of the users may provide approval</li>
+    <li><strong>NONE</strong> implies that there is only one user per step and hence no conditon is necessary</li>
   </ul>
 </ng-template>
