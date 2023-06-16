@@ -6,7 +6,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
-import { TuiButtonModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import {TuiTableModule, TuiTablePaginationModule} from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
@@ -60,7 +60,9 @@ import { ProfileComponent } from './pages/profile/profile.component';
     TuiTablePaginationModule,
     TrimDirective,
     TuiBadgedContentModule,
-    TuiAvatarModule
+    TuiAvatarModule,
+    TuiHintModule,
+    TuiTooltipModule
   ]
 })
 export class DashboardModule { }

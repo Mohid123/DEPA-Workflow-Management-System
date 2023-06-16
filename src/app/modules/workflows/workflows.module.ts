@@ -9,7 +9,7 @@ import { FooterComponent } from 'src/app/standalone-components/footer/footer.com
 import { FormioModule } from '@formio/angular';
 import { TuiBadgeModule, TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputTagModule, TuiIslandModule, TuiPaginationModule, TuiProgressModule, TuiTabsModule, TuiToggleModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TuiButtonModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
 import { ViewSubmissionsComponent } from './view-submissions/view-submissions.component';
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
@@ -52,7 +52,9 @@ import { FilterComponent } from 'src/app/standalone-components/filter/filter.com
     TuiBadgedContentModule,
     TuiTextfieldControllerModule,
     TableLoaderComponent,
-    FilterComponent
+    FilterComponent,
+    TuiHintModule,
+    TuiTooltipModule
   ]
 })
 export class WorkflowsModule { }

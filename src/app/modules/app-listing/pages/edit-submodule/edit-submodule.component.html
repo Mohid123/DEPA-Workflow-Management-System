@@ -123,7 +123,12 @@
                 <option value="none">NONE</option>
               </select>
             </div>
-            <div class="col-span-1 mt-8">
+            <div class="col-span-1 mt-8 inline-flex">
+              <tui-tooltip
+                [content]="hint"
+                direction="right"
+                class="mr-4 mt-1 -ml-2"
+              ></tui-tooltip>
               <tui-badged-content
                 [contentTop]="
                   workflows.at(i).get('emailNotifyTo')?.value?.length
@@ -140,7 +145,7 @@
                 ></button>
               </tui-badged-content>
             </div>
-            <div class="col-span-1 mt-8 -ml-12">
+            <div class="col-span-1 mt-8 -ml-8">
               <button
                 tuiIconButton
                 type="button"
@@ -226,4 +231,12 @@
       Remove & Close
     </button>
   </div>
+</ng-template>
+
+<ng-template #hint>
+  <ul>
+    <li><strong>AND</strong> means that all user of the step must provide approval</li>
+    <li class="my-2"><strong>OR</strong> means that approval from any one of the selected users is required</li>
+    <li><strong>NONE</strong> means that there a single user per step and hence no conditon is necessary</li>
+  </ul>
 </ng-template>
