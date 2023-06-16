@@ -40,6 +40,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   allApproved: any;
   activeStep: any;
   lastApprovalCheck: any;
+  loadingData = new Subject<boolean>()
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -73,7 +74,8 @@ export class ViewWorkflowComponent implements OnDestroy {
   }
 
   fetchData() {
-   this.activatedRoute.params.pipe(
+    this.loadingData.next(true)
+    this.activatedRoute.params.pipe(
       pluck('id'),
       map(id => this.workflowID = id),
       switchMap((subId => this.workflowService.getWorkflowSubmission(subId)))
@@ -129,6 +131,7 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
         this.approvalLogs = this.workflowData?.approvalLog;
         this.allApproved = this.workflowData?.workflowStatus?.map(userData => userData?.status == 'approved' ? true: false);
+        this.loadingData.next(false)
       }
     });
   }

@@ -17,6 +17,7 @@ import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom
 import { EmailSubmissionComponent } from './email-submission/email-submission.component';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
+import { WorkflowSkeletonComponent } from 'src/app/skeleton-loaders/workflow-skeleton/workflow-skeleton.component';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { FilterComponent } from 'src/app/standalone-components/filter/filter.com
     TableLoaderComponent,
     FilterComponent,
     TuiHintModule,
-    TuiTooltipModule
+    TuiTooltipModule,
+    WorkflowSkeletonComponent
   ]
 })
 export class WorkflowsModule { }
