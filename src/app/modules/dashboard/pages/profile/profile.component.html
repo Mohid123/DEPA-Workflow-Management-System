@@ -24,6 +24,18 @@
           >
           Edit
         </button>
+
+        <!--Reset Password-->
+        <p class="py-3 mt-9 text-base font-semibold">Reset password</p>
+        <formio (change)="getPasswordFieldValues($event)" [form]="passwordForm"></formio>
+        <button
+          tuiButton
+          type="button"
+          size="m"
+          (click)="updatePassword();"
+          >
+          Update password
+        </button>
       </div>
     </div>
   </section>

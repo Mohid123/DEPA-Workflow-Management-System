@@ -8,7 +8,6 @@ const routes: Routes = [
   {
     path: '',
     component: FormsComponent,
-    data: {breadcrumb: 'Forms'},
     children: [
       {
         path: 'form-builder',

@@ -420,3 +420,43 @@ export const profileForm = {
       }
   ]
 }
+
+export const resetPasswordForm = {
+  "title": "Reset Password Form",
+  "key": "",
+  "display": "form",
+  "components": [
+    {
+        "label": "Password",
+        "placeholder": "Enter new password",
+        "customClass": "passwordField",
+        "showCharCount": true,
+        "tableView": false,
+        "validate": {
+            "required": true,
+            "minLength": 8
+        },
+        "key": "password",
+        "type": "password",
+        "input": true,
+        "protected": true
+    },
+    {
+        "label": "Confirm Password",
+        "placeholder": "Re-enter password",
+        "customClass": "passwordField",
+        "showCharCount": true,
+        "tableView": false,
+        "validate": {
+            "required": true,
+            "minLength": 8
+        },
+        "key": "password1",
+        "type": "password",
+        "input": true,
+        "protected": true
+    }
+  ]
+}
+
+// "suffix": "<i style=\"cursor: pointer;\" id=\"showPass\" class=\"fa fa-eye\"></i>",

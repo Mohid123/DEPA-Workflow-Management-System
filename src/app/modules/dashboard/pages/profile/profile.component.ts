@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { userAddFormProfile } from 'src/app/forms-schema/forms';
+import { resetPasswordForm, userAddFormProfile } from 'src/app/forms-schema/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { User } from 'src/core/models/user.model';
 import { DashboardService } from '../../dashboard.service';
@@ -17,9 +17,11 @@ export class ProfileComponent implements OnDestroy {
   formSubmission: any;
   formData = new BehaviorSubject<any>({});
   userForm = userAddFormProfile;
+  passwordForm = resetPasswordForm;
   destroy$ = new Subject();
+  passValue = new BehaviorSubject<any>(null)
 
-  constructor(private auth: AuthService, private dashboard: DashboardService, private notif: NotificationsService) {
+  constructor(private auth: AuthService, private dashboard: DashboardService, private notif: NotificationsService, private cf: ChangeDetectorRef) {
     this.currentUser = this.auth.currentUserValue;
     this.formData.next({
       fullname: this.currentUser?.fullName,
@@ -36,9 +38,46 @@ export class ProfileComponent implements OnDestroy {
     }
   }
 
+  // ngAfterViewInit(): void {
+  //   const passField = document.getElementById('showPass');
+  //   passField?.addEventListener('click', () => {
+  //     let elem: HTMLInputElement | any = document?.getElementsByClassName('passwordField');
+  //     Array.from(elem)?.forEach((val: any) => {
+  //       if(val?.component?.type == 'password') {
+  //         val.component.type = 'text';
+  //         this.cf.detectChanges()
+  //       }
+  //       else {
+  //         val.component.type = 'password';
+  //         this.cf.detectChanges()
+  //       }
+  //     })
+  //   })
+  // }
+
   getFormValues(value: any) {
     if(value?.data) {
       return value
+    }
+  }
+
+  getPasswordFieldValues(value: any) {
+    if(value?.data) {
+      this.passValue.next(value?.data);
+    }
+  }
+
+  updatePassword() {
+    if(this.passValue?.value?.password?.length > 0 && this.passValue?.value?.password1?.length) {
+      if(this.passValue?.value?.password !== this.passValue?.value?.password1) {
+        return this.notif.displayNotification('Passwords do not match', 'Update password', TuiNotification.Warning)
+      }
+      else {
+        console.log(this.passValue?.value)
+      }
+    }
+    else {
+      this.notif.displayNotification('Please fill in all fields', 'Update password', TuiNotification.Warning)
     }
   }
 
