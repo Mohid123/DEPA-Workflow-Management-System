@@ -13,9 +13,7 @@ import { TuiLetModule } from '@taiga-ui/cdk';
 import { TuiAvatarModule, TuiBadgedContentModule, TuiDataListWrapperModule, TuiInputTagModule, TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
 import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
-import { GridSmallComponent } from 'src/app/standalone-components/grid-small-app/grid-small-app.component';
 import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/grid-top-app.component';
-import { GridSideAppComponent } from 'src/app/standalone-components/grid-side-app/grid-side-app.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 import { FormioModule } from '@formio/angular';
 import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
@@ -48,9 +46,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
     ReactiveFormsModule,
     FormsModule,
     TuiLoaderModule,
-    GridSmallComponent,
     GridTopAppComponent,
-    GridSideAppComponent,
     CustomMultiSelectComponent,
     FormioModule,
     TuiTableModule,

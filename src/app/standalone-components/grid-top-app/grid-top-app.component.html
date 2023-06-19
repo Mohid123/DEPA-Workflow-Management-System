@@ -6,7 +6,7 @@
     <div class="w-full h-full">
       <h3 class="mb-2 text-xl font-semibold">{{appData?.title}}</h3>
       <p class="leading-6 line-clamp-4">{{appData?.description}}</p>
-      <div class="py-2 absolute bottom-2">
+      <div class="absolute bottom-5">
         <a (click)="storeModuleID(appData?._id)" [routerLink]="['/submodule/submodules-list', appData?.code]" [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white">
           <i class="fa fa-eye" aria-hidden="true"></i>
         </a>
