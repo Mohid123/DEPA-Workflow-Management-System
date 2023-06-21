@@ -40,6 +40,7 @@ export class AddSubmissionComponent implements OnDestroy {
   saveDialogSubscription: Subscription[] = [];
   limit: number = 10;
   page: number = 0;
+  creatingSubmission = new Subject<boolean>()
 
   constructor(
     private fb: FormBuilder,
@@ -245,6 +246,7 @@ export class AddSubmissionComponent implements OnDestroy {
     if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
       return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
     }
+    this.creatingSubmission.next(true)
     const payload: any = {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
@@ -261,6 +263,7 @@ export class AddSubmissionComponent implements OnDestroy {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
+        this.creatingSubmission.next(false)
         this.router.navigate(['/submodule/submissions/view-submissions', this.subModuleId])
       }
     })

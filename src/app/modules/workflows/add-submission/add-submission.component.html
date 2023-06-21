@@ -149,6 +149,7 @@
       type="button"
       size="m"
       appearance="primary"
+      [showLoader]="(creatingSubmission | async)"
       (click)="createSubmission()"
     >
       Create submission
