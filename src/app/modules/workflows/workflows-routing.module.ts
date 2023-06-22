@@ -6,19 +6,19 @@ import { ViewSubmissionsComponent } from './view-submissions/view-submissions.co
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { EmailSubmissionComponent } from './email-submission/email-submission.component';
 import { AuthGuard } from '../auth/guards/auth.guard';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { WorkflowResolver } from 'src/core/core-services/workflow-resolver.service';
 
 const routes: Routes = [
   {
     path: '',
     component: WorkflowsComponent,
-    data: {breadcrumb: getItem(StorageItem.subModuleSlug) + ' ' + '(submissions)'},
+    resolve: { breadcrumb: WorkflowResolver },
     children:[
       {
         path: ':submoduleCode/view-workflow/:id',
         canActivate: [AuthGuard],
         component: ViewWorkflowComponent,
-        data: {breadcrumb:'Submission Workflow'},
+        data: { breadcrumb: 'Submission Workflow' },
       },
       {
         path: ':submoduleCode/:id',
@@ -29,7 +29,7 @@ const routes: Routes = [
         path: ':submoduleCode/add-submission/:id',
         canActivate: [AuthGuard],
         component: AddSubmissionComponent,
-        data: {breadcrumb:'Add Submission'},
+        data: { breadcrumb: 'Add Submission' },
       },
       {
         path: 'email-submission',

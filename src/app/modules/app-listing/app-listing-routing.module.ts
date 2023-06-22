@@ -7,12 +7,13 @@ import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.co
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { SubmoduleResolver } from '../../../core/core-services/resolver.service';
 
 const routes: Routes = [
   {
     path: '',
     component: AppListingComponent,
-    data: {breadcrumb: getItem(StorageItem.moduleSlug) + ' ' + '(submodules)'},
+    resolve: { breadcrumb: SubmoduleResolver },
     children:[
       {
         path: ':name',
@@ -35,7 +36,8 @@ const routes: Routes = [
         data: {breadcrumb:'Submodule Details'},
       },
       {
-        path: getItem(StorageItem.moduleSlug),
+        path: ':name',
+        data: {preload: true},
         loadChildren: () => import('../workflows/workflows.module').then(m => m.WorkflowsModule)
       },
       {
