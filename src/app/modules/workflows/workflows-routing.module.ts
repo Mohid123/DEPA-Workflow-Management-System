@@ -6,26 +6,27 @@ import { ViewSubmissionsComponent } from './view-submissions/view-submissions.co
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { EmailSubmissionComponent } from './email-submission/email-submission.component';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 const routes: Routes = [
   {
     path: '',
     component: WorkflowsComponent,
-    data: {breadcrumb:'Submissions'},
+    data: {breadcrumb: getItem(StorageItem.subModuleSlug) + ' ' + '(submissions)'},
     children:[
       {
-        path: 'view-workflow/:id',
+        path: ':submoduleCode/view-workflow/:id',
         canActivate: [AuthGuard],
         component: ViewWorkflowComponent,
-        data: {breadcrumb:'View Workflow'},
+        data: {breadcrumb:'Submission Workflow'},
       },
       {
-        path: 'view-submissions/:id',
+        path: ':submoduleCode/:id',
         canActivate: [AuthGuard],
         component: ViewSubmissionsComponent,
       },
       {
-        path: 'add-submission/:id',
+        path: ':submoduleCode/add-submission/:id',
         canActivate: [AuthGuard],
         component: AddSubmissionComponent,
         data: {breadcrumb:'Add Submission'},

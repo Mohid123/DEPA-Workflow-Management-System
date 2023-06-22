@@ -309,7 +309,7 @@ export class EditSubmoduleComponent {
   }
 
   cancelSubmodule() {
-    this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.router.navigate(['/submodule', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
   saveSubModule(statusStr?: number) {
@@ -348,7 +348,7 @@ export class EditSubmoduleComponent {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        this.router.navigate(['/submodule', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
       else {
         this.isCreatingSubModule.next(false);

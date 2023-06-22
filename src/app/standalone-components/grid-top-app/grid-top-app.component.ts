@@ -4,6 +4,7 @@ import { Module } from 'src/core/models/module.model';
 import { RouterModule } from '@angular/router';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * The topmost card to display Module data inside Grid View on the Home Page. Will display if Grid contains at least 4 elements
@@ -30,8 +31,9 @@ export class GridTopAppComponent {
   @Output() deleteModule = new EventEmitter();
   @Output() editModule = new EventEmitter();
 
-  storeModuleID(id: string) {
-    this.transport.moduleID.next(id)
+  storeModuleID(id: string, code: string) {
+    this.transport.moduleID.next(id);
+    setItem(StorageItem.moduleSlug, code)
   }
 
    deleteModuleEvent(id: string) {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { SubmoduleGuardComponent } from '../templates/submodule-guard/submodule-guard.component';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Guard that protects the Submodule page from rerouting without user feedback on the unsaved data
@@ -43,7 +44,7 @@ export class SubmoduleGuard implements CanActivate {
       }).subscribe();
       this.transportService.dialogState.subscribe(val => {
         if(val === DialogState.DISCARD) {
-          this.router.navigate([state.url]);
+          this.router.navigate(['/submodule', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
           return true
         }
         return false

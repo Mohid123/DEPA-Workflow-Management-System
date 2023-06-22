@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, pluck, switchMap } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
-import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './submodule-list.component.html',
@@ -19,8 +19,16 @@ export class SubmodulesListComponent {
   constructor(
     private dashBoardService: DashboardService,
     private activatedRoute: ActivatedRoute,
-    private transport: DataTransportService
+    private transport: DataTransportService,
+    private router: Router
   ) {
+    let param: string = getItem(StorageItem.workflowID) || '';
+    let moduleSlug = getItem(StorageItem.moduleSlug);
+    let submoduleSlug = getItem(StorageItem.subModuleSlug)
+    if(this.router.url == `/submodule/${moduleSlug}`) {
+      this.router.navigate([`/submodule/${moduleSlug}/${submoduleSlug}`, param])
+    }
+
     this.subModuleData = this.activatedRoute.params.pipe(
       pluck('name'),
       map(name => {

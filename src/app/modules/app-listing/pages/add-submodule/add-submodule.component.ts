@@ -84,11 +84,11 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   getDefaultWorkflow() {
-    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      if(params['moduleID']) {
-        this.redirectToModuleID = params['moduleID'];
-        this.transportService.moduleID.next(params['moduleID']);
-        this.dashboard.getWorkflowFromModule(params['moduleID']).subscribe((response: any) => {
+    this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      if(params['id']) {
+        this.redirectToModuleID = params['id'];
+        this.transportService.moduleID.next(params['id']);
+        this.dashboard.getWorkflowFromModule(params['id']).subscribe((response: any) => {
           if(response) {
             this.initSubModuleForm(response)
           }
@@ -295,7 +295,7 @@ export class AddSubmoduleComponent implements OnDestroy {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        this.router.navigate(['/submodule', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
       else {
         this.isCreatingSubModule.next(false);
@@ -304,7 +304,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   cancelSubmodule() {
-    this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.router.navigate(['/submodule', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
   dataSubmitValidation() {

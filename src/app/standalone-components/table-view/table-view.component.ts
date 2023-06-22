@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { TuiPaginationModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
@@ -10,7 +10,7 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
 /**
@@ -100,7 +100,8 @@ export class TableViewComponent implements OnDestroy {
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private dashboardService: DashboardService,
     private transport: DataTransportService,
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router
   ) {
     this.currentUser = this.auth.currentUserValue
     this.activatedRoute.queryParams.subscribe(val => this.moduleId = val['moduleID']);
@@ -217,6 +218,11 @@ export class TableViewComponent implements OnDestroy {
         this.fetchingTableData.next(false);
       })
     }
+  }
+
+  setSubmoduleSlug(code: string, id: string) {
+    setItem(StorageItem.subModuleSlug, code);
+    this.router.navigate([`/submodule/${getItem(StorageItem.moduleSlug)}`, code, id])
   }
 
   ngOnDestroy(): void {

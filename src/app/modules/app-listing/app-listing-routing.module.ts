@@ -6,20 +6,21 @@ import { SubmoduleGuard } from '../auth/guards/submodule.guard';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 const routes: Routes = [
   {
     path: '',
     component: AppListingComponent,
-    data: {breadcrumb:'Submodules'},
+    data: {breadcrumb: getItem(StorageItem.moduleSlug) + ' ' + '(submodules)'},
     children:[
       {
-        path: 'submodules-list/:name',
+        path: ':name',
         component: SubmodulesListComponent,
         canActivate: [SubmoduleGuard]
       },
       {
-        path: 'add-submodule',
+        path: 'add-submodule/:id',
         component: AddSubmoduleComponent,
         data: {breadcrumb:'Add Submodule'},
       },
@@ -34,7 +35,7 @@ const routes: Routes = [
         data: {breadcrumb:'Submodule Details'},
       },
       {
-        path: 'submissions',
+        path: getItem(StorageItem.moduleSlug),
         loadChildren: () => import('../workflows/workflows.module').then(m => m.WorkflowsModule)
       },
       {

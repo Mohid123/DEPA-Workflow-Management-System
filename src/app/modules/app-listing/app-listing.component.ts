@@ -16,7 +16,7 @@ export class AppListingComponent {
     let param: string = getItem(StorageItem.moduleSlug) || '';
     let queryParam: string = getItem(StorageItem.moduleID) || '';
     if(this.router.url == '/submodule') {
-      this.router.navigate(['/submodule/submodules-list', param], { queryParams: { moduleID: queryParam } })
+      this.router.navigate(['/submodule', param], { queryParams: { moduleID: queryParam } })
     }
   }
 }
