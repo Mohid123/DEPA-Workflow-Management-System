@@ -18,7 +18,7 @@ const routes: Routes = [
         path: ':submoduleCode/view-workflow/:id',
         canActivate: [AuthGuard],
         component: ViewWorkflowComponent,
-        data: { breadcrumb: 'Submission Workflow' },
+        data: { breadcrumb: 'Workflow' },
       },
       {
         path: ':submoduleCode/:id',

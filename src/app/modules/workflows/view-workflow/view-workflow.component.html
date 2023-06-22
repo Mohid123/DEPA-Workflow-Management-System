@@ -81,7 +81,9 @@
                     <span class="text-base font-semibold">{{approvers?.name}}</span>
                     <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected() == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5">
                       <span>Approve &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                      <span>Reject &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false">
+                        <span>Reject &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                      </ng-container>
                     </div>
                   </div>
                 </li>

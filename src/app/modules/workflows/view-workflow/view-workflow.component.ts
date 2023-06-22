@@ -253,6 +253,17 @@ export class ViewWorkflowComponent implements OnDestroy {
     })
   }
 
+  hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {
+    if(condition == 'none' && workflowIndex == 0) {
+      return true
+    }
+    if(condition == 'and' && workflowIndex == 0 && approvers?.map(val => val?.name).indexOf(this.currentUser?.fullName) == 0) {
+      return true
+    }
+    console.log(approvers?.map(val => val?.name).indexOf(this.currentUser?.fullName) == 0)
+    return false
+  }
+
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();
