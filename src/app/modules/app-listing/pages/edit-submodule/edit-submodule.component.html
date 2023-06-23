@@ -114,7 +114,7 @@
             <div class="col-span-4">
               <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
               <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
-              <span class="text-xs text-red-500" *ngIf="(showError | async) && i">Please select either AND or OR as the condition</span>
+              <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
             </div>
             <div class="col-span-4">
               <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>

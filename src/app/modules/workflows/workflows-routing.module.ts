@@ -16,6 +16,12 @@ const routes: Routes = [
     resolve: { breadcrumb: WorkflowResolver },
     children:[
       {
+        path: ':submoduleCode/add-submission/:id',
+        canActivate: [AuthGuard],
+        component: AddSubmissionComponent,
+        data: { breadcrumb: 'Add Submission' },
+      },
+      {
         path: ':submoduleCode/:key/:id',
         canActivate: [AuthGuard],
         component: ViewWorkflowComponent,
@@ -25,12 +31,6 @@ const routes: Routes = [
         path: ':submoduleCode/:id',
         canActivate: [AuthGuard],
         component: ViewSubmissionsComponent,
-      },
-      {
-        path: ':submoduleCode/add-submission/:id',
-        canActivate: [AuthGuard],
-        component: AddSubmissionComponent,
-        data: { breadcrumb: 'Add Submission' },
       },
       {
         path: 'email-submission',

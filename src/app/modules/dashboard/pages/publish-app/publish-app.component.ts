@@ -95,7 +95,8 @@ export class PublishAppComponent implements OnDestroy {
   userListForEmail: any[] = [];
   private readonly search$ = new Subject<string>();
   saveDialogSubscription: Subscription[] = [];
-  showError = new Subject<boolean>()
+  showError = new Subject<boolean>();
+  errorIndex: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -334,6 +335,7 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   countUsers(value: number, index: number) {
+    this.errorIndex = index
     if (value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none');
       this.notif.displayNotification(
@@ -354,6 +356,7 @@ export class PublishAppComponent implements OnDestroy {
   }
 
   validateSelection(index: number) {
+    this.errorIndex = index
     if (this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none');
       this.notif.displayNotification(

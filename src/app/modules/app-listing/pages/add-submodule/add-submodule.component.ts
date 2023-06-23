@@ -46,7 +46,8 @@ export class AddSubmoduleComponent implements OnDestroy {
   saveDialogSubscription: Subscription[] = [];
   limit: number = 10;
   page: number = 0;
-  showError = new Subject<boolean>()
+  showError = new Subject<boolean>();
+  errorIndex: number = 0
 
   constructor(
     private fb: FormBuilder,
@@ -325,6 +326,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   validateSelection(index: number) {
+    this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
@@ -336,6 +338,7 @@ export class AddSubmoduleComponent implements OnDestroy {
   }
 
   countUsers(value: number, index: number) {
+    this.errorIndex = index;
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)

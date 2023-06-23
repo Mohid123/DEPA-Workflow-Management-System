@@ -228,7 +228,7 @@
                       formControlName="approverIds"
                       (approverList)="getApproverList($event, i)"
                     ></custom-multi-select>
-                    <span class="text-xs text-red-500" *ngIf="(showError | async) && i">Please select either AND or OR as the condition</span>
+                    <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
                   </div>
                   <div class="col-span-5">
                     <label for="conditionSelect" class="block pb-1">

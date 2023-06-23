@@ -6,7 +6,6 @@ import { SubmoduleGuard } from '../auth/guards/submodule.guard';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { SubmoduleResolver } from '../../../core/core-services/resolver.service';
 
 const routes: Routes = [
