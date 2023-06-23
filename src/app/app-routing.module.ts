@@ -27,6 +27,11 @@ const routes: Routes = [
     loadChildren: () => import('./modules/forms/forms.module').then(m => m.FormsModule)
   },
   {
+    path: '',
+    redirectTo: '/auth/login',
+    pathMatch: 'full'
+  },
+  {
     path: '**',
     component: NotFoundComponent
   }
