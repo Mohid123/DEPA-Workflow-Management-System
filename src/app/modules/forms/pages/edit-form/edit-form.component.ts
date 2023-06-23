@@ -101,7 +101,7 @@ export class EditFormComponent implements OnDestroy {
 
     const formData = {
       title: this.formTitleControl?.value,
-      key: this.form?.key ?? this.formTitleControl?.value?.replace(/\s/g, '').toLowerCase() + '-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join(''),
+      key: this.form?.key ?? this.formTitleControl?.value?.replace(' ', '-'),
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
