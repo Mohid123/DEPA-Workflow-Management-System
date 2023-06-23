@@ -11,7 +11,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
   },
   {
-    path: 'submodule',
+    path: 'modules',
     data: {preload: true},
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
@@ -26,10 +26,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/forms/forms.module').then(m => m.FormsModule)
   },
-  // {
-  //   path: '**',
-  //   component: NotFoundComponent
-  // }
+  {
+    path: '**',
+    component: NotFoundComponent
+  }
 ];
 
 @NgModule({

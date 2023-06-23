@@ -95,6 +95,7 @@ export class PublishAppComponent implements OnDestroy {
   userListForEmail: any[] = [];
   private readonly search$ = new Subject<string>();
   saveDialogSubscription: Subscription[] = [];
+  showError = new Subject<boolean>()
 
   constructor(
     private fb: FormBuilder,
@@ -338,20 +339,17 @@ export class PublishAppComponent implements OnDestroy {
       this.notif.displayNotification(
         'Default condition of "None" will be used if the number of approvers is less than 2',
         'Create Module',
-        TuiNotification.Warning
+        TuiNotification.Info
       );
     }
     if (
       value >= 2 &&
       this.workflows.at(index)?.get('condition')?.value == 'none'
     ) {
-      this.notif.displayNotification(
-        'Please select either AND or OR as the condition',
-        'Create Module',
-        TuiNotification.Warning
-      );
+      this.showError.next(true)
       return (this.btn.nativeElement.disabled = true);
     }
+    this.showError.next(false)
     return (this.btn.nativeElement.disabled = false);
   }
 
@@ -361,20 +359,17 @@ export class PublishAppComponent implements OnDestroy {
       this.notif.displayNotification(
         'Default condition of "None" will be used if the number of approvers is less than 2',
         'Create Module',
-        TuiNotification.Warning
+        TuiNotification.Info
       );
     }
     if (
       this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 &&
       this.workflows.at(index)?.get('condition')?.value == 'none'
     ) {
-      this.notif.displayNotification(
-        'Please select either AND or OR as the condition',
-        'Create Module',
-        TuiNotification.Warning
-      );
+      this.showError.next(true)
       return (this.btn.nativeElement.disabled = true);
     }
+    this.showError.next(false)
     return (this.btn.nativeElement.disabled = false);
   }
 

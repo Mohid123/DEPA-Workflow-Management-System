@@ -25,8 +25,8 @@ export class SubmodulesListComponent {
     let param: string = getItem(StorageItem.workflowID) || '';
     let moduleSlug = getItem(StorageItem.moduleSlug);
     let submoduleSlug = getItem(StorageItem.subModuleSlug)
-    if(this.router.url == `/submodule/${moduleSlug}`) {
-      this.router.navigate([`/submodule/${moduleSlug}/${submoduleSlug}`, param])
+    if(this.router.url == `/modules/${moduleSlug}`) {
+      this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, param])
     }
 
     this.subModuleData = this.activatedRoute.params.pipe(

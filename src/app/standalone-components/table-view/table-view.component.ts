@@ -222,7 +222,7 @@ export class TableViewComponent implements OnDestroy {
 
   setSubmoduleSlug(code: string, id: string) {
     setItem(StorageItem.subModuleSlug, code);
-    this.router.navigate([`/submodule/${getItem(StorageItem.moduleSlug)}`, code, id])
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}`, code, id])
   }
 
   ngOnDestroy(): void {

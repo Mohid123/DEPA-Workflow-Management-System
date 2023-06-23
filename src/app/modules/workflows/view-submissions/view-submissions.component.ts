@@ -182,11 +182,11 @@ export class ViewSubmissionsComponent implements OnDestroy {
   }
 
   addSubmissionRoute() {
-    this.router.navigate([`/submodule/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/add-submission`, this.submoduleId])
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/add-submission`, this.submoduleId])
   }
 
   editWorkflowRoute(id: string) {
-    this.router.navigate([`/submodule/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/view-workflow`, id])
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/view-workflow`, id])
   }
 
     /**

@@ -264,7 +264,7 @@ export class AddSubmissionComponent implements OnDestroy {
     .subscribe(res => {
       if(res) {
         this.creatingSubmission.next(false)
-        this.router.navigate(['/submodule/submissions/view-submissions', this.subModuleId])
+        this.router.navigate(['/modules/submissions/view-submissions', this.subModuleId])
       }
     })
   }
@@ -290,7 +290,7 @@ export class AddSubmissionComponent implements OnDestroy {
   }
 
   cancelSubmission() {
-    this.router.navigate(['/submodule/submissions/view-submissions', this.subModuleId])
+    this.router.navigate(['/modules/submissions/view-submissions', this.subModuleId])
   }
 
   ngOnDestroy(): void {
