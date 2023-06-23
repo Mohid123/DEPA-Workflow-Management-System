@@ -315,7 +315,7 @@ export class EditSubmoduleComponent {
   }
 
   cancelSubmodule() {
-    this.router.navigate(['/submodule', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
   saveSubModule(statusStr?: number) {

@@ -108,7 +108,7 @@ export class EditFormComponent implements OnDestroy {
     if(this.editFormID) {
       this.formService.updateForm(this.editFormID, formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
-          setTimeout(() => this.router.navigate(['/submodule/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+          setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
         }
       });
     }
@@ -116,7 +116,7 @@ export class EditFormComponent implements OnDestroy {
       Object.assign(formData, {subModuleId: this.transportService.subModuleID?.value})
       this.formService.createForm(formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
-          setTimeout(() => this.router.navigate(['/submodule/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+          setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
         }
       });
     }
@@ -128,7 +128,7 @@ export class EditFormComponent implements OnDestroy {
 
   cancelFormData() {
     this.router.navigate(
-      ['/submodule/edit-submodule', this.transportService.subModuleID?.value],
+      ['/modules/edit-submodule', this.transportService.subModuleID?.value],
       {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}
     })
   }
