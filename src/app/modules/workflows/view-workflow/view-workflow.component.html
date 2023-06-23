@@ -79,9 +79,9 @@
                 <li class="tui-list__item">
                   <div class="flex justify-between">
                     <span class="text-base font-semibold">{{approvers?.name}}</span>
-                    <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected() == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5">
+                    <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected(user?.approverIds) == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5">
                       <span>Approve &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false">
+                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && approvalLogs?.length > 0">
                         <span>Reject &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                       </ng-container>
                     </div>

@@ -227,8 +227,8 @@ export class ViewWorkflowComponent implements OnDestroy {
     return this.activeUsers.includes(value)
   }
 
-  checkIfUserRejected() {
-    return this.lastApprovalCheck?.status == 'rejected' && this.currentUser?.fullName == this.lastApprovalCheck?.user
+  checkIfUserRejected(approvers: any[]) {
+    return this.lastApprovalCheck?.status == 'rejected' && this.currentUser?.fullName == this.lastApprovalCheck?.user && approvers?.map(val => val?.name).indexOf(this.currentUser?.fullName) !== 0
   }
 
   checkIfLoggedInUserIsPartOfActiveUsers(): boolean {
@@ -257,10 +257,9 @@ export class ViewWorkflowComponent implements OnDestroy {
     if(condition == 'none' && workflowIndex == 0) {
       return true
     }
-    if(condition == 'and' && workflowIndex == 0 && approvers?.map(val => val?.name).indexOf(this.currentUser?.fullName) == 0) {
+    if(condition == 'or' && workflowIndex == 0) {
       return true
     }
-    console.log(approvers?.map(val => val?.name).indexOf(this.currentUser?.fullName) == 0)
     return false
   }
 
