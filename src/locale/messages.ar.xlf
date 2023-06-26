@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="9084885127601930456" datatype="html">
+        <source>logo</source>
+        <target>شعار</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/modules/auth/pages/login/login.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2887217383744839851" datatype="html">
+        <source>Welcome to Depa App Store</source>
+        <target>مرحبًا بك في متجر تطبيقات Depa</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/modules/auth/pages/login/login.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3903053350168362812" datatype="html">
+        <source>Enter your <x id="INTERPOLATION" equiv-text="{{loginViaActiveDir?.value === false ? &apos;Login&apos; : &apos;Windows&apos;}}"/> credentials</source>
+        <target>ادخل <x id="INTERPOLATION" equiv-text="{{loginViaActiveDir?.value === false ? &apos;تسجيل الدخول&apos; : &apos;شبابيك&apos;}}"/> أوراق اعتماد</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/modules/auth/pages/login/login.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8253321659496489239" datatype="html">
+        <source>Login via Windows Credentials</source>
+        <target>تسجيل الدخول عبر بيانات اعتماد Windows</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/modules/auth/pages/login/login.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

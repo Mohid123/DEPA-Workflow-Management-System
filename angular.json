@@ -4,6 +4,10 @@
   "newProjectRoot": "projects",
   "projects": {
     "DEPA_FRONTEND": {
+      "i18n": {
+        "sourceLocale":"en-US",
+        "locales": {"ar-AE": "src/locale/messages.ar.xlf"}
+      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,6 +21,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "localize": ["ar-AE"],
             "allowedCommonJsDependencies": [
               "dompurify",
               "formiojs",
