@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -40,7 +41,9 @@ export class AddSubmissionComponent implements OnDestroy {
   saveDialogSubscription: Subscription[] = [];
   limit: number = 10;
   page: number = 0;
-  creatingSubmission = new Subject<boolean>()
+  creatingSubmission = new Subject<boolean>();
+  showError = new Subject<boolean>();
+  errorIndex: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -263,34 +266,42 @@ export class AddSubmissionComponent implements OnDestroy {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
+        let moduleSlug = getItem(StorageItem.moduleSlug);
+        let submoduleSlug = getItem(StorageItem.subModuleSlug);
         this.creatingSubmission.next(false)
-        this.router.navigate(['/submodule/submissions/view-submissions', this.subModuleId])
+        this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, this.subModuleId])
       }
     })
   }
 
   countUsers(value: number, index: number) {
+    this.errorIndex = index
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.showError.next(true)
     }
+    this.showError.next(false)
   }
 
   validateSelection(index: number) {
+    this.errorIndex = index
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning);
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info);
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.showError.next(true)
     }
+    this.showError.next(false)
   }
 
   cancelSubmission() {
-    this.router.navigate(['/submodule/submissions/view-submissions', this.subModuleId])
+    let moduleSlug = getItem(StorageItem.moduleSlug);
+    let submoduleSlug = getItem(StorageItem.subModuleSlug);
+    this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, this.subModuleId])
   }
 
   ngOnDestroy(): void {

@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { WorkflowsService } from '../workflows.service';
-import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { AuthService } from '../../auth/auth.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 
@@ -41,7 +41,13 @@ export class ViewSubmissionsComponent implements OnDestroy {
   limit: number = 7;
   submoduleData: any;
 
-  constructor(private activatedRoute: ActivatedRoute, private workflowService: WorkflowsService, private auth: AuthService, private dashboard: DashboardService) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private workflowService: WorkflowsService,
+    private auth: AuthService,
+    private dashboard: DashboardService,
+    private router: Router
+  ) {
     this.currentUser = this.auth.currentUserValue;
 
     this.subscriptions.push(this.activatedRoute.params.subscribe(val => {
@@ -173,6 +179,15 @@ export class ViewSubmissionsComponent implements OnDestroy {
 
   trackByFn(index: number, item: any) {
     return item?.id
+  }
+
+  addSubmissionRoute() {
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/add-submission`, this.submoduleId])
+  }
+
+  editWorkflowRoute(id: string, key: string) {
+    setItem(StorageItem.formKey, key)
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/${key}`, id])
   }
 
     /**

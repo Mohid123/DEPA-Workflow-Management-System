@@ -9,13 +9,14 @@
         <p class="text-lg text-[#B5B5C3]">Enter your {{loginViaActiveDir?.value === false ? 'Login' : 'Windows'}} credentials</p>
         <div class="px-4 pt-2 text-left">
           <ng-container *ngIf="loginViaActiveDir?.value === false">
-            <formio (submit)="onSubmit($event)" [form]="emailLoginForm" [options]="options"></formio>
+            <formio [submission]="submission" (change)="onChange($event)" (submit)="onSubmit($event)" [form]="emailLoginForm" [options]="options"></formio>
           </ng-container>
           <ng-container *ngIf="loginViaActiveDir?.value === true">
-            <formio (submit)="onSubmit($event)" [form]="activeDirectoryLoginForm" [options]="options"></formio>
+            <formio [submission]="submission" (change)="onChange($event)" (submit)="onSubmit($event)" [form]="activeDirectoryLoginForm" [options]="options"></formio>
           </ng-container>
           <div class="inline-flex pb-2 gap-x-3">
             <tui-checkbox
+              (click)="changeForm()"
               [formControl]="loginViaActiveDir"
               class="mt-0.5"
             ></tui-checkbox>

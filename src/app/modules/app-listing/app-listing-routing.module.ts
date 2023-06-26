@@ -6,20 +6,21 @@ import { SubmoduleGuard } from '../auth/guards/submodule.guard';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
+import { SubmoduleResolver } from '../../../core/core-services/resolver.service';
 
 const routes: Routes = [
   {
     path: '',
     component: AppListingComponent,
-    data: {breadcrumb:'Submodules'},
+    resolve: { breadcrumb: SubmoduleResolver },
     children:[
       {
-        path: 'submodules-list/:name',
+        path: ':name',
         component: SubmodulesListComponent,
         canActivate: [SubmoduleGuard]
       },
       {
-        path: 'add-submodule',
+        path: 'add-submodule/:id',
         component: AddSubmoduleComponent,
         data: {breadcrumb:'Add Submodule'},
       },
@@ -34,7 +35,8 @@ const routes: Routes = [
         data: {breadcrumb:'Submodule Details'},
       },
       {
-        path: 'submissions',
+        path: ':name',
+        data: {preload: true},
         loadChildren: () => import('../workflows/workflows.module').then(m => m.WorkflowsModule)
       },
       {

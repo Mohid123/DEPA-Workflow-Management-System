@@ -45,6 +45,8 @@ export class EditSubmoduleComponent {
   saveDialogSubscription: Subscription[] = [];
   limit: number = 10;
   page: number = 0;
+  showError = new Subject<boolean>();
+  errorIndex: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -273,23 +275,27 @@ export class EditSubmoduleComponent {
   }
 
   validateSelection(index: number) {
+    this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Warning)
+      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      return this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.showError.next(true)
     }
+    this.showError.next(false)
   }
 
   countUsers(value: number, index: number) {
+    this.errorIndex = index;
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Warning)
+      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      this.notif.displayNotification('Please select either AND or OR as the condition', 'Create Module', TuiNotification.Warning)
+      return this.showError.next(true)
     }
+    this.showError.next(false)
   }
 
   dataSubmitValidation() {
@@ -309,7 +315,7 @@ export class EditSubmoduleComponent {
   }
 
   cancelSubmodule() {
-    this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
   saveSubModule(statusStr?: number) {
@@ -322,7 +328,7 @@ export class EditSubmoduleComponent {
     }
     this.isCreatingSubModule.next(true)
     const payload = {
-      url: `/submodule/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
+      url: `/modules/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       companyId: this.subModuleForm.get('companyName')?.value,
       code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
@@ -348,7 +354,7 @@ export class EditSubmoduleComponent {
         this.isCreatingSubModule.next(false);
         this.transportService.saveDraftLocally({});
         this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/submodule/submodules-list', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
       else {
         this.isCreatingSubModule.next(false);

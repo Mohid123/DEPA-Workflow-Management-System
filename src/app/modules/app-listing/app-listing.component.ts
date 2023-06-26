@@ -15,8 +15,8 @@ export class AppListingComponent {
   constructor(private ac: ActivatedRoute, private router: Router) {
     let param: string = getItem(StorageItem.moduleSlug) || '';
     let queryParam: string = getItem(StorageItem.moduleID) || '';
-    if(this.router.url == '/submodule') {
-      this.router.navigate(['/submodule/submodules-list', param], { queryParams: { moduleID: queryParam } })
+    if(this.router.url == '/modules') {
+      this.router.navigate(['/modules', param], { queryParams: { moduleID: queryParam } })
     }
   }
 }

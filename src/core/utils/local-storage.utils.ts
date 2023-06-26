@@ -17,8 +17,10 @@ export enum StorageItem {
   subModuleData = 'App/submodule_data',
   submissionID = 'App/submissionID',
   moduleSlug = 'App/moduleSlug',
+  subModuleSlug = 'App/subModuleSlug',
   moduleID = 'App/moduleID',
-  workflowID = 'App/workflowID'
+  workflowID = 'App/workflowID',
+  formKey = 'App/formKey'
 }
 
 /**

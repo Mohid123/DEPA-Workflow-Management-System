@@ -5,7 +5,7 @@
     <div class="flex justify-between mb-5">
       <p class="text-left font-semibold text-lg">List of Submissions</p>
       <div *ngIf="checkIfUserisAdmin() || submoduleData?.createdBy == currentUser?.id || currentUser?.role == 'admin'" class="cursor-pointer">
-        <a [routerLink]="['/submodule/submissions/add-submission', submoduleId]"  class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
+        <a (click)="addSubmissionRoute()" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
       </div>
     </div>
     <div class="relative overflow-x-auto rounded-lg shadow-lg">
@@ -62,9 +62,14 @@
                   ></progress>
                   <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
                 </td>
-                <td class="px-6 py-4">
-                  <a *ngIf="checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true || currentUser?.role == 'admin' || data?.createdBy == currentUser?.id" [routerLink]="['/submodule/submissions/view-workflow', data?.id]" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                <td *ngIf="checkIfUserisPartofWorkflow(data?.workflowAllUsers) == false" class="px-6 py-4">
+                  <a (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)" *ngIf="checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true || currentUser?.role == 'admin' || data?.createdBy == currentUser?.id" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
+                  </a>
+                </td>
+                <td *ngIf="checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true" class="px-6 py-4">
+                  <a (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)" *ngIf="checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true || currentUser?.role == 'admin' || data?.createdBy == currentUser?.id" class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-edit fa-lg" aria-hidden="true"></i> Edit
                   </a>
                 </td>
               </tr>

@@ -74,8 +74,9 @@ export class DashboardService extends ApiService<any> {
       if (caption) {
         breadcrumbs.push({caption, routerLink});
       }
-      return this.createBreadcrumbs(child, routerLink, breadcrumbs);
+      this.createBreadcrumbs(child, routerLink, breadcrumbs);
     }
+    return breadcrumbs
   }
 
   /**

@@ -11,9 +11,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
   },
   {
-    path: '',
-    redirectTo: 'auth',
-    pathMatch: 'full'
+    path: 'modules',
+    data: {preload: true},
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
   },
   {
     path: 'dashboard',
@@ -26,9 +27,9 @@ const routes: Routes = [
     loadChildren: () => import('./modules/forms/forms.module').then(m => m.FormsModule)
   },
   {
-    path: 'submodule',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/app-listing/app-listing.module').then(m => m.AppListingModule)
+    path: '',
+    redirectTo: 'auth',
+    pathMatch: 'full'
   },
   {
     path: '**',

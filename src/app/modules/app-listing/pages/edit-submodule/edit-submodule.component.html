@@ -8,7 +8,7 @@
       <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
       <div class="mb-3 input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text">{{domainUrl}}/submodule/submodule-details/</span>
+          <span class="input-group-text">{{domainUrl}}/modules/submodule-details/</span>
         </div>
         <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
@@ -114,6 +114,7 @@
             <div class="col-span-4">
               <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
               <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+              <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
             </div>
             <div class="col-span-4">
               <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>

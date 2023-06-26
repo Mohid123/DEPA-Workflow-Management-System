@@ -138,16 +138,16 @@ export class FormBuilderComponent {
     // this.form.permissions = [...CRUDusers, ...viewOnlyUsers]
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
-    this.form.key = this.formTitleControl?.value?.replace(/\s/g, '').toLowerCase() + '-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join('')
+    this.form.key = this.formTitleControl?.value?.replace(' ', '-')
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];
         this.transportService.sendFormBuilderData(data);
-        this.router.navigate(['/submodule/add-submodule'], { queryParams: { moduleID: this.transportService.moduleID?.value } });
+        this.router.navigate(['/modules/add-submodule', this.transportService.moduleID?.value]);
       }
       else {
         this.transportService.sendFormBuilderData([this.form]);
-        this.router.navigate(['/submodule/add-submodule'], { queryParams: { moduleID: this.transportService.moduleID?.value } });
+        this.router.navigate(['/modules/add-submodule', this.transportService.moduleID?.value]);
       }
     }
     else {
@@ -158,7 +158,7 @@ export class FormBuilderComponent {
         return val
       });
       this.transportService.sendFormBuilderData(data);
-      this.router.navigate(['/submodule/add-submodule'], { queryParams: { moduleID: this.transportService.moduleID?.value } });
+      this.router.navigate(['/modules/add-submodule', this.transportService.moduleID?.value]);
     }
   }
 
@@ -169,7 +169,7 @@ export class FormBuilderComponent {
   cancelFormData() {
     if(this.editMode == false) {
       this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-      this.router.navigate(['/submodule/add-submodule'], { queryParams: { moduleID: this.transportService.moduleID?.value } });
+      this.router.navigate(['/modules/add-submodule', this.transportService.moduleID?.value]);
     }
     else {
       const data = this.transportService.formBuilderData.value?.map(val => {
@@ -179,7 +179,7 @@ export class FormBuilderComponent {
         return val
       });
       this.transportService.sendFormBuilderData(data);
-      this.router.navigate(['/submodule/add-submodule'], { queryParams: { moduleID: this.transportService.moduleID?.value } });
+      this.router.navigate(['/modules/add-submodule', this.transportService.moduleID?.value]);
     }
   }
 

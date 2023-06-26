@@ -6,29 +6,31 @@ import { ViewSubmissionsComponent } from './view-submissions/view-submissions.co
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { EmailSubmissionComponent } from './email-submission/email-submission.component';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { WorkflowResolver } from 'src/core/core-services/workflow-resolver.service';
+import { FormKeyResolver } from 'src/core/core-services/form-key-resolver.service';
 
 const routes: Routes = [
   {
     path: '',
     component: WorkflowsComponent,
-    data: {breadcrumb:'Submissions'},
+    resolve: { breadcrumb: WorkflowResolver },
     children:[
       {
-        path: 'view-workflow/:id',
-        canActivate: [AuthGuard],
-        component: ViewWorkflowComponent,
-        data: {breadcrumb:'View Workflow'},
-      },
-      {
-        path: 'view-submissions/:id',
-        canActivate: [AuthGuard],
-        component: ViewSubmissionsComponent,
-      },
-      {
-        path: 'add-submission/:id',
+        path: ':submoduleCode/add-submission/:id',
         canActivate: [AuthGuard],
         component: AddSubmissionComponent,
-        data: {breadcrumb:'Add Submission'},
+        data: { breadcrumb: 'Add Submission' },
+      },
+      {
+        path: ':submoduleCode/:key/:id',
+        canActivate: [AuthGuard],
+        component: ViewWorkflowComponent,
+        resolve: { breadcrumb: FormKeyResolver },
+      },
+      {
+        path: ':submoduleCode/:id',
+        canActivate: [AuthGuard],
+        component: ViewSubmissionsComponent,
       },
       {
         path: 'email-submission',

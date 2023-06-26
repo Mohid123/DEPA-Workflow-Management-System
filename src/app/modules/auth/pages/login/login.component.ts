@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '../../auth.service';
-import { Subject, takeUntil, first, Observable } from 'rxjs';
+import { Subject, takeUntil, first, Observable, BehaviorSubject } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Router } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
@@ -15,9 +15,11 @@ import { activeDirectoryLoginForm, emailLoginForm } from 'src/app/forms-schema/f
 export class LoginComponent implements OnDestroy {
   isLoggingIn$: Observable<boolean> = this.auth.isLoading$;
   destroy$ = new Subject();
+  credentialStore = new BehaviorSubject<any>({})
   userAuthData: any;
   loginViaActiveDir = new FormControl<boolean>(true);
   public emailLoginForm = emailLoginForm
+  public submission: any
 
   public activeDirectoryLoginForm = activeDirectoryLoginForm;
 
@@ -56,6 +58,22 @@ export class LoginComponent implements OnDestroy {
             this.router.navigate(['/dashboard/home'])
           }
         })
+      }
+    }
+  }
+
+  onChange(value: any) {
+    if(value?.data && value?.changed) {
+      this.credentialStore.next(value?.data)
+    }
+  }
+
+  changeForm() {
+    this.submission = {
+      data: {
+        username: this.credentialStore?.value?.username ? this.credentialStore?.value?.username : this.credentialStore?.value?.email,
+        email: this.credentialStore?.value?.email ? this.credentialStore?.value?.email : this.credentialStore?.value?.username,
+        password: this.credentialStore?.value?.password
       }
     }
   }

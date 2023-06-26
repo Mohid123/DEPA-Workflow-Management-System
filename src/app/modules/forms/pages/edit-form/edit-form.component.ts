@@ -101,14 +101,14 @@ export class EditFormComponent implements OnDestroy {
 
     const formData = {
       title: this.formTitleControl?.value,
-      key: this.form?.key ?? this.formTitleControl?.value?.replace(/\s/g, '').toLowerCase() + '-' + Array(2).fill(null).map(() => Math.round(Math.random() * 16).toString(2)).join(''),
+      key: this.form?.key ?? this.formTitleControl?.value?.replace(' ', '-'),
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
     if(this.editFormID) {
       this.formService.updateForm(this.editFormID, formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
-          setTimeout(() => this.router.navigate(['/submodule/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+          setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
         }
       });
     }
@@ -116,7 +116,7 @@ export class EditFormComponent implements OnDestroy {
       Object.assign(formData, {subModuleId: this.transportService.subModuleID?.value})
       this.formService.createForm(formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
-          setTimeout(() => this.router.navigate(['/submodule/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+          setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
         }
       });
     }
@@ -128,7 +128,7 @@ export class EditFormComponent implements OnDestroy {
 
   cancelFormData() {
     this.router.navigate(
-      ['/submodule/edit-submodule', this.transportService.subModuleID?.value],
+      ['/modules/edit-submodule', this.transportService.subModuleID?.value],
       {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}
     })
   }

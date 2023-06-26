@@ -227,8 +227,8 @@ export class ViewWorkflowComponent implements OnDestroy {
     return this.activeUsers.includes(value)
   }
 
-  checkIfUserRejected() {
-    return this.lastApprovalCheck?.status == 'rejected' && this.currentUser?.fullName == this.lastApprovalCheck?.user
+  checkIfUserRejected(approvers: any[]) {
+    return this.lastApprovalCheck?.status == 'rejected' && this.currentUser?.fullName == this.lastApprovalCheck?.user && approvers?.map(val => val?.name).indexOf(this.currentUser?.fullName) !== 0
   }
 
   checkIfLoggedInUserIsPartOfActiveUsers(): boolean {
@@ -251,6 +251,16 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.fetchData();
       }
     })
+  }
+
+  hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {
+    if(condition == 'none' && workflowIndex == 0) {
+      return true
+    }
+    if(condition == 'or' && workflowIndex == 0) {
+      return true
+    }
+    return false
   }
 
   ngOnDestroy(): void {
