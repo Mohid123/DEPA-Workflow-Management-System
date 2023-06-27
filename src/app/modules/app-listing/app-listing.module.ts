@@ -9,7 +9,7 @@ import { TableViewComponent } from 'src/app/standalone-components/table-view/tab
 import { SearchBarComponent } from 'src/app/standalone-components/search-bar/search-bar.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
 import { TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputModule, TuiInputTagModule, TuiIslandModule, TuiMultiSelectModule, TuiPaginationModule, TuiProgressModule, TuiRadioLabeledModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiHintModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
@@ -56,7 +56,8 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
     TuiInputTagModule,
     TableLoaderComponent,
     TuiTooltipModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiLoaderModule
   ]
 })
 export class AppListingModule { }

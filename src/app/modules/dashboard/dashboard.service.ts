@@ -70,7 +70,7 @@ export class DashboardService extends ApiService<any> {
       if (routeURL !== '') {
         routerLink += `/${routeURL}`;
       }
-      const caption = child.snapshot.data['breadcrumb'];
+      const caption = child.snapshot.data['breadcrumb']?.replace(/[_-]/, ' ')
       if (caption) {
         breadcrumbs.push({caption, routerLink});
       }

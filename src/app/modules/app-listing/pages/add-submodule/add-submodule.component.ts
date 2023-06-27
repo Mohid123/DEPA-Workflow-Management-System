@@ -10,6 +10,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -47,7 +48,9 @@ export class AddSubmoduleComponent implements OnDestroy {
   limit: number = 10;
   page: number = 0;
   showError = new Subject<boolean>();
-  errorIndex: number = 0
+  errorIndex: number = 0;
+  file: any;
+  base64File: any;
 
   constructor(
     private fb: FormBuilder,
@@ -164,6 +167,9 @@ export class AddSubmoduleComponent implements OnDestroy {
       companyName: [item?.companyName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
+      title: [item?.title || null, Validators.required],
+      image: [item?.image || null, Validators.required],
+      description: [item?.description || null, Validators.required],
       workflows: this.fb.array(
         item?.workflows ?
         item?.workflows?.map((val: { condition: any; emailNotifyTo: any; approverIds: any; }) => {
@@ -279,6 +285,10 @@ export class AddSubmoduleComponent implements OnDestroy {
       code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+      // parentId: "",
+      // title: this.subModuleForm?.get('title')?.value,
+      // description: this.subModuleForm?.get('description')?.value,
+      // image: this.file,
       formIds: this.formComponents,
       steps: this.workflows?.value?.map(data => {
         return {
@@ -355,6 +365,28 @@ export class AddSubmoduleComponent implements OnDestroy {
 
   setViewUsers(users: string[]) {
     this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
+  }
+
+  onFileSelect(event: any) {
+    const file = event?.target?.files[0];
+    if(calculateFileSize(file) == true) {
+        calculateAspectRatio(file).then((res) => {
+        if(res == false) {
+          this.notif.displayNotification('Image should be of 1:1 aspect ratio', 'File Upload', TuiNotification.Warning)
+        }
+        else {
+          this.file = file;
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (e) => {
+            this.base64File = reader.result;
+          };
+        }
+      });
+    }
+    else {
+      this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
+    }
   }
 
   ngOnDestroy(): void {
