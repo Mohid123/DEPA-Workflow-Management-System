@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
@@ -6,12 +6,15 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   templateUrl: './view-workflow.component.html',
   styleUrls: ['./view-workflow.component.scss']
 })
 export class ViewWorkflowComponent implements OnDestroy {
+  @ViewChild('formPdf', {static: false}) formPdf: ElementRef;
   public formWithWorkflow: any;
   readonly max = 100;
   readonly value$ = of(25);
@@ -261,6 +264,25 @@ export class ViewWorkflowComponent implements OnDestroy {
       return true
     }
     return false
+  }
+
+  downloadAsPDF() {
+    const formPdf = document.getElementById('formPdf');
+    const badges = formPdf.getElementsByTagName('tui-badge');
+    const hrs = formPdf.getElementsByTagName('hr');
+    const decisionBtns = formPdf.getElementsByClassName('decision-buttons');
+    Array.from(badges).forEach(val => val.remove())
+    Array.from(hrs).forEach(val => val.remove())
+    Array.from(decisionBtns).forEach(val => val?.remove())
+    html2canvas(formPdf).then((canvas) => {
+      this.fetchData()
+      let fileWidth = 200;
+      let fileHeight = (canvas.height * fileWidth) / canvas.width;
+      const FILEURI = canvas.toDataURL('image/png');
+      let PDF = new jsPDF('p', 'mm', 'a4');
+      PDF.addImage(FILEURI, 'PNG', 3, 10, fileWidth, fileHeight);
+      PDF.save('Form_Data_and_Workflow.pdf');
+    })
   }
 
   ngOnDestroy(): void {
