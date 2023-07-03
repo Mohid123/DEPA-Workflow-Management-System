@@ -69,6 +69,9 @@ export class UsersListComponent implements OnDestroy {
       dismissible: true,
       closeable: true
     }).subscribe());
+    this.formSubmission = {
+      data: {}
+    }
   }
 
   showDeleteDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {

@@ -9,7 +9,7 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { FormsService } from 'src/app/modules/forms/services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
@@ -232,9 +232,11 @@ export class EditSubmoduleComponent {
 
   sendFormForEdit(i: number, formID: string) {
     if(formID) {
+      setItem(StorageItem.formEdit, true)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
-  else {
+    else {
+      setItem(StorageItem.formEdit, true)
       this.transportService.isFormEdit.next(true);
       this.transportService.sendFormDataForEdit.next(this.formComponents[i]);
       this.router.navigate(['/forms/edit-form'], {queryParams: {submoduleID: this.transportService.subModuleID?.value}});

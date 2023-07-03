@@ -7,6 +7,8 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { Location } from '@angular/common';
+import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './edit-form.component.html',
@@ -47,7 +49,8 @@ export class EditFormComponent implements OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private formService: FormsService,
-    private transportService: DataTransportService
+    private transportService: DataTransportService,
+    private _location: Location
   )
   {
     this.activatedRoute?.queryParams?.subscribe(data => {
@@ -101,22 +104,37 @@ export class EditFormComponent implements OnDestroy {
 
     const formData = {
       title: this.formTitleControl?.value,
-      key: this.form?.key ?? this.formTitleControl?.value?.replace(' ', '-'),
+      // key: this.form?.key ?? this.formTitleControl?.value?.replace(' ', '_'),
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
+    const formFromEditModule = getItem(StorageItem.formEdit)
     if(this.editFormID) {
-      this.formService.updateForm(this.editFormID, formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
+      this.formService.updateForm(this.editFormID, formData)
+      .pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
-          setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+          if(formFromEditModule) {
+            removeItem(StorageItem.formEdit)
+            setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 800)
+          }
+          else {
+            this._location.back()
+          }
         }
       });
     }
     else {
       Object.assign(formData, {subModuleId: this.transportService.subModuleID?.value})
-      this.formService.createForm(formData).pipe(takeUntil(this.destroy$)).subscribe(val => {
+      this.formService.createForm(formData)
+      .pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
-          setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 1200)
+          if(formFromEditModule) {
+            removeItem(StorageItem.formEdit)
+            setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 800)
+          }
+          else {
+            this._location.back()
+          }
         }
       });
     }
@@ -127,10 +145,17 @@ export class EditFormComponent implements OnDestroy {
   }
 
   cancelFormData() {
-    this.router.navigate(
-      ['/modules/edit-submodule', this.transportService.subModuleID?.value],
-      {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}
-    })
+    const formFromEditModule = getItem(StorageItem.formEdit)
+    if(formFromEditModule) {
+      removeItem(StorageItem.formEdit)
+      this.router.navigate(
+        ['/modules/edit-submodule', this.transportService.subModuleID?.value],
+        {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}
+      })
+    }
+    else {
+      this._location.back()
+    }
   }
 
   ngOnDestroy(): void {

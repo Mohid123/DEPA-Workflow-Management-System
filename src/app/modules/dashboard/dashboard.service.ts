@@ -70,7 +70,7 @@ export class DashboardService extends ApiService<any> {
       if (routeURL !== '') {
         routerLink += `/${routeURL}`;
       }
-      const caption = child.snapshot.data['breadcrumb'];
+      const caption = child.snapshot.data['breadcrumb']?.replace(/[_-]/g, ' ');
       if (caption) {
         breadcrumbs.push({caption, routerLink});
       }
@@ -438,13 +438,13 @@ export class DashboardService extends ApiService<any> {
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         this.creatingModule.next(false);
-        this.notif.displayNotification('Submodule created successfully', 'Create SubModule', TuiNotification.Success);
+        this.notif.displayNotification('Module created successfully', 'Create Module', TuiNotification.Success);
         return res.data
       }
       else {
         this.creatingModule.next(false);
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create SubModule', TuiNotification.Error);
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create Module', TuiNotification.Error);
         }
       }
     }))

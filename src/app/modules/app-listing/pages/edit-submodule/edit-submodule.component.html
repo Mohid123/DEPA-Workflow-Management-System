@@ -1,19 +1,19 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
-    <h3 class="text-xl font-semibold">Edit submodule</h3>
+    <h3 class="text-xl font-semibold">Edit module</h3>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
     <div class="my-3">
-      <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">Module URL Endpoint<span class="text-xs text-red-400">*</span></label>
       <div class="mb-3 input-group">
-        <div class="input-group-prepend">
+        <!-- <div class="input-group-prepend">
           <span class="input-group-text">{{domainUrl}}/modules/submodule-details/</span>
-        </div>
+        </div> -->
         <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
           validation: 'required',
-          message: 'Submodule URL is required',
+          message: 'Module URL is required',
           control: f['subModuleUrl']
         }"></ng-container>
       </div>
@@ -54,7 +54,7 @@
 
     <!--Form preview-->
     <div class="mb-5 mt-7">
-      <h3 class="mb-5 text-lg font-semibold">Create Form</h3>
+      <h3 class="mb-5 text-lg font-semibold">Edit Form/s</h3>
       <h4 class="text-base font-semibold text-center">Form/s Preview</h4>
       <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
         <ng-container *ngIf="formComponents[0]?.components?.length > 0">

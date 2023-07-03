@@ -1,13 +1,13 @@
 <nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md">
   <div class="flex flex-wrap items-center justify-between max-w-screen p-4 mx-20">
-    <img ngSrc="../../../assets/depa_logo.svg" width="40" height="36">
+    <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="40" height="36">
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
       <ul class="flex flex-col px-4 py-2 font-medium rounded-lg md:flex-row md:space-x-6">
         <li class="mt-2">
           <a [routerLink]="['/dashboard/home']" routerLinkActive="router-link-active"
             class="block px-4 py-2 text-white no-underline hover:text-gray-100">Home</a>
         </li>
-        <li class="mt-2">
+        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
           <a [routerLink]="['/dashboard/create-edit-module']" routerLinkActive="router-link-active"
             class="block px-4 py-2 text-white no-underline hover:text-gray-100">Create Module</a>
         </li>
@@ -50,7 +50,7 @@
         </a>
       </ng-container>
       <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
-        <a *tuiItem tuiLink [routerLink]="item.routerLink" class="hover:text-[#76777f]">
+        <a *tuiItem tuiLink [routerLink]="item.routerLink" class="hover:text-[#76777f] capitalize">
           {{ item.caption }}
         </a>
       </ng-container>

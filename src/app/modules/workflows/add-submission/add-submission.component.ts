@@ -304,6 +304,12 @@ export class AddSubmissionComponent implements OnDestroy {
     this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, this.subModuleId])
   }
 
+  sendFormForEdit(i: number, formID: string) {
+    if(formID) {
+      this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();
