@@ -11,49 +11,17 @@
         <ng-container *ngIf="app.modules.length == 0; else showApps">
           <p class="col-span-12 my-8 text-base font-semibold text-center">No modules exist against this category. You can add a new module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/create-edit-module">here</a> </p>
         </ng-container>
-
         <ng-template #showApps>
           <ng-container *ngFor="let appdata of app?.modules; let i = index; let firstModule = first; let last = last;">
-            <!-- <ng-container *ngIf="app?.modules?.length <= 3">
-              <grid-small-app
-                (deleteModule)="showDialog($event, template)"
-                (editModule)="editModule($event)"
-                [appData]="appdata"
-                class="col-span-4 row-span-2"
-              ></grid-small-app>
-            </ng-container> -->
-            <!-- <ng-container *ngIf="app?.modules?.length >= 4"> -->
               <grid-top-app
                 (deleteModule)="showDialog($event, template)"
                 (editModule)="editModule($event)"
                 [appData]="appdata"
                 class="col-span-6"
               ></grid-top-app>
-              <!-- <grid-side-app
-                (editModule)="editModule($event)"
-                (deleteModule)="showDialog($event, template)"
-                *ngIf="i == 1"
-                [appData]="appdata"
-                class="col-span-4 row-span-3"
-              ></grid-side-app> -->
-              <!-- <grid-small-app
-                (editModule)="editModule($event)"
-                (deleteModule)="showDialog($event, template)"
-                *ngIf="i > 1"
-                class="col-span-4 row-span-2"
-                [appData]="appdata"
-              ></grid-small-app>
-            </ng-container> -->
           </ng-container>
         </ng-template>
       </ng-container>
-      <!-- <div class="flex justify-end mt-6 mb-10 col-span-full">
-        <tui-pagination
-          [length]="length"
-          [index]="index"
-          (indexChange)="goToPage($event)"
-        ></tui-pagination>
-      </div> -->
     </section>
   </ng-template>
 
