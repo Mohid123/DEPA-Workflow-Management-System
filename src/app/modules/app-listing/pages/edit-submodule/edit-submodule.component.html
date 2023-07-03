@@ -5,11 +5,11 @@
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
     <div class="my-3">
-      <label class="block pb-1">Submodule URL<span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">Submodule URL Endpoint<span class="text-xs text-red-400">*</span></label>
       <div class="mb-3 input-group">
-        <div class="input-group-prepend">
+        <!-- <div class="input-group-prepend">
           <span class="input-group-text">{{domainUrl}}/modules/submodule-details/</span>
-        </div>
+        </div> -->
         <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
           validation: 'required',

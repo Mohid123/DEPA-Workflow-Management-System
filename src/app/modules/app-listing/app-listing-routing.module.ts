@@ -22,17 +22,17 @@ const routes: Routes = [
       {
         path: 'add-submodule/:id',
         component: AddSubmoduleComponent,
-        data: {breadcrumb:'Add Submodule'},
+        data: {breadcrumb:'Add Module'},
       },
       {
         path: 'edit-submodule/:id',
         component: EditSubmoduleComponent,
-        data: {breadcrumb:'Edit Submodule'},
+        data: {breadcrumb:'Edit Module'},
       },
       {
         path: 'submodule-details/:name',
         component: SubmoduleDetailsComponent,
-        data: {breadcrumb:'Submodule Details'},
+        data: {breadcrumb:'Module Details'},
       },
       {
         path: ':name',

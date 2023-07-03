@@ -25,11 +25,11 @@
   
     <section class="my-10">
       <p class="mb-5 text-lg font-semibold">Approval Workflow</p>
-      <div class="flex flex-col items-center justify-center">
+      <div class="flex justify-start flex-wrap gap-2">
         <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
           <tui-island
             size="l"
-            class="w-1/2 my-4 shadow-lg"
+            class="w-96 my-4 shadow-lg"
             [hoverable]="true"
             [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
           >
@@ -80,18 +80,20 @@
                   <div class="flex justify-between">
                     <span class="text-base font-semibold">{{approvers?.name}}</span>
                     <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected(user?.approverIds) == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5">
-                      <span>Approve &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                      <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
                       <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && approvalLogs?.length > 0">
-                        <span>Reject &nbsp; <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                        <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                       </ng-container>
                     </div>
                   </div>
                 </li>
-                <p class="mt-2 ml-8 font-normal" *ngIf="!last">{{user?.condition}}</p>
+                <p class="mt-2 ml-6 font-normal" *ngIf="!last">{{user?.condition}}</p>
               </ng-container>
             </ul>
           </tui-island>
-          <i *ngIf="!lastItem" class="fa fa-long-arrow-down fa-2x" aria-hidden="true"></i>
+          <div class="flex items-center">
+            <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
+          </div>
         </ng-container>
       </div>
     </section>
