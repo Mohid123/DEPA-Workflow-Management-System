@@ -44,7 +44,7 @@
                   {{showStatus(data?.submissionStatus)}}
                 </td>
                 <td class="px-2 py-4">
-                  {{data?.summaryData?.userName || ''}}
+                  {{data?.submissionStatus === 1 ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
                 </td>
                   <td class="px-2 py-4 max-w-60">
                     <ng-container *ngFor="let pending of getPendingOnUsers(data?.summaryData?.pendingOnUsers || []); let lastUser = last">
