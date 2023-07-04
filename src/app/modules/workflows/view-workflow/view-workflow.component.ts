@@ -7,7 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import domToImage from 'dom-to-image';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './view-workflow.component.html',
@@ -21,9 +22,7 @@ export class ViewWorkflowComponent implements OnDestroy {
   destroy$ = new Subject();
   activeIndex: number = 0;
   workflowUsers = [];
-
   approvalLogs = []
-
   approve = new FormControl(false);
   reject = new FormControl(false);
   remarks = new FormControl('');
@@ -267,21 +266,36 @@ export class ViewWorkflowComponent implements OnDestroy {
   }
 
   downloadAsPDF() {
-    const formPdf = document.getElementById('formPdf');
-    const badges = formPdf.getElementsByTagName('tui-badge');
-    const hrs = formPdf.getElementsByTagName('hr');
-    const decisionBtns = formPdf.getElementsByClassName('decision-buttons');
-    Array.from(badges).forEach(val => val.remove())
-    Array.from(hrs).forEach(val => val.remove())
-    Array.from(decisionBtns).forEach(val => val?.remove())
-    html2canvas(formPdf).then((canvas) => {
-      this.fetchData()
-      let fileWidth = 200;
-      let fileHeight = (canvas.height * fileWidth) / canvas.width;
-      const FILEURI = canvas.toDataURL('image/png');
-      let PDF = new jsPDF('p', 'mm', 'a4');
-      PDF.addImage(FILEURI, 'PNG', 3, 10, fileWidth, fileHeight);
-      PDF.save('Form_Data_and_Workflow.pdf');
+    const width = this.formPdf.nativeElement.clientWidth;
+    const height = this.formPdf.nativeElement.clientHeight + 40;
+    let orientation: any = '';
+    let imageUnit: any = 'pt';
+    if (width > height) {
+      orientation = 'l';
+    }
+    else {
+      orientation = 'p';
+    }
+    domToImage.toPng(this.formPdf.nativeElement, {
+      width: width,
+      height: height
+    })
+    .then((result) => {
+      let jsPdfOptions = {
+        orientation: orientation,
+        unit: imageUnit,
+        format: [width + 100, height + 220]
+      };
+      const pdf = new jsPDF(jsPdfOptions);
+      const image: HTMLImageElement | any = new Image();
+      image.src = 'https://i.ibb.co/Wt2PxM6/depa-logo.png';
+      image.alt = 'logo';
+      pdf.addImage(image, 'PNG', 25, 45, 60, 60)
+      pdf.addImage(result, 'PNG', 25, 105, width, height);
+      pdf.save('Form_Data_and_Workflow'+ '.pdf');
+    })
+    .catch(error => {
+      throw error
     })
   }
 
