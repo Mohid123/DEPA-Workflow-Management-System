@@ -105,6 +105,11 @@ export class ViewSubmissionsComponent implements OnDestroy {
     return data?.map(val => val?._id)?.includes(this.currentUser?.id)
   }
 
+  checkIfUserisActiveUser(data: any) {
+    return data?.flatMap(val => val?.status == 'inProgress' ? val.activeUsers: null)?.filter(val => val).includes(this.currentUser?.id)
+  }
+
+
   checkIfUserisCreator(): boolean {
     return this.createdByUsers?.includes(this.currentUser?.id)
   }
