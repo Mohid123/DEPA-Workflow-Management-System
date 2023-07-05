@@ -41,6 +41,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
+import { calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -494,7 +495,6 @@ export class PublishAppComponent implements OnDestroy {
           break;
         case 2:
           if (!this.file) {
-            debugger
             return this.notif.displayNotification(
               'Please provide a valid image for your module',
               'Create Module',
@@ -523,8 +523,8 @@ export class PublishAppComponent implements OnDestroy {
 
   onFileSelect(event: any) {
     const file = event?.target?.files[0];
-    if(this.calculateFileSize(file) == true) {
-      this.calculateAspectRatio(file).then((res) => {
+    if(calculateFileSize(file) == true) {
+      calculateAspectRatio(file).then((res) => {
         if(res == false) {
           this.notif.displayNotification('Image should be of 1:1 aspect ratio', 'File Upload', TuiNotification.Warning)
         }
@@ -541,39 +541,6 @@ export class PublishAppComponent implements OnDestroy {
     else {
       this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
     }
-  }
-
-  calculateAspectRatio(image: any): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      reader.onload = async (e: any) => {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = async () => {
-          let height = img.naturalHeight;
-          let width = img.naturalWidth;
-          if (Math.round(width / height) !== 1) {
-            resolve(false);
-          }
-          resolve(true);
-        };
-      };
-    });
-  }
-
-  calculateFileSize(file: any): boolean {
-    const maxSize = (1024 * 1024) * 2;
-    if (
-      (file?.type == 'image/jpg' ||
-        file?.type == 'image/jpeg' ||
-        file?.type == 'image/png' ||
-        file?.type == 'image/webp') &&
-      file?.size <= maxSize
-    ) {
-      return true;
-    }
-    return false;
   }
 
   submitNewModule() {

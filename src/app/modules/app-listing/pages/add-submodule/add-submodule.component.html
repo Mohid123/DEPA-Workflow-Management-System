@@ -10,13 +10,23 @@
         <!-- <div class="input-group-prepend">
           <span class="input-group-text">{{domainURL}}/submodule/submodule-details/</span>
         </div> -->
-        <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
+        <input
+          required
+          [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''"
+          formControlName="subModuleUrl"
+          class="form-control"
+          type="text"
+        >
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
           validation: 'required',
           message: 'Module URL is required',
           control: f['subModuleUrl']
         }"></ng-container>
       </div>
+      <span class="text-red-500 text-xs"
+        *ngIf="f['subModuleUrl']?.hasError('codeExists')">
+        This Code is already taken
+      </span>
       <p class="block mb-2 text-xs text-gray-600">Please provide an endpoint for your module</p>
     </div>
 

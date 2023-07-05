@@ -1,15 +1,17 @@
 import { Component, EventEmitter, Inject, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, distinctUntilChanged, map, of, shareReplay, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { ApiResponse } from 'src/core/models/api-response.model';
+import { CodeValidator } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -158,7 +160,10 @@ export class AddSubmoduleComponent implements OnDestroy {
 
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.subModuleUrl || null, Validators.compose([Validators.required])],
+      subModuleUrl: [
+        item?.subModuleUrl || null, 
+        Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]
+      ],
       companies: this.fb.array([]),
       code: [{value: item?.code, disabled: true} || {value: null, disabled: true}],
       companyName: [item?.companyName || null, Validators.required],
