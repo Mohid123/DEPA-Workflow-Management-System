@@ -3,7 +3,6 @@
   <ng-container *ngIf="(subModuleData | async) as data; else noData">
     <ng-container *ngIf="(moduleData | async) as moduledata">
       <p class="text-left font-semibold text-lg mb-2">Title:&nbsp; <span class="text-[#374151]">{{moduledata.title}}</span> </p>
-      <p class="text-left font-semibold text-base">Code:&nbsp; <span class="text-[#374151]">{{moduledata.code}}</span></p>
     </ng-container>
     <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data"></app-table-view>
   </ng-container>

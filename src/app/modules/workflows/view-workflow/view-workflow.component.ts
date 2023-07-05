@@ -42,7 +42,9 @@ export class ViewWorkflowComponent implements OnDestroy {
   allApproved: any;
   activeStep: any;
   lastApprovalCheck: any;
-  loadingData = new Subject<boolean>()
+  loadingData = new Subject<boolean>();
+  index = NaN;
+  labels = ['Active', 'Approved', 'Pending', 'Rejected'];
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -74,6 +76,23 @@ export class ViewWorkflowComponent implements OnDestroy {
       }
     });
   }
+
+  get label(): string {
+    return Number.isNaN(this.index) ? '' : this.labels[this.index];
+  }
+
+  getColor(index: number): string {
+    return `var(--tui-chart-${index})`;
+  }
+  
+  isItemActive(index: number): boolean {
+    return this.index === index;
+  }
+
+  onHover(index: number, hovered: any): void {
+    this.index = hovered ? index : 0;
+  }
+
 
   fetchData() {
     this.loadingData.next(true)
@@ -219,6 +238,10 @@ export class ViewWorkflowComponent implements OnDestroy {
       }
       return false
     })
+  }
+
+  checkApprovedStatus(value: any): boolean {
+    return this.approvedUsers?.flatMap(val => val?.users)?.includes(value)
   }
 
   userApprovedCheckResult(): boolean {

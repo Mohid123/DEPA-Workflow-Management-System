@@ -84,7 +84,12 @@
                 <ng-container *ngFor="let approvers of user?.approverIds; let j = index; let first = first; let last = last">
                   <li class="tui-list__item">
                     <div class="flex justify-between">
-                      <span class="text-base font-semibold">{{approvers?.name}}</span>
+                      <span class="text-base font-semibold">
+                        {{approvers?.name}}
+                      </span>
+                      <span *ngIf="checkApprovedStatus(approvers?.name) === true">
+                        <i class="fa fa-check fa-lg" aria-hidden="true"></i>
+                      </span>
                       <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected(user?.approverIds) == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5 decision-buttons">
                         <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
                         <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && approvalLogs?.length > 0">
@@ -102,12 +107,34 @@
             </div>
           </ng-container>
         </div>
+        <div class="mt-4 mb-5 text-sm">
+          <p class="font-semibold my-2 text-base">Legend</p>
+          <div class="flex justify-start gap-2">
+            <tui-ring-chart
+              [value]="[25, 25, 25, 25]"
+              [tuiHintContent]="content"
+              [(activeItemIndex)]="index"
+            >
+              <div>Status</div>
+            </tui-ring-chart>
+            <tui-legend-item
+              *ngFor="let label of labels; let index = index"
+              size="s"
+              class="ml-4 mt-12 h-8"
+              [color]="getColor(index)"
+              [text]="label"
+              [active]="isItemActive(index)"
+              (tuiHoveredChange)="onHover(index, $event)"
+            >
+            </tui-legend-item>
+          </div>
+        </div>
       </section>
     
       <!--Workflow progress-->
       <section class="my-4">
         <p class="mb-5 text-lg font-semibold">Workflow Progress & Approval Logs</p>
-        <div class="grid grid-cols-12 gap-3">
+        <div class="grid grid-cols-12 gap-2">
           <div class="col-span-2">
             <label
               tuiProgressLabel
@@ -124,19 +151,19 @@
             </label>
           </div>
     
-          <div class="col-span-10">
+          <div class="col-span-9">
             <tui-island size="l" class="w-full shadow-lg">
               <ng-container *ngIf="approvalLogs?.length == 0">
                 <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>
               </ng-container>
               <ng-container *ngFor="let log of approvalLogs; let i = index">
                 <div class="grid grid-cols-12 py-3 gap-x-3 border-b border-gray-300">
-                  <p class="col-span-2 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
-                  <p class="col-span-2 font-normal">Decision: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
+                  <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
+                  <p class="col-span-2 font-normal">Action: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
                   <p class="col-span-4 font-normal">
                     Approved On: <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">&nbsp;{{log?.approvedOn | date: 'medium'}}</span>
                   </p>
-                  <p class="col-span-4 font-normal">Comments:
+                  <p class="col-span-3 font-normal">Comments:
                     <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-red-500'" class="font-semibold">&nbsp;{{log?.remarks}}</span>
                   </p>
                 </div>
@@ -184,5 +211,22 @@
       Cancel
     </button>
   </div>
+</ng-template>
+
+<ng-template
+  #content
+>
+  <ng-container *ngIf="index == 3">
+    <span class="font-semibold">{{labels[index]}}</span> indicates that the previous user or previous step user/s must provide approval for workflow to proceed 
+  </ng-container>
+  <ng-container *ngIf="index == 0">
+    <span class="font-semibold">{{labels[index]}}</span> indicates that users of the step can perform workflow actions.
+  </ng-container>
+  <ng-container *ngIf="index == 1">
+    <span class="font-semibold">{{labels[index]}}</span> indicates that all users of the step have provided approval and the step is complete.
+  </ng-container>
+  <ng-container *ngIf="index == 2">
+    <span class="font-semibold">{{labels[index]}}</span> indicates that the step is not currently active and no action has been performed yet.
+  </ng-container>
 </ng-template>
 

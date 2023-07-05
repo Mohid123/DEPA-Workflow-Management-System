@@ -18,6 +18,8 @@ import { EmailSubmissionComponent } from './email-submission/email-submission.co
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 import { WorkflowSkeletonComponent } from 'src/app/skeleton-loaders/workflow-skeleton/workflow-skeleton.component';
+import {TuiLegendItemModule, TuiRingChartModule} from '@taiga-ui/addon-charts';
+import { TuiHoveredModule } from '@taiga-ui/cdk';
 
 
 @NgModule({
@@ -56,7 +58,10 @@ import { WorkflowSkeletonComponent } from 'src/app/skeleton-loaders/workflow-ske
     FilterComponent,
     TuiHintModule,
     TuiTooltipModule,
-    WorkflowSkeletonComponent
+    WorkflowSkeletonComponent,
+    TuiRingChartModule,
+    TuiLegendItemModule,
+    TuiHoveredModule
   ]
 })
 export class WorkflowsModule { }
