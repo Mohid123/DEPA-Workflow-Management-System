@@ -79,7 +79,6 @@
                 </tui-badge>
                 <hr class="mb-2">
               </ng-container>
-    
               <ul class="tui-list">
                 <ng-container *ngFor="let approvers of user?.approverIds; let j = index; let first = first; let last = last">
                   <li class="tui-list__item">
@@ -87,7 +86,7 @@
                       <span class="text-base font-semibold">
                         {{approvers?.name}}
                       </span>
-                      <span *ngIf="checkApprovedStatus(approvers?.name) === true && userApprovedCheckResult() === false">
+                      <span *ngIf="checkApprovedStatus(approvers?.name, i) === true">
                         <i class="fa fa-check fa-lg" aria-hidden="true"></i>
                       </span>
                       <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected(user?.approverIds) == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5 decision-buttons">

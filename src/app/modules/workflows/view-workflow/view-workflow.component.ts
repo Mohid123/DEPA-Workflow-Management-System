@@ -238,7 +238,10 @@ export class ViewWorkflowComponent implements OnDestroy {
     })
   }
 
-  checkApprovedStatus(value: any): boolean {
+  checkApprovedStatus(value: any, index: number): boolean {
+    if(this.approvedUsers?.map(value => value.status)[index] === 'inProgress') {
+      return this.approvedUsers[index].users?.includes(value)
+    }
     return this.approvedUsers?.flatMap(val => val?.users)?.includes(value)
   }
 
