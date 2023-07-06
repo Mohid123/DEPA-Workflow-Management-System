@@ -64,18 +64,27 @@
                 </td>
                 <td class="px-6 py-4">
                   <!--EDIT-->
-                  <a 
+                  <a
+                    title="Edit"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="checkIfUserisActiveUser(data?.workflowStatus) == true"
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-edit fa-lg" aria-hidden="true"></i> Edit
+                    <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
                   </a>
                   <!--VIEW-->
-                  <a 
+                  <a
+                    title="View"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="(checkIfUserisActiveUser(data?.workflowStatus) == false && checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true) || currentUser?.role == 'admin'"
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-eye fa-lg" aria-hidden="true"></i> View
+                    <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+                  </a>
+                  <!--Delete-->
+                  <a
+                    title="Delete"
+                    (click)="showDialog(dialog)"
+                    class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+                    <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
                   </a>
                 </td>
               </tr>
@@ -98,3 +107,35 @@
   </ng-template>
 </section>
 <app-footer></app-footer>
+
+<ng-template #dialog let-observer>
+  <p class="text-lg font-semibold text-center mb-5">
+    Delete Submission
+  </p>
+  <p class="text-base font-semibold text-center">
+    You are about to <span class="text-red-500">Delete</span> this submission. Are you sure you want to continue?
+  </p>
+  <div class="flex flex-col justify-center my-5">
+    <label class="block" for="Textarea1">Comments <sup>(optional)</sup></label>
+    <textarea [formControl]="remarks" class="form-control" id="Textarea1" rows="4"></textarea>
+  </div>
+  <div class="flex justify-start gap-2">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      (click)="observer.complete()"
+    >
+      Confirm
+    </button>
+    <button
+      tuiButton
+      appearance="secondary-destructive"
+      type="button"
+      size="m"
+      (click)="remarks.reset(); observer.complete()"
+    >
+      Cancel
+    </button>
+  </div>
+</ng-template>

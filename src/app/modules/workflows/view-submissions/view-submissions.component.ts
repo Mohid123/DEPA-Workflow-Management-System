@@ -1,10 +1,13 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { WorkflowsService } from '../workflows.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { AuthService } from '../../auth/auth.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
+import { FormControl } from '@angular/forms';
+import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 
 @Component({
   templateUrl: './view-submissions.component.html',
@@ -40,13 +43,15 @@ export class ViewSubmissionsComponent implements OnDestroy {
   tableDataValue: any;
   limit: number = 7;
   submoduleData: any;
+  remarks = new FormControl('');
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowsService,
     private auth: AuthService,
     private dashboard: DashboardService,
-    private router: Router
+    private router: Router,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
   ) {
     this.currentUser = this.auth.currentUserValue;
 
@@ -66,6 +71,13 @@ export class ViewSubmissionsComponent implements OnDestroy {
         this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
         this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
+  }
+
+  showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe();
   }
 
   changeProgressColor(value: number) {

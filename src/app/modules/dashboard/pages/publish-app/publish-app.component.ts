@@ -401,6 +401,9 @@ export class PublishAppComponent implements OnDestroy {
             this.f['moduleDescription']?.invalid ||
             this.f['moduleCategory']?.invalid
           ) {
+            this.f['moduleTitle']?.markAsTouched()
+            this.f['moduleDescription']?.markAsTouched()
+            this.f['moduleCategory']?.markAsTouched()
             return this.notif.displayNotification(
               'Please fill in all fields',
               'Create Module',
