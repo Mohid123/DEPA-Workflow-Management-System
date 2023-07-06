@@ -298,7 +298,6 @@ export class ViewWorkflowComponent implements OnDestroy {
       orientation = 'p';
     }
     document.getElementById('legend').style.display = 'none';
-    domToImage
     domToImage.toPng(this.formPdf.nativeElement, {
       width: width * 2,
       height: height  * 2,
