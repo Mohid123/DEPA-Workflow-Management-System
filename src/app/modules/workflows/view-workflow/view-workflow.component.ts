@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
@@ -92,7 +92,6 @@ export class ViewWorkflowComponent implements OnDestroy {
   onHover(index: number, hovered: any): void {
     this.index = hovered ? index : 0;
   }
-
 
   fetchData() {
     this.loadingData.next(true)
@@ -217,7 +216,6 @@ export class ViewWorkflowComponent implements OnDestroy {
     return '#fff'
   }
 
-
   checkIfUserCanEditForm(): any[] {
     return this.formAllowedForEditUsers?.map(val => {
       if(val.users?.includes(this.currentUser?.fullName) && val.status == 'inProgress') {
@@ -299,9 +297,15 @@ export class ViewWorkflowComponent implements OnDestroy {
     else {
       orientation = 'p';
     }
+    document.getElementById('legend').remove();
+    domToImage
     domToImage.toPng(this.formPdf.nativeElement, {
-      width: width,
-      height: height
+      width: width * 2,
+      height: height  * 2,
+      style: {
+        transform: "scale(" + 2 + ")",
+        transformOrigin: "top left"
+      }
     })
     .then((result) => {
       let jsPdfOptions = {

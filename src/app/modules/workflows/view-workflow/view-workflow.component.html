@@ -87,7 +87,7 @@
                       <span class="text-base font-semibold">
                         {{approvers?.name}}
                       </span>
-                      <span *ngIf="checkApprovedStatus(approvers?.name) === true">
+                      <span *ngIf="checkApprovedStatus(approvers?.name) === true && userApprovedCheckResult() === false">
                         <i class="fa fa-check fa-lg" aria-hidden="true"></i>
                       </span>
                       <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected(user?.approverIds) == false && userApprovedCheckResult() == false && user?.status == 'inProgress'" class="flex justify-end gap-5 decision-buttons">
@@ -107,20 +107,22 @@
             </div>
           </ng-container>
         </div>
-        <div class="mt-4 mb-5 text-sm">
+        <div id="legend" class="mt-4 mb-5 text-sm">
           <p class="font-semibold my-2 text-base">Legend</p>
           <div class="flex justify-start gap-2">
             <tui-ring-chart
               [value]="[25, 25, 25, 25]"
               [tuiHintContent]="content"
               [(activeItemIndex)]="index"
+              size="s"
+              (tuiHoveredChange)="onHover(index, $event)"
             >
-              <div>Status</div>
+              <!-- <div>Status</div> -->
             </tui-ring-chart>
             <tui-legend-item
               *ngFor="let label of labels; let index = index"
               size="s"
-              class="ml-4 mt-12 h-8"
+              class="ml-4 mt-4 h-8"
               [color]="getColor(index)"
               [text]="label"
               [active]="isItemActive(index)"
