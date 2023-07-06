@@ -297,7 +297,7 @@ export class ViewWorkflowComponent implements OnDestroy {
     else {
       orientation = 'p';
     }
-    document.getElementById('legend').remove();
+    document.getElementById('legend').style.display = 'none';
     domToImage
     domToImage.toPng(this.formPdf.nativeElement, {
       width: width * 2,
@@ -320,6 +320,7 @@ export class ViewWorkflowComponent implements OnDestroy {
       pdf.addImage(image, 'PNG', 25, 45, 60, 60)
       pdf.addImage(result, 'PNG', 25, 105, width, height);
       pdf.save('Form_Data_and_Workflow'+ '.pdf');
+      document.getElementById('legend').style.display = 'block';
     })
     .catch(error => {
       throw error
