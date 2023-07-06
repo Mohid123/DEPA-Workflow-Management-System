@@ -45,8 +45,8 @@ export class ServerErrorInterceptor implements HttpInterceptor, OnDestroy {
   ): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if ([401, 403].includes(error.status)) {
-          this.subscription.push(this.auth.logout().subscribe());
+        if ([401, 403].includes(error.status) && this.auth.currentUserValue) {
+          this.subscription.push(this.auth.logout()?.subscribe());
           this.notif.displayNotification('Your session has expired. Log in again to continue', 'Session Expired', TuiNotification.Error)
           return throwError(error)
         } else if (error.status === 500) {
