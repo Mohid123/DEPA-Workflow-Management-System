@@ -1,16 +1,15 @@
 import { Component, EventEmitter, Inject, OnDestroy } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, distinctUntilChanged, map, of, shareReplay, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { ApiResponse } from 'src/core/models/api-response.model';
 import { CodeValidator, calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
 
 @Component({
@@ -361,7 +360,8 @@ export class AddSubmoduleComponent implements OnDestroy {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
+      return this.showError.next(false)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
       return this.showError.next(true)
@@ -372,8 +372,9 @@ export class AddSubmoduleComponent implements OnDestroy {
   countUsers(value: number, index: number) {
     this.errorIndex = index;
     if(value < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
+      this.workflows.at(index)?.get('condition')?.setValue('none');
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
+      return this.showError.next(false)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
       return this.showError.next(true)

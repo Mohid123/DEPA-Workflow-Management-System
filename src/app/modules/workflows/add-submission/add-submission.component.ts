@@ -278,7 +278,8 @@ export class AddSubmissionComponent implements OnDestroy {
     this.errorIndex = index
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
+      return this.showError.next(false)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
       return this.showError.next(true)
@@ -291,6 +292,7 @@ export class AddSubmissionComponent implements OnDestroy {
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info);
+      return this.showError.next(false)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
       return this.showError.next(true)

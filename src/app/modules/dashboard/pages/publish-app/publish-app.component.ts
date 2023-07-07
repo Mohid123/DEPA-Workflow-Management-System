@@ -344,6 +344,7 @@ export class PublishAppComponent implements OnDestroy {
         'Create Module',
         TuiNotification.Info
       );
+      return this.showError.next(false)
     }
     if (
       value >= 2 &&
@@ -365,6 +366,7 @@ export class PublishAppComponent implements OnDestroy {
         'Create Module',
         TuiNotification.Info
       );
+      return this.showError.next(false)
     }
     if (
       this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 &&
