@@ -18,6 +18,7 @@ import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.co
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import { SubmissionTableComponent } from 'src/app/standalone-components/submission-table/submission-table.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
     TableLoaderComponent,
     TuiTooltipModule,
     TuiHintModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    SubmissionTableComponent
   ]
 })
 export class AppListingModule { }

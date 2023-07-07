@@ -1,21 +1,28 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Subject, Subscription, takeUntil } from 'rxjs';
-import { WorkflowsService } from '../workflows.service';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import { AuthService } from '../../auth/auth.service';
-import { DashboardService } from '../../dashboard/dashboard.service';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
+import { AuthService } from 'src/app/modules/auth/auth.service';
+import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { FilterComponent } from '../filter/filter.component';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
+import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 
 @Component({
-  templateUrl: './view-submissions.component.html',
-  styleUrls: ['./view-submissions.component.scss']
+  selector: 'app-submission-table',
+  standalone: true,
+  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule],
+  templateUrl: './submission-table.component.html',
+  styleUrls: ['./submission-table.component.scss']
 })
-export class ViewSubmissionsComponent implements OnDestroy {
+export class SubmissionTableComponent implements OnDestroy {
   submissionData: any;
-  submoduleId: string;
+  @Input() submoduleId: string;
   subscriptions: Subscription[] = [];
   currentUser: any;
   adminUsers: any[] = [];
@@ -34,9 +41,7 @@ export class ViewSubmissionsComponent implements OnDestroy {
     {name: 'Created', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
     {name: 'In Progress', status: 'idle', icon: ''},
-    {name: 'Draft', status: 'idle', icon: ''},
-    // {name: 'Sort by Latest', status: 'idle', icon: ''},
-    // {name: 'Sort by Oldest', status: 'idle', icon: ''}
+    {name: 'Draft', status: 'idle', icon: ''}
   ];
 
   page = 1;
@@ -46,31 +51,27 @@ export class ViewSubmissionsComponent implements OnDestroy {
   remarks = new FormControl('');
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowsService,
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
   ) {
+    this.submoduleId = '649a52fa58a91035b8de4b6f'
     this.currentUser = this.auth.currentUserValue;
-
-    this.subscriptions.push(this.activatedRoute.params.subscribe(val => {
-      this.submoduleId = val['id']
-      setItem(StorageItem.workflowID, val['id'])
-    }));
-
-    this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
-      this.submoduleData = val;
-    }))
-
-    this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+    if(this.submoduleId) {
+      setItem(StorageItem.workflowID, this.submoduleId);
+      this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
+        this.submoduleData = val;
+      }));
+      this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
       .subscribe((val: any) => {
         this.submissionData = val;
         this.tableDataValue = val?.results;
         this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
         this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
-    }))
+      }))
+    }
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
@@ -226,4 +227,4 @@ export class ViewSubmissionsComponent implements OnDestroy {
     this.destroy$.unsubscribe();
     this.subscriptions.forEach(val => val.unsubscribe());
   }
- }
+}
