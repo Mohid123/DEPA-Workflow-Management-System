@@ -44,7 +44,7 @@ export class SubmoduleGuard implements CanActivate {
       }).subscribe();
       this.transportService.dialogState.subscribe(val => {
         if(val === DialogState.DISCARD) {
-          this.router.navigate(['/module', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+          this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
           return true
         }
         return false

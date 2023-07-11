@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
@@ -16,7 +16,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
   templateUrl: './edit-submodule.component.html',
   styleUrls: ['./edit-submodule.component.scss']
 })
-export class EditSubmoduleComponent {
+export class EditSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   formComponents: any[] = [];
   activeIndex: number = 0;
@@ -83,6 +83,21 @@ export class EditSubmoduleComponent {
         this.userListForEmail = res?.results?.map((data) => data?.email);
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length == 0) {
+        const hierarchy = getItem(StorageItem.navHierarchy);
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
+        this.dashboard.items = [...hierarchy, {
+          caption: 'Edit Module',
+          routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
+        }];
+      }
+    })
   }
 
   openEmailNotifyModal(
@@ -362,5 +377,10 @@ export class EditSubmoduleComponent {
         this.isCreatingSubModule.next(false);
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

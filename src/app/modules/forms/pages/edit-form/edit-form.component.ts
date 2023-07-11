@@ -115,7 +115,7 @@ export class EditFormComponent implements OnDestroy {
         if(val) {
           if(formFromEditModule) {
             removeItem(StorageItem.formEdit)
-            setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 800)
+            setTimeout(() => this.router.navigate(['/modules/edit-module', getItem(StorageItem.moduleID)], {queryParams: {moduleCode: getItem(StorageItem.moduleSlug), moduleID: this.transportService?.moduleID?.value || ''}}), 800)
           }
           else {
             this._location.back()
@@ -124,13 +124,13 @@ export class EditFormComponent implements OnDestroy {
       });
     }
     else {
-      Object.assign(formData, {subModuleId: this.transportService.subModuleID?.value})
+      Object.assign(formData, {subModuleId: getItem(StorageItem.moduleID)})
       this.formService.createForm(formData)
       .pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
           if(formFromEditModule) {
             removeItem(StorageItem.formEdit)
-            setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 800)
+            setTimeout(() => this.router.navigate(['/modules/edit-module', getItem(StorageItem.moduleID)], {queryParams: {moduleCode: getItem(StorageItem.moduleSlug), moduleID: this.transportService?.moduleID?.value}}), 800)
           }
           else {
             this._location.back()
@@ -149,8 +149,8 @@ export class EditFormComponent implements OnDestroy {
     if(formFromEditModule) {
       removeItem(StorageItem.formEdit)
       this.router.navigate(
-        ['/modules/edit-submodule', this.transportService.subModuleID?.value],
-        {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}
+        ['/modules/edit-module', getItem(StorageItem.moduleID)],
+        {queryParams: {moduleCode: getItem(StorageItem.moduleSlug), moduleID: this.transportService?.moduleID?.value}
       })
     }
     else {

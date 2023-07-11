@@ -7,6 +7,8 @@ import { WorkflowModel } from "./workflow.model";
 export class Module extends BaseModel {
   _id: string;
   categoryId: string;
+  moduleId: string;
+  parentId: string;
   code: string;
   title: string;
   description: string;

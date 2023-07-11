@@ -70,7 +70,7 @@
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
                   </a>
                 </div>
-                <a title="Edit" *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/modules/edit-submodule', data?.id]" [queryParams]="{moduleID: moduleId, moduleCode: moduleCode}" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                <a title="Edit" *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
                 </a>
                 <a title="Delete" *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" (click)="showDialog(data?.id, template)" class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">

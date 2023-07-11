@@ -73,7 +73,7 @@ export class DashboardService extends ApiService<any> {
         routerLink += `/${routeURL}`;
       }
       const caption = child.snapshot.data['breadcrumb']?.replace(/[_-]/g, ' ');
-      if (['Dashboard', 'Add', 'Create', 'Categories', 'Companies', 'Users']?.some(val => caption?.includes(val))) {
+      if (['Dashboard', 'Add', 'Edit', 'Create', 'Categories', 'Companies', 'Users', 'Profile']?.some(val => caption?.includes(val))) {
         breadcrumbs.push({caption, routerLink});
       }
       this.createBreadcrumbs(child, routerLink, breadcrumbs);

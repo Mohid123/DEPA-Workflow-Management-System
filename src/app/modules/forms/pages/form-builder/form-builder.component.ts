@@ -7,6 +7,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './form-builder.component.html',
@@ -74,11 +75,6 @@ export class FormBuilderComponent {
     })
   }
 
-  // @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
-  //   event.preventDefault();
-  //   event.returnValue = false;
-  // }
-
   onChange(event: any) {
     this.refreshForm.emit({
       property: 'form',
@@ -105,37 +101,6 @@ export class FormBuilderComponent {
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
     }
-    // if(this.viewUsers?.value?.length == 0 || this.crudUsers?.value?.length == 0) {
-    //   return this.notif.displayNotification('You have not set permissions for the form!', 'Create Form', TuiNotification.Warning)
-    // }
-    // if(this.checkIfArrayMatch()?.includes(true)) {
-    //   return this.notif.displayNotification('View users and CRUD users cannot be same!', 'Create Form', TuiNotification.Warning)
-    // }
-    // const CRUDusers = this.crudUsers?.value?.map(val => {
-    //   return {
-    //     user: {id: val?.id, name: val?.name},
-    //     options: {
-    //       canEdit: true,
-    //       canDelete: true,
-    //       canView: true,
-    //       canSave: true,
-    //       canAdd: true
-    //     }
-    //   }
-    // });
-    // const viewOnlyUsers = this.viewUsers?.value?.map(val => {
-    //   return {
-    //     user: {id: val?.id, name: val?.name},
-    //     options: {
-    //       canEdit: false,
-    //       canDelete: false,
-    //       canView: true,
-    //       canSave: false,
-    //       canAdd: false
-    //     }
-    //   }
-    // });
-    // this.form.permissions = [...CRUDusers, ...viewOnlyUsers]
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
     this.form.key = this.formTitleControl?.value?.replace(' ', '-')
@@ -143,11 +108,11 @@ export class FormBuilderComponent {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];
         this.transportService.sendFormBuilderData(data);
-        this.router.navigate(['/modules/add-module', this.transportService.moduleID?.value]);
+        this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
       }
       else {
         this.transportService.sendFormBuilderData([this.form]);
-        this.router.navigate(['/modules/add-module', this.transportService.moduleID?.value]);
+        this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
       }
     }
     else {
@@ -158,7 +123,7 @@ export class FormBuilderComponent {
         return val
       });
       this.transportService.sendFormBuilderData(data);
-      this.router.navigate(['/modules/add-module', this.transportService.moduleID?.value]);
+      this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
     }
   }
 
@@ -169,7 +134,7 @@ export class FormBuilderComponent {
   cancelFormData() {
     if(this.editMode == false) {
       this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-      this.router.navigate(['/modules/add-module', this.transportService.moduleID?.value]);
+      this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
     }
     else {
       const data = this.transportService.formBuilderData.value?.map(val => {
@@ -179,27 +144,9 @@ export class FormBuilderComponent {
         return val
       });
       this.transportService.sendFormBuilderData(data);
-      this.router.navigate(['/modules/add-module', this.transportService.moduleID?.value]);
+      this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
     }
   }
-
-  // setCRUDUsers(users: any[]) {
-  //   this.crudUsers?.setValue(users);
-  // }
-
-  // setReadOnlyUsers(users: any[]) {
-  //   this.viewUsers?.setValue(users)
-  // }
-
-  // checkIfArrayMatch(): boolean[] {
-  //   const viewUserNames = this.viewUsers?.value?.map(data => data?.name);
-  //   return this.crudUsers?.value?.map(data => {
-  //     if(viewUserNames.includes(data?.name)) {
-  //       return true
-  //     }
-  //     return false
-  //   })
-  // }
 
   ngOnDestroy(): void {
     this.destroy$.complete();

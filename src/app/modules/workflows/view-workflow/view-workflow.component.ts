@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
@@ -9,12 +9,13 @@ import { AuthService } from '../../auth/auth.service';
 import { jsPDF } from 'jspdf';
 import domToImage from 'dom-to-image';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { DashboardService } from '../../dashboard/dashboard.service';
 
 @Component({
   templateUrl: './view-workflow.component.html',
   styleUrls: ['./view-workflow.component.scss']
 })
-export class ViewWorkflowComponent implements OnDestroy {
+export class ViewWorkflowComponent implements OnDestroy, OnInit {
   @ViewChild('formPdf', {static: false}) formPdf: ElementRef;
   public formWithWorkflow: any;
   readonly max = 100;
@@ -50,7 +51,8 @@ export class ViewWorkflowComponent implements OnDestroy {
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowsService,
-    private auth: AuthService
+    private auth: AuthService,
+    private dashboard: DashboardService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.fetchData();
@@ -75,6 +77,17 @@ export class ViewWorkflowComponent implements OnDestroy {
         this.approve.enable()
       }
     });
+  }
+
+  ngOnInit(): void {
+    const hierarchy = getItem(StorageItem.navHierarchy);
+    hierarchy.forEach(val => {
+      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+    })
+    this.dashboard.items = [...hierarchy, {
+      caption: getItem(StorageItem.formKey),
+      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}`
+    }];
   }
 
   get label(): string {

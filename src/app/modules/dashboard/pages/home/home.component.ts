@@ -34,16 +34,6 @@ export class HomeComponent implements OnDestroy {
     }));
   }
 
-  editModule(moduleID: string) {
-    if(moduleID) {
-      this.subscription.push(this.dashboard.getModuleByIDForEditModule(moduleID).subscribe((res: any) => {
-        if(res) {
-          this.router.navigate(['/dashboard/create-edit-module'], { queryParams: { id: moduleID } });
-        }
-      }))
-    }
-  }
-
   ngOnDestroy(): void {
     this.subscription.forEach(value => value.unsubscribe());
   }

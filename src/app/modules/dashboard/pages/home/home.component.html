@@ -18,7 +18,6 @@
           <ng-container *ngFor="let appdata of app?.submodules; let i = index; let firstModule = first; let last = last;">
               <grid-top-app
                 (deleteModule)="showDialog($event, template)"
-                (editModule)="editModule($event)"
                 [appData]="appdata"
                 class="col-span-6"
               ></grid-top-app>
