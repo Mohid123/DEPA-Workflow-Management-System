@@ -44,7 +44,7 @@ export class HeaderComponent implements OnDestroy {
   }
 
   finalQueryParams() {
-    return Object.fromEntries([this.encodeQuery(`/modules/adad?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+    return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
   }
 
   ngOnDestroy(): void {

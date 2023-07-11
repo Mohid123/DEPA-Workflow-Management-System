@@ -67,7 +67,7 @@
                 <div style="all: unset;" *ngIf="data?.status == 1">
                   <!-- here permissions cannot be set because workflow users cannot proceed if conditions are applied -->
                   <a title="Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-xs font-medium text-white no-underline bg-[#808285] rounded-md cursor-pointer mr-2 hover:text-white">
-                    <i class="fa fa-file-text-o fa-lg" aria-hidden="true"></i>
+                    <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
                   </a>
                 </div>
                 <a title="Edit" *ngIf="currentUser.id == data?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/modules/edit-submodule', data?.id]" [queryParams]="{moduleID: moduleId, moduleCode: moduleCode}" class="px-2 py-1 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">

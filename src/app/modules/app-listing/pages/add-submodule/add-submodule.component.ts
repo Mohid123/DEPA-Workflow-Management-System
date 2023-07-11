@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, filter, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -13,7 +13,6 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
-import { Location } from '@angular/common';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -67,8 +66,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     private activatedRoute: ActivatedRoute,
     private notif: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private media: MediaUploadService,
-    private location: Location
+    private media: MediaUploadService
   ) {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
@@ -108,7 +106,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         hierarchy.forEach(val => {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
-
         this.dashboard.items = [...hierarchy, {
           caption: 'Add Module',
           routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`

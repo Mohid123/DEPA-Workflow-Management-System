@@ -94,6 +94,7 @@ export class TableViewComponent implements OnDestroy {
   @Output() emitPagination = new EventEmitter();
   @Output() emitFilters = new EventEmitter();
   @Output() emitSearch = new EventEmitter();
+  @Output() emitPageChange = new EventEmitter();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -221,8 +222,10 @@ export class TableViewComponent implements OnDestroy {
   }
 
   setSubmoduleSlug(code: string, id: string) {
-    setItem(StorageItem.subModuleSlug, code);
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}`, code, id])
+    setItem(StorageItem.moduleSlug, code);
+    setItem(StorageItem.moduleID, id);
+    this.emitPageChange.emit({code, id})
+    this.router.navigate(['/modules', code], {queryParams: {moduleID: id || ''}})
   }
 
   ngOnDestroy(): void {
