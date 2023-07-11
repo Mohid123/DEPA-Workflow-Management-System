@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
@@ -14,7 +14,7 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
   templateUrl: './add-submission.component.html',
   styleUrls: ['./add-submission.component.scss']
 })
-export class AddSubmissionComponent implements OnDestroy {
+export class AddSubmissionComponent implements OnDestroy, OnInit {
   formTabs: any[] = [];
   activeIndex: number = 0;
   public formWithWorkflow: any;
@@ -63,7 +63,7 @@ export class AddSubmissionComponent implements OnDestroy {
 
      // get users for email
 
-     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
+    this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
       if (res) {
         this.userListForEmail = res?.results?.map((data) => data?.email);
       }
@@ -76,9 +76,20 @@ export class AddSubmissionComponent implements OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    const hierarchy = getItem(StorageItem.navHierarchy);
+    hierarchy.forEach(val => {
+      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+    })
+
+    this.dashboard.items = [...hierarchy, {
+      caption: 'Add Submission',
+      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
+    }];
+  }
    // email notify functions
 
-   openEmailNotifyModal(
+  openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
     fieldArray: FormArray,
     index: number
@@ -266,10 +277,8 @@ export class AddSubmissionComponent implements OnDestroy {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
-        let moduleSlug = getItem(StorageItem.moduleSlug);
-        let submoduleSlug = getItem(StorageItem.subModuleSlug);
         this.creatingSubmission.next(false)
-        this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, this.subModuleId])
+        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
     })
   }
@@ -301,9 +310,7 @@ export class AddSubmissionComponent implements OnDestroy {
   }
 
   cancelSubmission() {
-    let moduleSlug = getItem(StorageItem.moduleSlug);
-    let submoduleSlug = getItem(StorageItem.subModuleSlug);
-    this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, this.subModuleId])
+    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
   sendFormForEdit(i: number, formID: string) {

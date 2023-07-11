@@ -13,16 +13,16 @@ const routes: Routes = [
   {
     path: '',
     component: WorkflowsComponent,
-    resolve: { breadcrumb: WorkflowResolver },
+    // resolve: { breadcrumb: WorkflowResolver },
     children:[
       {
-        path: ':submoduleCode/add-submission/:id',
+        path: 'add-submission/:id',
         canActivate: [AuthGuard],
         component: AddSubmissionComponent,
         data: { breadcrumb: 'Add Submission' },
       },
       {
-        path: ':submoduleCode/:key/:id',
+        path: ':key/:id',
         canActivate: [AuthGuard],
         component: ViewWorkflowComponent,
         resolve: { breadcrumb: FormKeyResolver },

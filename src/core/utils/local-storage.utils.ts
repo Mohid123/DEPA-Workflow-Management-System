@@ -21,7 +21,8 @@ export enum StorageItem {
   moduleID = 'App/moduleID',
   workflowID = 'App/workflowID',
   formKey = 'App/formKey',
-  formEdit = 'App/formEdit'
+  formEdit = 'App/formEdit',
+  navHierarchy = 'App/navHierarchy'
 }
 
 /**

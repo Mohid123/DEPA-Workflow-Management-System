@@ -43,7 +43,7 @@ export class SubmodulesListComponent {
       if(val['moduleID']) {
         setItem(StorageItem.moduleID, val['moduleID']);
         this.transport.moduleID.next(val['moduleID'])
-        this.moduleData = this.dashBoardService.getModuleByID(val['moduleID'])
+        this.moduleData = this.dashBoardService.getSubModuleByID(val['moduleID'])
       }
     })
   }

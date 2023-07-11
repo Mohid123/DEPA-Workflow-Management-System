@@ -11,7 +11,7 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -28,7 +28,7 @@ export class TableViewComponent implements OnDestroy {
   /**
    * The category names to show as table column headers
    */
-  @Input() tableColumns: string[] = ['Company Name', 'Submodule Code', 'Status'];
+  @Input() tableColumns: string[] = ['Title', 'Company Name', 'Module Code', 'Status'];
 
   /**
    * The data to display inside the table

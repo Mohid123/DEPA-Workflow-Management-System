@@ -20,17 +20,17 @@ const routes: Routes = [
         canActivate: [SubmoduleGuard]
       },
       {
-        path: 'add-submodule/:id',
+        path: 'add-module/:id',
         component: AddSubmoduleComponent,
         data: {breadcrumb:'Add Module'},
       },
       {
-        path: 'edit-submodule/:id',
+        path: 'edit-module/:id',
         component: EditSubmoduleComponent,
         data: {breadcrumb:'Edit Module'},
       },
       {
-        path: 'submodule-details/:name',
+        path: 'module-details/:name',
         component: SubmoduleDetailsComponent,
         data: {breadcrumb:'Module Details'},
       },

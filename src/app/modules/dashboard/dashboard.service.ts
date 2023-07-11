@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
@@ -9,6 +9,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { Module } from 'src/core/models/module.model';
 import { User } from 'src/core/models/user.model';
+import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Interface for Breadcrumb navigation
@@ -44,6 +45,7 @@ export class DashboardService extends ApiService<any> {
    * Breadcrumb array to display
    */
   items: BreadCrumbs[] = [];
+  tempItems = new EventEmitter<BreadCrumbs[]>()
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
@@ -71,7 +73,7 @@ export class DashboardService extends ApiService<any> {
         routerLink += `/${routeURL}`;
       }
       const caption = child.snapshot.data['breadcrumb']?.replace(/[_-]/g, ' ');
-      if (caption) {
+      if (['Dashboard', 'Add', 'Create', 'Categories', 'Companies', 'Users']?.some(val => caption?.includes(val))) {
         breadcrumbs.push({caption, routerLink});
       }
       this.createBreadcrumbs(child, routerLink, breadcrumbs);
@@ -440,6 +442,33 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  getWorkflowFromSubModule(moduleID: string): Observable<ApiResponse<any>> {
+    return this.get(`/subModules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        // this.moduleEditData.next(res.data);
+        const response = res.data?.workFlowId?.stepIds?.map(data => {
+          return {
+            approverIds: data?.approverIds?.map(ids => {
+              return {
+                name: ids?.fullName,
+                id: ids?.id,
+                control: new FormControl<boolean>(true)
+              }
+            }),
+            condition: data?.condition,
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers
+          }
+        });
+        return response;
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
   createSubModule(payload: any): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -524,6 +553,14 @@ export class DashboardService extends ApiService<any> {
     }
     return this.get(`/module/slug/${moduleSlug}`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
+        const hierarchy = res.data?.navHierarchy?.map(val => {
+          return {
+            caption: val?.code,
+            routerLink: val?.id
+          }
+        })
+        setItem(StorageItem.navHierarchy, hierarchy)
+        this.tempItems.emit(hierarchy);
         return res.data
       }
       else {

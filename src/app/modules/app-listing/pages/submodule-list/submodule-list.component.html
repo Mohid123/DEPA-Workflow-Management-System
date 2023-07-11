@@ -1,19 +1,13 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-48">
   <ng-container *ngIf="(subModuleData | async) as data; else noData">
-    <!-- <app-submission-table [submoduleId]="'649a52fa58a91035b8de4b6f'"></app-submission-table> -->
-    <!-- <ng-container *ngIf="(moduleData | async) as moduledata">
-      <div class="col-span-12 py-3 px-2 bg-[#eae4d8] rounded-md flex justify-between">
-        <p class="text-lg font-semibold mt-1"><span class="text-[#374151]">{{moduledata.title}}</span> </p>
-        <a class="px-3 py-1.5 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add module</a>
-      </div>
-    </ng-container> -->
     <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data"></app-table-view>
-    <!-- <div class="col-span-12 mt-12 py-3 px-2 bg-[#eae4d8] rounded-md flex justify-between">
-      <p class="text-lg font-semibold mt-1"><span class="text-[#374151]">List of Submissions</span> </p>
-      <a class="px-3 py-1.5 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
+    <div class="mt-8">
+      <hr>
     </div>
-    <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data"></app-table-view> -->
+    <div class="my-8">
+      <app-submission-table></app-submission-table>
+    </div>
   </ng-container>
   <ng-template #noData>
     <app-table-loader></app-table-loader>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy } from '@angular/core';
+import { Component, Inject, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -21,8 +21,8 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
   styleUrls: ['./submission-table.component.scss']
 })
 export class SubmissionTableComponent implements OnDestroy {
-  submissionData: any;
-  @Input() submoduleId: string;
+  @Input() submissionData: any;
+  submoduleId: string;
   subscriptions: Subscription[] = [];
   currentUser: any;
   adminUsers: any[] = [];
@@ -55,23 +55,25 @@ export class SubmissionTableComponent implements OnDestroy {
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
   ) {
-    this.submoduleId = '649a52fa58a91035b8de4b6f'
     this.currentUser = this.auth.currentUserValue;
-    if(this.submoduleId) {
-      setItem(StorageItem.workflowID, this.submoduleId);
-      this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
-        this.submoduleData = val;
-      }));
-      this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
-      .subscribe((val: any) => {
-        this.submissionData = val;
-        this.tableDataValue = val?.results;
-        this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
-        this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
-      }))
-    }
+    this.activatedRoute.queryParams.subscribe(val => {
+        if(val['moduleID']) {
+          this.submoduleId = val['moduleID']
+          this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
+          this.submoduleData = val;
+        }));
+        this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+        .subscribe((val: any) => {
+          this.submissionData = val;
+          this.tableDataValue = val?.results;
+          this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
+          this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+        }))
+      }
+    })
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
@@ -199,12 +201,12 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   addSubmissionRoute() {
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/add-submission`, this.submoduleId])
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/add-submission`, this.submoduleId])
   }
 
   editWorkflowRoute(id: string, key: string) {
     setItem(StorageItem.formKey, key)
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.subModuleSlug)}/${key}`, id])
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${key}`, id])
   }
 
   /**

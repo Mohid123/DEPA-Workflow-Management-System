@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Inject, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, filter, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -11,12 +11,15 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
+import { MediaUploadService } from 'src/core/core-services/media-upload.service';
+import { ApiResponse } from 'src/core/models/api-response.model';
+import { Location } from '@angular/common';
 
 @Component({
   templateUrl: './add-submodule.component.html',
   styleUrls: ['./add-submodule.component.scss']
 })
-export class AddSubmoduleComponent implements OnDestroy {
+export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
   formComponents: any[] = [];
@@ -51,6 +54,9 @@ export class AddSubmoduleComponent implements OnDestroy {
   errorIndex: number = 0;
   file: any;
   base64File: any;
+  previousUrl: string;
+  currentUrl: string;
+  returnToDashboard: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -60,19 +66,26 @@ export class AddSubmoduleComponent implements OnDestroy {
     private dashboard: DashboardService,
     private activatedRoute: ActivatedRoute,
     private notif: NotificationsService,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private media: MediaUploadService,
+    private location: Location
   ) {
     this.initSubModuleForm();
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
 
     //get default workflow
-    this.getDefaultWorkflow();
-
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length > 0) {
+        this.getDefaultWorkflowByModule();
+      }
+      else {
+        this.getDefaultWorkflowBySubModule()
+      }
+    })
     this.formComponents = this.transportService.formBuilderData.value;
     this.formTabs = this.formComponents.map(val => val.title);
 
     this.getAllCompanies();
-
     // get users for email
 
     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
@@ -88,7 +101,23 @@ export class AddSubmoduleComponent implements OnDestroy {
     });
   }
 
-  getDefaultWorkflow() {
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length == 0) {
+        const hierarchy = getItem(StorageItem.navHierarchy);
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
+
+        this.dashboard.items = [...hierarchy, {
+          caption: 'Add Module',
+          routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
+        }];
+      }
+    })
+  }
+
+  getDefaultWorkflowByModule() {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
         this.redirectToModuleID = params['id'];
@@ -99,6 +128,27 @@ export class AddSubmoduleComponent implements OnDestroy {
           }
           if(Object.keys(this.submoduleFromLS)?.length > 0) {
             this.initSubModuleForm(this.submoduleFromLS);
+            this.base64File = this.submoduleFromLS?.image;
+            this.file = this.submoduleFromLS?.file
+          }
+        })
+      }
+    });
+  }
+
+  getDefaultWorkflowBySubModule() {
+    this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      if(params['id']) {
+        this.redirectToModuleID = params['id'];
+        this.transportService.moduleID.next(params['id']);
+        this.dashboard.getWorkflowFromSubModule(params['id']).subscribe((response: any) => {
+          if(response) {
+            this.initSubModuleForm(response)
+          }
+          if(Object.keys(this.submoduleFromLS)?.length > 0) {
+            this.initSubModuleForm(this.submoduleFromLS);
+            this.base64File = this.submoduleFromLS?.image
+            this.file = this.submoduleFromLS?.file
           }
         })
       }
@@ -279,14 +329,14 @@ export class AddSubmoduleComponent implements OnDestroy {
 
   saveDraft() {
     this.transportService.isFormEdit.next(false);
-    this.transportService.saveDraftLocally(this.subModuleForm.value);
+    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.router.navigate(['/forms/form-builder']);
   }
 
   sendFormForEdit(index: number) {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
-    this.transportService.saveDraftLocally(this.subModuleForm.value);
+    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.router.navigate(['/forms/form-builder']);
   }
 
@@ -302,15 +352,17 @@ export class AddSubmoduleComponent implements OnDestroy {
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
     }
-    this.isCreatingSubModule.next(true)
-    const payload = {
-      url: `/modules/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
+    let payload: any = {
+      title: this.subModuleForm.get('title')?.value,
+      description: this.subModuleForm.get('description')?.value,
+      url: `/modules/module-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
       code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
+      parentId: this.transportService.moduleID?.value ? this.transportService.moduleID?.value : null,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
@@ -319,25 +371,42 @@ export class AddSubmoduleComponent implements OnDestroy {
         }
       })
     }
-    if(statusStr) {
-      const status = statusStr;
-      Object.assign(payload, {status})
-    }
-    this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if(res) {
-        this.isCreatingSubModule.next(false);
-        this.transportService.saveDraftLocally({});
-        this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.isCreatingSubModule.next(true);
+    this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        payload = {...payload, image: res?.data?.imageUrl };
+        if(statusStr) {
+          const status = statusStr;
+          Object.assign(payload, {status})
+        }
+        this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+          if(res) {
+            this.isCreatingSubModule.next(false);
+            this.transportService.saveDraftLocally({});
+            this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+            this.routeToBasedOnPreviousPage()
+          }
+          else {
+            this.isCreatingSubModule.next(false);
+          }
+        })
+      }
+    })
+  }
+
+  routeToBasedOnPreviousPage() {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length > 0) {
+        this.router.navigate(['/dashboard/home'])
       }
       else {
-        this.isCreatingSubModule.next(false);
+        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
     })
   }
 
   cancelSubmodule() {
-    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.routeToBasedOnPreviousPage()
   }
 
   dataSubmitValidation() {
