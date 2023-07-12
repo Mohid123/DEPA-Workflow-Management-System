@@ -409,7 +409,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
-      parentId: this.transportService.subModuleID?.value,
       image: this.subModuleForm.get('image')?.value,
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
