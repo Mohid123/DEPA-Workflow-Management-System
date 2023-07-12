@@ -2,7 +2,7 @@
 <div class="bg_img_main">
   <section class="grid w-10/12 grid-cols-12 gap-4 mx-auto mt-48 pb-44">
     <div class="px-12 py-5 bg-white rounded-lg shadow-lg col-span-full">
-      <p class="text-2xl font-bold text-center">Create/Edit Module</p>
+      <p class="text-2xl font-bold text-center">Create/Edit Category</p>
       <div class="flex justify-center my-6">
         <tui-tabs tuiMobileTabs [(activeItemIndex)]="activeIndex">
           <ng-container
@@ -33,7 +33,7 @@
           <form [formGroup]="moduleDetailsForm">
             <div class="my-3">
               <label class="block pb-1"
-                >Module Title <span class="text-xs text-red-400">*</span></label
+                >Category Title <span class="text-xs text-red-400">*</span></label
               >
               <input
                 required
@@ -57,7 +57,7 @@
             </div>
             <div class="my-7">
               <label class="block pb-1"
-                >Module URL <span class="text-xs text-red-400">*</span></label
+                >Category URL <span class="text-xs text-red-400">*</span></label
               >
               <input
                 formControlName="moduleURL"
@@ -67,7 +67,7 @@
             </div>
             <div class="my-7">
               <label class="block pb-1"
-                >Module Description
+                >Category Description
                 <span class="text-xs text-red-400">*</span></label
               >
               <textarea
@@ -94,7 +94,7 @@
             </div>
             <div class="my-7">
               <label class="block pb-1"
-                >Module Code <span class="text-xs text-red-400">*</span></label
+                >Category Code <span class="text-xs text-red-400">*</span></label
               >
               <input
                 formControlName="moduleCode"
@@ -104,7 +104,7 @@
             </div>
             <div class="my-7">
               <label class="block pb-1"
-                >Module Category
+                >Category Category
                 <span class="text-xs text-red-400">*</span></label
               >
               <select
@@ -305,7 +305,7 @@
                 type="button"
                 class="btn btn-primary"
               >
-                Proceed to Module Graphics
+                Proceed to Category Graphics
               </button>
             </div>
           </div>
@@ -344,7 +344,7 @@
                 </div>
                 <div class="flex flex-col">
                   <p class="mb-3 text-lg font-semibold text-black">
-                    Module Icon
+                    Category Icon
                   </p>
                   <ul class="text-sm text-gray-400 list-disc">
                     <li>Icon should be 1:1 ratio</li>
@@ -367,7 +367,7 @@
             </button>
             <button (click)="nextStep()" type="button" class="btn btn-primary">
               {{
-                (isCreatingModule | async) ? "Please wait..." : "Publish Module"
+                (isCreatingModule | async) ? "Please wait..." : "Publish Category"
               }}
             </button>
           </div>

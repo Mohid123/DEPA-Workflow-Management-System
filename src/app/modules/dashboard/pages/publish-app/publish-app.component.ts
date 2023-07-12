@@ -59,13 +59,13 @@ export class PublishAppComponent implements OnDestroy {
   readonly arrow = TUI_ARROW;
   readonly tabs = [
     {
-      text: 'Module Details',
+      text: 'Category Details',
     },
     {
       text: 'Default Workflow',
     },
     {
-      text: 'Module Graphics',
+      text: 'Category Graphics',
     },
     {
       text: 'Published',

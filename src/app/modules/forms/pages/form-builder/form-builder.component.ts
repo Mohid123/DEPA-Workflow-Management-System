@@ -1,4 +1,4 @@
-import { Component, ViewChild, EventEmitter, ElementRef, HostListener, OnDestroy } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
@@ -7,7 +7,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { Location } from '@angular/common';
 
 @Component({
   templateUrl: './form-builder.component.html',
@@ -44,7 +44,7 @@ export class FormBuilderComponent {
   constructor(
     private transportService: DataTransportService,
     private notif: NotificationsService,
-    private router: Router,
+    private location: Location,
     private activatedRoute: ActivatedRoute,
     private formService: FormsService)
   {
@@ -108,11 +108,11 @@ export class FormBuilderComponent {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];
         this.transportService.sendFormBuilderData(data);
-        this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
+        this.location.back()
       }
       else {
         this.transportService.sendFormBuilderData([this.form]);
-        this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
+        this.location.back()
       }
     }
     else {
@@ -123,7 +123,7 @@ export class FormBuilderComponent {
         return val
       });
       this.transportService.sendFormBuilderData(data);
-      this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
+      this.location.back()
     }
   }
 
@@ -134,7 +134,7 @@ export class FormBuilderComponent {
   cancelFormData() {
     if(this.editMode == false) {
       this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-      this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
+      this.location.back()
     }
     else {
       const data = this.transportService.formBuilderData.value?.map(val => {
@@ -144,7 +144,7 @@ export class FormBuilderComponent {
         return val
       });
       this.transportService.sendFormBuilderData(data);
-      this.router.navigate(['/modules/add-module', getItem(StorageItem.moduleID)]);
+      this.location.back()
     }
   }
 

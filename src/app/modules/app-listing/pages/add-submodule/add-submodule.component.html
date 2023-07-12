@@ -4,107 +4,106 @@
     <h3 class="text-xl font-semibold">Create new module</h3>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
-        <!--Title-->
-        <div class="mt-3 mb-5">
-          <label class="block pb-1">Module Title <span class="text-xs text-red-400">*</span></label>
-            <input required
-              [ngClass]="
-                f['title']?.invalid && f['title']?.dirty
-                  ? 'is-invalid'
-                  : ''
-              "
-              formControlName="title"
-              class="form-control"
-              type="text"
-            />
-            <ng-container
-              [ngTemplateOutlet]="formError"
-              [ngTemplateOutletContext]="{
-                validation: 'required',
-                message: 'Module Title is required',
-                control: f['title']
-              }"
-            ></ng-container>
-        </div>
-    
-        <!--Description-->
-        <div class="mt-3 mb-5">
-          <label class="block pb-1">Module Description<span class="text-xs text-red-400">*</span></label>
-            <textarea
-              required
-              [ngClass]="
-                f['description']?.invalid &&
-                f['description']?.dirty
-                  ? 'is-invalid'
-                  : ''
-              "
-              formControlName="description"
-              class="form-control"
-              type="text"
-              rows="4"
-            ></textarea>
-            <ng-container
-              [ngTemplateOutlet]="formError"
-              [ngTemplateOutletContext]="{
-                validation: 'required',
-                message: 'Module Description is required',
-                control: f['description']
-              }"
-            ></ng-container>
-        </div>
-    
-        <!--Image-->
-        <div class="my-5">
-          <label class="block pb-1">Module Icon<span class="text-xs text-red-400">*</span></label>
-          <label
-            (change)="onFileSelect($event)"
-            for="dropzone-file"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-            >
-              <tui-loader
-                [inheritColor]="true"
-                [size]="'l'"
-                [showLoader]="false"
-                [overlay]="true"
-              >
-                <div *ngIf="file" class="flex justify-center">
-                  <img
-                    [src]="base64File"
-                    alt="app_icon"
-                    width="200"
-                    height="200"
-                    class="rounded-md"
-                  />
-                </div>
-                <div *ngIf="!file" class="flex justify-start">
-                  <div class="mx-8">
-                    <img
-                      src="../../../../../assets/windows.svg"
-                      width="32"
-                      height="32"
-                    />
-                  </div>
-                  <div class="flex flex-col">
-                    <p class="mb-3 text-lg font-semibold text-black">
-                      Module Icon
-                    </p>
-                    <ul class="text-sm text-gray-400 list-disc">
-                      <li>Icon should be 1:1 ratio</li>
-                      <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
-                      <li>Up to 2MB file size is allowed</li>
-                    </ul>
-                  </div>
-                </div>
-              </tui-loader>
-              <input id="dropzone-file" type="file" class="hidden" />
-          </label>
-        </div>
-    <div class="my-3">
+    <!--Title-->
+    <div class="mt-3 mb-5">
+      <label class="block pb-1">Module Title <span class="text-xs text-red-400">*</span></label>
+        <input required
+          [ngClass]="
+            f['title']?.invalid && f['title']?.dirty
+              ? 'is-invalid'
+              : ''
+          "
+          formControlName="title"
+          class="form-control"
+          type="text"
+        />
+        <ng-container
+          [ngTemplateOutlet]="formError"
+          [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'Module Title is required',
+            control: f['title']
+          }"
+        ></ng-container>
+    </div>
+
+    <!--Description-->
+    <div class="mt-3 mb-5">
+      <label class="block pb-1">Module Description<span class="text-xs text-red-400">*</span></label>
+        <textarea
+          required
+          [ngClass]="
+            f['description']?.invalid &&
+            f['description']?.dirty
+              ? 'is-invalid'
+              : ''
+          "
+          formControlName="description"
+          class="form-control"
+          type="text"
+          rows="4"
+        ></textarea>
+        <ng-container
+          [ngTemplateOutlet]="formError"
+          [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'Module Description is required',
+            control: f['description']
+          }"
+        ></ng-container>
+    </div>
+
+    <!--Image-->
+    <div class="my-5">
+      <label class="block pb-1">Module Icon<span class="text-xs text-red-400">*</span></label>
+      <label
+        (change)="onFileSelect($event)"
+        for="dropzone-file"
+        class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        >
+          <tui-loader
+            [inheritColor]="true"
+            [size]="'l'"
+            [showLoader]="false"
+            [overlay]="true"
+          >
+            <div *ngIf="file" class="flex justify-center">
+              <img
+                [src]="base64File"
+                alt="app_icon"
+                width="200"
+                height="200"
+                class="rounded-md"
+              />
+            </div>
+            <div *ngIf="!file" class="flex justify-start">
+              <div class="mx-8">
+                <img
+                  src="../../../../../assets/windows.svg"
+                  width="32"
+                  height="32"
+                />
+              </div>
+              <div class="flex flex-col">
+                <p class="mb-3 text-lg font-semibold text-black">
+                  Module Icon
+                </p>
+                <ul class="text-sm text-gray-400 list-disc">
+                  <li>Icon should be 1:1 ratio</li>
+                  <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
+                  <li>Up to 2MB file size is allowed</li>
+                </ul>
+              </div>
+            </div>
+          </tui-loader>
+          <input id="dropzone-file" type="file" class="hidden" />
+      </label>
+    </div>
+
+    <!--URL-->
+    <!-- <div class="my-3">
       <label class="block pb-1">Module URL Endpoint<span class="text-xs text-red-400">*</span></label>
       <div class="mb-3 input-group">
-        <!-- <div class="input-group-prepend">
-          <span class="input-group-text">{{domainURL}}/submodule/submodule-details/</span>
-        </div> -->
         <input
           required
           [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''"
@@ -123,7 +122,7 @@
         This Code is already taken
       </span>
       <p class="block mb-2 text-xs text-gray-600">Please provide an endpoint for your module</p>
-    </div>
+    </div> -->
 
     <div class="my-7">
       <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
@@ -189,7 +188,7 @@
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">Admin users <span class="text-red-500">*</span></label>
+        <label class="block pb-1 text-sm">Admin users <sup>(optional)</sup> </label>
         <custom-multi-select
           formControlName="adminUsers"
           (approverList)="setAdminUsers($event)"
@@ -197,7 +196,7 @@
       </div>
 
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">View Only users <span class="text-red-500">*</span></label>
+        <label class="block pb-1 text-sm">View Only users <sup>(optional)</sup></label>
         <custom-multi-select
           formControlName="viewOnlyUsers"
           (approverList)="setViewUsers($event)"

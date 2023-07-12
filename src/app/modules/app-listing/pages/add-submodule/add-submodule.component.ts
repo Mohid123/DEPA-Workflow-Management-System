@@ -208,10 +208,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [
-        item?.subModuleUrl || null, 
-        Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]
-      ],
+      // subModuleUrl: [
+      //   item?.subModuleUrl || null, 
+      //   Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]
+      // ],
       companies: this.fb.array([]),
       code: [{value: item?.code, disabled: true} || {value: null, disabled: true}],
       companyName: [item?.companyName || null, Validators.required],
@@ -344,18 +344,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   saveSubModule(statusStr?: number) {
     if(this.dataSubmitValidation() == false) {
       this.subModuleForm.markAllAsTouched();
-      return this.notif.displayNotification('Please provide complete data for all fields', 'Create Submodule', TuiNotification.Warning)
+      return this.notif.displayNotification('Please provide complete data for all fields', 'Create module', TuiNotification.Warning)
     }
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
-      return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
+      return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)
     }
     let payload: any = {
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
-      url: `/modules/module-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
+      url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
-      code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
+      code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
@@ -408,10 +408,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   dataSubmitValidation() {
     if(
-      this.f['subModuleUrl']?.invalid ||
+      // this.f['subModuleUrl']?.invalid ||
       this.f['companyName']?.invalid ||
-      this.f['adminUsers']?.value?.length == 0 ||
-      this.f['viewOnlyUsers']?.value?.length == 0 ||
       this.workflows?.length == 0 ||
       this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
       this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||

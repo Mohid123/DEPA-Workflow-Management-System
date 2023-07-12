@@ -115,7 +115,7 @@ export class EditFormComponent implements OnDestroy {
         if(val) {
           if(formFromEditModule) {
             removeItem(StorageItem.formEdit)
-            setTimeout(() => this.router.navigate(['/modules/edit-module', getItem(StorageItem.moduleID)], {queryParams: {moduleCode: getItem(StorageItem.moduleSlug), moduleID: this.transportService?.moduleID?.value || ''}}), 800)
+            setTimeout(() => this._location.back(), 800)
           }
           else {
             this._location.back()
@@ -130,7 +130,7 @@ export class EditFormComponent implements OnDestroy {
         if(val) {
           if(formFromEditModule) {
             removeItem(StorageItem.formEdit)
-            setTimeout(() => this.router.navigate(['/modules/edit-module', getItem(StorageItem.moduleID)], {queryParams: {moduleCode: getItem(StorageItem.moduleSlug), moduleID: this.transportService?.moduleID?.value}}), 800)
+            setTimeout(() => this._location.back(), 800)
           }
           else {
             this._location.back()
@@ -148,10 +148,7 @@ export class EditFormComponent implements OnDestroy {
     const formFromEditModule = getItem(StorageItem.formEdit)
     if(formFromEditModule) {
       removeItem(StorageItem.formEdit)
-      this.router.navigate(
-        ['/modules/edit-module', getItem(StorageItem.moduleID)],
-        {queryParams: {moduleCode: getItem(StorageItem.moduleSlug), moduleID: this.transportService?.moduleID?.value}
-      })
+      this._location.back()
     }
     else {
       this._location.back()

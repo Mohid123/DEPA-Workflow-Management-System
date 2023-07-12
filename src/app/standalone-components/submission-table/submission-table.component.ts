@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
@@ -16,7 +16,7 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
 @Component({
   selector: 'app-submission-table',
   standalone: true,
-  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule],
+  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
 })

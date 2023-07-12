@@ -11,6 +11,9 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
+import { MediaUploadService } from 'src/core/core-services/media-upload.service';
+import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
@@ -47,6 +50,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   page: number = 0;
   showError = new Subject<boolean>();
   errorIndex: number = 0;
+  file: any;
+  base64File: any;
+  submoduleFromLS: any
 
   constructor(
     private fb: FormBuilder,
@@ -57,9 +63,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     private activatedRoute: ActivatedRoute,
     private notif: NotificationsService,
     private formService: FormsService,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private media: MediaUploadService
   ) {
     this.initSubModuleForm();
+    this.submoduleFromLS = this.transportService.subModuleDraft.value;
     // get submodule for editing and initialize form
     this.getAllCompanies();
     this.getSubmoduleByIDForEdit();
@@ -98,6 +106,28 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }];
       }
     })
+  }
+
+  onFileSelect(event: any) {
+    const file = event?.target?.files[0];
+    if(calculateFileSize(file) == true) {
+      calculateAspectRatio(file).then((res) => {
+        if(res == false) {
+          this.notif.displayNotification('Image should be of 1:1 aspect ratio', 'File Upload', TuiNotification.Warning)
+        }
+        else {
+          this.file = file;
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (e) => {
+            this.base64File = reader.result;
+          };
+        }
+      });
+    }
+    else {
+      this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
+    }
   }
 
   openEmailNotifyModal(
@@ -146,33 +176,66 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
-            this.formComponents = response?.formIds;
-            this.formTabs = response?.formIds?.map(forms => forms.title);
-            const companyName = {
-              value: response?.companyId?.id,
-              label: response?.companyId?.title
+            if(Object.keys(this.submoduleFromLS)?.length > 0) {
+              this.initSubModuleForm(this.submoduleFromLS);
+              this.base64File = this.submoduleFromLS?.image;
+              this.file = this.submoduleFromLS?.file;
+              this.formComponents = response?.formIds;
+              this.formTabs = response?.formIds?.map(forms => forms.title);
             }
-            const url = response?.url?.split('/').at(-1);
-            const workFlowId = response?.workFlowId?.stepIds?.map(data => {
-              return {
-                id: data?.id,
-                approverIds: data?.approverIds?.map(ids => {
-                  return {
-                    name: ids?.fullName,
-                    id: ids?.id,
-                    control: new FormControl<boolean>(true)
-                  }
-                }),
-                condition: data?.condition,
-                emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
-                emailNotifyToId: data?.emailNotifyToId?.id
+            else {
+              this.formComponents = response?.formIds;
+              this.formTabs = response?.formIds?.map(forms => forms.title);
+              const companyId = {
+                value: response?.companyId?.id,
+                label: response?.companyId?.title
               }
-            });
-            delete response?.workFlowId;
-            delete response?.url;
-            delete response?.companyId;
-            const finalObject = Object.assign(response, {workFlowId: workFlowId}, {url: url}, {companyId: companyName})
-            this.initSubModuleForm(finalObject)
+              this.file = response?.image
+              this.base64File = response?.image
+              // const url = response?.url?.split('/').at(-1);
+              const workFlowId = response?.workFlowId?.stepIds?.map(data => {
+                return {
+                  id: data?.id,
+                  approverIds: data?.approverIds?.map(ids => {
+                    return {
+                      name: ids?.fullName,
+                      id: ids?.id,
+                      control: new FormControl<boolean>(true)
+                    }
+                  }),
+                  condition: data?.condition,
+                  emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
+                  emailNotifyToId: data?.emailNotifyToId?.id
+                }
+              });
+              const adminUsers = response?.adminUsers?.map(val => {
+                return {
+                  name: val?.fullName,
+                  id: val?.id,
+                  control: new FormControl<boolean>(true)
+                }
+              });
+              const viewOnlyUsers = response?.viewOnlyUsers?.map(val => {
+                return {
+                  name: val?.fullName,
+                  id: val?.id,
+                  control: new FormControl<boolean>(true)
+                }
+              })
+              delete response?.workFlowId;
+              delete response?.url;
+              delete response?.companyId;
+              const finalObject = Object.assign(
+                response,
+                {workFlowId: workFlowId},
+                // {url: url},
+                {companyId: companyId},
+                {viewOnlyUsers: viewOnlyUsers},
+                {adminUsers: adminUsers}
+              )
+              this.transportService.saveDraftLocally(finalObject);
+              this.initSubModuleForm(finalObject)
+            }
           }
         })
       }
@@ -193,24 +256,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.url || null, Validators.required],
+      // url: [item?.url || null, Validators.required],
       code: [{value: item?.code || null, disabled: true}],
-      companyName: [item?.companyId?.value || null, Validators.required],
-      adminUsers: [item?.adminUsers?.map(val => {
-        return {
-          name: val?.fullName,
-          id: val?.id,
-          control: new FormControl<boolean>(true)
-        }
-      }) || [], Validators.required],
-      viewOnlyUsers: [item?.viewOnlyUsers?.map(val => {
-        return {
-          name: val?.fullName,
-          id: val?.id,
-          control: new FormControl<boolean>(true)
-        }
-      }) || [], Validators.required],
-      workflows: item?.workFlowId ?
+      companyId: [item?.companyId?.value ? item?.companyId?.value : this.companyList?.filter(val => item?.companyId === val.value)[0]?.value || null, Validators.required],
+      title: [item?.title || null, Validators.required],
+      image: [item?.image || null, Validators.required],
+      description: [item?.description || null, Validators.required],
+      adminUsers: [item?.adminUsers || [], Validators.required],
+      viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
+      workFlowId: item?.workFlowId ?
       this.fb.array(
         item?.workFlowId?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId: any; id: any }) => {
           return this.fb.group({
@@ -247,13 +301,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   sendFormForEdit(i: number, formID: string) {
     if(formID) {
-      setItem(StorageItem.formEdit, true)
+      setItem(StorageItem.formEdit, true);
+      this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
     else {
       setItem(StorageItem.formEdit, true)
       this.transportService.isFormEdit.next(true);
       this.transportService.sendFormDataForEdit.next(this.formComponents[i]);
+      this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
       this.router.navigate(['/forms/edit-form'], {queryParams: {submoduleID: this.transportService.subModuleID?.value}});
     }
   }
@@ -267,11 +323,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   saveDraft() {
     this.transportService.sendFormBuilderData(this.formComponents)
+    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.router.navigate(['/forms/edit-form']);
   }
 
   get workflows() {
-    return this.f['workflows'] as FormArray
+    return this.f['workFlowId'] as FormArray
   }
 
   addWorkflowStep() {
@@ -317,10 +374,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   dataSubmitValidation() {
     if(
-      this.f['subModuleUrl']?.invalid ||
-      this.f['companyName']?.invalid ||
-      this.f['adminUsers']?.value?.length == 0 ||
-      this.f['viewOnlyUsers']?.value?.length == 0 ||
+      // this.f['url']?.invalid ||
+      this.f['companyId']?.invalid ||
       this.workflows?.length == 0 ||
       this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
       this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||
@@ -332,7 +387,13 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   cancelSubmodule() {
-    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    let slug = getItem(StorageItem.moduleSlug);
+    if(slug) {
+      this.router.navigate(['/modules', getItem(StorageItem.moduleSlug)], {queryParams: {moduleID: getItem(StorageItem.moduleID)}});
+    }
+    else {
+      this.router.navigate(['/dashboard/home'])
+    }
   }
 
   saveSubModule(statusStr?: number) {
@@ -343,14 +404,18 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
     }
+    let slug = getItem(StorageItem.moduleSlug);
     this.isCreatingSubModule.next(true)
-    const payload = {
-      url: `/modules/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
-      companyId: this.subModuleForm.get('companyName')?.value,
-      code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
+    let payload = {
+      url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
+      companyId: this.subModuleForm.get('companyId')?.value,
+      parentId: this.transportService.subModuleID?.value,
+      image: this.subModuleForm.get('image')?.value,
+      title: this.subModuleForm.get('title')?.value,
+      description: this.subModuleForm.get('description')?.value,
+      code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-      // formIds: this.formComponents,
       steps: this.workflows?.value?.map(data => {
         return {
           id: data?.id ? data?.id : undefined,
@@ -365,18 +430,51 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       const status = statusStr;
       Object.assign(payload, {status})
     }
-    this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
-    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if(res) {
-        this.isCreatingSubModule.next(false);
-        this.transportService.saveDraftLocally({});
-        this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
-      }
-      else {
-        this.isCreatingSubModule.next(false);
-      }
-    })
+    if(typeof this.file == 'string') {
+      // const url = 'uploads' + payload?.image.split('uploads')[1];
+      // payload = {...payload, image: url };
+      this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
+      .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if(res) {
+          this.isCreatingSubModule.next(false);
+          this.transportService.saveDraftLocally({});
+          this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+          if(slug) {
+            this.router.navigate(['/modules', getItem(StorageItem.moduleSlug)], {queryParams: {moduleID: getItem(StorageItem.moduleID)}});
+          }
+          else {
+            this.router.navigate(['/dashboard/home'])
+          }
+        }
+        else {
+          this.isCreatingSubModule.next(false);
+        }
+      })
+    }
+    else {
+      this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          payload = {...payload, image: res?.data?.imageUrl };
+          this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
+          .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+            if(res) {
+              this.isCreatingSubModule.next(false);
+              this.transportService.saveDraftLocally({});
+              this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+              if(slug) {
+                this.router.navigate(['/modules', getItem(StorageItem.moduleSlug)], {queryParams: {moduleID: getItem(StorageItem.moduleID)}});
+              }
+              else {
+                this.router.navigate(['/dashboard/home'])
+              }
+            }
+            else {
+              this.isCreatingSubModule.next(false);
+            }
+          })
+        }
+      })
+    }
   }
 
   ngOnDestroy(): void {
