@@ -103,7 +103,7 @@ export class FormBuilderComponent {
     }
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
-    this.form.key = this.formTitleControl?.value?.replace(' ', '-')
+    this.form.key = this.formTitleControl?.value?.replace(/\s+/g, '-').trim().toLowerCase()
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];

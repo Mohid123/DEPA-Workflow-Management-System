@@ -206,7 +206,7 @@ export class SubmissionTableComponent implements OnDestroy {
 
   editWorkflowRoute(id: string, key: string) {
     setItem(StorageItem.formKey, key)
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/${key}`, id])
+    this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
   }
 
   /**

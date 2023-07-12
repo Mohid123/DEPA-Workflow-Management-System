@@ -47,6 +47,10 @@ export class HeaderComponent implements OnDestroy {
     return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
   }
 
+  setString(value: string): string {
+    return value?.replace(/[_-]/g, ' ')
+  }
+ 
   ngOnDestroy(): void {
     this.subscription.forEach(subs => subs.unsubscribe());
   }

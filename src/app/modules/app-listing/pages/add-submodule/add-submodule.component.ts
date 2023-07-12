@@ -56,6 +56,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   previousUrl: string;
   currentUrl: string;
   returnToDashboard: boolean;
+  parentID: string;
+  parentIDUnAssigned: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -74,6 +76,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     //get default workflow
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length > 0) {
+        this.parentIDUnAssigned = true;
         this.getDefaultWorkflowByModule();
       }
       else {
@@ -117,6 +120,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   getDefaultWorkflowByModule() {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
+        if(this.parentIDUnAssigned === false) {
+          this.parentID = params['id']
+        }
         this.redirectToModuleID = params['id'];
         this.transportService.moduleID.next(params['id']);
         this.dashboard.getWorkflowFromModule(params['id']).subscribe((response: any) => {
@@ -136,6 +142,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   getDefaultWorkflowBySubModule() {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
+        if(this.parentIDUnAssigned === false) {
+          this.parentID = params['id']
+        }
         this.redirectToModuleID = params['id'];
         this.transportService.moduleID.next(params['id']);
         this.dashboard.getWorkflowFromSubModule(params['id']).subscribe((response: any) => {
@@ -359,7 +368,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
-      parentId: this.transportService.moduleID?.value ? this.transportService.moduleID?.value : null,
+      parentId: this.parentIDUnAssigned === true ? undefined : this.parentID,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),

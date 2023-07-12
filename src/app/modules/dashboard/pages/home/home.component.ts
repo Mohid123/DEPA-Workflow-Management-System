@@ -29,7 +29,7 @@ export class HomeComponent implements OnDestroy {
   }
 
   deleteModule() {
-    this.subscription.push(this.dashboard.deleteModule(this.moduleId).subscribe((res: any) => {
+    this.subscription.push(this.dashboard.deleteSubModule(this.moduleId).subscribe((res: any) => {
       this.dashboardApps = this.dashboard.getDashboardApps();
     }));
   }
