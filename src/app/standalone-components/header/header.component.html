@@ -7,10 +7,10 @@
           <a [routerLink]="['/dashboard/home']" routerLinkActive="router-link-active"
             class="block px-4 py-2 text-white no-underline hover:text-gray-100">Home</a>
         </li>
-        <!-- <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
+        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
           <a [routerLink]="['/dashboard/create-edit-category']" routerLinkActive="router-link-active"
             class="block px-4 py-2 text-white no-underline hover:text-gray-100">Create Module</a>
-        </li> -->
+        </li>
         <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
           <a [routerLink]="['/dashboard/categories']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Categories</a>
         </li>

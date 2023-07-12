@@ -8,6 +8,17 @@
     <div class="my-8">
       <app-submission-table></app-submission-table>
     </div>
+    <p class="text-sm font-semibold mb-2">Legend</p>
+    <div class="flex flex-col mb-8">
+      <div class="flex gap-2 mb-2">
+        <div class="h-6 w-6 bg-[#F15B41]"></div>
+        <span>Modules</span>
+      </div>
+      <div class="flex gap-2">
+        <div class="h-6 w-6 bg-[#a58f81]"></div>
+        <span>Submissions</span>
+      </div>
+    </div>
   </ng-container>
   <ng-template #noData>
     <app-table-loader></app-table-loader>
