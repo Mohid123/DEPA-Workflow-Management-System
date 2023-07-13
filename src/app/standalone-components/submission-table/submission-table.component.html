@@ -61,24 +61,33 @@
                 <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
               </td>
               <td class="px-6 py-4">
-                <!--EDIT-->
+                <!--WORKFLOW-->
                 <div style="all: unset;" *ngIf="data?.submissionStatus !== 4">
                   <a
-                    title="Edit"
+                    title="Workflow"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="checkIfUserisActiveUser(data?.workflowStatus) == true"
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
+                    <i class="fa fa-line-chart fa-lg" aria-hidden="true"></i>
                   </a>
                   <!--VIEW-->
                   <a
-                    title="View"
+                    title="View Submission"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="(checkIfUserisActiveUser(data?.workflowStatus) == false && checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true) || currentUser?.role == 'admin'"
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
                   </a>
                 </div>
+                <!--EDIT-->
+                <a
+                  title="Edit Submission"
+                  [routerLink]="['/modules/edit-submission', data?.id]"
+                  (click)="setWorkflowID(data?.id)"
+                  *ngIf="currentUser?.id == data?.createdBy?.id && data?.submissionStatus == 4"
+                  class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                  <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
+                </a>
                 <!--Delete-->
                 <a
                   title="Delete"

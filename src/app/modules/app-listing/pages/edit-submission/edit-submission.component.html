@@ -1,0 +1,225 @@
+<app-header></app-header>
+
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
+  <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
+    <section class="flex justify-between my-8">
+      <nav
+        tuiTabs
+        vertical="left"
+        class="w-32 mr-5"
+      >
+        <ng-container *ngFor="let tab of formTabs; let j = index">
+          <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+        </ng-container>
+      </nav>
+      <ng-container *ngFor="let form of forms; let i = index;">
+        <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+          <div *ngIf="currentUser?.role === 'admin'" class="flex justify-end gap-x-2">
+            <a (click)="sendFormForEdit(i, form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
+              <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
+            </a>
+          </div>
+          <formio [submission]="form" [options]="options" [form]="form" ></formio>
+        </div>
+      </ng-container>
+
+    </section>
+  </div>
+
+  <tui-tabs [(activeItemIndex)]="activeItemIndex">
+    <button
+      tuiTab
+    >
+      <tui-svg
+        src="tuiIconEye"
+        class="tui-space_right-2"
+      ></tui-svg>
+      Approval Workflow
+    </button>
+    <button
+      tuiTab
+    >
+      <tui-svg
+        src="tuiIconEdit"
+        class="tui-space_right-2"
+      ></tui-svg>
+      Modify Workflow
+    </button>
+  </tui-tabs>
+
+  <div *ngIf="activeItemIndex == 1" class="mt-12" [formGroup]="workflowForm">
+    <h4 class="text-lg font-semibold">Modify submodule workflow</h4>
+    <ng-container formArrayName="workflows">
+      <ng-container *ngFor="let workflow of workflows.controls; let i = index">
+        <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
+        <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
+          <div class="col-span-4">
+            <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+            <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+            <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
+          </div>
+          <div class="col-span-4">
+            <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+            <select (change)="validateSelection(i)" formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
+              <option value="and">AND</option>
+              <option value="or">OR</option>
+              <option value="none">NONE</option>
+            </select>
+          </div>
+          <div class="col-span-1 mt-8 inline-flex">
+            <tui-tooltip
+              [content]="hint"
+              direction="right"
+              class="mr-4 mt-1 -ml-2"
+            ></tui-tooltip>
+            <tui-badged-content
+              [contentTop]="
+                workflows.at(i).get('emailNotifyTo')?.value?.length
+              "
+              [colorTop]="'green'"
+            >
+              <button
+                tuiIconButton
+                type="button"
+                size="s"
+                appearance="outline"
+                icon="tuiIconMailLarge"
+                (click)="openEmailNotifyModal(template, workflows, i)"
+              ></button>
+            </tui-badged-content>
+          </div>
+          <div class="col-span-1 mt-8 -ml-8">
+            <button
+              tuiIconButton
+              type="button"
+              size="s"
+              appearance="secondary-destructive"
+              icon="tuiIconTrash2Large"
+              (click)="removeWorkflowStep(i)"
+            ></button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <button
+      tuiIconButton
+      type="button"
+      size="m"
+      appearance="primary"
+      icon="tuiIconPlusLarge"
+      (click)="addWorkflowStep()"
+    ></button>
+  </div>
+
+  <ng-container *ngIf="activeItemIndex == 0">
+    <tui-island
+      size="l"
+      class="w-full my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"
+    >
+      <h4 class="mb-5 text-base font-semibold text-gray-700">Workflow Steps</h4>
+      <tui-carousel
+        [draggable]="true"
+        [itemsCount]="3"
+        [(index)]="carouselIndex"
+      >
+      <ng-container *ngFor="let item of items; let i = index; let last = last">
+        <div *tuiItem class="flex justify-between w-full">
+          <div class="relative w-full px-4 py-4 text-left border border-gray-200 rounded-md bg-gray-50">
+            <p class="mb-2 text-lg font-semibold text-gray-700">Step {{ i + 1}}</p>
+            <ul *ngFor="let approver of item?.approvers" class="px-5">
+              <li class="list-disc">{{approver}}</li>
+            </ul>
+            <div class="absolute top-0 right-0 px-3 py-1 text-sm font-semibold bg-gray-200 rounded-b-none text-slate-700 rounded-r-md">
+              {{item?.condition}}
+            </div>
+          </div>
+          <div class="ml-4 mt-7">
+            <i *ngIf="!last" class="fa fa-long-arrow-right fa-lg" aria-hidden="true"></i>
+          </div>
+        </div>
+      </ng-container>
+      </tui-carousel>
+      <tui-pagination
+        class="my-5 pagination"
+        [length]="items?.length > 2 ? items?.length - 2 : items?.length"
+        size="s"
+        [(index)]="carouselIndex"
+      ></tui-pagination>
+    </tui-island>
+  </ng-container>
+
+  <div class="flex justify-end gap-5 mt-8">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      [showLoader]="(creatingSubmission | async)"
+      (click)="editSubmission()"
+    >
+      Create submission
+    </button>
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="secondary"
+      (click)="editSubmission(4)"
+    >
+      Save as Draft
+    </button>
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      (click)="cancelSubmission()"
+    >
+      Cancel
+    </button>
+  </div>
+</section>
+
+
+<!--Email Notify Modal-->
+<ng-template #template>
+  <p class="text-lg font-semibold text-center">Email Notification Users</p>
+  <p class="mt-3 text-base font-medium text-gray-500">
+    Please specify the users you want to send the notification email to
+  </p>
+  <div class="flex flex-col justify-center my-5">
+    <tui-input-tag
+      [formControl]="
+        currentFieldArray?.controls[activeEmailIndex]?.controls['emailNotifyTo']
+      "
+      class="b-form"
+      [tuiTextfieldLabelOutside]="true"
+      (searchChange)="onSearchChange($event)"
+    >
+      Type to search and press Enter to select...
+      <tui-data-list-wrapper
+        *tuiDataList
+        [items]="userListForEmail"
+      ></tui-data-list-wrapper>
+    </tui-input-tag>
+  </div>
+  <div class="flex justify-start gap-x-3">
+    <button tuiButton type="button" size="m" (click)="validateEmails()">
+      Confirm & Close
+    </button>
+    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">
+      Remove Users & Close
+    </button>
+  </div>
+</ng-template>
+
+
+<ng-template #hint>
+  <strong class="text-base">How conditions work?</strong>
+  <hr>
+  <ul class="mt-2">
+    <li><strong>AND</strong> implies that every user of the step must provide approval</li>
+    <li class="my-2"><strong>OR</strong> implies that any one of the users may provide approval</li>
+    <li><strong>NONE</strong> implies that there is only one user per step and hence no conditon is necessary</li>
+  </ul>
+</ng-template>

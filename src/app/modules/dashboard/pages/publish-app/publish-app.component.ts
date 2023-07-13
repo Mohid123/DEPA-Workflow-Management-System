@@ -356,6 +356,9 @@ export class PublishAppComponent implements OnDestroy {
     if(status) {
       payload = {...payload, status: status}
     }
+    else {
+      payload = {...payload, status: 1}
+    }
     if(this.isEditMode?.value == false) {
       payload = {...payload, createdBy: this.auth.currentUserValue?.id}
       this.dashboard.createModule(payload).pipe(takeUntil(this.destroy$))

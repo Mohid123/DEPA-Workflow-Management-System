@@ -2,7 +2,7 @@ import { Component, Inject, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
@@ -16,7 +16,7 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
 @Component({
   selector: 'app-submission-table',
   standalone: true,
-  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule],
+  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule, RouterModule],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
 })
@@ -74,6 +74,10 @@ export class SubmissionTableComponent implements OnDestroy {
         }))
       }
     })
+  }
+
+  setWorkflowID(id: string) {
+    setItem(StorageItem.workflowID, id)
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>): void {

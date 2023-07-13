@@ -9,7 +9,7 @@ import { TableViewComponent } from 'src/app/standalone-components/table-view/tab
 import { SearchBarComponent } from 'src/app/standalone-components/search-bar/search-bar.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
 import { TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputModule, TuiInputTagModule, TuiIslandModule, TuiMultiSelectModule, TuiPaginationModule, TuiProgressModule, TuiRadioLabeledModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
@@ -18,6 +18,7 @@ import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.co
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { SubmissionTableComponent } from 'src/app/standalone-components/submission-table/submission-table.component';
+import { EditSubmissionComponent } from './pages/edit-submission/edit-submission.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { SubmissionTableComponent } from 'src/app/standalone-components/submissi
     AppListingComponent,
     SubmodulesListComponent,
     AddSubmoduleComponent,
-    EditSubmoduleComponent
+    EditSubmoduleComponent,
+    EditSubmissionComponent
   ],
   imports: [
     CommonModule,
@@ -57,7 +59,8 @@ import { SubmissionTableComponent } from 'src/app/standalone-components/submissi
     TuiTooltipModule,
     TuiHintModule,
     TuiLoaderModule,
-    SubmissionTableComponent
+    SubmissionTableComponent,
+    TuiSvgModule
   ]
 })
 export class AppListingModule { }

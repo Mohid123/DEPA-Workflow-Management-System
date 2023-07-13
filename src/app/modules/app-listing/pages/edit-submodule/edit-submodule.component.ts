@@ -428,7 +428,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       const status = statusStr;
       Object.assign(payload, {status})
     }
-    debugger
+    else {
+      Object.assign(payload, {status: 1})
+    }
     if(typeof this.file == 'string') {
       const url = 'uploads' + payload?.image.split('uploads')[1];
       payload = {...payload, image: url };

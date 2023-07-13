@@ -6,6 +6,7 @@ import { SubmoduleGuard } from '../auth/guards/submodule.guard';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
 import { SubmoduleResolver } from '../../../core/core-services/resolver.service';
+import { EditSubmissionComponent } from './pages/edit-submission/edit-submission.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,11 @@ const routes: Routes = [
         path: 'edit-module/:id',
         component: EditSubmoduleComponent,
         data: {breadcrumb:'Edit Module'},
+      },
+      {
+        path: 'edit-submission/:id',
+        component: EditSubmissionComponent,
+        data: {breadcrumb:'Edit Submission'},
       },
       {
         path: ':name',
