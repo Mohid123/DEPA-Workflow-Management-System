@@ -216,71 +216,6 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  // Categories
-
-  getAllCategories(limit: number, page: number): Observable<ApiResponse<any>> {
-    const params: any = {
-      limit: limit,
-      page: page+ 1
-    }
-    return this.get(`/categories`)
-    .pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        const results = res.data?.results?.map((data: any) => {
-          return {
-            id: data?.id,
-            name: data?.name
-          }
-        });
-        return Object.assign(res?.data, {results: results})
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch categories', 'Get categories', TuiNotification.Error)
-        }
-      }
-    }))
-  }
-
-  postNewCategory(payload: {name: string}): Observable<ApiResponse<any>> {
-    return this.post(`/categories`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('Category created successfully', 'Create Category', TuiNotification.Success);
-        return res?.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Category', TuiNotification.Error)
-      }
-    }))
-  }
-
-  updateCategory(payload: any, categoryId: string): Observable<ApiResponse<any>> {
-    return this.patch(`/categories/${categoryId}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('Category updated', 'Update Category', TuiNotification.Success);
-        return res?.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Category', TuiNotification.Error)
-      }
-    }))
-  }
-
-  deleteCategory(categoryId: string): Observable<ApiResponse<any>> {
-    return this.delete(`/categories/${categoryId}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('Category deleted', 'Delete Category', TuiNotification.Success);
-        return res?.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Delete Category', TuiNotification.Error)
-      }
-    }))
-  }
-
   // Companies
 
   getAllCompanies(limit: number, page: number): Observable<ApiResponse<any>> {
@@ -380,6 +315,24 @@ export class DashboardService extends ApiService<any> {
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
           return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
+  getAllModules(): Observable<ApiResponse<any>> {
+    // const params: any = {
+    //   limit: limit,
+    //   page: page,
+    //   ...queryParams
+    // }
+    return this.get(`/modules`).pipe(map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get Modules', TuiNotification.Error);
         }
       }
     }))

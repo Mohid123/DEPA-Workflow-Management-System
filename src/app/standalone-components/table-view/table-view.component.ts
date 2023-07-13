@@ -125,6 +125,16 @@ export class TableViewComponent implements OnDestroy {
     });
   }
 
+  showStatus(value: number) {
+    if(value == 1) {
+      return 'Published'
+    }
+    if(value == 3) {
+      return 'Draft'
+    }
+    return 'Deleted'
+  }
+
   splitURL(url: string) {
     return url.split('/').at(-1)
   }

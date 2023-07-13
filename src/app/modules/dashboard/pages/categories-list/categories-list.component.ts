@@ -4,6 +4,8 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { FormControl } from '@angular/forms';
+import { AuthService } from 'src/app/modules/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './categories-list.component.html',
@@ -17,58 +19,49 @@ export class CategoriesListComponent implements OnDestroy {
   destroy$ = new Subject();
   limit: number = 6;
   page: number = 0;
+  currentUser: any;
 
   constructor(
     private dashboard: DashboardService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private cf: ChangeDetectorRef
+    private cf: ChangeDetectorRef,
+    private auth: AuthService,
+    private router: Router
   ) {
-    this.categories = this.dashboard.getAllCategories(this.limit, this.page);
+    this.currentUser = this.auth.currentUserValue
+    this.categories = this.dashboard.getAllModules();
   }
 
   changePage(page: number) {
     this.page = page;
-    this.categories = this.dashboard.getAllCategories(this.limit, this.page);
+    this.categories = this.dashboard.getAllModules();
   }
 
-  editOrAddCategory() {
-    if(this.categoryId) {
-      this.dashboard.updateCategory({name: this.categoryEditControl?.value}, this.categoryId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(res => {
-        if(res) {
-          this.categories = this.dashboard.getAllCategories(this.limit, this.page);
-          this.cf.detectChanges()
-        }
-      });
-    }
-    else {
-      this.dashboard.postNewCategory({name: this.categoryEditControl?.value})
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(res => {
-        if(res) {
-          this.categories = this.dashboard.getAllCategories(this.limit, this.page);
-          this.cf.detectChanges();
-        }
-      });
-    }
-  }
-
-  deleteCategory() {
-    this.dashboard.deleteCategory(this.categoryId).pipe(takeUntil(this.destroy$))
-    .subscribe(() => {
-      this.categories = this.dashboard.getAllCategories(this.limit, this.page);
-      this.cf.detectChanges()
+  editCategory(id: string) {
+    this.dashboard.getModuleByIDForEditModule(id).pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      if(res) {
+        this.router.navigate(['/dashboard/create-edit-category'])
+      }
     })
   }
 
-  showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
-    this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
-    }).subscribe();
-    this.categoryEditControl.setValue(data?.name ? data?.name : '');
-    this.categoryId = data?.id || null;
+  showStatus(value: number) {
+    if(value == 1) {
+      return 'Published'
+    }
+    if(value == 2) {
+      return 'Deleted'
+    }
+    return 'Draft'
+  }
+
+  deleteCategory() {
+    this.dashboard.deleteModule(this.categoryId).pipe(takeUntil(this.destroy$))
+    .subscribe(() => {
+      this.categories = this.dashboard.getAllModules();
+      this.cf.detectChanges()
+    })
   }
 
   showDeleteDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {

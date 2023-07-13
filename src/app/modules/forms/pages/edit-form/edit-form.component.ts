@@ -83,6 +83,16 @@ export class EditFormComponent implements OnDestroy {
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
+    this.form?.components?.map((val: any) => {
+      if(val?.label && val?.label === 'Upload') {
+        val.storage = "url";
+        val.url = 'http://localhost:3000/v1/upload';
+        val.uploadEnabled = true;
+        val.input = true;
+        return val
+      }
+      return val
+    });
   }
 
   onJsonView() {

@@ -20,8 +20,8 @@ export class MediaUploadService extends ApiService<uploadMedia> {
 
   uploadMedia(file:any): Observable<ApiResponse<uploadMedia>> {
     const formData: FormData = new FormData();
-    formData.append('image', file);
-    return this.postMedia(`/modules/upload-image`, formData).pipe(tap((res: ApiResponse<any>) => {
+    formData.append('file', file);
+    return this.postMedia(`/upload`, formData).pipe(tap((res: ApiResponse<any>) => {
       if(res.hasErrors()) {
         return this.notif.displayNotification(res.errors[0]?.error?.message, 'Image Upload', TuiNotification.Error)
       }

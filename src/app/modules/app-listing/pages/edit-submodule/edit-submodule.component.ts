@@ -430,20 +430,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       Object.assign(payload, {status})
     }
     if(typeof this.file == 'string') {
-      // const url = 'uploads' + payload?.image.split('uploads')[1];
-      // payload = {...payload, image: url };
+      const url = 'uploads' + payload?.image.split('uploads')[1];
+      payload = {...payload, image: url };
       this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
       .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if(res) {
           this.isCreatingSubModule.next(false);
           this.transportService.saveDraftLocally({});
           this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-          if(slug) {
-            this.router.navigate(['/modules', getItem(StorageItem.moduleSlug)], {queryParams: {moduleID: getItem(StorageItem.moduleID)}});
-          }
-          else {
-            this.router.navigate(['/dashboard/home'])
-          }
+          this.routeToBasedOnPreviousPage()
         }
         else {
           this.isCreatingSubModule.next(false);
@@ -453,19 +448,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     else {
       this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
         if(!res.hasErrors()) {
-          payload = {...payload, image: res?.data?.imageUrl };
+          payload = {...payload, image: res?.data?.fileUrl };
           this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
           .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
             if(res) {
               this.isCreatingSubModule.next(false);
               this.transportService.saveDraftLocally({});
               this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-              if(slug) {
-                this.router.navigate(['/modules', getItem(StorageItem.moduleSlug)], {queryParams: {moduleID: getItem(StorageItem.moduleID)}});
-              }
-              else {
-                this.router.navigate(['/dashboard/home'])
-              }
+              this.routeToBasedOnPreviousPage();
             }
             else {
               this.isCreatingSubModule.next(false);
@@ -474,6 +464,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }
       })
     }
+  }
+
+  routeToBasedOnPreviousPage() {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length > 0) {
+        this.router.navigate(['/dashboard/home'])
+      }
+      else {
+        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+      }
+    })
   }
 
   ngOnDestroy(): void {

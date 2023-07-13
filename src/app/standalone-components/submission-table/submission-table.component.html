@@ -42,7 +42,7 @@
                 {{showStatus(data?.submissionStatus)}}
               </td>
               <td class="px-2 py-4">
-                {{data?.submissionStatus === 1 ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
+                {{(data?.submissionStatus === 1 || data?.submissionStatus === 4) ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
               </td>
                 <td class="px-2 py-4 max-w-60">
                   <ng-container *ngFor="let pending of getPendingOnUsers(data?.summaryData?.pendingOnUsers || []); let lastUser = last">
@@ -62,21 +62,23 @@
               </td>
               <td class="px-6 py-4">
                 <!--EDIT-->
-                <a
-                  title="Edit"
-                  (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
-                  *ngIf="checkIfUserisActiveUser(data?.workflowStatus) == true"
-                  class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                  <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
-                </a>
-                <!--VIEW-->
-                <a
-                  title="View"
-                  (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
-                  *ngIf="(checkIfUserisActiveUser(data?.workflowStatus) == false && checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true) || currentUser?.role == 'admin'"
-                  class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                  <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
-                </a>
+                <div style="all: unset;" *ngIf="data?.submissionStatus !== 4">
+                  <a
+                    title="Edit"
+                    (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
+                    *ngIf="checkIfUserisActiveUser(data?.workflowStatus) == true"
+                    class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
+                  </a>
+                  <!--VIEW-->
+                  <a
+                    title="View"
+                    (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
+                    *ngIf="(checkIfUserisActiveUser(data?.workflowStatus) == false && checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true) || currentUser?.role == 'admin'"
+                    class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+                  </a>
+                </div>
                 <!--Delete-->
                 <a
                   title="Delete"

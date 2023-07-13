@@ -33,6 +33,8 @@ import {
 import { DashboardService } from '../../dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { AuthService } from 'src/app/modules/auth/auth.service';
+import { StorageItem, getItem, removeItem, setItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './publish-app.component.html',
@@ -75,11 +77,20 @@ export class PublishAppComponent implements OnDestroy {
     private dashboard: DashboardService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private auth: AuthService
   ) {
     this.initWorkflowForm();
     this.initModuleDetailsForm();
     //edit module case
+    let editableCategory = getItem(StorageItem.publishAppValue)
+    if(editableCategory) {
+      this.initModuleDetailsForm(editableCategory)
+      this.initWorkflowForm(editableCategory);
+      this.moduleData.next(editableCategory);
+      this.workFlowId = editableCategory?.workFlowId;
+      this.isEditMode.next(true);
+    }
     this.dashboard.moduleEditData.pipe(take(1), takeUntil(this.destroy$)).subscribe((val) => {
       if (val) {
         this.isEditMode.next(true);
@@ -109,7 +120,8 @@ export class PublishAppComponent implements OnDestroy {
           steps: stepsArr
         });
         this.initModuleDetailsForm(editableValue)
-        this.initWorkflowForm(editableValue)
+        this.initWorkflowForm(editableValue);
+        setItem(StorageItem.publishAppValue, editableValue)
       }
     });
 
@@ -285,7 +297,7 @@ export class PublishAppComponent implements OnDestroy {
       .subscribe());
   }
 
-  nextStep(): void {
+  nextStep(status?: number): void {
     if (this.f['moduleTitle']?.invalid) {
       this.f['moduleTitle']?.markAsTouched()
       return this.notif.displayNotification('Please fill in all fields', 'Create Module', TuiNotification.Warning);
@@ -317,12 +329,10 @@ export class PublishAppComponent implements OnDestroy {
         ...moduleDetails,
         steps: defaultFlow,
       });
-      this.submitNewModule()
+      this.submitNewModule(status)
     }
     else {
-      debugger
       Object.assign(moduleDetails, {workFlowId: this.workFlowId});
-      debugger
       const newSteps = this.workflows?.value?.map((data) => {
         return {
           approverIds: data?.approverIds?.map((ids) =>
@@ -334,25 +344,40 @@ export class PublishAppComponent implements OnDestroy {
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         };
       });
-      debugger
-      this.moduleData.next({
-        ...this.moduleData?.value,
-        steps: newSteps,
-      });
-      this.submitNewModule()
+      Object.assign(moduleDetails, {steps: newSteps});
+      this.moduleData.next(moduleDetails)
+      this.submitNewModule(status)
     }
   }
 
-  submitNewModule() {
+  submitNewModule(status?: number) {
     this.isCreatingModule.next(true);
     let payload = this.moduleData.value;
-    console.log(payload)
-    // this.dashboard.createModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-    //   if (res) {
-    //     this.dashboard.moduleEditData.next(null);
-    //     this.router.navigate(['/dashboard/home']);
-    //   }
-    // });
+    if(status) {
+      payload = {...payload, status: status}
+    }
+    if(this.isEditMode?.value == false) {
+      payload = {...payload, createdBy: this.auth.currentUserValue?.id}
+      this.dashboard.createModule(payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if (res) {
+          this.dashboard.moduleEditData.next(null);
+          this.router.navigate(['/dashboard/home']);
+          removeItem(StorageItem.publishAppValue)
+        }
+      });
+    }
+    else {
+      let moduleID = getItem(StorageItem.publishAppValue)?.id
+      this.dashboard.editModule(moduleID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if (res) {
+          this.dashboard.moduleEditData.next(null);
+          this.router.navigate(['/dashboard/home']);
+          removeItem(StorageItem.publishAppValue)
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {

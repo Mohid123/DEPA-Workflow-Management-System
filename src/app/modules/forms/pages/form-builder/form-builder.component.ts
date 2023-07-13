@@ -1,22 +1,22 @@
 import { Component, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
 import { TuiNotification } from '@taiga-ui/core';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
-import { Location } from '@angular/common';
+import { Location } from '@angular/common';;
 
 @Component({
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
-export class FormBuilderComponent {
+export class FormBuilderComponent{
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
-  public form: {title: string, key: string, display: string, components: []};
+  public form: {title: string, key: string, display: string, components: any};
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   activeIndex: number = 0;
   formValue: any;
@@ -46,7 +46,8 @@ export class FormBuilderComponent {
     private notif: NotificationsService,
     private location: Location,
     private activatedRoute: ActivatedRoute,
-    private formService: FormsService)
+    private formService: FormsService
+  )
   {
     this.editMode = this.transportService.isFormEdit.value;
     this.activatedRoute.queryParams?.subscribe(data => {
@@ -83,6 +84,18 @@ export class FormBuilderComponent {
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
+    this.form?.components?.map(val => {
+      if(val?.label && val?.label === 'Upload') {
+        val.storage = "url";
+        val.url = 'http://localhost:3000/v1/upload';
+        val.uploadEnabled = true;
+        val.sendFileAsQueryParam = false;
+        val.input = true;
+        val.type = 'file'
+        return val
+      }
+      return val
+    });
   }
 
   onJsonView() {

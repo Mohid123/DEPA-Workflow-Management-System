@@ -62,7 +62,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.populateData();
 
      // get users for email
-
     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
       if (res) {
         this.userListForEmail = res?.results?.map((data) => data?.email);
@@ -266,6 +265,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       formIds: this.subModuleData?.formIds?.map(val => val.id),
       formDataIds: this.formSubmission?.value,
       submissionStatus: status ? status : undefined,
+      createdBy: this.auth.currentUserValue?.id,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),

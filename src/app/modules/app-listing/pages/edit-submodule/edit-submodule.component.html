@@ -276,6 +276,16 @@
         tuiButton
         type="button"
         size="m"
+        appearance="secondary"
+        (click)="saveSubModule(3)"
+        [showLoader]="(isCreatingSubModule | async) == true"
+      >
+        Save as Draft
+      </button>
+      <button
+        tuiButton
+        type="button"
+        size="m"
         appearance="accent"
         (click)="cancelSubmodule()"
       >Cancel</button>

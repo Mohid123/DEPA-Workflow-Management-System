@@ -3,14 +3,14 @@
   <section class="mt-52 pb-60 mx-auto w-11/12">
     <div class="flex justify-end mb-5">
       <div class="cursor-pointer">
-        <a (click)="showDialog(template, null)" class="px-4 py-2 rounded-lg bg-[#a58f81] text-white no-underline hover:text-white text-sm">+ Add category</a>
+        <a [routerLink]="['/dashboard/create-edit-category']" class="px-4 py-2 rounded-lg bg-[#a58f81] text-white no-underline hover:text-white text-sm">+ Add category</a>
       </div>
     </div>
     <ng-container *ngIf="(categories | async) as data; else loading">
       <table
         tuiTable
         class="rounded-lg w-full"
-        [columns]="['name', 'actions']"
+        [columns]="['name', 'code', 'status', 'actions']"
       >
         <thead>
           <tr tuiThGroup>
@@ -21,6 +21,22 @@
               class="text-base"
             >
               Category Name
+            </th>
+            <th
+              *tuiHead="'code'"
+              tuiTh
+              [resizable]="true"
+              class="text-base"
+            >
+              Code
+            </th>
+            <th
+              *tuiHead="'status'"
+              tuiTh
+              [resizable]="true"
+              class="text-base"
+            >
+              Status
             </th>
             <th class="text-base" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
           </tr>
@@ -43,14 +59,28 @@
                 *tuiCell="'name'"
                 tuiTd
               >
-                {{item?.name}}
+                {{item?.title}}
+              </td>
+              <td
+                class="py-3 font-semibold"
+                *tuiCell="'code'"
+                tuiTd
+              >
+                {{item?.code}}
+              </td>
+              <td
+                class="py-3 font-semibold"
+                *tuiCell="'status'"
+                tuiTd
+              >
+                {{showStatus(item?.status)}}
               </td>
               <td
                 *tuiCell="'actions'"
                 tuiTd
               >
-              <div class="flex justify-start">
-                <a (click)="showDialog(template, item)" class="px-2 py-1 cursor-pointer rounded-md bg-blue-400 text-white mx-2 hover:text-white">
+              <div *ngIf="item?.createdBy === currentUser?.id" class="flex justify-start">
+                <a (click)="editCategory(item?.id)" class="px-2 py-1 cursor-pointer rounded-md bg-blue-400 text-white mx-2 hover:text-white">
                   <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 </a>
                 <button (click)="showDeleteDialog(item, deltemplate)" class="px-2 py-1 rounded-md bg-red-500 text-white">
@@ -83,25 +113,6 @@
 </div>
 
 <app-footer></app-footer>
-
-<ng-template #template let-observer>
-  <p class="text-lg font-semibold text-center">
-    {{categoryId ? 'Edit': 'Add'}} Category
-  </p>
-  <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea1">Category Name</label>
-    <input [formControl]="categoryEditControl" class="form-control">
-  </div>
-  <button
-    tuiButton
-    type="button"
-    size="m"
-    [disabled]="!categoryEditControl?.value"
-    (click)="editOrAddCategory(); observer.complete()"
-    >
-    Send
-    </button>
-</ng-template>
 
 <ng-template #deltemplate let-observer>
   <p class="text-xl font-semibold text-center border-b border-gray-400 pb-2">Delete Category</p>

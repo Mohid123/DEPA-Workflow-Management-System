@@ -51,7 +51,7 @@
           <ng-container *ngFor="let data of tableData?.results; let i = index; let first = first; let last = last">
             <tr class="bg-white border-b border-gray-300">
               <td class="pl-6 py-4 flex gap-x-2 max-w-80">
-                <img src="../../../assets/depa_logo.svg" alt="module_icon" width="45" height="45" class="rounded-lg">
+                <img [src]="data?.image" alt="module_icon" width="45" height="45" class="rounded-lg">
                 <p class="mt-3">{{data?.title}}</p>
               </td>
               <td class="px-6 py-4">
@@ -61,7 +61,7 @@
                 {{data?.code}}
               </td>
               <td class="px-6 py-4">
-                {{data?.status === 1 ? 'Published' : 'Rejected'}}
+                {{showStatus(data?.status)}}
               </td>
               <td class="py-4 text-center">
                 <div style="all: unset;" *ngIf="data?.status == 1">
