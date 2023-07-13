@@ -16,7 +16,6 @@ import { FilterComponent } from 'src/app/standalone-components/filter/filter.com
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
-import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { SubmissionTableComponent } from 'src/app/standalone-components/submission-table/submission-table.component';
 
@@ -26,8 +25,7 @@ import { SubmissionTableComponent } from 'src/app/standalone-components/submissi
     AppListingComponent,
     SubmodulesListComponent,
     AddSubmoduleComponent,
-    EditSubmoduleComponent,
-    SubmoduleDetailsComponent
+    EditSubmoduleComponent
   ],
   imports: [
     CommonModule,

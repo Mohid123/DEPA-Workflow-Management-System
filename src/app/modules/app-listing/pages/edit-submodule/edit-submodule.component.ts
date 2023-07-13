@@ -404,7 +404,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
     }
-    let slug = getItem(StorageItem.moduleSlug);
     this.isCreatingSubModule.next(true)
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
@@ -429,6 +428,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       const status = statusStr;
       Object.assign(payload, {status})
     }
+    debugger
     if(typeof this.file == 'string') {
       const url = 'uploads' + payload?.image.split('uploads')[1];
       payload = {...payload, image: url };

@@ -226,6 +226,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
 
   onChange(event: any, index: number) {
     if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
       const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
       this.formValues[this.activeIndex] = {...event, formId};
       const finalData = this.formValues?.map(value => {
