@@ -29,7 +29,7 @@ export class TableViewComponent implements OnDestroy {
   /**
    * The category names to show as table column headers
    */
-  @Input() tableColumns: string[] = ['Title', 'Company Name', 'Module Code', 'Status'];
+  @Input() tableColumns: string[] = ['Title', 'Company Name', 'Status'];
 
   /**
    * The data to display inside the table
@@ -217,7 +217,7 @@ export class TableViewComponent implements OnDestroy {
   sendSearchValue(value: any) {
     this.fetchingTableData.next(true)
     const queryParams = {
-      field: 'subModuleCode',
+      field: 'subModuleTitle',
       search: value
     }
     if(queryParams.search == null) {

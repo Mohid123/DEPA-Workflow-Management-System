@@ -22,7 +22,7 @@
                 </ng-container>
                 <ng-container *ngIf="column === 'Company Name'">
                 </ng-container>
-                <ng-container *ngIf="column === 'Module Code'">
+                <!-- <ng-container *ngIf="column === 'Module Code'">
                   <filter
                     [filterBy]="column"
                     [items]="filterMenuSubmodule"
@@ -31,7 +31,7 @@
                     [disabled]="tableData?.results?.length == 0"
                   >
                   </filter>
-                </ng-container>
+                </ng-container> -->
               </ng-template>
             </th>
           </ng-container>
@@ -50,21 +50,21 @@
         <ng-template #showSubModules>
           <ng-container *ngFor="let data of tableData?.results; let i = index; let first = first; let last = last">
             <tr class="bg-white border-b border-gray-300">
-              <td class="pl-6 py-4 flex gap-x-2 max-w-80">
+              <td class="pl-6 py-4 flex gap-x-2 max-w-92">
                 <div class="relative group">
-                  <div (click)="showImage(data?.image)" class="hidden absolute top-0 right-0 text-white cursor-pointer group-hover:block group-hover:backdrop-brightness-50 p-[13px] rounded-lg">
+                  <div (click)="showImage(data?.image)" class="hidden absolute top-1 right-0 text-white cursor-pointer group-hover:block group-hover:backdrop-brightness-50 p-[13px] rounded-lg">
                     <i class="fa fa-eye fa-lg"></i>
                   </div>
-                  <img [src]="data?.image" alt="module_icon" width="45" height="45" class="rounded-lg cursor-pointer">
+                  <img [src]="data?.image" alt="module_icon" width="45" height="45" class="rounded-lg cursor-pointer mt-1">
                 </div>
-                <p class="mt-3">{{data?.title}}</p>
+                <p class="mt-4">{{data?.title}}</p>
               </td>
               <td class="px-6 py-4">
                 {{data?.companyId?.title}}
               </td>
-              <td class="px-6 py-4">
+              <!-- <td class="px-6 py-4">
                 {{data?.code}}
-              </td>
+              </td> -->
               <td class="px-6 py-4">
                 {{showStatus(data?.status)}}
               </td>

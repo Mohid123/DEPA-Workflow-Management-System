@@ -157,13 +157,14 @@
       [showLoader]="(creatingSubmission | async)"
       (click)="editSubmission()"
     >
-      Create submission
+      Publish
     </button>
     <button
       tuiButton
       type="button"
       size="m"
       appearance="secondary"
+      [showLoader]="(creatingSubmission | async)"
       (click)="editSubmission(4)"
     >
       Save as Draft

@@ -42,7 +42,7 @@
 <!--breadcrumbs-->
 <div class="fixed z-30 flex justify-between w-full px-5 pt-2 mt-8 bg-white border-b-2 shadow-md border-b-gray-300 top-16">
   <tui-breadcrumbs size="l"
-    class="text-[#9a9ba3] tui-space_bottom-3 flex flex-wrap">
+    class="text-[#9a9ba3] tui-space_bottom-3 flex flex-wrap first-line:indent-0">
     <ng-container *ngIf="checkCurrentRouteIncludes() === false">
       <ng-container *ngFor="let item of dashboardService.items; let i = index; let last = last">
         <ng-container *ngIf="i == 0 || dashboardService.items?.length == 0">
@@ -81,6 +81,16 @@
       </ng-container>
     </ng-container>
   </tui-breadcrumbs>
+  <div *ngIf="checkCurrentRouteIncludes() == true" class="flex gap-4 mt-2.5">
+    <div class="flex gap-1">
+      <div class="h-6 w-6 bg-[#F15B41]"></div>
+      <p class="mt-0.5">Modules</p>
+    </div>
+    <div class="flex gap-1">
+      <div class="h-6 w-6 bg-[#a58f81]"></div>
+      <p class="mt-0.5">Submissions</p>
+    </div>
+  </div>
 </div>
 
 <ng-template #tooltip>

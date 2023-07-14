@@ -187,7 +187,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       stepId: this.decisionData?.value?.stepId,
       userId: this.currentUser?.id,
       remarks: this.remarks?.value,
-      isApproved: this.approve?.value == true ? true : false
+      isApproved: this.approve?.value == true ? true : false,
+      type: 'submittal'
     }
     this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
