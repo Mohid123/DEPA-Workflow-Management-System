@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { jsPDF } from 'jspdf';
@@ -46,13 +46,19 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   loadingData = new Subject<boolean>();
   index = NaN;
   labels = ['Active', 'Approved', 'Pending', 'Rejected'];
+  sendingDecision = new Subject<boolean>();
+  dialogTitle: string
+  dialogSubscription: Subscription[] = [];
+  isDeleting: string;
+  currentStepId: string;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowsService,
     private auth: AuthService,
-    private dashboard: DashboardService
+    private dashboard: DashboardService,
+    private router: Router
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.fetchData();
@@ -115,6 +121,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     ).subscribe(data => {
       if(data) {
         this.workflowData = data;
+        this.currentStepId = this.workflowData?.workflowStatus?.filter(data => {
+          return data?.status == 'inProgress' ? data : null
+        })[0]?.stepId;
         this.formAllowedForEditUsers = this.workflowData?.workflowStatus?.map(data => {
           return {
             users: data?.activeUsers?.map(val => val?.fullName),
@@ -181,7 +190,24 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     })
   }
 
-  sendDecisionData() {
+  showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string): void {
+    this.isDeleting = checkDecision;
+    if(checkDecision == 'delete') {
+      this.dialogTitle = 'Delete'
+    }
+    if(checkDecision == 'cancel') {
+      this.dialogTitle = 'Cancel'
+    }
+    if(checkDecision == 'enable') {
+      this.dialogTitle = 'Enable'
+    }
+    this.dialogSubscription.push(this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe());
+  }
+
+  sendApproveOrRejectDecisionData() {
     this.savingDecision.next(true)
     const payload: any = {
       stepId: this.decisionData?.value?.stepId,
@@ -208,6 +234,51 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     })
   }
 
+  sendDeleteOrCancelDecision() {
+    this.sendingDecision.next(true)
+    let payload: any = {
+      stepId: this.currentStepId,
+      userId: this.currentUser?.id,
+      remarks: this.remarks?.value,
+      type: 'submittal'
+    }
+    if(this.isDeleting == 'delete') {
+      Object.assign(payload, {status: 2})
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.dialogSubscription.forEach(val => val.unsubscribe);
+          this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
+    if(this.isDeleting == 'cancel') {
+      Object.assign(payload, {submissionStatus: 5});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.dialogSubscription.forEach(val => val.unsubscribe);
+          this.fetchData();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
+    if(this.isDeleting == 'enable') {
+      Object.assign(payload, {submissionStatus: 2});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.dialogSubscription.forEach(val => val.unsubscribe);
+          this.fetchData();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
+  }
+
   cancelDecision() {
     this.remarks.reset();
     this.saveDialogSubscription.forEach(val => val.unsubscribe());
@@ -228,6 +299,14 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       return '#32de84'
     }
     return '#fff'
+  }
+
+  checkIfUserisPartofWorkflow(data: any) {
+    return data?.map(val => val?._id)?.includes(this.currentUser?.id)
+  }
+
+  checkIfUserisActiveUser(data: any) {
+    return data?.flatMap(val => val?.status == 'inProgress' ? val.activeUsers: null)?.filter(val => val).includes(this.currentUser?.id)
   }
 
   checkIfUserCanEditForm(): any[] {

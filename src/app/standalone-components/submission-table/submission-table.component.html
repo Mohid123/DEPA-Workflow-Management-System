@@ -38,18 +38,18 @@
         <ng-template #showSubmissions>
           <ng-container *ngFor="let data of tableDataValue; let i = index; let first = first; let last = last; trackBy: trackByFn">
             <tr class="bg-white border-b border-gray-300">
-              <td class="px-4 py-4">
+              <td class="px-4 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                 {{showStatus(data?.submissionStatus)}}
               </td>
-              <td class="px-2 py-4">
+              <td class="px-6 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                 {{(data?.submissionStatus === 1 || data?.submissionStatus === 4) ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
               </td>
-                <td class="px-2 py-4 max-w-60">
+                <td class="px-2 py-4 max-w-60" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                   <ng-container *ngFor="let pending of getPendingOnUsers(data?.summaryData?.pendingOnUsers || []); let lastUser = last">
                     <span>{{pending}}<span *ngIf="!lastUser">,</span> &nbsp;</span>
                   </ng-container>
                 </td>
-              <td class="flex justify-between px-2 py-4">
+              <td class="flex justify-between px-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                 <progress
                   tuiProgressBar
                   [color]="changeProgressColor(data?.summaryData?.progress)"
@@ -60,15 +60,15 @@
                 ></progress>
                 <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
               </td>
-              <td class="px-6 py-4">
+              <td class="py-4 px-5">
                 <!--WORKFLOW-->
-                <div style="all: unset;" *ngIf="data?.submissionStatus !== 4">
+                <div style="all: unset;" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">
                   <a
-                    title="Submission Workflow"
+                    title="Workflow"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="checkIfUserisActiveUser(data?.workflowStatus) == true"
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-exchange fa-lg" aria-hidden="true"></i>
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
                   </a>
                   <!--VIEW-->
                   <a
@@ -79,21 +79,14 @@
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
                   </a>
                 </div>
-                <!--EDIT-->
+                <!--EDIT SUBMISSION PAGE-->
                 <a
                   title="Edit Submission"
                   [routerLink]="['/modules/edit-submission', data?.id]"
                   (click)="setWorkflowID(data?.id)"
-                  *ngIf="currentUser?.id == data?.createdBy?.id && data?.submissionStatus == 4"
+                  *ngIf="currentUser?.id == data?.createdBy?.id && data?.submissionStatus == 4 && data?.submissionStatus !== 5"
                   class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
-                </a>
-                <!--Delete-->
-                <a
-                  title="Delete"
-                  (click)="showDialog(dialog)"
-                  class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
-                  <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
                 </a>
               </td>
             </tr>
@@ -113,36 +106,4 @@
 
 <ng-template #noData>
   <app-table-loader></app-table-loader>
-</ng-template>
-
-<ng-template #dialog let-observer>
-  <p class="text-lg font-semibold text-center mb-5">
-    Delete Submission
-  </p>
-  <p class="text-base font-semibold text-center">
-    You are about to <span class="text-red-500">Delete</span> this submission. Are you sure you want to continue?
-  </p>
-  <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea1">Comments <sup>(optional)</sup></label>
-    <textarea [formControl]="remarks" class="form-control" id="Textarea1" rows="4"></textarea>
-  </div>
-  <div class="flex justify-start gap-2">
-    <button
-      tuiButton
-      type="button"
-      size="m"
-      (click)="observer.complete()"
-    >
-      Confirm
-    </button>
-    <button
-      tuiButton
-      appearance="secondary-destructive"
-      type="button"
-      size="m"
-      (click)="remarks.reset(); observer.complete()"
-    >
-      Cancel
-    </button>
-  </div>
 </ng-template>

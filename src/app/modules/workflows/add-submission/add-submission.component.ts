@@ -270,7 +270,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       formIds: this.subModuleData?.formIds?.map(val => val.id),
       formDataIds: this.formSubmission?.value,
       submissionStatus: status ? status : undefined,
-      createdBy: this.auth.currentUserValue?.id,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),

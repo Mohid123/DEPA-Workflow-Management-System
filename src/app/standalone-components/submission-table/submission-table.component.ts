@@ -28,6 +28,7 @@ export class SubmissionTableComponent implements OnDestroy {
   adminUsers: any[] = [];
   createdByUsers: any[] = [];
   destroy$ = new Subject();
+  dialogTitle: string
 
   // filters
   filterMenuCompany =  [
@@ -36,14 +37,14 @@ export class SubmissionTableComponent implements OnDestroy {
     {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg'},
     {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
   ];
-
   statusMenu = [
     {name: 'Created', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
     {name: 'In Progress', status: 'idle', icon: ''},
-    {name: 'Draft', status: 'idle', icon: ''}
+    {name: 'Draft', status: 'idle', icon: ''},
+    {name: 'Cancelled', status: 'idle', icon: ''},
+    {name: 'Deleted', status: 'idle', icon: ''}
   ];
-
   page = 1;
   tableDataValue: any;
   limit: number = 7;
@@ -65,13 +66,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
           this.submoduleData = val;
         }));
-        this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
-        .subscribe((val: any) => {
-          this.submissionData = val;
-          this.tableDataValue = val?.results;
-          this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
-          this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
-        }))
+        this.fetchDataAndPopulate()
       }
     })
   }
@@ -80,11 +75,15 @@ export class SubmissionTableComponent implements OnDestroy {
     setItem(StorageItem.workflowID, id)
   }
 
-  showDialog(content: PolymorpheusContent<TuiDialogContext>): void {
-    this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
-    }).subscribe();
+  fetchDataAndPopulate() {
+    this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((val: any) => {
+      this.submissionData = val;
+      this.tableDataValue = val?.results;
+      this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
+      this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+    })
   }
 
   changeProgressColor(value: number) {
@@ -112,6 +111,12 @@ export class SubmissionTableComponent implements OnDestroy {
     }
     if(submissionStatus === 4) {
       return 'Draft'
+    }
+    if(submissionStatus === 5) {
+      return 'Cancelled'
+    }
+    if(submissionStatus === 6) {
+      return 'Deleted'
     }
     return 'Rejected'
   }
@@ -169,6 +174,22 @@ export class SubmissionTableComponent implements OnDestroy {
           this.submissionData = val;
           this.tableDataValue = val?.results;
         })
+        break
+      case 'Cancelled':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 5)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((val: any) => {
+          this.submissionData = val;
+          this.tableDataValue = val?.results;
+        })
+        break
+      case 'Deleted':
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 6)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((val: any) => {
+            this.submissionData = val;
+            this.tableDataValue = val?.results;
+          })
         break
       case 'Sort by Latest':
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'latest')
