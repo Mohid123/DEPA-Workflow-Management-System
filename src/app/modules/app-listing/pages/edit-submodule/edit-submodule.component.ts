@@ -52,7 +52,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   errorIndex: number = 0;
   file: any;
   base64File: any;
-  submoduleFromLS: any
+  submoduleFromLS: any;
+  workFlowId: string;
 
   constructor(
     private fb: FormBuilder,
@@ -182,8 +183,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.file = this.submoduleFromLS?.file;
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
+              this.workFlowId = this.submoduleFromLS?.workFlowId
             }
             else {
+              this.workFlowId = response?.workFlowId?.id;
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               const companyId = {
@@ -409,6 +412,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
       image: this.subModuleForm.get('image')?.value,
+      workFlowId: this.workFlowId,
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
       code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
