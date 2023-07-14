@@ -177,16 +177,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
+            this.workFlowId = response?.workFlowId?.id;
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;
               this.file = this.submoduleFromLS?.file;
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
-              this.workFlowId = this.submoduleFromLS?.workFlowId
             }
             else {
-              this.workFlowId = response?.workFlowId?.id;
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               const companyId = {
