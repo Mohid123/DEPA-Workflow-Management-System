@@ -26,7 +26,7 @@ export class GridTopAppComponent {
     /**
    * Used to display the relevant data inside the card view
    */
-  @Input() appData: Module;
+  @Input() appData: any;
 
   @Output() deleteModule = new EventEmitter();
   @Output() editModule = new EventEmitter();

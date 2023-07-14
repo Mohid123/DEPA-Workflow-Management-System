@@ -23,6 +23,15 @@
                 class="col-span-6"
               ></grid-top-app>
             </ng-container>
+            <ng-container *ngIf="appdata?.status == 3">
+             <ng-container *ngIf="currentUser?.id == appdata?.createdBy">
+              <grid-top-app
+                (deleteModule)="showDialog($event, template)"
+                [appData]="appdata"
+                class="col-span-6"
+              ></grid-top-app>
+             </ng-container>
+            </ng-container>
           </ng-container>
         </ng-template>
       </ng-container>
