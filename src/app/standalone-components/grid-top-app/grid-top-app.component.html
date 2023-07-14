@@ -7,8 +7,8 @@
       <h3 class="mb-2 text-xl font-semibold">{{appData?.title}}</h3>
       <p class="leading-6 line-clamp-4">{{appData?.description}}</p>
       <div class="absolute bottom-5">
-        <a title="View" (click)="storeModuleID(appData?._id, appData?.code)" [routerLink]="['/modules', appData?.code]" [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white">
-          <i class="fa fa-eye" aria-hidden="true"></i>
+        <a title="Modules and Submissions" (click)="storeModuleID(appData?._id, appData?.code)" [routerLink]="['/modules', appData?.code]" [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white">
+          <i class="fa fa-folder-open-o" aria-hidden="true"></i>
         </a>
         <a title="Edit" *ngIf="currentUser?.id == appData?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/modules/edit-module', appData?._id]" [queryParams]="{moduleCode: appData?.code}" (click)="editModuleEvent(appData?._id)" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
           <i class="fa fa-pencil-square-o" aria-hidden="true"></i>

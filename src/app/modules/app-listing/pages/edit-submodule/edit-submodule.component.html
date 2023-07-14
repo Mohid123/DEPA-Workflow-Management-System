@@ -128,7 +128,7 @@
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">Admin users <span class="text-red-500">*</span></label>
+        <label class="block pb-1 text-sm">Admin users <sup>(optional)</sup></label>
         <custom-multi-select
           formControlName="adminUsers"
           (approverList)="setAdminUsers($event)"
@@ -136,7 +136,7 @@
       </div>
 
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">View Only users <span class="text-red-500">*</span></label>
+        <label class="block pb-1 text-sm">View Only users <sup>(optional)</sup></label>
         <custom-multi-select
           formControlName="viewOnlyUsers"
           (approverList)="setViewUsers($event)"
