@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GridSideAppComponent } from './grid-side-app.component';
+import { SubmissionTableComponent } from './submission-table.component';
 
-describe('GridSideAppComponent', () => {
-  let component: GridSideAppComponent;
-  let fixture: ComponentFixture<GridSideAppComponent>;
+describe('SubmissionTableComponent', () => {
+  let component: SubmissionTableComponent;
+  let fixture: ComponentFixture<SubmissionTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ GridSideAppComponent ]
+      imports: [ SubmissionTableComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(GridSideAppComponent);
+    fixture = TestBed.createComponent(SubmissionTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

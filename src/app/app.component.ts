@@ -4,7 +4,6 @@ import { concat, filter, first, interval } from 'rxjs';
 import { AuthService } from './modules/auth/auth.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { DashboardService } from './modules/dashboard/dashboard.service';
-import { NavigationService } from 'src/core/core-services/navigation.service';
 
 /**
  * Monitors the event that is emitted when app updates and returns true
@@ -44,10 +43,8 @@ export class AppComponent {
     auth: AuthService,
     router: Router,
     private dashboardService: DashboardService,
-    private activatedRoute: ActivatedRoute,
-    private nav: NavigationService
+    private activatedRoute: ActivatedRoute
   ) {
-    this.nav.startSaveHistory();
     if(auth.currentUserValue && (window.location.pathname === '/' || window.location.pathname === '/auth/login')) {
       router.navigate(['/dashboard/home'])
     }

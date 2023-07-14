@@ -4,6 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 @Component({
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
@@ -13,8 +14,10 @@ export class HomeComponent implements OnDestroy {
   dashboardApps: Observable<any>;
   moduleId: string;
   subscription: Subscription[] = [];
+  currentUser: any;
 
-  constructor(private dashboard: DashboardService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private router: Router) {
+  constructor(private dashboard: DashboardService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private router: Router, private auth: AuthService) {
+    this.currentUser = this.auth.currentUserValue;
     this.dashboardApps = this.dashboard.getDashboardApps();
   }
 
@@ -26,19 +29,9 @@ export class HomeComponent implements OnDestroy {
   }
 
   deleteModule() {
-    this.subscription.push(this.dashboard.deleteModule(this.moduleId).subscribe((res: any) => {
+    this.subscription.push(this.dashboard.deleteSubModule(this.moduleId).subscribe((res: any) => {
       this.dashboardApps = this.dashboard.getDashboardApps();
     }));
-  }
-
-  editModule(moduleID: string) {
-    if(moduleID) {
-      this.subscription.push(this.dashboard.getModuleByIDForEditModule(moduleID).subscribe((res: any) => {
-        if(res) {
-          this.router.navigate(['/dashboard/create-edit-module'], { queryParams: { id: moduleID } });
-        }
-      }))
-    }
   }
 
   ngOnDestroy(): void {

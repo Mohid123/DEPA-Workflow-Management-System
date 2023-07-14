@@ -6,12 +6,6 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.1.
 
-## Project Meeting Logs
-
-The meeting summaries for the entire duration of the project can be seen at: [Meeting Logs Link](https://docs.google.com/spreadsheets/d/1i6gqbOD6psg6cBr6pLMRTLzZu9F49qrd5CcK3P79RZs/edit?usp=sharing)
-
-### Note: The logs are updated after each meeting with a summary of everything discussed
-
 ## Documentation
 
 Documentation is created and generated using **[Compodoc](https://compodoc.app/)**

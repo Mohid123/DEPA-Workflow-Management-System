@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StoreCardComponent } from './grid-small-app.component';
+import { EditSubmissionComponent } from './edit-submission.component';
 
-describe('StoreCardComponent', () => {
-  let component: StoreCardComponent;
-  let fixture: ComponentFixture<StoreCardComponent>;
+describe('EditSubmissionComponent', () => {
+  let component: EditSubmissionComponent;
+  let fixture: ComponentFixture<EditSubmissionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ StoreCardComponent ]
+      declarations: [ EditSubmissionComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(StoreCardComponent);
+    fixture = TestBed.createComponent(EditSubmissionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -8,6 +8,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CoreModule } from "src/core/core.module";
+import { FormioAppConfig } from "@formio/angular";
+import { AppConfig } from "./config";
+import { TuiPreviewModule } from "@taiga-ui/addon-preview";
 
 @NgModule({
   declarations: [
@@ -27,9 +30,13 @@ import { CoreModule } from "src/core/core.module";
       TuiRootModule,
       TuiDialogModule,
       TuiAlertModule,
-      TuiDialogModule
+      TuiDialogModule,
+      TuiPreviewModule
 ],
-  providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
+  providers: [
+    {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},
+    {provide: FormioAppConfig, useValue: AppConfig},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -8,15 +8,14 @@
         <p class="pt-4 pb-2 text-2xl font-bold" i18n>Welcome to Depa App Store</p>
         <p class="text-lg text-[#B5B5C3]" i18n>Enter your {{loginViaActiveDir?.value === false ? 'Login' : 'Windows'}} credentials</p>
         <div class="px-4 pt-2 text-left">
-          <ng-container *ngIf="loginViaActiveDir?.value === false">
-            <formio [submission]="submission" (change)="onChange($event)" (submit)="onSubmit($event)" [form]="emailLoginForm" [options]="options"></formio>
-          </ng-container>
-          <ng-container *ngIf="loginViaActiveDir?.value === true">
+          <!-- <ng-container *ngIf="loginViaActiveDir?.value === false"> -->
+            <formio [submission]="submission" (submit)="onSubmit($event)" [form]="emailLoginForm" [options]="options"></formio>
+          <!-- </ng-container> -->
+          <!-- <ng-container *ngIf="loginViaActiveDir?.value === true">
             <formio [submission]="submission" (change)="onChange($event)" (submit)="onSubmit($event)" [form]="activeDirectoryLoginForm" [options]="options"></formio>
-          </ng-container>
+          </ng-container> -->
           <div class="inline-flex pb-2 gap-x-3">
             <tui-checkbox
-              (click)="changeForm()"
               [formControl]="loginViaActiveDir"
               class="mt-0.5"
             ></tui-checkbox>

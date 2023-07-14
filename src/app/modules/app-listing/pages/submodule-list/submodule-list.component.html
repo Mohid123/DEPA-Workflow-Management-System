@@ -1,11 +1,26 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-48">
   <ng-container *ngIf="(subModuleData | async) as data; else noData">
-    <ng-container *ngIf="(moduleData | async) as moduledata">
-      <p class="text-left font-semibold text-lg mb-2">Title:&nbsp; <span class="text-[#374151]">{{moduledata.title}}</span> </p>
-      <p class="text-left font-semibold text-base">Code:&nbsp; <span class="text-[#374151]">{{moduledata.code}}</span></p>
-    </ng-container>
-    <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data"></app-table-view>
+    <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data" (emitPageChange)="fetchFreshData($event)"></app-table-view>
+    <div class="mt-8">
+      <hr>
+    </div>
+    <div class="my-8">
+      <app-submission-table></app-submission-table>
+    </div>
+    <div class="flex justify-start mb-8 max-w-48 w-full">
+      <div class="flex flex-col p-3 rounded-md shadow-md drop-shadow-md">
+        <p class="text-sm font-semibold mb-2">Legend</p>
+        <div class="flex gap-2 mb-2">
+          <div class="h-6 w-6 bg-[#F15B41]"></div>
+          <span>Modules</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="h-6 w-6 bg-[#a58f81]"></div>
+          <span>Submissions</span>
+        </div>
+      </div>
+    </div>
   </ng-container>
   <ng-template #noData>
     <app-table-loader></app-table-loader>

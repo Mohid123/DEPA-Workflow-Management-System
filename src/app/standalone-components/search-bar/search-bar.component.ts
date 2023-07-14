@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, Output } f
 import { CommonModule } from '@angular/common';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Subject, debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 
 /**

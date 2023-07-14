@@ -99,22 +99,30 @@
           <input id="dropzone-file" type="file" class="hidden" />
       </label>
     </div>
-    <!--URL Endpoint-->
-    <div class="my-3">
+
+    <!--URL-->
+    <!-- <div class="my-3">
       <label class="block pb-1">Module URL Endpoint<span class="text-xs text-red-400">*</span></label>
       <div class="mb-3 input-group">
-        <!-- <div class="input-group-prepend">
-          <span class="input-group-text">{{domainURL}}/submodule/submodule-details/</span>
-        </div> -->
-        <input required [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''" formControlName="subModuleUrl" class="form-control" type="text">
+        <input
+          required
+          [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''"
+          formControlName="subModuleUrl"
+          class="form-control"
+          type="text"
+        >
         <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
           validation: 'required',
           message: 'Module URL is required',
           control: f['subModuleUrl']
         }"></ng-container>
       </div>
-      <!-- <p class="block mb-2 text-xs text-gray-600">Please provide an endpoint for your module</p> -->
-    </div>
+      <span class="text-red-500 text-xs"
+        *ngIf="f['subModuleUrl']?.hasError('codeExists')">
+        This Code is already taken
+      </span>
+      <p class="block mb-2 text-xs text-gray-600">Please provide an endpoint for your module</p>
+    </div> -->
 
     <div class="my-7">
       <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
@@ -180,7 +188,7 @@
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">Admin users <span class="text-red-500">*</span></label>
+        <label class="block pb-1 text-sm">Admin users <sup>(optional)</sup> </label>
         <custom-multi-select
           formControlName="adminUsers"
           (approverList)="setAdminUsers($event)"
@@ -188,7 +196,7 @@
       </div>
 
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">View Only users <span class="text-red-500">*</span></label>
+        <label class="block pb-1 text-sm">View Only users <sup>(optional)</sup></label>
         <custom-multi-select
           formControlName="viewOnlyUsers"
           (approverList)="setViewUsers($event)"
@@ -341,16 +349,16 @@
       >
         Publish
       </button>
-      <!-- <button
+      <button
         tuiButton
         type="button"
         size="m"
-        appearance="outline"
-        (click)="saveSubModule(4)"
+        appearance="secondary"
+        (click)="saveSubModule(3)"
         [showLoader]="(isCreatingSubModule | async) == true"
       >
         Save as Draft
-      </button> -->
+      </button>
       <button
         tuiButton
         type="button"

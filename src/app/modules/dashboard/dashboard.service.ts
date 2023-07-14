@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
@@ -9,6 +9,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { Module } from 'src/core/models/module.model';
 import { User } from 'src/core/models/user.model';
+import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Interface for Breadcrumb navigation
@@ -44,6 +45,7 @@ export class DashboardService extends ApiService<any> {
    * Breadcrumb array to display
    */
   items: BreadCrumbs[] = [];
+  tempItems = new EventEmitter<BreadCrumbs[]>()
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
@@ -70,8 +72,8 @@ export class DashboardService extends ApiService<any> {
       if (routeURL !== '') {
         routerLink += `/${routeURL}`;
       }
-      const caption = child.snapshot.data['breadcrumb']?.replace(/[_-]/, ' ')
-      if (caption) {
+      const caption = child.snapshot.data['breadcrumb']?.replace(/[_-]/g, ' ');
+      if (['Dashboard', 'Add', 'Edit', 'Create', 'Categories', 'Companies', 'Users', 'Profile']?.some(val => caption?.includes(val))) {
         breadcrumbs.push({caption, routerLink});
       }
       this.createBreadcrumbs(child, routerLink, breadcrumbs);
@@ -94,6 +96,13 @@ export class DashboardService extends ApiService<any> {
         }
       }
     }))
+  }
+
+  // Validate Module Code
+
+  validateModuleCode(codeValue: string): Observable<ApiResponse<any>> {
+    let params = {code: codeValue}
+    return this.get(`/subModules/validate`, params)
   }
 
   getSubModuleByModule(moduleID: string): Observable<ApiResponse<any>> {
@@ -207,71 +216,6 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  // Categories
-
-  getAllCategories(limit: number, page: number): Observable<ApiResponse<any>> {
-    const params: any = {
-      limit: limit,
-      page: page+ 1
-    }
-    return this.get(`/categories`)
-    .pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        const results = res.data?.results?.map((data: any) => {
-          return {
-            id: data?.id,
-            name: data?.name
-          }
-        });
-        return Object.assign(res?.data, {results: results})
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch categories', 'Get categories', TuiNotification.Error)
-        }
-      }
-    }))
-  }
-
-  postNewCategory(payload: {name: string}): Observable<ApiResponse<any>> {
-    return this.post(`/categories`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('Category created successfully', 'Create Category', TuiNotification.Success);
-        return res?.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Create Category', TuiNotification.Error)
-      }
-    }))
-  }
-
-  updateCategory(payload: any, categoryId: string): Observable<ApiResponse<any>> {
-    return this.patch(`/categories/${categoryId}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('Category updated', 'Update Category', TuiNotification.Success);
-        return res?.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Category', TuiNotification.Error)
-      }
-    }))
-  }
-
-  deleteCategory(categoryId: string): Observable<ApiResponse<any>> {
-    return this.delete(`/categories/${categoryId}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        this.notif.displayNotification('Category deleted', 'Delete Category', TuiNotification.Success);
-        return res?.data
-      }
-      else {
-        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code))
-        return this.notif.displayNotification(res.errors[0]?.error?.message, 'Delete Category', TuiNotification.Error)
-      }
-    }))
-  }
-
   // Companies
 
   getAllCompanies(limit: number, page: number): Observable<ApiResponse<any>> {
@@ -376,6 +320,24 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  getAllModules(): Observable<ApiResponse<any>> {
+    // const params: any = {
+    //   limit: limit,
+    //   page: page,
+    //   ...queryParams
+    // }
+    return this.get(`/modules`).pipe(map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get Modules', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
   getModuleByIDForEditModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -433,18 +395,45 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  getWorkflowFromSubModule(moduleID: string): Observable<ApiResponse<any>> {
+    return this.get(`/subModules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        // this.moduleEditData.next(res.data);
+        const response = res.data?.workFlowId?.stepIds?.map(data => {
+          return {
+            approverIds: data?.approverIds?.map(ids => {
+              return {
+                name: ids?.fullName,
+                id: ids?.id,
+                control: new FormControl<boolean>(true)
+              }
+            }),
+            condition: data?.condition,
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers
+          }
+        });
+        return response;
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to fetch module', 'Get Module', TuiNotification.Error);
+        }
+      }
+    }))
+  }
+
   createSubModule(payload: any): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         this.creatingModule.next(false);
-        this.notif.displayNotification('Submodule created successfully', 'Create SubModule', TuiNotification.Success);
+        this.notif.displayNotification('Module created successfully', 'Create Module', TuiNotification.Success);
         return res.data
       }
       else {
         this.creatingModule.next(false);
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create SubModule', TuiNotification.Error);
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create Module', TuiNotification.Error);
         }
       }
     }))
@@ -517,6 +506,14 @@ export class DashboardService extends ApiService<any> {
     }
     return this.get(`/module/slug/${moduleSlug}`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
+        const hierarchy = res.data?.navHierarchy?.map(val => {
+          return {
+            caption: val?.code,
+            routerLink: val?.id
+          }
+        })
+        setItem(StorageItem.navHierarchy, hierarchy)
+        this.tempItems.emit(hierarchy);
         return res.data
       }
       else {

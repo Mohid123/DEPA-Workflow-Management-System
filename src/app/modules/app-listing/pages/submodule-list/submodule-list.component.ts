@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, map, pluck, switchMap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, map, pluck } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
@@ -19,33 +19,33 @@ export class SubmodulesListComponent {
   constructor(
     private dashBoardService: DashboardService,
     private activatedRoute: ActivatedRoute,
-    private transport: DataTransportService,
-    private router: Router
+    private transport: DataTransportService
   ) {
-    let param: string = getItem(StorageItem.workflowID) || '';
-    let moduleSlug = getItem(StorageItem.moduleSlug);
-    let submoduleSlug = getItem(StorageItem.subModuleSlug)
-    if(this.router.url == `/modules/${moduleSlug}`) {
-      this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, param])
-    }
-
-    this.subModuleData = this.activatedRoute.params.pipe(
+    this.activatedRoute.params.pipe(
       pluck('name'),
       map(name => {
         setItem(StorageItem.moduleSlug, name);
         this.moduleSlug = name;
         return name
-      }),
-      switchMap((moduleSlug => this.dashBoardService.getSubModuleByModuleSlug(moduleSlug, this.limit, this.page)))
-    );
+      })
+    ).subscribe(val => {
+      this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(val, this.limit, this.page)
+    });
 
     this.activatedRoute.queryParams.subscribe(val => {
       if(val['moduleID']) {
         setItem(StorageItem.moduleID, val['moduleID']);
         this.transport.moduleID.next(val['moduleID'])
-        this.moduleData = this.dashBoardService.getModuleByID(val['moduleID'])
+        this.moduleData = this.dashBoardService.getSubModuleByID(val['moduleID']);
       }
     })
+  }
+
+  fetchFreshData(data: any) {
+    if(data) {
+      this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), this.limit, 1);
+      this.moduleData = this.dashBoardService.getSubModuleByID(getItem(StorageItem.moduleID))
+    }
   }
 
   itemDeleted(value: boolean) {

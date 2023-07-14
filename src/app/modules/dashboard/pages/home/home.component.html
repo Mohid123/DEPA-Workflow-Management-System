@@ -4,56 +4,26 @@
   <ng-template #dashboardapps>
     <section class="grid w-11/12 grid-cols-12 gap-4 mx-auto mt-52 pb-20">
       <ng-container *ngIf="(dashboardApps | async)?.length == 0">
-        <p class="col-span-12 my-8 text-base font-semibold text-center">There are currently no modules. Add your first Module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/create-edit-module">here</a> </p>
+        <p class="col-span-12 my-8 text-base font-semibold text-center">There are currently no categories. Add your first Category <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/create-edit-category">here</a> </p>
       </ng-container>
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
-        <p class="col-span-12 mb-3 text-lg font-semibold py-3 px-2 bg-[#eae4d8] rounded-md" [ngClass]="!firstItem ? 'mt-12': 'mt-0'">{{app.name}}</p>   
-        <ng-container *ngIf="app.modules.length == 0; else showApps">
-          <p class="col-span-12 my-8 text-base font-semibold text-center">No modules exist against this category. You can add a new module <a class="text-[#F15B41] hover:text-[#F15B41] hover:underline" routerLink="/dashboard/create-edit-module">here</a> </p>
+        <div class="flex justify-between py-2 px-2 bg-[#eae4d8] rounded-md col-span-12">
+          <p class="text-lg font-semibold mt-2">{{app.title}}</p>
+          <a *ngIf="currentUser?.role == 'admin'" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add module</a>
+        </div>
+        <ng-container *ngIf="!app.submodules; else showApps">
+          <p class="col-span-12 my-8 text-base font-semibold text-center">No modules exist against this category. </p>
         </ng-container>
-
         <ng-template #showApps>
-          <ng-container *ngFor="let appdata of app?.modules; let i = index; let firstModule = first; let last = last;">
-            <!-- <ng-container *ngIf="app?.modules?.length <= 3">
-              <grid-small-app
-                (deleteModule)="showDialog($event, template)"
-                (editModule)="editModule($event)"
-                [appData]="appdata"
-                class="col-span-4 row-span-2"
-              ></grid-small-app>
-            </ng-container> -->
-            <!-- <ng-container *ngIf="app?.modules?.length >= 4"> -->
+          <ng-container *ngFor="let appdata of app?.submodules; let i = index; let firstModule = first; let last = last;">
               <grid-top-app
                 (deleteModule)="showDialog($event, template)"
-                (editModule)="editModule($event)"
                 [appData]="appdata"
                 class="col-span-6"
               ></grid-top-app>
-              <!-- <grid-side-app
-                (editModule)="editModule($event)"
-                (deleteModule)="showDialog($event, template)"
-                *ngIf="i == 1"
-                [appData]="appdata"
-                class="col-span-4 row-span-3"
-              ></grid-side-app> -->
-              <!-- <grid-small-app
-                (editModule)="editModule($event)"
-                (deleteModule)="showDialog($event, template)"
-                *ngIf="i > 1"
-                class="col-span-4 row-span-2"
-                [appData]="appdata"
-              ></grid-small-app>
-            </ng-container> -->
           </ng-container>
         </ng-template>
       </ng-container>
-      <!-- <div class="flex justify-end mt-6 mb-10 col-span-full">
-        <tui-pagination
-          [length]="length"
-          [index]="index"
-          (indexChange)="goToPage($event)"
-        ></tui-pagination>
-      </div> -->
     </section>
   </ng-template>
 

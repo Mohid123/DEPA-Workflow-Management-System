@@ -32,7 +32,7 @@ export class LoginComponent implements OnDestroy {
   onSubmit(submission: any) {
     if(this.loginViaActiveDir?.value === true) {
       const params: any = {
-        username: submission?.data?.username,
+        username: submission?.data?.email,
         password: submission?.data?.password
       }
       if(params.username && params.password) {
@@ -58,22 +58,6 @@ export class LoginComponent implements OnDestroy {
             this.router.navigate(['/dashboard/home'])
           }
         })
-      }
-    }
-  }
-
-  onChange(value: any) {
-    if(value?.data && value?.changed) {
-      this.credentialStore.next(value?.data)
-    }
-  }
-
-  changeForm() {
-    this.submission = {
-      data: {
-        username: this.credentialStore?.value?.username ? this.credentialStore?.value?.username : this.credentialStore?.value?.email,
-        email: this.credentialStore?.value?.email ? this.credentialStore?.value?.email : this.credentialStore?.value?.username,
-        password: this.credentialStore?.value?.password
       }
     }
   }

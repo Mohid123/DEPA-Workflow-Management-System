@@ -5,8 +5,8 @@ import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.compo
 import { SubmoduleGuard } from '../auth/guards/submodule.guard';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
-import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
 import { SubmoduleResolver } from '../../../core/core-services/resolver.service';
+import { EditSubmissionComponent } from './pages/edit-submission/edit-submission.component';
 
 const routes: Routes = [
   {
@@ -20,19 +20,19 @@ const routes: Routes = [
         canActivate: [SubmoduleGuard]
       },
       {
-        path: 'add-submodule/:id',
+        path: 'add-module/:id',
         component: AddSubmoduleComponent,
-        data: {breadcrumb:'Add module'},
+        data: {breadcrumb:'Add Module'},
       },
       {
-        path: 'edit-submodule/:id',
+        path: 'edit-module/:id',
         component: EditSubmoduleComponent,
-        data: {breadcrumb:'Edit module'},
+        data: {breadcrumb:'Edit Module'},
       },
       {
-        path: 'submodule-details/:name',
-        component: SubmoduleDetailsComponent,
-        data: {breadcrumb:'Module Details'},
+        path: 'edit-submission/:id',
+        component: EditSubmissionComponent,
+        data: {breadcrumb:'Edit Submission'},
       },
       {
         path: ':name',

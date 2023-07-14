@@ -1,3 +1,8 @@
+import { AbstractControl, AsyncValidatorFn, ValidationErrors } from "@angular/forms";
+import { Observable, debounceTime, distinctUntilChanged, first, map, of, switchMap } from "rxjs";
+import { ApiResponse } from "../models/api-response.model";
+import { DashboardService } from "src/app/modules/dashboard/dashboard.service";
+
 export const calculateAspectRatio = (image: any): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -29,4 +34,23 @@ export const calculateFileSize = (file: any): boolean => {
     return true;
   }
   return false;
+}
+
+export class CodeValidator {
+  static createValidator(dashboard: DashboardService): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors> => {
+      if (!control.valueChanges || control.pristine) {
+        return of(null);
+      }
+      else {
+        return control.valueChanges.pipe(
+          debounceTime(400),
+          distinctUntilChanged(),
+          switchMap(value => dashboard.validateModuleCode(value)),
+          map((res: ApiResponse<any>) => (res.data?.isCodeTaken == true ? {codeExists: true} : null)),
+          first()
+        )
+      }
+    }
+  }
 }

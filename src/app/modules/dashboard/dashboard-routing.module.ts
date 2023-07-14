@@ -22,9 +22,9 @@ const routes: Routes = [
         data: {breadcrumb:'Home'},
       },
       {
-        path: 'create-edit-module',
+        path: 'create-edit-category',
         component: PublishAppComponent,
-        data: {breadcrumb:'Create/Edit Module'},
+        data: {breadcrumb:'Create/Edit Category'},
       },
       {
         path: 'categories',
