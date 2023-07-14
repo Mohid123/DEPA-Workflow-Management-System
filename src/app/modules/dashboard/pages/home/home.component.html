@@ -16,11 +16,13 @@
         </ng-container>
         <ng-template #showApps>
           <ng-container *ngFor="let appdata of app?.submodules; let i = index; let firstModule = first; let last = last;">
+            <ng-container *ngIf="appdata?.status !== 3">
               <grid-top-app
                 (deleteModule)="showDialog($event, template)"
                 [appData]="appdata"
                 class="col-span-6"
               ></grid-top-app>
+            </ng-container>
           </ng-container>
         </ng-template>
       </ng-container>
