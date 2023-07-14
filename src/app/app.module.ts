@@ -10,6 +10,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { CoreModule } from "src/core/core.module";
 import { FormioAppConfig } from "@formio/angular";
 import { AppConfig } from "./config";
+import { TuiPreviewModule } from "@taiga-ui/addon-preview";
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AppConfig } from "./config";
       TuiRootModule,
       TuiDialogModule,
       TuiAlertModule,
-      TuiDialogModule
+      TuiDialogModule,
+      TuiPreviewModule
 ],
   providers: [
     {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},

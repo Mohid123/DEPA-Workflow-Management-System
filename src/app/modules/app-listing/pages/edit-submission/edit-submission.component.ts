@@ -41,6 +41,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   formSubmission = new BehaviorSubject<Array<any>>([]);
   subModuleId: string;
   subModuleData: any;
+  formValues: any[] = [];
 
   constructor(
     private auth: AuthService,
@@ -110,7 +111,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
               }
             }).filter(val => val)[0]
           }
-        })
+        });
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -124,7 +125,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             approverIds: data?.approverIds?.map(ids => {
               return {
                 name: ids?.fullName,
-                id: ids?.id,
+                id: ids?._id,
                 control: new FormControl<boolean>(true)
               }
             }),
@@ -280,15 +281,15 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-      // const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
-      // this.formValues[this.activeIndex] = {...event, formId};
-      // const finalData = this.formValues?.map(value => {
-      //   return {
-      //     formId: value?.formId,
-      //     data: value?.data
-      //   }
-      // })
-      // this.formSubmission.next(finalData)
+      const formId = this.subModuleData?.formIds[this.activeIndex]?._id;
+      this.formValues[this.activeIndex] = {...event, formId};
+      const finalData = this.formValues?.map(value => {
+        return {
+          formId: value?.formId,
+          data: value?.data
+        }
+      })
+      this.formSubmission.next(finalData)
     }
   }
 
@@ -305,18 +306,19 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     this.creatingSubmission.next(true);
     const payload: any = {
       subModuleId: this.subModuleId,
-      formIds: this.subModuleData?.formIds?.map(val => val.id),
+      formIds: this.subModuleData?.formIds?.map(val => val._id),
       formDataIds: this.formSubmission?.value,
-      submissionStatus: status ? status : undefined,
+      submissionStatus: status ? status : 1,
       createdBy: this.auth.currentUserValue?.id,
       steps: this.workflows?.value?.map(data => {
         return {
-          approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
+          approverIds: data?.approverIds?.map(ids => ids._id ? ids._id : ids),
           condition: data?.condition,
           emailNotifyTo: data?.emailNotifyTo || []
         }
       })
     }
+    console.log(payload)
   }
 
   ngOnDestroy(): void {
