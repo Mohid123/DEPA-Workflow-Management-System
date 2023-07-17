@@ -1,22 +1,22 @@
-<div class="px-4 py-2 bg-white rounded-md shadow-lg h-52 drop-shadow-lg">
-  <div class="flex items-center py-2 space-x-8 h-48">
-    <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[18rem] h-full">
+<div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41]">
+  <div class="flex pt-5 space-x-8 px-4 pb-3">
+    <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[9rem]">
       <img [src]="appData?.image" alt="top_app_icon" class="object-cover w-full h-full rounded-lg" loading="eager">
     </div>
     <div class="w-full h-full">
       <h3 class="mb-2 text-xl font-semibold">{{appData?.title}}</h3>
       <p class="leading-6 line-clamp-4">{{appData?.description}}</p>
-      <div class="absolute bottom-5">
-        <a *ngIf="appData?.status !== 3" title="Modules and Submissions" (click)="storeModuleID(appData?._id, appData?.code)" [routerLink]="['/modules', appData?.code]" [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white">
-          <i class="fa fa-folder-open-o" aria-hidden="true"></i>
-        </a>
-        <a title="Edit" *ngIf="currentUser?.id == appData?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/modules/edit-module', appData?._id]" [queryParams]="{moduleCode: appData?.code}" (click)="editModuleEvent(appData?._id)" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
-          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-        </a>
-        <a title="Delete" *ngIf="currentUser?.id == appData?.createdBy || currentUser?.role == 'admin'" (click)="deleteModuleEvent(appData?._id)" class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer">
-          <i class="fa fa-trash" aria-hidden="true"></i>
-        </a>
-      </div>
     </div>
+  </div>
+  <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5">
+    <a *ngIf="appData?.status !== 3" title="Modules and Submissions" (click)="storeModuleID(appData?._id, appData?.code)" [routerLink]="['/modules', appData?.code]" [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white">
+      <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
+    </a>
+    <a title="Edit" *ngIf="currentUser?.id == appData?.createdBy || currentUser?.role == 'admin'" [routerLink]="['/modules/edit-module', appData?._id]" [queryParams]="{moduleCode: appData?.code}" (click)="editModuleEvent(appData?._id)" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
+      <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+    </a>
+    <a title="Delete" *ngIf="currentUser?.id == appData?.createdBy || currentUser?.role == 'admin'" (click)="deleteModuleEvent(appData?._id)" class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer">
+      <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+    </a>
   </div>
 </div>

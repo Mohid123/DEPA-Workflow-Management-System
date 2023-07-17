@@ -9,7 +9,7 @@
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
         <div class="flex justify-between py-2 px-2 bg-[#eae4d8] rounded-md col-span-12">
           <p class="text-lg font-semibold mt-2">{{app.title}}</p>
-          <a *ngIf="currentUser?.role == 'admin'" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add module</a>
+          <a *ngIf="currentUser?.role == 'admin'" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base">+ Add module</a>
         </div>
         <ng-container *ngIf="!app.submodules; else showApps">
           <p class="col-span-12 my-8 text-base font-semibold text-center">No modules exist against this category. </p>

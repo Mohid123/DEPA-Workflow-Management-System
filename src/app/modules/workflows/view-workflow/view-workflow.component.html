@@ -4,9 +4,32 @@
   <ng-container *ngIf="(loadingData | async) == false; else showSkeleton">
     <div class="flex justify-between">
       <p class="text-lg font-semibold">Forms</p>
-      <button (click)="downloadAsPDF()" class="px-2 py-1.5 rounded-lg bg-[#FF0000] text-white">
-        <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i> &nbsp; <i class="fa fa-download fa-lg" aria-hidden="true"></i>
-      </button>
+      <div class="flex justify-center items-center">
+        <!--Delete-->
+        <a
+          title="Delete"
+          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5"
+          (click)="showDeleteDialog(dialog, 'delete')"
+          class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+          <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>&nbsp; Delete
+        </a>
+      <!--Cancel-->
+        <a
+          title="Cancel Submission"
+          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5"
+          (click)="showDeleteDialog(dialog, 'cancel')"
+          class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+          <i class="fa fa-ban fa-lg" aria-hidden="true"></i>&nbsp; Cancel
+        </a>
+        <!--Enable-->
+        <a
+          title="Enable"
+          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus === 5"
+          (click)="showDeleteDialog(dialog, 'enable')"
+          class="font-medium ml-2 px-2 py-1 bg-green-500 text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+          <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Enable
+        </a>
+      </div>
     </div>
     <section #formPdf>
       <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
@@ -22,6 +45,11 @@
           </nav>
           <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
             <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+              <div class="flex justify-end">
+                <button (click)="downloadAsPDF()" class="px-2 py-1 rounded-md ml-2 bg-[#FF0000] text-white">
+                  <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp; {{(downloadingPDF | async) == true ? 'Downloading' : 'Download as PDF'}}
+                </button>
+              </div>
               <formio [readOnly]="checkIfAllApproved() == true || checkIfLoggedInUserIsPartOfActiveUsers() == false || checkIfUserIsInEditUsers() == false || workflowData?.submissionStatus == 5 || workflowData?.status == 2" [options]="{'disableAlerts': true}" (submit)="updateFormData($event)" [submission]="form" [form]="form"></formio>
             </div>
           </ng-container>
@@ -31,33 +59,7 @@
     
       <section class="my-10">
         <div class="flex justify-between">
-          <p class="mb-5 text-lg font-semibold">Approval Workflow</p>
-          <div class="flex justify-center items-center">
-            <!--Delete-->
-            <a
-              title="Delete"
-              *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5"
-              (click)="showDeleteDialog(dialog, 'delete')"
-              class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
-              <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
-            </a>
-          <!--Cancel-->
-            <a
-              title="Cancel Submission"
-              *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5"
-              (click)="showDeleteDialog(dialog, 'cancel')"
-              class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
-              <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
-            </a>
-            <!--Enable-->
-            <a
-              title="Enable"
-              *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus === 5"
-              (click)="showDeleteDialog(dialog, 'enable')"
-              class="font-medium ml-2 px-2 py-1 bg-green-500 text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
-              <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>
-            </a>
-          </div>
+          <p class="mb-3 text-lg font-semibold">Approval Workflow</p>
         </div>
         <div class="flex justify-start flex-wrap gap-2">
           <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
@@ -133,6 +135,20 @@
               <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
             </div>
           </ng-container>
+          <div class="w-full">
+            <p class="font-semibold text-gray-700">Progress: </p>
+            <label tuiProgressLabel>
+              <span class="font-semibold text-gray-700">{{ (workflowProgress | async) | number : '1.2-2' }}%</span>
+              <progress
+                tuiProgressBar
+                size="m"
+                [max]="max"
+                [value]="workflowProgress | async"
+                class="w-150"
+                [color]="changeProgressColor((workflowProgress | async))"
+              ></progress>
+            </label>
+          </div>
         </div>
         <div id="legend" class="mt-4 mb-5 text-sm">
           <p class="font-semibold my-2 text-base">Legend</p>
@@ -162,25 +178,9 @@
     
       <!--Workflow progress-->
       <section class="my-4">
-        <p class="mb-5 text-lg font-semibold">Workflow Progress & Approval Logs</p>
-        <div class="grid grid-cols-12 gap-2">
-          <div class="col-span-2">
-            <label
-              tuiProgressLabel
-            >
-              <span class="font-semibold text-gray-600">COMPLETED</span>
-              <span class="font-semibold text-gray-700">{{ (workflowProgress | async) | number : '1.2-2' }}%</span>
-    
-              <tui-progress-circle
-                size="xl"
-                [max]="max"
-                [value]="workflowProgress | async"
-                [color]="changeProgressColor((workflowProgress | async))"
-              ></tui-progress-circle>
-            </label>
-          </div>
-    
-          <div class="col-span-9">
+        <p class="mb-5 text-lg font-semibold">Approval Logs</p>
+        <div class="grid grid-cols-12">
+          <div class="col-span-11">
             <tui-island size="l" class="w-full shadow-lg">
               <ng-container *ngIf="approvalLogs?.length == 0">
                 <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>
@@ -276,7 +276,7 @@
       type="button"
       size="m"
       [showLoader]="(sendingDecision | async) == true"
-      (click)="sendDeleteOrCancelDecision();observer.complete()"
+      (click)="sendDeleteOrCancelDecision(); observer.complete()"
     >
       Confirm
     </button>

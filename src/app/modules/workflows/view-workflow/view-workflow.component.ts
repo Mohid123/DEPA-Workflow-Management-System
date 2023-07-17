@@ -48,9 +48,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   labels = ['Active', 'Approved', 'Pending', 'Rejected'];
   sendingDecision = new Subject<boolean>();
   dialogTitle: string
-  dialogSubscription: Subscription[] = [];
   isDeleting: string;
   currentStepId: string;
+  downloadingPDF = new Subject<boolean>()
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -156,6 +156,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
+        console.log(this.formWithWorkflow)
         this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
         this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
@@ -201,7 +202,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     if(checkDecision == 'enable') {
       this.dialogTitle = 'Enable'
     }
-    this.dialogSubscription.push(this.dialogs.open(content, {
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
       dismissible: true,
       closeable: true
     }).subscribe());
@@ -248,7 +249,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       .subscribe((res: any) => {
         if(res) {
           this.sendingDecision.next(false)
-          this.dialogSubscription.forEach(val => val.unsubscribe);
+          this.saveDialogSubscription.forEach(val => val.unsubscribe());
           this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
       })
@@ -259,7 +260,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       .subscribe((res: any) => {
         if(res) {
           this.sendingDecision.next(false)
-          this.dialogSubscription.forEach(val => val.unsubscribe);
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.remarks.reset();
           this.fetchData();
           // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
@@ -271,7 +273,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       .subscribe((res: any) => {
         if(res) {
           this.sendingDecision.next(false)
-          this.dialogSubscription.forEach(val => val.unsubscribe);
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
           this.fetchData();
           // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
@@ -383,8 +385,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   downloadAsPDF() {
-    const width = this.formPdf.nativeElement.clientWidth;
-    const height = this.formPdf.nativeElement.clientHeight + 40;
+    this.downloadingPDF.next(true);
+    const width = this.formPdf.nativeElement.clientWidth - 200;
+    const height = this.formPdf.nativeElement.clientHeight;
     let orientation: any = '';
     let imageUnit: any = 'pt';
     if (width > height) {
@@ -393,32 +396,34 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     else {
       orientation = 'p';
     }
-    document.getElementById('legend').style.display = 'none';
-    domToImage.toPng(this.formPdf.nativeElement, {
-      width: width * 2,
-      height: height  * 2,
-      style: {
-        transform: "scale(" + 2 + ")",
-        transformOrigin: "top left"
-      }
-    })
-    .then((result) => {
-      let jsPdfOptions = {
-        orientation: orientation,
-        unit: imageUnit,
-        format: [width + 100, height + 220]
-      };
-      const pdf = new jsPDF(jsPdfOptions);
-      const image: HTMLImageElement | any = new Image();
-      image.src = 'https://i.ibb.co/Wt2PxM6/depa-logo.png';
-      image.alt = 'logo';
-      pdf.addImage(image, 'PNG', 25, 45, 60, 60)
-      pdf.addImage(result, 'PNG', 25, 105, width, height);
-      pdf.save('Form_Data_and_Workflow'+ '.pdf');
-      document.getElementById('legend').style.display = 'block';
-    })
-    .catch(error => {
-      throw error
+    const html = document.getElementsByTagName('formio');
+    Array.from(html)?.forEach(value => {
+      domToImage.toPng(value, {
+        width: width * 1.2,
+        height: height  * 1.2,
+        style: {
+          transform: "scale(" + 1.2 + ")",
+          transformOrigin: "top left"
+        }
+      })
+      .then((result) => {
+        let jsPdfOptions = {
+          orientation: orientation,
+          unit: imageUnit,
+          format: [width + 100, height + 220]
+        };
+        const pdf = new jsPDF(jsPdfOptions);
+        const image: HTMLImageElement | any = new Image();
+        image.src = 'https://i.ibb.co/Wt2PxM6/depa-logo.png';
+        image.alt = 'logo';
+        pdf.addImage(image, 'PNG', 25, 45, 40, 40)
+        pdf.addImage(result, 'PNG', 25, 105, width, height);
+        pdf.save('Form_Data'+ '.pdf');
+        this.downloadingPDF.next(false);
+      })
+      .catch(error => {
+        throw error
+      })
     })
   }
 

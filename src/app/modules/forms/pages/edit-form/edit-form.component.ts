@@ -9,6 +9,7 @@ import { FormsService } from '../../services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { Location } from '@angular/common';
 import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 @Component({
   templateUrl: './edit-form.component.html',
@@ -46,11 +47,10 @@ export class EditFormComponent implements OnDestroy {
 
   constructor(
     private notif: NotificationsService,
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private formService: FormsService,
-    private transportService: DataTransportService,
-    private _location: Location
+    private _location: Location,
+    private auth: AuthService
   )
   {
     this.activatedRoute?.queryParams?.subscribe(data => {
@@ -114,7 +114,8 @@ export class EditFormComponent implements OnDestroy {
 
     const formData = {
       title: this.formTitleControl?.value,
-      // key: this.form?.key ?? this.formTitleControl?.value?.replace(' ', '_'),
+      key: this.formTitleControl?.value?.replace(/\s+/g, '-').toLowerCase(),
+      createdBy: this.auth?.currentUserValue?.id,
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }

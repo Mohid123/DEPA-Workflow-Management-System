@@ -76,14 +76,13 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   fetchDataAndPopulate() {
-    this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
-    .pipe(takeUntil(this.destroy$))
+    this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
     .subscribe((val: any) => {
       this.submissionData = val;
       this.tableDataValue = val?.results;
       this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
-    })
+    }))
   }
 
   changeProgressColor(value: number) {
