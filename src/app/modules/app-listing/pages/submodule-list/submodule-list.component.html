@@ -1,5 +1,5 @@
 <app-header></app-header>
-<section class="w-11/12 h-auto min-h-screen mx-auto mt-48">
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-48 mb-10">
   <ng-container *ngIf="(subModuleData | async) as data; else noData">
     <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data" (emitPageChange)="fetchFreshData($event)"></app-table-view>
     <div class="mt-8">
@@ -23,7 +23,7 @@
             />
         </tui-input>
         </div>
-        <div *ngIf="data?.createdBy == currentUser?.id || currentUser?.role == 'admin' || checkIfUserisAdmin((moduleData | async)?.adminUsers)" class="cursor-pointer">
+        <div *ngIf="data?.createdBy == currentUser?.id || currentUser?.role == 'admin' || checkIfUserisAdmin((moduleData | async)?.adminUsers)" class="cursor-pointer mt-2">
           <a (click)="addSubmissionRoute()" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
         </div>
       </div>

@@ -100,6 +100,17 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return Number.isNaN(this.index) ? '' : this.labels[this.index];
   }
 
+  onChange(event: any) {
+    if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+    }
+  }
+
+
   getColor(index: number): string {
     return `var(--tui-chart-${index})`;
   }
@@ -156,7 +167,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
-        console.log(this.formWithWorkflow)
         this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
         this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
@@ -364,11 +374,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     const payload: any = {
       formId: event?._id,
       data: event?.data
-    }
-    if(event?.data?.file) {
-      event?.data?.file?.forEach(value => {
-        value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
-      })
     }
     this.workflowService.updateFormsData(payload, event?.formDataId)
     .pipe(takeUntil(this.destroy$))

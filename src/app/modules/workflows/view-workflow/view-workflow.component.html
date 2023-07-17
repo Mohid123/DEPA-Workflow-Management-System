@@ -40,7 +40,7 @@
             class="w-32 mr-5"
           >
             <ng-container *ngFor="let tab of formTabs; let j = index">
-              <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+              <button id="form-title-id" (click)="activeIndex = j" tuiTab>{{tab}}</button>
             </ng-container>
           </nav>
           <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
@@ -50,16 +50,59 @@
                   <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp; {{(downloadingPDF | async) == true ? 'Downloading' : 'Download as PDF'}}
                 </button>
               </div>
-              <formio [readOnly]="checkIfAllApproved() == true || checkIfLoggedInUserIsPartOfActiveUsers() == false || checkIfUserIsInEditUsers() == false || workflowData?.submissionStatus == 5 || workflowData?.status == 2" [options]="{'disableAlerts': true}" (submit)="updateFormData($event)" [submission]="form" [form]="form"></formio>
+              <formio
+                [readOnly]="checkIfAllApproved() == true || checkIfLoggedInUserIsPartOfActiveUsers() == false || checkIfUserIsInEditUsers() == false || workflowData?.submissionStatus == 5 || workflowData?.status == 2"
+                [options]="{'disableAlerts': true}"
+                (submit)="updateFormData($event)"
+                [submission]="form"
+                [form]="form"
+                (change)="onChange($event)"
+              ></formio>
             </div>
           </ng-container>
-    
         </section>
       </div>
     
       <section class="my-10">
-        <div class="flex justify-between">
-          <p class="mb-3 text-lg font-semibold">Approval Workflow</p>
+        <div class="grid grid-cols-12 gap-2">
+          <div class="w-full col-span-9">
+            <div class="flex flex-col">
+              <div class="mb-5">
+                <p class="text-lg font-semibold">Approval Workflow</p>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-700">Progress: </p>
+                <label tuiProgressLabel>
+                  <span class="font-semibold text-gray-700">{{ (workflowProgress | async) | number : '1.2-2' }}%</span>
+                  <progress
+                    tuiProgressBar
+                    size="m"
+                    [max]="max"
+                    [value]="workflowProgress | async"
+                    class="w-180"
+                    [color]="changeProgressColor((workflowProgress | async))"
+                  ></progress>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="text-sm col-span-3 place-self-end">
+            <p class="font-semibold my-2 text-sm text-left">Legend</p>
+            <div class="flex flex-col justify-start gap-2">
+              <div class="flex gap-1">
+                <div class="h-6 w-6 bg-green-600"></div>
+                <p class="mt-0.5">Approved</p>
+              </div>
+              <div class="flex gap-1">
+                <div class="h-6 w-6 bg-[#2563EB]"></div>
+                <p class="mt-0.5">Active</p>
+              </div>
+              <div class="flex gap-1">
+                <div class="h-6 w-6 bg-yellow-600"></div>
+                <p class="mt-0.5">Pending</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="flex justify-start flex-wrap gap-2">
           <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
@@ -135,37 +178,6 @@
               <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
             </div>
           </ng-container>
-          <div class="w-full">
-            <p class="font-semibold text-gray-700">Progress: </p>
-            <label tuiProgressLabel>
-              <span class="font-semibold text-gray-700">{{ (workflowProgress | async) | number : '1.2-2' }}%</span>
-              <progress
-                tuiProgressBar
-                size="m"
-                [max]="max"
-                [value]="workflowProgress | async"
-                class="w-150"
-                [color]="changeProgressColor((workflowProgress | async))"
-              ></progress>
-            </label>
-          </div>
-        </div>
-        <div class="mt-4 mb-5 text-sm">
-          <p class="font-semibold my-2 text-sm">Legend</p>
-          <div class="flex flex-col justify-start gap-2">
-            <div class="flex gap-1 pl-3">
-              <div class="h-6 w-6 bg-green-600"></div>
-              <p class="mt-0.5">Approved</p>
-            </div>
-            <div class="flex gap-1 pl-3">
-              <div class="h-6 w-6 bg-[#2563EB]"></div>
-              <p class="mt-0.5">Active</p>
-            </div>
-            <div class="flex gap-1 pl-3">
-              <div class="h-6 w-6 bg-yellow-600"></div>
-              <p class="mt-0.5">Pending</p>
-            </div>
-          </div>
         </div>
       </section>
     
