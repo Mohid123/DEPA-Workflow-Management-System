@@ -434,7 +434,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create module', TuiNotification.Info)
       return this.showError.next(false)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {

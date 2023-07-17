@@ -91,7 +91,8 @@ export class FormBuilderComponent{
         val.uploadEnabled = true;
         val.sendFileAsQueryParam = false;
         val.input = true;
-        val.type = 'file'
+        val.type = 'file';
+        val.multiple = true;
         return val
       }
       return val

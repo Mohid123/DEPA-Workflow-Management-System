@@ -100,30 +100,6 @@
       </label>
     </div>
 
-    <!--URL-->
-    <!-- <div class="my-3">
-      <label class="block pb-1">Module URL Endpoint<span class="text-xs text-red-400">*</span></label>
-      <div class="mb-3 input-group">
-        <input
-          required
-          [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''"
-          formControlName="subModuleUrl"
-          class="form-control"
-          type="text"
-        >
-        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-          validation: 'required',
-          message: 'Module URL is required',
-          control: f['subModuleUrl']
-        }"></ng-container>
-      </div>
-      <span class="text-red-500 text-xs"
-        *ngIf="f['subModuleUrl']?.hasError('codeExists')">
-        This Code is already taken
-      </span>
-      <p class="block mb-2 text-xs text-gray-600">Please provide an endpoint for your module</p>
-    </div> -->
-
     <div class="my-7">
       <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
       <select required [ngClass]="f['companyName']?.invalid && f['companyName']?.dirty ? 'is-invalid' : ''" formControlName="companyName" class="form-control" type="text">
@@ -210,25 +186,6 @@
       <h4 class="text-base font-semibold text-center">Form/s Preview</h4>
       <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
         <ng-container *ngIf="formComponents[0]?.components?.length > 0">
-          <!-- <div class="inline-flex gap-3 mt-3 mb-8" [formGroup]="languageForm">
-            <tui-radio-labeled
-              formControlName="languages"
-              size="l"
-              [item]="langItems[0]"
-              (click)="changeLanguage(langItems[0]?.name)"
-
-            >
-              English
-            </tui-radio-labeled>
-            <tui-radio-labeled
-              formControlName="languages"
-              size="l"
-              [item]="langItems[1]"
-              (click)="changeLanguage(langItems[1]?.name)"
-            >
-              Arabic
-            </tui-radio-labeled>
-          </div> -->
           <section class="flex justify-between my-8">
             <nav
               tuiTabs

@@ -365,6 +365,11 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       formId: event?._id,
       data: event?.data
     }
+    if(event?.data?.file) {
+      event?.data?.file?.forEach(value => {
+        value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+      })
+    }
     this.workflowService.updateFormsData(payload, event?.formDataId)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {

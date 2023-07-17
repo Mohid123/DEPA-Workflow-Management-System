@@ -150,28 +150,21 @@
             </label>
           </div>
         </div>
-        <div id="legend" class="mt-4 mb-5 text-sm">
-          <p class="font-semibold my-2 text-base">Legend</p>
-          <div class="flex justify-start gap-2">
-            <tui-ring-chart
-              [value]="[25, 25, 25, 25]"
-              [tuiHintContent]="content"
-              [(activeItemIndex)]="index"
-              size="s"
-              (tuiHoveredChange)="onHover(index, $event)"
-            >
-              <!-- <div>Status</div> -->
-            </tui-ring-chart>
-            <tui-legend-item
-              *ngFor="let label of labels; let index = index"
-              size="s"
-              class="ml-4 mt-4 h-8"
-              [color]="getColor(index)"
-              [text]="label"
-              [active]="isItemActive(index)"
-              (tuiHoveredChange)="onHover(index, $event)"
-            >
-            </tui-legend-item>
+        <div class="mt-4 mb-5 text-sm">
+          <p class="font-semibold my-2 text-sm">Legend</p>
+          <div class="flex flex-col justify-start gap-2">
+            <div class="flex gap-1 pl-3">
+              <div class="h-6 w-6 bg-green-600"></div>
+              <p class="mt-0.5">Approved</p>
+            </div>
+            <div class="flex gap-1 pl-3">
+              <div class="h-6 w-6 bg-[#2563EB]"></div>
+              <p class="mt-0.5">Active</p>
+            </div>
+            <div class="flex gap-1 pl-3">
+              <div class="h-6 w-6 bg-yellow-600"></div>
+              <p class="mt-0.5">Pending</p>
+            </div>
           </div>
         </div>
       </section>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
-import { TuiPaginationModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
@@ -20,7 +20,7 @@ import {TuiPreviewModule, TuiPreviewDialogService} from '@taiga-ui/addon-preview
 @Component({
   selector: 'app-table-view',
   standalone: true,
-  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule, TuiPreviewModule],
+  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule, TuiBadgeModule],
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -156,7 +156,7 @@ export class TableViewComponent implements OnDestroy {
   }
 
   checkIfUserisAdmin(value: any[]): boolean {
-    return value.includes(this.currentUser?.id)
+    return value?.map(data => data?.id).includes(this.currentUser?.id)
   }
 
   /**

@@ -89,6 +89,7 @@ export class EditFormComponent implements OnDestroy {
         val.url = 'http://localhost:3000/v1/upload';
         val.uploadEnabled = true;
         val.input = true;
+        val.multiple = true;
         return val
       }
       return val

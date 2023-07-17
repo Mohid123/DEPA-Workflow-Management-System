@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
+import { TuiBadgeModule } from '@taiga-ui/kit';
 
 /**
  * The topmost card to display Module data inside Grid View on the Home Page. Will display if Grid contains at least 4 elements
@@ -12,7 +13,7 @@ import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
 @Component({
   selector: 'grid-top-app',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TuiBadgeModule],
   templateUrl: './grid-top-app.component.html',
   styleUrls: ['./grid-top-app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

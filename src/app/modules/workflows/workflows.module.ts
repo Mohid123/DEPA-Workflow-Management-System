@@ -56,10 +56,7 @@ import { TuiHoveredModule } from '@taiga-ui/cdk';
     FilterComponent,
     TuiHintModule,
     TuiTooltipModule,
-    WorkflowSkeletonComponent,
-    TuiRingChartModule,
-    TuiLegendItemModule,
-    TuiHoveredModule
+    WorkflowSkeletonComponent
   ]
 })
 export class WorkflowsModule { }

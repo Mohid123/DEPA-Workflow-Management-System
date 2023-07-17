@@ -6,11 +6,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule, TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
-import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import { TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
+import {  TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 
 @Component({
@@ -28,7 +27,8 @@ export class SubmissionTableComponent implements OnDestroy {
   adminUsers: any[] = [];
   createdByUsers: any[] = [];
   destroy$ = new Subject();
-  dialogTitle: string
+  dialogTitle: string;
+  searchValue: FormControl = new FormControl();
 
   // filters
   filterMenuCompany =  [
@@ -56,8 +56,7 @@ export class SubmissionTableComponent implements OnDestroy {
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.activatedRoute.queryParams.subscribe(val => {
@@ -80,9 +79,12 @@ export class SubmissionTableComponent implements OnDestroy {
     .subscribe((val: any) => {
       this.submissionData = val;
       this.tableDataValue = val?.results;
-      this.adminUsers = val?.results?.flatMap(data => data?.subModuleId?.adminUsers);
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
+  }
+
+  checkIfUserisAdmin(value: any[]): boolean {
+    return value?.map(data => data?.id).includes(this.currentUser?.id)
   }
 
   changeProgressColor(value: number) {
@@ -118,10 +120,6 @@ export class SubmissionTableComponent implements OnDestroy {
       return 'Deleted'
     }
     return 'Rejected'
-  }
-
-  checkIfUserisAdmin(): boolean {
-    return this.adminUsers?.includes(this.currentUser?.id)
   }
 
   checkIfUserisPartofWorkflow(data: any) {
