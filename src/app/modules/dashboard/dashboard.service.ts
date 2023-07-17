@@ -535,4 +535,60 @@ export class DashboardService extends ApiService<any> {
       }
     }))
   }
+
+  //categories
+  getAllCategories(limit: number): Observable<ApiResponse<any>> {
+    const params: any = {
+      limit: limit
+    }
+    return this.get(`/categories`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get categories', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  addCategory(category: {name: string}): Observable<ApiResponse<any>> {
+    return this.post('/categories', category).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Add new category', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  editCategory(category: {name: string}, id: string): Observable<ApiResponse<any>> {
+    return this.patch(`/categories/${id}`, category).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Edit category', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  deleteCategory(id: string): Observable<ApiResponse<any>> {
+    return this.delete(`/categories/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Edit category', TuiNotification.Error)
+        }
+      }
+    }))
+  }
 }

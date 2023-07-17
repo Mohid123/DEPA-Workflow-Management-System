@@ -296,7 +296,11 @@ export const userAddForm = {
                   {
                       "label": "User",
                       "value": "user"
-                  }
+                  },
+                  {
+                    "label": "Any",
+                    "value": "any"
+                }
               ]
           },
           "key": "role",
@@ -511,4 +515,21 @@ export const resetPasswordForm = {
   ]
 }
 
+export const categoryForm = {
+  "title": "category form",
+  "key": "category-form",
+  "display": "form",
+  "components": [
+    {
+      "label": "Category Name",
+      "tableView": true,
+      "validate": {
+          "required": true
+      },
+      "key": "categoryName",
+      "type": "textfield",
+      "input": true
+    }
+  ]
+}
 // "suffix": "<i style=\"cursor: pointer;\" id=\"showPass\" class=\"fa fa-eye\"></i>",
