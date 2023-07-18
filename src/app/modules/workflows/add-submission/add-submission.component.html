@@ -14,7 +14,7 @@
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <div *ngIf="userRoleCheck('admin')" class="flex justify-end gap-x-2">
+          <div class="flex justify-end gap-x-2">
             <a (click)="sendFormForEdit(i, form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
               <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
             </a>
@@ -38,6 +38,7 @@
       Approval Workflow
     </button>
     <button
+      [disabled]="userRoleCheckUser == true || currentUser?.roles?.length == 0"
       tuiTab
     >
       <tui-svg

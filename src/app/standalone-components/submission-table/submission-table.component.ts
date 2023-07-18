@@ -1,6 +1,6 @@
 import { Component, Inject, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
@@ -21,6 +21,7 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
 })
 export class SubmissionTableComponent implements OnDestroy {
   @Input() submissionData: any;
+  @Input() moduleData: Observable<any>;
   submoduleId: string;
   subscriptions: Subscription[] = [];
   currentUser: any;
@@ -51,6 +52,7 @@ export class SubmissionTableComponent implements OnDestroy {
   submoduleData: any;
   remarks = new FormControl('');
   userRoleCheckAny: any;
+  userRoleCheckAdmin: any;
 
   constructor(
     private workflowService: WorkflowsService,
@@ -60,7 +62,8 @@ export class SubmissionTableComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
+    this.userRoleCheckAny = this.auth.checkIfRolesExist('any');
+    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin');
     this.activatedRoute.queryParams.subscribe(val => {
         if(val['moduleID']) {
           this.submoduleId = val['moduleID']
@@ -86,6 +89,10 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   checkIfUserisAdmin(value: any[]): boolean {
+    return value?.map(data => data?.id).includes(this.currentUser?.id)
+  }
+
+  checkIfUserisViewOnly(value: any[]): boolean {
     return value?.map(data => data?.id).includes(this.currentUser?.id)
   }
 

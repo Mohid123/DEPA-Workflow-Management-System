@@ -67,7 +67,14 @@
                   <a
                     title="View Submission"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
-                    *ngIf="checkIfUserisActiveUser(data?.workflowStatus) == false && checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true && userRoleCheckAny == false"
+                    *ngIf="
+                    (checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                    checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true &&
+                    userRoleCheckAny == false) ||
+                    userRoleCheckAdmin == true ||
+                    checkIfUserisAdmin((moduleData | async)?.adminUsers) == true ||
+                    checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true
+                    "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
                   </a>
