@@ -22,37 +22,67 @@
   <ng-template #showSubModules>
     <section class="grid grid-cols-12 gap-4">
       <ng-container *ngFor="let data of tableData?.results; let i = index; let first = first; let last = last">
-        <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col col-span-6 border-t-8 border-t-[#F15B41]">
-          <div class="flex pt-5 space-x-8 px-4 pb-3">
-            <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[9rem]">
-              <img [src]="data?.image" alt="top_app_icon" class="object-cover w-full h-full rounded-lg" loading="eager">
+        <ng-container *ngIf="data?.status !== 3">
+          <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col col-span-6 border-t-8 border-t-[#F15B41]">
+            <div class="flex pt-5 space-x-8 px-4 pb-3">
+              <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[9rem]">
+                <img [src]="data?.image" alt="top_app_icon" class="object-cover w-full h-full rounded-lg" loading="eager">
+              </div>
+              <div class="w-full h-full">
+                <h3 class="mb-2 text-xl font-semibold">
+                  {{data?.title}}
+                </h3>
+                <p class="leading-6 line-clamp-4">{{data?.description}}</p>
+              </div>
             </div>
-            <div class="w-full h-full">
-              <h3 class="mb-2 text-xl font-semibold">
-                {{data?.title}}
-                <ng-container *ngIf="data?.status === 3">
-                  <tui-badge
-                    status="primary"
-                    class="tui-space_left-1"
-                    value="Draft"
-                  ></tui-badge>
-                </ng-container>
-              </h3>
-              <p class="leading-6 line-clamp-4">{{data?.description}}</p>
+            <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5">
+              <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white cursor-pointer">
+                <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
+              </a>
+              <a title="Edit" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
+                <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+              </a>
+              <a title="Delete" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer">
+                <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+              </a>
             </div>
           </div>
-          <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5">
-            <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white cursor-pointer">
-              <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
-            </a>
-            <a title="Edit" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
-              <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
-            </a>
-            <a title="Delete" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer">
-              <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
-            </a>
-          </div>
-        </div>
+        </ng-container>
+        <ng-container *ngIf="data?.status == 3">
+          <ng-container *ngIf="currentUser?.id == data?.createdBy">
+            <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col col-span-6 border-t-8 border-t-[#F15B41]">
+              <div class="flex pt-5 space-x-8 px-4 pb-3">
+                <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[9rem]">
+                  <img [src]="data?.image" alt="top_app_icon" class="object-cover w-full h-full rounded-lg" loading="eager">
+                </div>
+                <div class="w-full h-full">
+                  <h3 class="mb-2 text-xl font-semibold">
+                    {{data?.title}}
+                    <ng-container *ngIf="data?.status === 3">
+                      <tui-badge
+                        status="primary"
+                        class="tui-space_left-1"
+                        value="Draft"
+                      ></tui-badge>
+                    </ng-container>
+                  </h3>
+                  <p class="leading-6 line-clamp-4">{{data?.description}}</p>
+                </div>
+              </div>
+              <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5">
+                <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white cursor-pointer">
+                  <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
+                </a>
+                <a title="Edit" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
+                  <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+                </a>
+                <a title="Delete" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer">
+                  <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
       </ng-container>
     </section>
     <div class="py-6">
