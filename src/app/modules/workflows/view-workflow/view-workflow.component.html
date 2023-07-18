@@ -119,33 +119,87 @@
               [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
             >
               <ng-container *ngIf="user?.status == 'pending'">
-                <tui-badge
-                  class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
-                  [value]="'Pending'"
-                  status="custom"
-                >
-                  <tui-svg src="tuiIconClock"></tui-svg>
-                </tui-badge>
+                <div class="flex justify-between">
+                  <tui-badge
+                    class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
+                    [value]="'Pending'"
+                    status="custom"
+                  >
+                    <tui-svg src="tuiIconClock"></tui-svg>
+                  </tui-badge>
+                  <div
+                    *ngIf="
+                      checkIfLoggedInUserIsPartOfActiveUsers() == false &&
+                      userApprovedCheckResult() == false &&
+                      user?.status == 'inProgress' &&
+                      workflowData?.submissionStatus !== 5 &&
+                      workflowData?.status !== 2 &&
+                      userRoleCheckAny == true
+                    "
+                    class="flex justify-end gap-5 decision-buttons"
+                  >
+                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds[i]) == false && checkApprovalLogs() == true">
+                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    </ng-container>
+                  </div>
+                </div>
                 <hr class="mb-2">
               </ng-container>
               <ng-container *ngIf="user?.status == 'inProgress'">
-                <tui-badge
-                  class="px-2 font-semibold text-white bg-blue-600 tui-space_right-2 tui-space_bottom-4"
-                  [value]="'Active'"
-                  status="custom"
-                >
-                  <tui-svg src="tuiIconRadio"></tui-svg>
-                </tui-badge>
+                <div class="flex justify-between">
+                  <tui-badge
+                    class="px-2 font-semibold text-white bg-blue-600 tui-space_right-2 tui-space_bottom-4"
+                    [value]="'Active'"
+                    status="custom"
+                  >
+                    <tui-svg src="tuiIconRadio"></tui-svg>
+                  </tui-badge>
+                  <div
+                    *ngIf="
+                      checkIfLoggedInUserIsPartOfActiveUsers() == false &&
+                      userApprovedCheckResult() == false &&
+                      user?.status == 'inProgress' &&
+                      workflowData?.submissionStatus !== 5 &&
+                      workflowData?.status !== 2 &&
+                      userRoleCheckAny == true
+                    "
+                    class="flex justify-end gap-5 decision-buttons"
+                  >
+                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds[i]) == false && checkApprovalLogs() == true">
+                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    </ng-container>
+                  </div>
+                </div>
                 <hr class="mb-2">
               </ng-container>
               <ng-container *ngIf="user?.status == 'rejected'">
-                <tui-badge
-                  class="px-2 font-semibold text-white bg-red-600 tui-space_right-2 tui-space_bottom-4"
-                  [value]="'Rejected'"
-                  status="custom"
-                >
-                  <tui-svg src="tuiIconAlertOctagon"></tui-svg>
-                </tui-badge>
+                <div class="flex justify-between">
+                  <tui-badge
+                    class="px-2 font-semibold text-white bg-red-600 tui-space_right-2 tui-space_bottom-4"
+                    [value]="'Rejected'"
+                    status="custom"
+                  >
+                    <tui-svg src="tuiIconAlertOctagon"></tui-svg>
+                  </tui-badge>
+                  <div
+                    *ngIf="
+                      checkIfLoggedInUserIsPartOfActiveUsers() == false &&
+                      userApprovedCheckResult() == false &&
+                      user?.status == 'inProgress' &&
+                      workflowData?.submissionStatus !== 5 &&
+                      workflowData?.status !== 2 &&
+                      userRoleCheckAny == true
+                    "
+                    class="flex justify-end gap-5 decision-buttons"
+                  >
+                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIdsi[i]) == false && checkApprovalLogs() == true">
+                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    </ng-container>
+                  </div>
+                </div>
                 <hr class="mb-2">
               </ng-container>
               <ng-container *ngIf="user?.status == 'approved'">
@@ -170,21 +224,14 @@
                       </span>
                       <div
                         *ngIf="
-                        (currentUser?.fullName === approvers?.name &&
-                        checkIfUserisStillActive(currentUser?.fullName) == true &&
-                        checkIfUserRejected(user?.approverIds) == false &&
-                        userApprovedCheckResult() == false &&
-                        user?.status == 'inProgress' &&
-                        workflowData?.submissionStatus !== 5 &&
-                        workflowData?.status !== 2
-                        )
-                        ||
-                        (userRoleCheckAny == true &&
-                        user?.status == 'inProgress' &&
-                        workflowData?.submissionStatus !== 5 &&
-                        workflowData?.status !== 2 &&
-                        checkApprovedStatus(approvers?.name, i) === false
-                        )
+                          currentUser?.fullName === approvers?.name &&
+                          checkIfUserisStillActive(currentUser?.fullName) == true &&
+                          checkIfUserRejected(user?.approverIds) == false &&
+                          userApprovedCheckResult() == false &&
+                          user?.status == 'inProgress' &&
+                          workflowData?.submissionStatus !== 5 &&
+                          workflowData?.status !== 2 &&
+                          userRoleCheckAny == false
                         "
                         class="flex justify-end gap-5 decision-buttons"
                       >

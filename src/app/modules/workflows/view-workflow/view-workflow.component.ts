@@ -400,7 +400,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   downloadAsPDF() {
     this.downloadingPDF.next(true);
-    const width = this.formPdf.nativeElement.clientWidth - 300;
+    const width = this.formPdf.nativeElement.clientWidth - 350;
     const height = this.formPdf.nativeElement.clientHeight - 300;
     let orientation: any = '';
     let imageUnit: any = 'pt';

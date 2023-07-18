@@ -228,7 +228,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       categoryName: [item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
-      title: [item?.title || null, Validators.required],
+      title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]],
       image: [item?.image || null, Validators.required],
       description: [item?.description || null, Validators.required],
       workflows: this.fb.array(
