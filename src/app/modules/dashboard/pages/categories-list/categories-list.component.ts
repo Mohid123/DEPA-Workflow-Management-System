@@ -23,6 +23,7 @@ export class CategoriesListComponent implements OnDestroy {
   formSubmission: any;
   categoryFormField = categoryForm;
   formData = new BehaviorSubject<any>({isValid: false});
+  userRoleCheckAdmin: any;
 
   constructor(
     private dashboard: DashboardService,
@@ -31,6 +32,7 @@ export class CategoriesListComponent implements OnDestroy {
     private auth: AuthService,
   ) {
     this.currentUser = this.auth.currentUserValue
+    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin')
     this.categories = this.dashboard.getAllCategories(this.limit);
   }
 

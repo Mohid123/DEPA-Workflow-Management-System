@@ -46,7 +46,7 @@ export class SubmodulesListComponent {
     this.activatedRoute.queryParams.subscribe(val => {
       if(val['moduleID']) {
         setItem(StorageItem.moduleID, val['moduleID']);
-        this.transport.moduleID.next(val['moduleID'])
+        this.transport.moduleID.next(val['moduleID']);
         this.moduleData = this.dashBoardService.getSubModuleByID(val['moduleID']);
       }
     })
@@ -78,6 +78,10 @@ export class SubmodulesListComponent {
       this.page = value
       this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(this.moduleSlug, this.limit, this.page)
     }
+  }
+
+  checkIfAdminUserIsOnFirstStep(value: any[]) {
+    return value?.map(data => data?.id)?.includes(this.currentUser?.id)
   }
  
 }

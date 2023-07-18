@@ -25,9 +25,7 @@
         </div>
         <div
           *ngIf="
-          data?.createdBy == currentUser?.id ||
-          userRoleCheckAdmin == true ||
-          userRoleCheckAny == true ||
+          (userRoleCheckAdmin == true && checkIfAdminUserIsOnFirstStep((moduleData | async)?.workFlowId?.stepIds[0]?.approverIds) == true) ||
           checkIfUserisAdmin((moduleData | async)?.adminUsers)"
           class="cursor-pointer mt-2"
         >
