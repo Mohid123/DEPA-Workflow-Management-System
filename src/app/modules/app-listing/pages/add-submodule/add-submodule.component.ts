@@ -59,6 +59,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   returnToDashboard: boolean;
   parentID: string;
   parentIDUnAssigned: boolean = false;
+  categoryId: string
 
   constructor(
     private fb: FormBuilder,
@@ -79,16 +80,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       if(Object.keys(val).length > 0) {
         this.parentIDUnAssigned = true;
         this.getDefaultWorkflowByModule();
+            this.getAllCategories();
       }
       else {
-        this.getDefaultWorkflowBySubModule()
+        this.getDefaultWorkflowBySubModule();
       }
     })
     this.formComponents = this.transportService.formBuilderData.value;
     this.formTabs = this.formComponents.map(val => val.title);
 
     this.getAllCompanies();
-    this.getAllCategories()
     // get users for email
 
     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
@@ -144,11 +145,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
         this.redirectToModuleID = params['id'];
         this.transportService.moduleID.next(params['id']);
-        if(Object.keys(this.submoduleFromLS)?.length > 0) {
-          this.initSubModuleForm(this.submoduleFromLS);
-          this.base64File = this.submoduleFromLS?.image
-          this.file = this.submoduleFromLS?.file
-        }
+        this.dashboard.getWorkflowFromSubModule(params['id']).pipe(takeUntil(this.destroy$))
+        .subscribe((res: any) => {
+          if(res) {
+            this.categoryId = res?.categoryId;
+            this.initSubModuleForm(res?.response);
+          }
+          if(Object.keys(this.submoduleFromLS)?.length > 0) {
+            this.initSubModuleForm(this.submoduleFromLS);
+            this.base64File = this.submoduleFromLS?.image
+            this.file = this.submoduleFromLS?.file
+          }
+        })
       }
     });
   }
@@ -393,7 +401,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       description: this.subModuleForm.get('description')?.value,
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyName')?.value,
-      categoryId: this.subModuleForm.get('categoryName')?.value,
+      categoryId: this.subModuleForm.get('categoryName')?.value ? this.subModuleForm.get('categoryName')?.value : this.categoryId,
       code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),

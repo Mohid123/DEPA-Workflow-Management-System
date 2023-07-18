@@ -3,7 +3,7 @@
   <ng-container *ngIf="moduleData | async as modData">
     <div class="cursor-pointer mt-5">
       <a
-        *ngIf="currentUser.id == modData?.createdBy || userRoleCheck('admin') || checkIfUserisAdmin(modData?.adminUsers)"
+        *ngIf="currentUser.id == modData?.createdBy || checkIfUserisAdmin(modData?.adminUsers)"
         [routerLink]="['/modules/add-module', moduleId]"
         class="px-6 py-3 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base"
       >+ Add app

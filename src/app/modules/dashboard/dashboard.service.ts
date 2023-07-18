@@ -412,7 +412,7 @@ export class DashboardService extends ApiService<any> {
             emailNotifyTo: data?.emailNotifyToId?.notifyUsers
           }
         });
-        return response;
+        return Object.assign({response, categoryId: res.data?.categoryId?.id});
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {

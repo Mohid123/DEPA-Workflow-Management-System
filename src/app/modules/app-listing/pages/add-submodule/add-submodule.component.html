@@ -163,66 +163,68 @@
     ></button>
 
     <!--Categories-->
-    <div class="my-7">
-      <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
-      <select required [ngClass]="f['categoryName']?.invalid && f['categoryName']?.dirty ? 'is-invalid' : ''" formControlName="categoryName" class="form-control" type="text">
-        <ng-container *ngFor="let category of categoryList;">
-          <option [value]="category?.value">{{category?.label}}</option>
-        </ng-container>
-      </select>
-      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-        validation: 'required',
-        message: 'Category is required',
-        control: f['categoryName']
-      }"></ng-container>
-    </div>
-    <div class="my-2">
-      <p class="text-xs text-gray-500">If your desired category isn't listed, you can add it below</p>
-    </div>
-    <ng-container formArrayName="categories">
-      <ng-container *ngFor="let category of categories.controls; let i = index; let first = first; let last = last">
-        <div class="w-7/12 px-8" [formGroupName]="i">
-          <div class="flex items-center justify-between w-full gap-2 mb-3">
-            <div class="w-full">
-              <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
-                <input
-                  class="form-control"
-                  formControlName="name"
-                  type="text"
-                />
+    <ng-container *ngIf="parentIDUnAssigned == true">
+      <div class="my-7">
+        <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
+        <select required [ngClass]="f['categoryName']?.invalid && f['categoryName']?.dirty ? 'is-invalid' : ''" formControlName="categoryName" class="form-control" type="text">
+          <ng-container *ngFor="let category of categoryList;">
+            <option [value]="category?.value">{{category?.label}}</option>
+          </ng-container>
+        </select>
+        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+          validation: 'required',
+          message: 'Category is required',
+          control: f['categoryName']
+        }"></ng-container>
+      </div>
+      <div class="my-2">
+        <p class="text-xs text-gray-500">If your desired category isn't listed, you can add it below</p>
+      </div>
+      <ng-container formArrayName="categories">
+        <ng-container *ngFor="let category of categories.controls; let i = index; let first = first; let last = last">
+          <div class="w-7/12 px-8" [formGroupName]="i">
+            <div class="flex items-center justify-between w-full gap-2 mb-3">
+              <div class="w-full">
+                <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
+                  <input
+                    class="form-control"
+                    formControlName="name"
+                    type="text"
+                  />
+              </div>
+              <div [ngClass]="first ? 'mt-7': 'mt-0'">
+                <button
+                  tuiIconButton
+                  type="button"
+                  size="s"
+                  appearance="secondary-destructive"
+                  icon="tuiIconTrash2Large"
+                  (click)="removeCategory(i)"
+                ></button>
+              </div>
             </div>
-            <div [ngClass]="first ? 'mt-7': 'mt-0'">
+            <div class="flex justify-end">
               <button
-                tuiIconButton
+                *ngIf="last"
+                tuiButton
                 type="button"
-                size="s"
-                appearance="secondary-destructive"
-                icon="tuiIconTrash2Large"
-                (click)="removeCategory(i)"
-              ></button>
+                class="mb-3"
+                size="m"
+                (click)="submitNewCategory()"
+              >Submit</button>
             </div>
           </div>
-          <div class="flex justify-end">
-            <button
-              *ngIf="last"
-              tuiButton
-              type="button"
-              class="mb-3"
-              size="m"
-              (click)="submitNewCategory()"
-            >Submit</button>
-          </div>
-        </div>
+        </ng-container>
       </ng-container>
+      <button
+        tuiIconButton
+        type="button"
+        size="m"
+        appearance="secondary"
+        icon="tuiIconPlusLarge"
+        (click)="addCategory()"
+      ></button>
     </ng-container>
-    <button
-      tuiIconButton
-      type="button"
-      size="m"
-      appearance="secondary"
-      icon="tuiIconPlusLarge"
-      (click)="addCategory()"
-    ></button>
 
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
