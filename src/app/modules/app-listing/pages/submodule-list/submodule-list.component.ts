@@ -21,6 +21,7 @@ export class SubmodulesListComponent {
   currentUser: any;
   userRoleCheckAdmin: any;
   userRoleCheckAny: any;
+  userRoleCheckUser: any;
 
   constructor(
     private dashBoardService: DashboardService,
@@ -32,6 +33,7 @@ export class SubmodulesListComponent {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin')
     this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
+    this.userRoleCheckUser = this.auth.checkIfRolesExist('user')
     this.activatedRoute.params.pipe(
       pluck('name'),
       map(name => {
