@@ -100,6 +100,7 @@
       </label>
     </div>
 
+    <!--Companies-->
     <div class="my-7">
       <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
       <select required [ngClass]="f['companyName']?.invalid && f['companyName']?.dirty ? 'is-invalid' : ''" formControlName="companyName" class="form-control" type="text">
@@ -159,6 +160,68 @@
       appearance="secondary"
       icon="tuiIconPlusLarge"
       (click)="addCompany()"
+    ></button>
+
+    <!--Categories-->
+    <div class="my-7">
+      <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
+      <select required [ngClass]="f['categoryName']?.invalid && f['categoryName']?.dirty ? 'is-invalid' : ''" formControlName="categoryName" class="form-control" type="text">
+        <ng-container *ngFor="let category of categoryList;">
+          <option [value]="category?.value">{{category?.label}}</option>
+        </ng-container>
+      </select>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'Category is required',
+        control: f['categoryName']
+      }"></ng-container>
+    </div>
+    <div class="my-2">
+      <p class="text-xs text-gray-500">If your desired category isn't listed, you can add it below</p>
+    </div>
+    <ng-container formArrayName="categories">
+      <ng-container *ngFor="let category of categories.controls; let i = index; let first = first; let last = last">
+        <div class="w-7/12 px-8" [formGroupName]="i">
+          <div class="flex items-center justify-between w-full gap-2 mb-3">
+            <div class="w-full">
+              <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
+                <input
+                  class="form-control"
+                  formControlName="name"
+                  type="text"
+                />
+            </div>
+            <div [ngClass]="first ? 'mt-7': 'mt-0'">
+              <button
+                tuiIconButton
+                type="button"
+                size="s"
+                appearance="secondary-destructive"
+                icon="tuiIconTrash2Large"
+                (click)="removeCategory(i)"
+              ></button>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button
+              *ngIf="last"
+              tuiButton
+              type="button"
+              class="mb-3"
+              size="m"
+              (click)="submitNewCategory()"
+            >Submit</button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <button
+      tuiIconButton
+      type="button"
+      size="m"
+      appearance="secondary"
+      icon="tuiIconPlusLarge"
+      (click)="addCategory()"
     ></button>
 
     <!--Admin and View only users-->
@@ -231,8 +294,7 @@
 
     <!--Edit Workflow-->
     <div class="mt-12">
-      <h4 class="text-lg font-semibold">Modify default workflow</h4>
-      <p class="my-2 text-sm text-gray-500">The default workflow will be used if you choose not to modify it</p>
+      <h4 class="text-lg font-semibold">Create workflow</h4>
       <ng-container formArrayName="workflows">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>

@@ -19,8 +19,11 @@ export class LoginComponent implements OnDestroy {
   userAuthData: any;
   loginViaActiveDir = new FormControl<boolean>(true);
   public emailLoginForm = emailLoginForm
-  public submission: any
-
+  public submission: any = {
+    data: {
+      password: "12345678"
+    }
+  }
   public activeDirectoryLoginForm = activeDirectoryLoginForm;
 
   options: any = {

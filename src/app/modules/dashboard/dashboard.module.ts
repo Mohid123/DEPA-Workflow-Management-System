@@ -11,7 +11,6 @@ import { FooterComponent } from 'src/app/standalone-components/footer/footer.com
 import {TuiTableModule, TuiTablePaginationModule} from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { TuiAvatarModule, TuiBadgedContentModule, TuiDataListWrapperModule, TuiInputTagModule, TuiPaginationModule, TuiTabsModule } from '@taiga-ui/kit';
-import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { GridViewLoaderComponent } from 'src/app/skeleton-loaders/grid-view-loader/grid-view-loader.component';
 import { GridTopAppComponent } from 'src/app/standalone-components/grid-top-app/grid-top-app.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
@@ -26,7 +25,6 @@ import { ProfileComponent } from './pages/profile/profile.component';
   declarations: [
     DashboardComponent,
     HomeComponent,
-    PublishAppComponent,
     GridViewLoaderComponent,
     CategoriesListComponent,
     UsersListComponent,

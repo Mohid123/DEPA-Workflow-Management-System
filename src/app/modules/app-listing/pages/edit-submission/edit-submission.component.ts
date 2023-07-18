@@ -44,6 +44,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   subModuleData: any;
   formValues: any[] = [];
   workFlowId: string;
+  userRoleCheck: any;
 
   constructor(
     private auth: AuthService,
@@ -57,6 +58,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private location: Location
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.subModuleId = val['id'];

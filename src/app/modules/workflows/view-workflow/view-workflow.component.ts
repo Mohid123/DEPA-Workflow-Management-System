@@ -50,7 +50,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   dialogTitle: string
   isDeleting: string;
   currentStepId: string;
-  downloadingPDF = new Subject<boolean>()
+  downloadingPDF = new Subject<boolean>();
+  userRoleCheckAny: any;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -61,6 +62,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private router: Router
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
     this.fetchData();
     this.approve.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === true) {
@@ -72,7 +74,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.reject.enable()
       }
     });
-
     this.reject.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === true) {
         this.approve.disable();
@@ -109,7 +110,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       }
     }
   }
-
 
   getColor(index: number): string {
     return `var(--tui-chart-${index})`;
@@ -394,10 +394,14 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return false
   }
 
+  checkApprovalLogs() {
+    return this.approvalLogs?.map(value => value?.approvalStatus)?.includes('approved')
+  }
+
   downloadAsPDF() {
     this.downloadingPDF.next(true);
-    const width = this.formPdf.nativeElement.clientWidth - 200;
-    const height = this.formPdf.nativeElement.clientHeight;
+    const width = this.formPdf.nativeElement.clientWidth - 300;
+    const height = this.formPdf.nativeElement.clientHeight - 300;
     let orientation: any = '';
     let imageUnit: any = 'pt';
     if (width > height) {
@@ -407,12 +411,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       orientation = 'p';
     }
     const html = document.getElementsByTagName('formio');
+    const title = document.getElementById('form-title-id');
     Array.from(html)?.forEach(value => {
       domToImage.toPng(value, {
-        width: width * 1.2,
-        height: height  * 1.2,
+        width: width * 1.5,
+        height: height  * 1.5,
         style: {
-          transform: "scale(" + 1.2 + ")",
+          transform: "scale(" + 1.5 + ")",
           transformOrigin: "top left"
         }
       })
@@ -420,12 +425,16 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         let jsPdfOptions = {
           orientation: orientation,
           unit: imageUnit,
-          format: [width + 100, height + 220]
+          format: [width, height]
         };
         const pdf = new jsPDF(jsPdfOptions);
         const image: HTMLImageElement | any = new Image();
         image.src = 'https://i.ibb.co/Wt2PxM6/depa-logo.png';
         image.alt = 'logo';
+        pdf.text(title?.innerText, 150, 60, {
+          align: 'center',
+          baseline: 'top'
+        })
         pdf.addImage(image, 'PNG', 25, 45, 40, 40)
         pdf.addImage(result, 'PNG', 25, 105, width, height);
         pdf.save('Form_Data'+ '.pdf');

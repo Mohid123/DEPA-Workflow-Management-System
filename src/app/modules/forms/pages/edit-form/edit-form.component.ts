@@ -116,7 +116,6 @@ export class EditFormComponent implements OnDestroy {
     const formData = {
       title: this.formTitleControl?.value,
       key: this.formTitleControl?.value?.replace(/\s+/g, '-').toLowerCase(),
-      createdBy: this.auth?.currentUserValue?.id,
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }

@@ -51,7 +51,13 @@
                 </button>
               </div>
               <formio
-                [readOnly]="checkIfAllApproved() == true || checkIfLoggedInUserIsPartOfActiveUsers() == false || checkIfUserIsInEditUsers() == false || workflowData?.submissionStatus == 5 || workflowData?.status == 2"
+                [readOnly]="
+                checkIfAllApproved() == true ||
+                checkIfLoggedInUserIsPartOfActiveUsers() == false ||
+                checkIfUserIsInEditUsers() == false ||
+                workflowData?.submissionStatus == 5 ||
+                workflowData?.status == 2
+                "
                 [options]="{'disableAlerts': true}"
                 (submit)="updateFormData($event)"
                 [submission]="form"
@@ -162,9 +168,28 @@
                       <span *ngIf="checkApprovedStatus(approvers?.name, i) === true">
                         <i class="fa fa-check fa-lg" aria-hidden="true"></i>
                       </span>
-                      <div *ngIf="currentUser?.fullName === approvers?.name && checkIfUserisStillActive(currentUser?.fullName) == true && checkIfUserRejected(user?.approverIds) == false && userApprovedCheckResult() == false && user?.status == 'inProgress' && workflowData?.submissionStatus !== 5 && workflowData?.status !== 2" class="flex justify-end gap-5 decision-buttons">
+                      <div
+                        *ngIf="
+                        (currentUser?.fullName === approvers?.name &&
+                        checkIfUserisStillActive(currentUser?.fullName) == true &&
+                        checkIfUserRejected(user?.approverIds) == false &&
+                        userApprovedCheckResult() == false &&
+                        user?.status == 'inProgress' &&
+                        workflowData?.submissionStatus !== 5 &&
+                        workflowData?.status !== 2
+                        )
+                        ||
+                        (userRoleCheckAny == true &&
+                        user?.status == 'inProgress' &&
+                        workflowData?.submissionStatus !== 5 &&
+                        workflowData?.status !== 2 &&
+                        checkApprovedStatus(approvers?.name, i) === false
+                        )
+                        "
+                        class="flex justify-end gap-5 decision-buttons"
+                      >
                         <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                        <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && approvalLogs?.length > 0">
+                        <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
                           <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                         </ng-container>
                       </div>

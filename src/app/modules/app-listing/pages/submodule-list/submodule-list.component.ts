@@ -19,6 +19,8 @@ export class SubmodulesListComponent {
   page: number = 1;
   searchValue: FormControl = new FormControl();
   currentUser: any;
+  userRoleCheckAdmin: any;
+  userRoleCheckAny: any;
 
   constructor(
     private dashBoardService: DashboardService,
@@ -28,6 +30,8 @@ export class SubmodulesListComponent {
     private auth: AuthService
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin')
+    this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
     this.activatedRoute.params.pipe(
       pluck('name'),
       map(name => {

@@ -125,6 +125,20 @@
       }"></ng-container>
     </div>
 
+    <div class="my-7">
+      <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
+      <select required [ngClass]="f['categoryId']?.invalid && f['categoryId']?.dirty ? 'is-invalid' : ''" formControlName="categoryId" class="form-control" type="text">
+        <ng-container *ngFor="let category of categoryList;">
+          <option [value]="category?.value">{{category?.label}}</option>
+        </ng-container>
+      </select>
+      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+        validation: 'required',
+        message: 'Category is required',
+        control: f['categoryId']
+      }"></ng-container>
+    </div>
+
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">

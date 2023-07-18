@@ -20,9 +20,11 @@ import { TuiBadgeModule } from '@taiga-ui/kit';
 })
 export class GridTopAppComponent {
   currentUser: any;
+  userRoleCheck: any;
 
   constructor(private transport: DataTransportService, private auth: AuthService) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist('admin')
   }
     /**
    * Used to display the relevant data inside the card view

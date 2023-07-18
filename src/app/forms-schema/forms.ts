@@ -281,31 +281,32 @@ export const userAddForm = {
   "display": "form",
   "components": [
       {
-          "label": "Role",
-          "widget": "choicesjs",
-          "tableView": true,
-          "validate": {
-            "required": true
-          },
-          "data": {
-              "values": [
-                  {
-                      "label": "Admin",
-                      "value": "admin"
-                  },
-                  {
-                      "label": "User",
-                      "value": "user"
-                  },
-                  {
-                    "label": "Any",
-                    "value": "any"
-                }
-              ]
+        "label": "Role",
+        "widget": "choicesjs",
+        "tableView": true,
+        "validate": {
+          "required": true
+        },
+        "data": {
+          "values": [
+              {
+                  "label": "Admin",
+                  "value": "admin"
+              },
+              {
+                  "label": "User",
+                  "value": "user"
+              },
+              {
+                "label": "Any",
+                "value": "any"
+              }
+            ]
           },
           "key": "role",
           "type": "select",
-          "input": true
+          "input": true,
+          "multiple": true
       }
   ]
 }
@@ -352,12 +353,17 @@ export const userAddFormProfile = {
                   {
                       "label": "User",
                       "value": "user"
+                  },
+                  {
+                    "label": "Any",
+                    "value": "any"
                   }
               ]
           },
           "key": "role",
           "type": "select",
-          "input": true
+          "input": true,
+          "multiple": true
       }
   ]
 }
@@ -368,24 +374,24 @@ export const userAddFormAdmin = {
   "display": "form",
   "components": [
       {
-          "label": "Full Name",
-          "tableView": true,
-          "key": "fullname",
-          "type": "textfield",
-          "input": true,
-          "validate": {
-            "required": true
-          },
+        "label": "Full Name",
+        "tableView": true,
+        "key": "fullname",
+        "type": "textfield",
+        "input": true,
+        "validate": {
+          "required": true
+        },
       },
       {
-          "label": "Email",
-          "tableView": true,
-          "key": "email",
-          "type": "email",
-          "validate": {
-            "required": true
-          },
-          "input": true
+        "label": "Email",
+        "tableView": true,
+        "key": "email",
+        "type": "email",
+        "validate": {
+          "required": true
+        },
+        "input": true
       },
       {
           "label": "Role",
@@ -396,20 +402,25 @@ export const userAddFormAdmin = {
             "required": true
           },
           "data": {
-              "values": [
-                  {
-                      "label": "Admin",
-                      "value": "admin"
-                  },
-                  {
-                      "label": "User",
-                      "value": "user"
-                  }
-              ]
+            "values": [
+                {
+                    "label": "Admin",
+                    "value": "admin"
+                },
+                {
+                    "label": "User",
+                    "value": "user"
+                },
+                {
+                  "label": "Any",
+                  "value": "any"
+                }
+            ]
           },
           "key": "role",
           "type": "select",
-          "input": true
+          "input": true,
+          "multiple": true,
       }
   ]
 }

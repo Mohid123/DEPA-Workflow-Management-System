@@ -41,6 +41,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   isCreatingSubModule = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  categoryList: any[];
   domainURL = window.location.origin;
   currentFieldArray: any;
   activeEmailIndex: number;
@@ -87,6 +88,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.formTabs = this.formComponents.map(val => val.title);
 
     this.getAllCompanies();
+    this.getAllCategories()
     // get users for email
 
     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
@@ -125,16 +127,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
         this.redirectToModuleID = params['id'];
         this.transportService.moduleID.next(params['id']);
-        this.dashboard.getWorkflowFromModule(params['id']).subscribe((response: any) => {
-          if(response) {
-            this.initSubModuleForm(response)
-          }
-          if(Object.keys(this.submoduleFromLS)?.length > 0) {
-            this.initSubModuleForm(this.submoduleFromLS);
-            this.base64File = this.submoduleFromLS?.image;
-            this.file = this.submoduleFromLS?.file
-          }
-        })
+        if(Object.keys(this.submoduleFromLS)?.length > 0) {
+          this.initSubModuleForm(this.submoduleFromLS);
+          this.base64File = this.submoduleFromLS?.image;
+          this.file = this.submoduleFromLS?.file
+        }
       }
     });
   }
@@ -147,16 +144,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
         this.redirectToModuleID = params['id'];
         this.transportService.moduleID.next(params['id']);
-        this.dashboard.getWorkflowFromSubModule(params['id']).subscribe((response: any) => {
-          if(response) {
-            this.initSubModuleForm(response)
-          }
-          if(Object.keys(this.submoduleFromLS)?.length > 0) {
-            this.initSubModuleForm(this.submoduleFromLS);
-            this.base64File = this.submoduleFromLS?.image
-            this.file = this.submoduleFromLS?.file
-          }
-        })
+        if(Object.keys(this.submoduleFromLS)?.length > 0) {
+          this.initSubModuleForm(this.submoduleFromLS);
+          this.base64File = this.submoduleFromLS?.image
+          this.file = this.submoduleFromLS?.file
+        }
       }
     });
   }
@@ -215,15 +207,25 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  getAllCategories() {
+    this.dashboard.getAllCategories(10)
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      this.categoryList = res.results?.map(data => {
+        return {
+          value: data?.id,
+          label: data?.name
+        }
+      });
+    });
+  }
+
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      // subModuleUrl: [
-      //   item?.subModuleUrl || null, 
-      //   Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]
-      // ],
       companies: this.fb.array([]),
+      categories: this.fb.array([]),
       code: [{value: item?.code, disabled: true} || {value: null, disabled: true}],
       companyName: [item?.companyName || null, Validators.required],
+      categoryName: [item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       title: [item?.title || null, Validators.required],
@@ -298,6 +300,21 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.companies.removeAt(index);
   }
 
+  get categories() {
+    return this.f["categories"] as FormArray;
+  }
+
+  addCategory() {
+    const categoryForm = this.fb.group({
+      name: ['', Validators.required]
+    });
+    this.categories.push(categoryForm)
+  }
+
+  removeCategory(index: number) {
+    this.categories.removeAt(index);
+  }
+
   get workflows() {
     return this.f['workflows'] as FormArray
   }
@@ -333,6 +350,19 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     })
   }
 
+  submitNewCategory() {
+    const payload: any = {
+      name: this.f["categories"]?.value[0]?.name
+    }
+    this.dashboard.addCategory(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if(res) {
+        this.categories.reset();
+        this.categories.removeAt(0);
+        this.getAllCategories();
+      }
+    })
+  }
+
   saveDraft() {
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
@@ -362,8 +392,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
-      moduleId: this.transportService.moduleID?.value,
       companyId: this.subModuleForm.get('companyName')?.value,
+      categoryId: this.subModuleForm.get('categoryName')?.value,
       code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
@@ -418,7 +448,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   dataSubmitValidation() {
     if(
-      // this.f['subModuleUrl']?.invalid ||
       this.f['companyName']?.invalid ||
       this.workflows?.length == 0 ||
       this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
@@ -433,7 +462,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   validateSelection(index: number) {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
+      this.workflows.at(index)?.get('condition')?.setValue('none');
       this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create module', TuiNotification.Info)
       return this.showError.next(false)
     }

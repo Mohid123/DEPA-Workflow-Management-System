@@ -44,6 +44,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   creatingSubmission = new Subject<boolean>();
   showError = new Subject<boolean>();
   errorIndex: number = 0;
+  userRoleCheck: any;
 
   constructor(
     private fb: FormBuilder,
@@ -57,6 +58,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     private dashboard: DashboardService
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => this.subModuleId = val['id']);
     this.populateData();

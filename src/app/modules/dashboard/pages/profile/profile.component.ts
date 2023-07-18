@@ -26,14 +26,14 @@ export class ProfileComponent implements OnDestroy {
     this.formData.next({
       fullname: this.currentUser?.fullName,
       email: this.currentUser?.email,
-      role: this.currentUser?.role
+      role: this.currentUser?.roles
     });
 
     this.formSubmission = {
       data: {
         fullname: this.currentUser?.fullName,
         email: this.currentUser?.email,
-        role: this.currentUser?.role
+        role: this.currentUser?.roles
       }
     }
   }

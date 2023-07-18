@@ -21,10 +21,12 @@ export class HeaderComponent implements OnDestroy {
   currentRoute: any;
   currentUser: any;
   open = false;
+  userRoleCheck: any;
 
   constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router) {
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist('admin')
   }
 
   checkCurrentRouteIncludes() {

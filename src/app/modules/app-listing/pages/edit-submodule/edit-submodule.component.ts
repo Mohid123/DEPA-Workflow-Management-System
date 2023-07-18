@@ -54,6 +54,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   base64File: any;
   submoduleFromLS: any;
   workFlowId: string;
+  categoryList: any[];
 
   constructor(
     private fb: FormBuilder,
@@ -71,6 +72,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     // get submodule for editing and initialize form
     this.getAllCompanies();
+    this.getAllCategories();
     this.getSubmoduleByIDForEdit();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['moduleID'] && val['moduleCode']) {
@@ -192,6 +194,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 value: response?.companyId?.id,
                 label: response?.companyId?.title
               }
+              const categoryId = {
+                value: response?.categoryId?.id,
+                label: response?.categoryId?.name
+              }
               this.file = response?.image
               this.base64File = response?.image
               // const url = response?.url?.split('/').at(-1);
@@ -227,10 +233,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               delete response?.workFlowId;
               delete response?.url;
               delete response?.companyId;
+              delete response?.categoryId;
               const finalObject = Object.assign(
                 response,
                 {workFlowId: workFlowId},
-                // {url: url},
+                {categoryId: categoryId},
                 {companyId: companyId},
                 {viewOnlyUsers: viewOnlyUsers},
                 {adminUsers: adminUsers}
@@ -256,9 +263,36 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  getAllCategories() {
+    this.dashboard.getAllCategories(10)
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      this.categoryList = res.results?.map(data => {
+        return {
+          value: data?.id,
+          label: data?.name
+        }
+      });
+    });
+  }
+
+  get categories() {
+    return this.f["categories"] as FormArray;
+  }
+
+  addCategory() {
+    const categoryForm = this.fb.group({
+      name: ['', Validators.required]
+    });
+    this.categories.push(categoryForm)
+  }
+
+  removeCategory(index: number) {
+    this.categories.removeAt(index);
+  }
+
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      // url: [item?.url || null, Validators.required],
+      categoryId: [item?.categoryId?.value ? item?.categoryId?.value : this.categoryList?.filter(val => item?.categoryId === val.value)[0]?.value || null, Validators.required],
       code: [{value: item?.code || null, disabled: true}],
       companyId: [item?.companyId?.value ? item?.companyId?.value : this.companyList?.filter(val => item?.companyId === val.value)[0]?.value || null, Validators.required],
       title: [item?.title || null, Validators.required],
@@ -353,10 +387,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   validateSelection(index: number) {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
+      this.workflows.at(index)?.get('condition')?.setValue('none');
+      
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      
       return this.showError.next(true)
     }
     this.showError.next(false)
@@ -365,10 +401,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   countUsers(value: number, index: number) {
     this.errorIndex = index;
     if(value < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
+      this.workflows.at(index)?.get('condition')?.setValue('none');
+      
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      
       return this.showError.next(true)
     }
     this.showError.next(false)
@@ -410,6 +448,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
+      categoryId: this.subModuleForm.get('categoryId')?.value,
       image: this.subModuleForm.get('image')?.value,
       workFlowId: this.workFlowId,
       title: this.subModuleForm.get('title')?.value,

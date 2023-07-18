@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
-import { PublishAppComponent } from './pages/publish-app/publish-app.component';
 import { ModuleGuard } from '../auth/guards/module.guard';
 import { CategoriesListComponent } from './pages/categories-list/categories-list.component';
 import { UsersListComponent } from './pages/users-list/users-list.component';
@@ -20,11 +19,6 @@ const routes: Routes = [
         component: HomeComponent,
         canActivate: [ModuleGuard],
         data: {breadcrumb:'Home'},
-      },
-      {
-        path: 'create-edit-category',
-        component: PublishAppComponent,
-        data: {breadcrumb:'Create/Edit Category'},
       },
       {
         path: 'categories',

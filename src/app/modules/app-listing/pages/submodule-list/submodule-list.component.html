@@ -23,7 +23,14 @@
             />
         </tui-input>
         </div>
-        <div *ngIf="data?.createdBy == currentUser?.id || currentUser?.role == 'admin' || checkIfUserisAdmin((moduleData | async)?.adminUsers)" class="cursor-pointer mt-2">
+        <div
+          *ngIf="
+          data?.createdBy == currentUser?.id ||
+          userRoleCheckAdmin == true ||
+          userRoleCheckAny == true ||
+          checkIfUserisAdmin((moduleData | async)?.adminUsers)"
+          class="cursor-pointer mt-2"
+        >
           <a (click)="addSubmissionRoute()" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
         </div>
       </div>

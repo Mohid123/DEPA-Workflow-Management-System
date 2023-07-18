@@ -90,6 +90,7 @@ export class TableViewComponent implements OnDestroy {
   currentUser: any;
   destroy$ =  new Subject();
   isFilterApplied: boolean = false;
+  userRoleCheck: any;
 
   @Output() emitDeleteEvent = new EventEmitter();
   @Output() emitPagination = new EventEmitter();
@@ -109,7 +110,8 @@ export class TableViewComponent implements OnDestroy {
     @Inject(TuiPreviewDialogService)
     private previewDialogService: TuiPreviewDialogService
   ) {
-    this.currentUser = this.auth.currentUserValue
+    this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist;
     this.activatedRoute.queryParams.subscribe(val => this.moduleId = val['moduleID']);
     this.activatedRoute.params.subscribe(val => {
       this.transport.moduleCode.next(val['name']);
