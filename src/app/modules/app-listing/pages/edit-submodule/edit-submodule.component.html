@@ -1,12 +1,12 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
-    <h3 class="text-xl font-semibold">Edit module</h3>
+    <h3 class="text-xl font-semibold">Edit app</h3>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
     <!--Title-->
     <div class="mt-3 mb-5">
-      <label class="block pb-1">Module Title <span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">App Title <span class="text-xs text-red-400">*</span></label>
         <input required
           [ngClass]="
             f['title']?.invalid && f['title']?.dirty
@@ -21,7 +21,7 @@
           [ngTemplateOutlet]="formError"
           [ngTemplateOutletContext]="{
             validation: 'required',
-            message: 'Module Title is required',
+            message: 'App Title is required',
             control: f['title']
           }"
         ></ng-container>
@@ -29,7 +29,7 @@
 
     <!--Description-->
     <div class="mt-3 mb-5">
-      <label class="block pb-1">Module Description<span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">App Description<span class="text-xs text-red-400">*</span></label>
         <textarea
           required
           [ngClass]="
@@ -47,7 +47,7 @@
           [ngTemplateOutlet]="formError"
           [ngTemplateOutletContext]="{
             validation: 'required',
-            message: 'Module Description is required',
+            message: 'A Description is required',
             control: f['description']
           }"
         ></ng-container>
@@ -55,7 +55,7 @@
 
     <!--Image-->
     <div class="my-5">
-      <label class="block pb-1">Module Icon<span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">App Icon<span class="text-xs text-red-400">*</span></label>
       <label
         (change)="onFileSelect($event)"
         for="dropzone-file"
@@ -86,7 +86,7 @@
               </div>
               <div class="flex flex-col">
                 <p class="mb-3 text-lg font-semibold text-black">
-                  Module Icon
+                  App Icon
                 </p>
                 <ul class="text-sm text-gray-400 list-disc">
                   <li>Icon should be 1:1 ratio</li>
@@ -99,17 +99,6 @@
           <input id="dropzone-file" type="file" class="hidden" />
       </label>
     </div>
-    <!-- <div class="my-3">
-      <label class="block pb-1">Module URL Endpoint<span class="text-xs text-red-400">*</span></label>
-      <div class="mb-3 input-group">
-        <input required [ngClass]="f['url']?.invalid && f['url']?.dirty ? 'is-invalid' : ''" formControlName="url" class="form-control" type="text">
-        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-          validation: 'required',
-          message: 'Module URL is required',
-          control: f['url']
-        }"></ng-container>
-      </div>
-    </div> -->
 
     <div class="my-7">
       <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
