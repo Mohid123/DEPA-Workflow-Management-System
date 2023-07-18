@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Module } from 'src/core/models/module.model';
 import { RouterModule } from '@angular/router';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -47,4 +46,8 @@ export class GridTopAppComponent {
     this.editModule.emit(id)
     this.transport.moduleID.next(id)
    }
+
+   checkIfUserisAdmin(value: any[]): boolean {
+    return value?.includes(this.currentUser?.id)
+  }
 }
