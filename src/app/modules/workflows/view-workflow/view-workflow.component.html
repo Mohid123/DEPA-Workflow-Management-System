@@ -4,7 +4,7 @@
   <ng-container *ngIf="(loadingData | async) == false; else showSkeleton">
     <div class="flex justify-between">
       <p class="text-lg font-semibold">Forms</p>
-      <div class="flex justify-center items-center">
+      <div class="flex items-center justify-center">
         <!--Delete-->
         <a
           title="Delete"
@@ -26,7 +26,7 @@
           title="Enable"
           *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus === 5"
           (click)="showDeleteDialog(dialog, 'enable')"
-          class="font-medium ml-2 px-2 py-1 bg-green-500 text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+          class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Enable
         </a>
       </div>
@@ -68,7 +68,7 @@
           </ng-container>
         </section>
       </div>
-    
+
       <section class="my-10">
         <div class="grid grid-cols-12 gap-2">
           <div class="w-full col-span-9">
@@ -92,11 +92,11 @@
               </div>
             </div>
           </div>
-          <div class="text-sm col-span-3 place-self-end">
-            <p class="font-semibold my-2 text-sm text-left">Legend</p>
+          <div class="col-span-3 text-sm place-self-end">
+            <p class="my-2 text-sm font-semibold text-left">Legend</p>
             <div class="flex flex-col justify-start gap-2">
               <div class="flex gap-1">
-                <div class="h-6 w-6 bg-green-600"></div>
+                <div class="w-6 h-6 bg-green-600"></div>
                 <p class="mt-0.5">Approved</p>
               </div>
               <div class="flex gap-1">
@@ -104,17 +104,17 @@
                 <p class="mt-0.5">Active</p>
               </div>
               <div class="flex gap-1">
-                <div class="h-6 w-6 bg-yellow-600"></div>
+                <div class="w-6 h-6 bg-yellow-600"></div>
                 <p class="mt-0.5">Pending</p>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex justify-start flex-wrap gap-2">
+        <div class="flex flex-wrap justify-start gap-2">
           <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
             <tui-island
               size="l"
-              class="w-96 my-4 shadow-lg"
+              class="my-4 shadow-lg w-96"
               [hoverable]="true"
               [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
             >
@@ -138,9 +138,9 @@
                     "
                     class="flex justify-end gap-5 decision-buttons"
                   >
-                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds[i]) == false && checkApprovalLogs() == true">
-                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
+                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                     </ng-container>
                   </div>
                 </div>
@@ -166,9 +166,9 @@
                     "
                     class="flex justify-end gap-5 decision-buttons"
                   >
-                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds[i]) == false && checkApprovalLogs() == true">
-                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
+                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                     </ng-container>
                   </div>
                 </div>
@@ -194,9 +194,9 @@
                     "
                     class="flex justify-end gap-5 decision-buttons"
                   >
-                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIdsi[i]) == false && checkApprovalLogs() == true">
-                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds[i], template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
+                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
                     </ng-container>
                   </div>
                 </div>
@@ -252,7 +252,7 @@
           </ng-container>
         </div>
       </section>
-    
+
       <!--Workflow progress-->
       <section class="my-4">
         <p class="mb-5 text-lg font-semibold">Approval Logs</p>
@@ -263,7 +263,7 @@
                 <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>
               </ng-container>
               <ng-container *ngFor="let log of approvalLogs; let i = index">
-                <div class="grid grid-cols-12 py-3 gap-x-3 border-b border-gray-300">
+                <div class="grid grid-cols-12 py-3 border-b border-gray-300 gap-x-3">
                   <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
                   <p class="col-span-2 font-normal">Action: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
                   <p class="col-span-4 font-normal">
@@ -323,7 +323,7 @@
   #content
 >
   <ng-container *ngIf="index == 3">
-    <span class="font-semibold">{{labels[index]}}</span> indicates that the previous user or previous step user/s must provide approval for workflow to proceed 
+    <span class="font-semibold">{{labels[index]}}</span> indicates that the previous user or previous step user/s must provide approval for workflow to proceed
   </ng-container>
   <ng-container *ngIf="index == 0">
     <span class="font-semibold">{{labels[index]}}</span> indicates that users of the step can perform workflow actions.
@@ -337,7 +337,7 @@
 </ng-template>
 
 <ng-template #dialog let-observer>
-  <p class="text-lg font-semibold text-center mb-5">
+  <p class="mb-5 text-lg font-semibold text-center">
     {{dialogTitle}} Submission
   </p>
   <p class="text-base font-semibold text-center">

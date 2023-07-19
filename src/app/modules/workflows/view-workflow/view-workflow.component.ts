@@ -114,7 +114,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   getColor(index: number): string {
     return `var(--tui-chart-${index})`;
   }
-  
+
   isItemActive(index: number): boolean {
     return this.index === index;
   }
@@ -221,7 +221,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   sendApproveOrRejectDecisionData() {
     this.savingDecision.next(true)
     const payload: any = {
-      stepId: this.decisionData?.value?.stepId,
+      stepId: this.decisionData?.value?.stepId || this.decisionData?.value[0]?.stepId,
       userId: this.currentUser?.id,
       remarks: this.remarks?.value,
       isApproved: this.approve?.value == true ? true : false,
