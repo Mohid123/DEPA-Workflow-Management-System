@@ -228,7 +228,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       });
       let copyCat: any = this.categoryList;
       copyCat = copyCat?.filter(data => data?.value == this.categoryIdForMatch)[0];
-      this.subModuleForm?.get('categoryName')?.setValue(copyCat?.value)
+      let prevVal = this.subModuleForm?.get('categoryName')?.value;
+      if(!prevVal) {
+        this.subModuleForm?.get('categoryName')?.setValue(copyCat?.value)
+      }
     });
   }
 
