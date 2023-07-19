@@ -59,7 +59,7 @@ export class UsersListComponent implements OnDestroy {
       data: {
         fullname: data?.fullName,
         email: data?.email,
-        role: data?.role
+        role: data?.roles
       }
     }
   }
