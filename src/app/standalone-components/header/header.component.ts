@@ -26,7 +26,7 @@ export class HeaderComponent implements OnDestroy {
   constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router) {
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheck = this.auth.checkIfRolesExist('admin')
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
   }
 
   checkCurrentRouteIncludes() {
@@ -52,7 +52,7 @@ export class HeaderComponent implements OnDestroy {
   setString(value: string): string {
     return value?.replace(/[_-]/g, ' ')
   }
- 
+
   ngOnDestroy(): void {
     this.subscription.forEach(subs => subs.unsubscribe());
   }
