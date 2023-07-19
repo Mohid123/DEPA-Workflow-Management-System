@@ -95,9 +95,11 @@ export class UsersListComponent implements OnDestroy {
       }
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
-        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
-        this.cf.detectChanges();
-        this.subscription.forEach(val => val.unsubscribe())
+        if(res) {
+          this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
+          this.cf.detectChanges();
+          this.subscription.forEach(val => val.unsubscribe())
+        }
       })
     }
     else {
@@ -108,9 +110,11 @@ export class UsersListComponent implements OnDestroy {
       }
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
-        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
-        this.cf.detectChanges();
-        this.subscription.forEach(val => val.unsubscribe())
+        if(res) {
+          this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+          this.cf.detectChanges();
+          this.subscription.forEach(val => val.unsubscribe())
+        }
       })
     }
   }

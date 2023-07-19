@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { FormControl } from '@angular/forms';
@@ -24,6 +24,7 @@ export class CategoriesListComponent implements OnDestroy {
   categoryFormField = categoryForm;
   formData = new BehaviorSubject<any>({isValid: false});
   userRoleCheckAdmin: any;
+  subscription: Subscription[] = [];
 
   constructor(
     private dashboard: DashboardService,
@@ -42,10 +43,10 @@ export class CategoriesListComponent implements OnDestroy {
   }
 
   showAddOrEditDialog(content: PolymorpheusContent<TuiDialogContext>, data: any) {
-    this.dialogs.open(content, {
+    this.subscription.push(this.dialogs.open(content, {
       dismissible: true,
       closeable: true
-    }).subscribe();
+    }).subscribe());
     if(data?.id) {
       this.categoryId = data?.id;
       this.formSubmission = {
@@ -74,6 +75,7 @@ export class CategoriesListComponent implements OnDestroy {
           this.categoryId = null;
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
+          this.subscription.forEach(val => val.unsubscribe())
         }
       })
     }
@@ -84,6 +86,7 @@ export class CategoriesListComponent implements OnDestroy {
         if(res) {
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
+          this.subscription.forEach(val => val.unsubscribe())
         }
       })
     }
