@@ -53,7 +53,7 @@
                 ></progress>
                 <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
               </td>
-              <td class="py-4 px-5">
+              <td class="px-5 py-4">
                 <!--WORKFLOW-->
                 <div style="all: unset;" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">
                   <a
@@ -73,7 +73,8 @@
                     userRoleCheckAny == false) ||
                     userRoleCheckAdmin == true ||
                     checkIfUserisAdmin((moduleData | async)?.adminUsers) == true ||
-                    checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true
+                    checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true ||
+                    currentUser?.id == data?.createdBy?.id
                     "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
