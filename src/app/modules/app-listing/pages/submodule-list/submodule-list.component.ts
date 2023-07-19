@@ -22,6 +22,7 @@ export class SubmodulesListComponent {
   userRoleCheckAdmin: any;
   userRoleCheckAny: any;
   userRoleCheckUser: any;
+  userRoleCheckSys: any;
 
   constructor(
     private dashBoardService: DashboardService,
@@ -34,6 +35,7 @@ export class SubmodulesListComponent {
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin')
     this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
     this.userRoleCheckUser = this.auth.checkIfRolesExist('user')
+    this.userRoleCheckSys = this.auth.checkIfRolesExist('sysAdmin')
     this.activatedRoute.params.pipe(
       pluck('name'),
       map(name => {
@@ -85,5 +87,5 @@ export class SubmodulesListComponent {
   checkIfAdminUserIsOnFirstStep(value: any[]) {
     return value?.map(data => data?.id)?.includes(this.currentUser?.id)
   }
- 
+
 }

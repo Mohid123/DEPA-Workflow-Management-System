@@ -10,7 +10,10 @@
         <div
           *ngIf="
           (userRoleCheckAdmin == true && checkIfAdminUserIsOnFirstStep((moduleData | async)?.workFlowId?.stepIds[0]?.approverIds) == true) ||
-          checkIfUserisAdmin((moduleData | async)?.adminUsers) || userRoleCheckUser == true || currentUser?.roles?.length == 0"
+          checkIfUserisAdmin((moduleData | async)?.adminUsers) ||
+          userRoleCheckUser == true ||
+          userRoleCheckSys == true ||
+          currentUser?.roles?.length == 0"
           class="mt-2 cursor-pointer"
         >
           <a (click)="addSubmissionRoute()" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
