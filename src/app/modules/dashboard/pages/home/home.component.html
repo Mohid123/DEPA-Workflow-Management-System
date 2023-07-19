@@ -2,7 +2,7 @@
 <div class="bg_img_main">
   <app-grid-view-loader *ngIf="!(dashboardApps | async); else dashboardapps"></app-grid-view-loader>
   <ng-template #dashboardapps>
-    <section class="grid w-11/12 grid-cols-12 gap-4 mx-auto mt-52 pb-20">
+    <section class="grid w-11/12 grid-cols-12 gap-4 pb-20 mx-auto mt-52">
       <ng-container *ngIf="(dashboardApps | async)?.length == 0">
         <p class="col-span-12 my-8 text-base font-semibold text-center">
         There are currently no apps here. Create a category to start adding new apps
@@ -12,13 +12,13 @@
       </p>
       <!-- <div class="flex justify-center col-span-12">
         <div (click)="startTour()" class="h-9 w-28 bg-[#F15B41] rounded-md flex justify-center items-center animation-pulse cursor-pointer">
-          <span class="text-white text-base font-semibold">Take a tour!</span>
+          <span class="text-base font-semibold text-white">Take a tour!</span>
         </div>
       </div> -->
       </ng-container>
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
         <div class="flex justify-between py-2 px-2 bg-[#eae4d8] rounded-md col-span-12">
-          <p class="text-lg font-semibold mt-2">{{app.name}}</p>
+          <p class="mt-2 text-lg font-semibold">{{app.name}}</p>
           <a *ngIf="userRoleCheck == true" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base">+ Add new app</a>
         </div>
         <ng-container *ngIf="!app.submodules || app.subsubmodules?.length == 0; else showApps">
@@ -82,8 +82,8 @@
     Add Category
   </p>
   <div class="flex flex-col justify-center my-5">
-    <input [ngClass]="formData?.invalid && formData?.touched ? 'is-invalid': ''" type="text" class="form-control my-2" [formControl]="formData">
-    <span class="text-red-500 text-xs" *ngIf="formData?.invalid && formData?.touched">Category name is required</span>
+    <input [ngClass]="formData?.invalid && formData?.touched ? 'is-invalid': ''" type="text" class="my-2 form-control" [formControl]="formData">
+    <span class="text-xs text-red-500" *ngIf="formData?.invalid && formData?.touched">Category name is required</span>
   </div>
   <button
     tuiButton

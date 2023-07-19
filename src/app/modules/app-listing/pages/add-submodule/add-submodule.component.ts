@@ -59,7 +59,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   returnToDashboard: boolean;
   parentID: string;
   parentIDUnAssigned: boolean = false;
-  categoryId: string
+  categoryId: string;
+  categoryIdForMatch: string;
 
   constructor(
     private fb: FormBuilder,
@@ -80,7 +81,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       if(Object.keys(val).length > 0) {
         this.parentIDUnAssigned = true;
         this.getDefaultWorkflowByModule();
-            this.getAllCategories();
+        this.getAllCategories();
+        this.categoryIdForMatch = val['parentID'];
       }
       else {
         this.getDefaultWorkflowBySubModule();
@@ -224,6 +226,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           label: data?.name
         }
       });
+      let copyCat: any = this.categoryList;
+      copyCat = copyCat?.filter(data => data?.value == this.categoryIdForMatch)[0];
+      this.subModuleForm?.get('categoryName')?.setValue(copyCat?.value)
     });
   }
 
