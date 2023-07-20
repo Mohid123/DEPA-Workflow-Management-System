@@ -50,4 +50,8 @@ export class GridTopAppComponent {
    checkIfUserisAdmin(value: any[]): boolean {
     return value?.includes(this.currentUser?.id)
   }
+
+  checkIfUserisViewOnly(value: any[]): boolean {
+    return value?.includes(this.currentUser?.id)
+  }
 }

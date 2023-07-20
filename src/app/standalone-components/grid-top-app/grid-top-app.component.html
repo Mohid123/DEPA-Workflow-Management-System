@@ -24,7 +24,7 @@
     <a
       title="Edit"
       *ngIf="currentUser?.id == appData?.createdBy ||
-      userRoleCheck == true ||
+      (userRoleCheck == true && checkIfUserisViewOnly(appData?.viewOnlyUsers) == false) ||
       checkIfUserisAdmin(appData?.adminUsers)"
       [routerLink]="['/modules/edit-module', appData?._id]" [queryParams]="{moduleCode: appData?.code}"
       (click)="editModuleEvent(appData?._id)"
@@ -35,7 +35,7 @@
     <a
       title="Delete"
       *ngIf="currentUser?.id == appData?.createdBy ||
-      userRoleCheck == true ||
+      (userRoleCheck == true && checkIfUserisViewOnly(appData?.viewOnlyUsers) == false) ||
       checkIfUserisAdmin(appData?.adminUsers)"
       (click)="deleteModuleEvent(appData?._id)"
       class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer"
