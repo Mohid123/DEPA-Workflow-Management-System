@@ -11,7 +11,7 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import {TuiPreviewModule, TuiPreviewDialogService} from '@taiga-ui/addon-preview';
 
 /**
@@ -91,6 +91,7 @@ export class TableViewComponent implements OnDestroy {
   destroy$ =  new Subject();
   isFilterApplied: boolean = false;
   userRoleCheck: any;
+  showEmptyMessage = new BehaviorSubject<boolean>(false)
 
   @Output() emitDeleteEvent = new EventEmitter();
   @Output() emitPagination = new EventEmitter();
@@ -217,7 +218,7 @@ export class TableViewComponent implements OnDestroy {
   }
 
   sendSearchValue(value: any) {
-    this.fetchingTableData.next(true)
+    this.fetchingTableData.next(true);
     const queryParams = {
       field: 'subModuleTitle',
       search: value
@@ -228,8 +229,14 @@ export class TableViewComponent implements OnDestroy {
     this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
+      if(res?.results?.length == 0) {
+        this.showEmptyMessage.next(true)
+      }
+      if(!value) {
+        this.showEmptyMessage.next(false)
+      }
       this.tableData = res;
-      this.fetchingTableData.next(false)
+      this.fetchingTableData.next(false);
     })
   }
 

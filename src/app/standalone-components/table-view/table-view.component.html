@@ -12,8 +12,16 @@
   </ng-container>
 </div>
 
+<ng-container *ngIf="tableData?.results?.length == 0 && (showEmptyMessage | async) == true;">
+  <div class="flex justify-center items-center">
+    <img src="../../../assets/empty-box.svg" alt="empty_box" width="240" height="240">
+  </div>
+  <p class="px-5 text-lg text-center font-semibold text-gray-500">
+    No results found!
+  </p>
+</ng-container>
 <tui-loader [overlay]="true" size="xl" [showLoader]="fetchingTableData | async">
-  <ng-container *ngIf="tableData?.results?.length == 0; else showSubModules">
+  <ng-container *ngIf="tableData?.results?.length == 0 && (showEmptyMessage | async) == false; else showSubModules">
     <div class="flex justify-center items-center">
       <img src="../../../assets/empty-box.svg" alt="empty_box" width="240" height="240">
     </div>
@@ -32,7 +40,7 @@
                 <img [src]="data?.image" alt="top_app_icon" class="object-cover w-full h-full rounded-lg" loading="eager">
               </div>
               <div class="w-full h-full">
-                <h3 class="mb-2 text-xl font-semibold">
+                <h3 class="mb-2 text-lg font-semibold">
                   {{data?.title}}
                 </h3>
                 <p class="leading-6 line-clamp-4">{{data?.description}}</p>
@@ -68,7 +76,7 @@
                   <img [src]="data?.image" alt="top_app_icon" class="object-cover w-full h-full rounded-lg" loading="eager">
                 </div>
                 <div class="w-full h-full">
-                  <h3 class="mb-2 text-xl font-semibold">
+                  <h3 class="mb-2 text-lg font-semibold">
                     {{data?.title}}
                     <ng-container *ngIf="data?.status === 3">
                       <tui-badge
@@ -98,7 +106,7 @@
         </ng-container>
       </ng-container>
     </section>
-    <div class="py-6">
+    <div *ngIf="(showEmptyMessage | async) == false" class="py-6">
       <tui-pagination
         [length]="tableData?.totalPages || 1"
         [index]="tableData?.page - 1 || 0"
