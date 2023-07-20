@@ -337,7 +337,7 @@ export const userAddFormProfile = {
           "input": true
       },
       {
-          "label": "Role",
+          "label": "Roles",
           "widget": "choicesjs",
           "tableView": true,
           "disabled": true,
@@ -360,7 +360,7 @@ export const userAddFormProfile = {
                   }
               ]
           },
-          "key": "role",
+          "key": "roles",
           "type": "select",
           "input": true,
           "multiple": true
