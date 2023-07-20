@@ -223,7 +223,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     const payload: any = {
       stepId: this.decisionData?.value?.stepId || this.decisionData?.value[0]?.stepId,
       userId: this.currentUser?.id,
-      remarks: this.remarks?.value,
+      remarks: this.remarks?.value || undefined,
       isApproved: this.approve?.value == true ? true : false,
       type: 'submittal'
     }
@@ -250,7 +250,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     let payload: any = {
       stepId: this.currentStepId,
       userId: this.currentUser?.id,
-      remarks: this.remarks?.value,
+      remarks: this.remarks?.value || undefined,
       type: 'submittal'
     }
     if(this.isDeleting == 'delete') {
