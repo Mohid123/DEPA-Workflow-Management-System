@@ -55,6 +55,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   submoduleFromLS: any;
   workFlowId: string;
   categoryList: any[];
+  categoryId: string;
 
   constructor(
     private fb: FormBuilder,
@@ -180,6 +181,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
             this.workFlowId = response?.workFlowId?.id;
+            this.categoryId = response?.categoryId?.id;
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;
@@ -448,7 +450,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
-      categoryId: this.subModuleForm.get('categoryId')?.value,
+      categoryId: this.subModuleForm.get('categoryId')?.value ? this.subModuleForm.get('categoryId')?.value : this.categoryId,
       image: this.subModuleForm.get('image')?.value,
       workFlowId: this.workFlowId,
       title: this.subModuleForm.get('title')?.value,

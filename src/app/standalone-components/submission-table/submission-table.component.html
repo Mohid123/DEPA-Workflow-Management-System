@@ -34,7 +34,7 @@
               <td class="px-4 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                 {{showStatus(data?.submissionStatus)}}
               </td>
-              <td class="px-6 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+              <td class="pr-4 pl-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                 {{(data?.submissionStatus === 1 || data?.submissionStatus === 4) ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
               </td>
                 <td class="px-2 py-4 max-w-60" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">

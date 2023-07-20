@@ -6,10 +6,11 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
-import { jsPDF } from 'jspdf';
 import domToImage from 'dom-to-image';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
+import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   templateUrl: './view-workflow.component.html',
@@ -59,7 +60,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private workflowService: WorkflowsService,
     private auth: AuthService,
     private dashboard: DashboardService,
-    private router: Router
+    private router: Router,
+    private pdfGeneratorService: PdfGeneratorService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
@@ -404,44 +406,22 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   downloadAsPDF() {
     this.downloadingPDF.next(true);
-    const width = this.formPdf.nativeElement.clientWidth - 350;
-    const height = this.formPdf.nativeElement.clientHeight - 300;
-    let orientation: any = '';
-    let imageUnit: any = 'pt';
-    if (width > height) {
-      orientation = 'l';
-    }
-    else {
-      orientation = 'p';
-    }
-    const html = document.getElementsByTagName('formio');
-    const title = document.getElementById('form-title-id');
-    Array.from(html)?.forEach(value => {
-      domToImage.toPng(value, {
-        width: width * 1.5,
-        height: height  * 1.5,
+    this.formWithWorkflow?.forEach(formData => {
+      const width = this.formPdf.nativeElement.clientWidth;
+      const height = this.formPdf.nativeElement.clientHeight + 300;
+      const domElements = this.formPdf?.nativeElement;
+      domToImage.toPng(domElements, {
+        width: width * 2,
+        height: height  * 2,
         style: {
-          transform: "scale(" + 1.5 + ")",
+          transform: "scale(" + 2 + ")",
           transformOrigin: "top left"
         }
       })
-      .then((result) => {
-        let jsPdfOptions = {
-          orientation: orientation,
-          unit: imageUnit,
-          format: [width, height]
-        };
-        const pdf = new jsPDF(jsPdfOptions);
-        const image: HTMLImageElement | any = new Image();
-        image.src = 'https://i.ibb.co/Wt2PxM6/depa-logo.png';
-        image.alt = 'logo';
-        pdf.text(title?.innerText, 150, 60, {
-          align: 'center',
-          baseline: 'top'
-        })
-        pdf.addImage(image, 'PNG', 25, 45, 40, 40)
-        pdf.addImage(result, 'PNG', 25, 105, width, height);
-        pdf.save('Form_Data'+ '.pdf');
+      .then(async (value: any) => {
+        const pdfBytes = await this.pdfGeneratorService.generatePdf(formData?.data, value, width);
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        saveAs(blob, 'form_data.pdf');
         this.downloadingPDF.next(false);
       })
       .catch(error => {

@@ -31,7 +31,6 @@
         </a>
       </div>
     </div>
-    <section #formPdf>
       <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
         <section class="flex justify-between my-8">
           <nav
@@ -45,9 +44,9 @@
           </nav>
           <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
             <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-              <div class="flex justify-end">
+              <div *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true" class="flex justify-end">
                 <button (click)="downloadAsPDF()" class="px-2 py-1 rounded-md ml-2 bg-[#FF0000] text-white">
-                  <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp; {{(downloadingPDF | async) == true ? 'Downloading' : 'Download as PDF'}}
+                  <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp; {{(downloadingPDF | async) == true ? 'Saving...' : 'Save as PDF'}}
                 </button>
               </div>
               <formio
@@ -69,217 +68,217 @@
         </section>
       </div>
 
-      <section class="my-10">
-        <div class="grid grid-cols-12 gap-2">
-          <div class="w-full col-span-9">
-            <div class="flex flex-col">
-              <div class="mb-5">
-                <p class="text-lg font-semibold">Approval Workflow</p>
+      <section #formPdf>
+        <section class="my-10">
+          <div class="grid grid-cols-12 gap-2">
+            <div class="w-full col-span-9">
+              <div class="flex flex-col">
+                <div class="mb-5">
+                  <p class="text-lg font-semibold">Approval Workflow</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-700">Progress: </p>
+                  <label tuiProgressLabel>
+                    <span class="font-semibold text-gray-700">{{ (workflowProgress | async) | number : '1.2-2' }}%</span>
+                    <progress
+                      tuiProgressBar
+                      size="m"
+                      [max]="max"
+                      [value]="workflowProgress | async"
+                      class="w-180"
+                      [color]="changeProgressColor((workflowProgress | async))"
+                    ></progress>
+                  </label>
+                </div>
               </div>
-              <div>
-                <p class="font-semibold text-gray-700">Progress: </p>
-                <label tuiProgressLabel>
-                  <span class="font-semibold text-gray-700">{{ (workflowProgress | async) | number : '1.2-2' }}%</span>
-                  <progress
-                    tuiProgressBar
-                    size="m"
-                    [max]="max"
-                    [value]="workflowProgress | async"
-                    class="w-180"
-                    [color]="changeProgressColor((workflowProgress | async))"
-                  ></progress>
-                </label>
+            </div>
+            <div class="col-span-3 text-sm place-self-end">
+              <p class="my-2 text-sm font-semibold text-left">Legend</p>
+              <div class="flex flex-col justify-start gap-2">
+                <div class="flex gap-1">
+                  <div class="w-6 h-6 bg-green-600"></div>
+                  <p class="mt-0.5">Approved</p>
+                </div>
+                <div class="flex gap-1">
+                  <div class="h-6 w-6 bg-[#2563EB]"></div>
+                  <p class="mt-0.5">Active</p>
+                </div>
+                <div class="flex gap-1">
+                  <div class="w-6 h-6 bg-yellow-600"></div>
+                  <p class="mt-0.5">Pending</p>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-span-3 text-sm place-self-end">
-            <p class="my-2 text-sm font-semibold text-left">Legend</p>
-            <div class="flex flex-col justify-start gap-2">
-              <div class="flex gap-1">
-                <div class="w-6 h-6 bg-green-600"></div>
-                <p class="mt-0.5">Approved</p>
-              </div>
-              <div class="flex gap-1">
-                <div class="h-6 w-6 bg-[#2563EB]"></div>
-                <p class="mt-0.5">Active</p>
-              </div>
-              <div class="flex gap-1">
-                <div class="w-6 h-6 bg-yellow-600"></div>
-                <p class="mt-0.5">Pending</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-wrap justify-start gap-2">
-          <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
-            <tui-island
-              size="l"
-              class="my-4 shadow-lg w-96"
-              [hoverable]="true"
-              [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
-            >
-              <ng-container *ngIf="user?.status == 'pending'">
-                <div class="flex justify-between">
-                  <tui-badge
-                    class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
-                    [value]="'Pending'"
-                    status="custom"
-                  >
-                    <tui-svg src="tuiIconClock"></tui-svg>
-                  </tui-badge>
-                  <div
-                    *ngIf="
-                      checkIfUserisAllUser() == false &&
-                      checkIfLoggedInUserIsPartOfActiveUsers() == false &&
-                      userApprovedCheckResult() == false &&
-                      user?.status == 'inProgress' &&
-                      workflowData?.submissionStatus !== 5 &&
-                      workflowData?.status !== 2 &&
-                      userRoleCheckAny == true
-                    "
-                    class="flex justify-end gap-5 decision-buttons"
-                  >
-                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
-                    </ng-container>
-                  </div>
-                </div>
-                <hr class="mb-2">
-              </ng-container>
-              <ng-container *ngIf="user?.status == 'inProgress'">
-                <div class="flex justify-between">
-                  <tui-badge
-                    class="px-2 font-semibold text-white bg-blue-600 tui-space_right-2 tui-space_bottom-4"
-                    [value]="'Active'"
-                    status="custom"
-                  >
-                    <tui-svg src="tuiIconRadio"></tui-svg>
-                  </tui-badge>
-                  <div
-                    *ngIf="
-                      checkIfUserisAllUser() == false &&
-                      checkIfLoggedInUserIsPartOfActiveUsers() == false &&
-                      userApprovedCheckResult() == false &&
-                      user?.status == 'inProgress' &&
-                      workflowData?.submissionStatus !== 5 &&
-                      workflowData?.status !== 2 &&
-                      userRoleCheckAny == true
-                    "
-                    class="flex justify-end gap-5 decision-buttons"
-                  >
-                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
-                    </ng-container>
-                  </div>
-                </div>
-                <hr class="mb-2">
-              </ng-container>
-              <ng-container *ngIf="user?.status == 'rejected'">
-                <div class="flex justify-between">
-                  <tui-badge
-                    class="px-2 font-semibold text-white bg-red-600 tui-space_right-2 tui-space_bottom-4"
-                    [value]="'Rejected'"
-                    status="custom"
-                  >
-                    <tui-svg src="tuiIconAlertOctagon"></tui-svg>
-                  </tui-badge>
-                  <div
-                    *ngIf="
-                      checkIfUserisAllUser() == false &&
-                      checkIfLoggedInUserIsPartOfActiveUsers() == false &&
-                      userApprovedCheckResult() == false &&
-                      user?.status == 'inProgress' &&
-                      workflowData?.submissionStatus !== 5 &&
-                      workflowData?.status !== 2 &&
-                      userRoleCheckAny == true
-                    "
-                    class="flex justify-end gap-5 decision-buttons"
-                  >
-                    <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                    <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                      <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
-                    </ng-container>
-                  </div>
-                </div>
-                <hr class="mb-2">
-              </ng-container>
-              <ng-container *ngIf="user?.status == 'approved'">
-                <tui-badge
-                  class="px-2 font-semibold text-white bg-green-600 tui-space_right-2 tui-space_bottom-4"
-                  [value]="'Approved'"
-                  status="custom"
-                >
-                  <tui-svg src="tuiIconCheckCircle"></tui-svg>
-                </tui-badge>
-                <hr class="mb-2">
-              </ng-container>
-              <ul class="tui-list">
-                <ng-container *ngFor="let approvers of user?.approverIds; let j = index; let first = first; let last = last">
-                  <li class="tui-list__item">
-                    <div class="flex justify-between">
-                      <span class="text-base font-semibold">
-                        {{approvers?.name}}
-                      </span>
-                      <span *ngIf="checkApprovedStatus(approvers?.name, i) === true">
-                        <i class="fa fa-check fa-lg" aria-hidden="true"></i>
-                      </span>
-                      <div
-                        *ngIf="
-                          currentUser?.fullName === approvers?.name &&
-                          checkIfUserisStillActive(currentUser?.fullName) == true &&
-                          checkIfUserRejected(user?.approverIds) == false &&
-                          userApprovedCheckResult() == false &&
-                          user?.status == 'inProgress' &&
-                          workflowData?.submissionStatus !== 5 &&
-                          workflowData?.status !== 2
-                        "
-                        class="flex justify-end gap-5 decision-buttons"
-                      >
-                        <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                        <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                          <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
-                        </ng-container>
-                      </div>
+          <div class="flex flex-wrap justify-start gap-2">
+            <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
+              <tui-island
+                size="l"
+                class="my-4 shadow-lg w-96"
+                [hoverable]="true"
+                [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
+              >
+                <ng-container *ngIf="user?.status == 'pending'">
+                  <div class="flex justify-between">
+                    <tui-badge
+                      class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
+                      [value]="'Pending'"
+                      status="custom"
+                    >
+                      <tui-svg src="tuiIconClock"></tui-svg>
+                    </tui-badge>
+                    <div
+                      *ngIf="
+                        checkIfUserisAllUser() == false &&
+                        checkIfLoggedInUserIsPartOfActiveUsers() == false &&
+                        userApprovedCheckResult() == false &&
+                        user?.status == 'inProgress' &&
+                        workflowData?.submissionStatus !== 5 &&
+                        workflowData?.status !== 2 &&
+                        userRoleCheckAny == true
+                      "
+                      class="flex justify-end gap-5 decision-buttons"
+                    >
+                      <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
+                        <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                      </ng-container>
                     </div>
-                  </li>
-                  <p class="mt-2 ml-6 font-normal" *ngIf="!last">{{user?.condition}}</p>
+                  </div>
+                  <hr class="mb-2">
                 </ng-container>
-              </ul>
-            </tui-island>
-            <div class="flex items-center">
-              <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
-            </div>
-          </ng-container>
-        </div>
-      </section>
-
-      <!--Workflow progress-->
-      <section class="my-4">
-        <p class="mb-5 text-lg font-semibold">Approval Logs</p>
-        <div class="grid grid-cols-12">
-          <div class="col-span-11">
-            <tui-island size="l" class="w-full shadow-lg">
-              <ng-container *ngIf="approvalLogs?.length == 0">
-                <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>
-              </ng-container>
-              <ng-container *ngFor="let log of approvalLogs; let i = index">
-                <div class="grid grid-cols-12 py-3 border-b border-gray-300 gap-x-3">
-                  <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
-                  <p class="col-span-2 font-normal">Action: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
-                  <p class="col-span-4 font-normal">
-                    Approved On: <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">&nbsp;{{log?.approvedOn | date: 'medium'}}</span>
-                  </p>
-                  <p class="col-span-3 font-normal">Comments:
-                    <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">&nbsp;{{log?.remarks}}</span>
-                  </p>
-                </div>
-              </ng-container>
-            </tui-island>
+                <ng-container *ngIf="user?.status == 'inProgress'">
+                  <div class="flex justify-between">
+                    <tui-badge
+                      class="px-2 font-semibold text-white bg-blue-600 tui-space_right-2 tui-space_bottom-4"
+                      [value]="'Active'"
+                      status="custom"
+                    >
+                      <tui-svg src="tuiIconRadio"></tui-svg>
+                    </tui-badge>
+                    <div
+                      *ngIf="
+                        checkIfUserisAllUser() == false &&
+                        checkIfLoggedInUserIsPartOfActiveUsers() == false &&
+                        userApprovedCheckResult() == false &&
+                        user?.status == 'inProgress' &&
+                        workflowData?.submissionStatus !== 5 &&
+                        workflowData?.status !== 2 &&
+                        userRoleCheckAny == true
+                      "
+                      class="flex justify-end gap-5 decision-buttons"
+                    >
+                      <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
+                        <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                      </ng-container>
+                    </div>
+                  </div>
+                  <hr class="mb-2">
+                </ng-container>
+                <ng-container *ngIf="user?.status == 'rejected'">
+                  <div class="flex justify-between">
+                    <tui-badge
+                      class="px-2 font-semibold text-white bg-red-600 tui-space_right-2 tui-space_bottom-4"
+                      [value]="'Rejected'"
+                      status="custom"
+                    >
+                      <tui-svg src="tuiIconAlertOctagon"></tui-svg>
+                    </tui-badge>
+                    <div
+                      *ngIf="
+                        checkIfUserisAllUser() == false &&
+                        checkIfLoggedInUserIsPartOfActiveUsers() == false &&
+                        userApprovedCheckResult() == false &&
+                        user?.status == 'inProgress' &&
+                        workflowData?.submissionStatus !== 5 &&
+                        workflowData?.status !== 2 &&
+                        userRoleCheckAny == true
+                      "
+                      class="flex justify-end gap-5 decision-buttons"
+                    >
+                      <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
+                        <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                      </ng-container>
+                    </div>
+                  </div>
+                  <hr class="mb-2">
+                </ng-container>
+                <ng-container *ngIf="user?.status == 'approved'">
+                  <tui-badge
+                    class="px-2 font-semibold text-white bg-green-600 tui-space_right-2 tui-space_bottom-4"
+                    [value]="'Approved'"
+                    status="custom"
+                  >
+                    <tui-svg src="tuiIconCheckCircle"></tui-svg>
+                  </tui-badge>
+                  <hr class="mb-2">
+                </ng-container>
+                <ul class="tui-list">
+                  <ng-container *ngFor="let approvers of user?.approverIds; let j = index; let first = first; let last = last">
+                    <li class="tui-list__item">
+                      <div class="flex justify-between">
+                        <span class="text-base font-semibold">
+                          {{approvers?.name}}
+                        </span>
+                        <span *ngIf="checkApprovedStatus(approvers?.name, i) === true">
+                          <i class="fa fa-check fa-lg" aria-hidden="true"></i>
+                        </span>
+                        <div
+                          *ngIf="
+                            currentUser?.fullName === approvers?.name &&
+                            checkIfUserisStillActive(currentUser?.fullName) == true &&
+                            checkIfUserRejected(user?.approverIds) == false &&
+                            userApprovedCheckResult() == false &&
+                            user?.status == 'inProgress' &&
+                            workflowData?.submissionStatus !== 5 &&
+                            workflowData?.status !== 2
+                          "
+                          class="flex justify-end gap-5 decision-buttons"
+                        >
+                          <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                          <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
+                            <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </li>
+                    <p class="mt-2 ml-6 font-normal" *ngIf="!last">{{user?.condition}}</p>
+                  </ng-container>
+                </ul>
+              </tui-island>
+              <div class="flex items-center">
+                <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
+              </div>
+            </ng-container>
           </div>
-        </div>
-      </section>
+        </section>
+        <!--Workflow progress-->
+        <section class="my-4">
+          <p class="mb-5 text-lg font-semibold">Approval Logs</p>
+          <div class="grid grid-cols-12">
+            <div class="col-span-11">
+              <tui-island size="l" class="w-full shadow-lg">
+                <ng-container *ngIf="approvalLogs?.length == 0">
+                  <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>
+                </ng-container>
+                <ng-container *ngFor="let log of approvalLogs; let i = index">
+                  <div class="grid grid-cols-12 py-3 border-b border-gray-300 gap-x-3">
+                    <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
+                    <p class="col-span-2 font-normal">Action: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
+                    <p class="col-span-4 font-normal">
+                      Approved On: <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">&nbsp;{{log?.approvedOn | date: 'medium'}}</span>
+                    </p>
+                    <p class="col-span-3 font-normal">Comments:
+                      <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">&nbsp;{{log?.remarks}}</span>
+                    </p>
+                  </div>
+                </ng-container>
+              </tui-island>
+            </div>
+          </div>
+        </section>
     </section>
   </ng-container>
 
