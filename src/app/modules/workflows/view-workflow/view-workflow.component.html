@@ -8,7 +8,7 @@
         <!--Delete-->
         <a
           title="Delete"
-          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5"
+          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5 && (workflowProgress | async) < 100"
           (click)="showDeleteDialog(dialog, 'delete')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
           <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>&nbsp; Delete
@@ -16,7 +16,7 @@
       <!--Cancel-->
         <a
           title="Cancel Submission"
-          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5"
+          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5 && (workflowProgress | async) < 100"
           (click)="showDeleteDialog(dialog, 'cancel')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
           <i class="fa fa-ban fa-lg" aria-hidden="true"></i>&nbsp; Cancel
@@ -24,7 +24,7 @@
         <!--Enable-->
         <a
           title="Enable"
-          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus === 5"
+          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus === 5 && (workflowProgress | async) < 100"
           (click)="showDeleteDialog(dialog, 'enable')"
           class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Enable
