@@ -317,8 +317,12 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return data?.map(val => val?._id)?.includes(this.currentUser?.id)
   }
 
-  checkIfUserisActiveUser(data: any) {
-    return data?.flatMap(val => val?.status == 'inProgress' ? val.activeUsers: null)?.filter(val => val).includes(this.currentUser?.id)
+  checkIfUserisActiveUser() {
+    return this.workflowData?.workflowStatus?.flatMap(val => val?.status == 'inProgress' ? val.activeUsers: null)?.filter(val => val).includes(this.currentUser?.id)
+  }
+
+  checkIfUserisAllUser() {
+    return this.workflowData?.workflowStatus?.flatMap(val => val?.status == 'inProgress' ? val.allUsers: null)?.filter(val => val).includes(this.currentUser?.id)
   }
 
   checkIfUserCanEditForm(): any[] {

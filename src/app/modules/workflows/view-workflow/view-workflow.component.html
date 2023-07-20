@@ -129,6 +129,7 @@
                   </tui-badge>
                   <div
                     *ngIf="
+                      checkIfUserisAllUser() == false &&
                       checkIfLoggedInUserIsPartOfActiveUsers() == false &&
                       userApprovedCheckResult() == false &&
                       user?.status == 'inProgress' &&
@@ -157,6 +158,7 @@
                   </tui-badge>
                   <div
                     *ngIf="
+                      checkIfUserisAllUser() == false &&
                       checkIfLoggedInUserIsPartOfActiveUsers() == false &&
                       userApprovedCheckResult() == false &&
                       user?.status == 'inProgress' &&
@@ -185,6 +187,7 @@
                   </tui-badge>
                   <div
                     *ngIf="
+                      checkIfUserisAllUser() == false &&
                       checkIfLoggedInUserIsPartOfActiveUsers() == false &&
                       userApprovedCheckResult() == false &&
                       user?.status == 'inProgress' &&
