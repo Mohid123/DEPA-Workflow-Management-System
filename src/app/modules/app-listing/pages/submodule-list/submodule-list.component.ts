@@ -20,7 +20,6 @@ export class SubmodulesListComponent {
   searchValue: FormControl = new FormControl();
   currentUser: any;
   userRoleCheckAdmin: any;
-  userRoleCheckAny: any;
   userRoleCheckUser: any;
   userRoleCheckSys: any;
 
@@ -33,7 +32,6 @@ export class SubmodulesListComponent {
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin')
-    this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
     this.userRoleCheckUser = this.auth.checkIfRolesExist('user')
     this.userRoleCheckSys = this.auth.checkIfRolesExist('sysAdmin')
     this.activatedRoute.params.pipe(

@@ -51,7 +51,6 @@ export class SubmissionTableComponent implements OnDestroy {
   limit: number = 7;
   submoduleData: any;
   remarks = new FormControl('');
-  userRoleCheckAny: any;
   userRoleCheckAdmin: any;
 
   constructor(
@@ -62,7 +61,6 @@ export class SubmissionTableComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheckAny = this.auth.checkIfRolesExist('any');
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin');
     this.activatedRoute.queryParams.subscribe(val => {
         if(val['moduleID']) {

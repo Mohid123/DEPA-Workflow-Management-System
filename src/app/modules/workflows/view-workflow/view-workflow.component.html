@@ -127,21 +127,6 @@
                     >
                       <tui-svg src="tuiIconClock"></tui-svg>
                     </tui-badge>
-                    <div
-                      *ngIf="
-                        userApprovedCheckResult() == false &&
-                        user?.status == 'inProgress' &&
-                        workflowData?.submissionStatus !== 5 &&
-                        workflowData?.status !== 2 &&
-                        userRoleCheckAny == true
-                      "
-                      class="flex justify-end gap-5 decision-buttons"
-                    >
-                      <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                        <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
-                      </ng-container>
-                    </div>
                   </div>
                   <hr class="mb-2">
                 </ng-container>
@@ -154,21 +139,6 @@
                     >
                       <tui-svg src="tuiIconRadio"></tui-svg>
                     </tui-badge>
-                    <div
-                      *ngIf="
-                        userApprovedCheckResult() == false &&
-                        user?.status == 'inProgress' &&
-                        workflowData?.submissionStatus !== 5 &&
-                        workflowData?.status !== 2 &&
-                        userRoleCheckAny == true
-                      "
-                      class="flex justify-end gap-5 decision-buttons"
-                    >
-                      <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                        <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
-                      </ng-container>
-                    </div>
                   </div>
                   <hr class="mb-2">
                 </ng-container>
@@ -181,21 +151,6 @@
                     >
                       <tui-svg src="tuiIconAlertOctagon"></tui-svg>
                     </tui-badge>
-                    <div
-                      *ngIf="
-                        userApprovedCheckResult() == false &&
-                        user?.status == 'inProgress' &&
-                        workflowData?.submissionStatus !== 5 &&
-                        workflowData?.status !== 2 &&
-                        userRoleCheckAny == true
-                      "
-                      class="flex justify-end gap-5 decision-buttons"
-                    >
-                      <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
-                      <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                        <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(user?.approverIds, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
-                      </ng-container>
-                    </div>
                   </div>
                   <hr class="mb-2">
                 </ng-container>
@@ -221,14 +176,29 @@
                         </span>
                         <div
                           *ngIf="
-                            currentUser?.fullName === approvers?.name &&
-                            checkIfUserisStillActive(currentUser?.fullName) == true &&
-                            checkIfUserRejected(user?.approverIds) == false &&
-                            userApprovedCheckResult() == false &&
-                            user?.status == 'inProgress' &&
-                            workflowData?.submissionStatus !== 5 &&
-                            workflowData?.status !== 2
-                          "
+                            (
+                              currentUser?.fullName === approvers?.name &&
+                              checkIfUserisStillActive(currentUser?.fullName) == true &&
+                              checkIfUserRejected(user?.approverIds) == false &&
+                              userApprovedCheckResult() == false &&
+                              user?.status == 'inProgress' &&
+                              workflowData?.submissionStatus !== 5 &&
+                              workflowData?.status !== 2
+                            ) || 
+                            (
+                              userApprovedCheckResult() == false &&
+                              user?.status == 'inProgress' &&
+                              workflowData?.submissionStatus !== 5 &&
+                              workflowData?.status !== 2 &&
+                              currentUser?.roles.includes('sysAdmin')
+                            ) ||
+                            (
+                              userApprovedCheckResult() == false &&
+                              user?.status == 'inProgress' &&
+                              workflowData?.submissionStatus !== 5 &&
+                              workflowData?.status !== 2 &&
+                              checkIfUserIsInAdminUsers() == true
+                            )"
                           class="flex justify-end gap-5 decision-buttons"
                         >
                           <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>

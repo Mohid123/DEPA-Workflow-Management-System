@@ -52,7 +52,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   isDeleting: string;
   currentStepId: string;
   downloadingPDF = new Subject<boolean>();
-  userRoleCheckAny: any;
+  adminUsers: any[] = [];
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -64,7 +64,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private pdfGeneratorService: PdfGeneratorService
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheckAny = this.auth.checkIfRolesExist('any')
     this.fetchData();
     this.approve.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val === true) {
@@ -131,19 +130,19 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       pluck('id'),
       map(id => this.workflowID = id),
       switchMap((subId => this.workflowService.getWorkflowSubmission(subId)))
-    ).subscribe(data => {
+    ).subscribe(async (data) => {
       if(data) {
         this.workflowData = data;
-        this.currentStepId = this.workflowData?.workflowStatus?.filter(data => {
+        this.currentStepId = await this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null
         })[0]?.stepId;
-        this.formAllowedForEditUsers = this.workflowData?.workflowStatus?.map(data => {
+        this.formAllowedForEditUsers = await this.workflowData?.workflowStatus?.map(data => {
           return {
             users: data?.activeUsers?.map(val => val?.fullName),
             status: data?.status
           }
         });
-        this.approvedUsers = this.workflowData?.workflowStatus?.map(data => {
+        this.approvedUsers = await this.workflowData?.workflowStatus?.map(data => {
           return {
             users: data?.approvedUsers?.map(user => user?.fullName),
             status: data?.status
@@ -153,8 +152,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           status: this.workflowData?.approvalLog.at(-1)?.approvalStatus,
           user: this.workflowData?.approvalLog.at(-1)?.performedById?.fullName
         };
-        this.formTabs = this.workflowData?.formIds?.map(val => val.title);
-        this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
+        this.formTabs = await this.workflowData?.formIds?.map(val => val.title);
+        this.formWithWorkflow = await this.workflowData?.formIds?.map(data => {
           return {
             ...data,
             formDataId: this.workflowData?.formDataIds?.map(val => {
@@ -169,8 +168,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
-        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
-        this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
+        this.activeUsers = await this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
+        this.workflowUsers = await this.workflowData?.workflowStatus?.map(userData => {
           return {
             approverIds: userData?.allUsers?.map(val => {
               return {
@@ -186,6 +185,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
         this.approvalLogs = this.workflowData?.approvalLog;
         this.allApproved = this.workflowData?.workflowStatus?.map(userData => userData?.status == 'approved' ? true: false);
+        this.adminUsers = this.workflowData?.subModuleId?.adminUsers
         this.loadingData.next(false)
       }
     });
@@ -374,6 +374,10 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   checkIfAllApproved(): boolean {
     return !this.allApproved.includes(false)
+  }
+
+  checkIfUserIsInAdminUsers() {
+    return this.adminUsers?.includes(this.currentUser?.id)
   }
 
   updateFormData(event: any) {
