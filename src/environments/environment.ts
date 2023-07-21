@@ -6,6 +6,7 @@
  */
 export const environment = {
   production: false,
+  serviceWorker: false,
   appVersion: 'v1.0.00',
   apiUrl: 'http://localhost:3000/v1',
   appThemeName: 'Depa Frontend'

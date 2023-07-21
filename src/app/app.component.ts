@@ -74,7 +74,6 @@ export class AppComponent {
     swUpdate.versionUpdates
     .pipe(filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'))
     .subscribe(evt => {
-      console.log(evt)
       if (promptUser(evt)) {
         this.isNewVersionAvailable.next(true)
       }
