@@ -8,7 +8,23 @@
         <!--Delete-->
         <a
           title="Delete"
-          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5 && (workflowProgress | async) < 100"
+          *ngIf="
+          (
+            checkIfLoggedInUserIsPartOfActiveUsers() == true &&
+            workflowData?.submissionStatus !== 5 &&
+            (workflowProgress | async) < 100
+          ) ||
+          (
+            currentUser?.roles?.includes('sysAdmin') &&
+            workflowData?.submissionStatus !== 5 &&
+            (workflowProgress | async) < 100
+          ) ||
+          (
+            checkIfUserIsInAdminUsers() == true &&
+            workflowData?.submissionStatus !== 5 &&
+            (workflowProgress | async) < 100
+          )
+          "
           (click)="showDeleteDialog(dialog, 'delete')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
           <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>&nbsp; Delete
@@ -16,7 +32,23 @@
       <!--Cancel-->
         <a
           title="Cancel Submission"
-          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus !== 5 && (workflowProgress | async) < 100"
+          *ngIf="
+          (
+            checkIfLoggedInUserIsPartOfActiveUsers() == true &&
+            workflowData?.submissionStatus !== 5 &&
+            (workflowProgress | async) < 100
+          ) ||
+          (
+            currentUser?.roles?.includes('sysAdmin') &&
+            workflowData?.submissionStatus !== 5 &&
+            (workflowProgress | async) < 100
+          ) ||
+          (
+            checkIfUserIsInAdminUsers() == true &&
+            workflowData?.submissionStatus !== 5 &&
+            (workflowProgress | async) < 100
+          )
+          "
           (click)="showDeleteDialog(dialog, 'cancel')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
           <i class="fa fa-ban fa-lg" aria-hidden="true"></i>&nbsp; Cancel
@@ -58,7 +90,6 @@
                 workflowData?.status == 2
                 "
                 [options]="{'disableAlerts': true}"
-                (submit)="updateFormData($event)"
                 [submission]="form"
                 [form]="form"
                 (change)="onChange($event)"
@@ -282,23 +313,6 @@
       Cancel
     </button>
   </div>
-</ng-template>
-
-<ng-template
-  #content
->
-  <ng-container *ngIf="index == 3">
-    <span class="font-semibold">{{labels[index]}}</span> indicates that the previous user or previous step user/s must provide approval for workflow to proceed
-  </ng-container>
-  <ng-container *ngIf="index == 0">
-    <span class="font-semibold">{{labels[index]}}</span> indicates that users of the step can perform workflow actions.
-  </ng-container>
-  <ng-container *ngIf="index == 1">
-    <span class="font-semibold">{{labels[index]}}</span> indicates that all users of the step have provided approval and the step is complete.
-  </ng-container>
-  <ng-container *ngIf="index == 2">
-    <span class="font-semibold">{{labels[index]}}</span> indicates that the step is not currently active and no action has been performed yet.
-  </ng-container>
 </ng-template>
 
 <ng-template #dialog let-observer>

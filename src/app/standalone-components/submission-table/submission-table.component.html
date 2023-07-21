@@ -65,7 +65,14 @@
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       data?.summaryData?.progress < 100
-                    )"
+                    ) || 
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
+                    )
+                    "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                   </a>
@@ -74,22 +81,9 @@
                     title="View Submission"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="
-                    (
-                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
-                      checkIfUserisPartofWorkflow(data?.workflowAllUsers) == true &&
-                      userRoleCheckAdmin == false
-                    ) ||
-                    (
-                      userRoleCheckAdmin == true &&
-                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
-                      checkIfUserisPartofWorkflow(data?.workflowAllUsers) == false
-                    ) ||
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true ||
+                      checkIfUserisApprovedUser(data?.workflowStatus) == true || 
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true ||
-                    (
-                      currentUser?.id == data?.createdBy?.id &&
                       checkIfUserisActiveUser(data?.workflowStatus) == false
-                    )
                     "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>

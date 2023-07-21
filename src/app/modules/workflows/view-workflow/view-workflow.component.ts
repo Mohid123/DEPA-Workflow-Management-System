@@ -53,6 +53,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   currentStepId: string;
   downloadingPDF = new Subject<boolean>();
   adminUsers: any[] = [];
+  formData = new BehaviorSubject<any>(null)
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -109,6 +110,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
+      this.formData.next(event)
     }
   }
 
@@ -156,6 +158,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.formWithWorkflow = await this.workflowData?.formIds?.map(data => {
           return {
             ...data,
+            components: data.components?.map(data => {
+              if(data?.label && data?.label == 'Submit') {
+                data.hidden = true;
+                return data
+              }
+              return data
+            }),
             formDataId: this.workflowData?.formDataIds?.map(val => {
               if(val.formId == data?._id) {
                 return val?._id
@@ -221,7 +230,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   sendApproveOrRejectDecisionData() {
-    this.savingDecision.next(true)
+    this.savingDecision.next(true);
+    this.updateFormData();
     const payload: any = {
       stepId: this.decisionData?.value?.stepId || this.decisionData?.value[0]?.stepId,
       userId: this.currentUser?.id,
@@ -380,18 +390,14 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return this.adminUsers?.includes(this.currentUser?.id)
   }
 
-  updateFormData(event: any) {
+  updateFormData() {
     const payload: any = {
-      formId: event?._id,
-      data: event?.data
+      formId: this.formData?.value?._id,
+      data: this.formData?.value?.data
     }
-    this.workflowService.updateFormsData(payload, event?.formDataId)
+    this.workflowService.updateFormsData(payload, this.formData?.value?.formDataId)
     .pipe(takeUntil(this.destroy$))
-    .subscribe((res: any) => {
-      if(res) {
-        this.fetchData();
-      }
-    })
+    .subscribe()
   }
 
   hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {

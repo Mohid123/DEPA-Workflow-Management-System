@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
+import { TuiButtonModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
@@ -135,6 +135,10 @@ export class SubmissionTableComponent implements OnDestroy {
 
   checkIfUserisActiveUser(data: any) {
     return data?.flatMap(val => val?.status == 'inProgress' ? val.activeUsers: null)?.filter(val => val).includes(this.currentUser?.id)
+  }
+
+  checkIfUserisApprovedUser(data: any) {
+    return data?.flatMap(val => val.approvedUsers)?.includes(this.currentUser?.id)
   }
 
   checkIfUserisCreator(): boolean {
