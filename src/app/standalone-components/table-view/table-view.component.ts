@@ -112,7 +112,7 @@ export class TableViewComponent implements OnDestroy {
     private previewDialogService: TuiPreviewDialogService
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheck = this.auth.checkIfRolesExist('admin');
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
     this.activatedRoute.queryParams.subscribe(val => this.moduleId = val['moduleID']);
     this.activatedRoute.params.subscribe(val => {
       this.transport.moduleCode.next(val['name']);
