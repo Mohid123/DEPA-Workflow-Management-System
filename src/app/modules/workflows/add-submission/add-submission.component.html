@@ -49,7 +49,7 @@
   </tui-tabs>
 
   <div *ngIf="activeItemIndex == 1" class="mt-12" [formGroup]="workflowForm">
-    <h4 class="text-lg font-semibold">Modify submodule workflow</h4>
+    <h4 class="text-lg font-semibold">Modify workflow</h4>
     <ng-container formArrayName="workflows">
       <ng-container *ngFor="let workflow of workflows.controls; let i = index">
         <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>

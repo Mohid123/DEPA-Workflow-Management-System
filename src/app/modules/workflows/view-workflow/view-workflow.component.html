@@ -55,11 +55,27 @@
         </a>
         <!--Enable-->
         <a
-          title="Enable"
-          *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true && workflowData?.submissionStatus === 5 && (workflowProgress | async) < 100"
+          title="Re-Activate"
+          *ngIf="
+          (
+            checkIfLoggedInUserIsPartOfActiveUsers() == true &&
+            workflowData?.submissionStatus === 5 &&
+            (workflowProgress | async) < 100
+          ) ||
+          (
+            currentUser?.roles?.includes('sysAdmin') &&
+            workflowData?.submissionStatus === 5 &&
+            (workflowProgress | async) < 100
+          ) ||
+          (
+            checkIfUserIsInAdminUsers() == true &&
+            workflowData?.submissionStatus === 5 &&
+            (workflowProgress | async) < 100
+          )
+          "
           (click)="showDeleteDialog(dialog, 'enable')"
           class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white">
-          <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Enable
+          <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Re-Activate
         </a>
       </div>
     </div>

@@ -115,7 +115,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
         this.dashboard.items = [...hierarchy, {
-          caption: 'Add Module',
+          caption: 'Add App',
           routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
         }];
       }
