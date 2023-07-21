@@ -1,6 +1,6 @@
 import { ApplicationRef, Component } from '@angular/core';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
-import { concat, filter, first, interval } from 'rxjs';
+import { Subject, concat, filter, first, interval } from 'rxjs';
 import { AuthService } from './modules/auth/auth.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { DashboardService } from './modules/dashboard/dashboard.service';
@@ -27,6 +27,7 @@ export class AppComponent {
    * Project title
    */
   title = 'DEPA_FRONTEND';
+  isNewVersionAvailable = new Subject<boolean>()
 
   /**
    * Handles route redirect if user is authenticated and checks for updates
@@ -48,7 +49,7 @@ export class AppComponent {
     if(auth.currentUserValue && (window.location.pathname === '/' || window.location.pathname === '/auth/login')) {
       router.navigate(['/dashboard/home'])
     }
-
+    
     router.events
     .pipe(filter(event => event instanceof NavigationEnd))
     .subscribe(() => {
@@ -63,7 +64,7 @@ export class AppComponent {
         const updateFound = await swUpdate.checkForUpdate();
         console.log(updateFound ? 'A new version is available.' : 'Already on the latest version.');
         if(updateFound) {
-          document.location.reload();
+          this.isNewVersionAvailable.next(true)
         }
       } catch (err) {
         console.error('Failed to check for updates:', err);
@@ -75,8 +76,12 @@ export class AppComponent {
     .subscribe(evt => {
       if (promptUser(evt)) {
         // Reload the page to update to the latest version.
-        document.location.reload();
+        this.isNewVersionAvailable.next(true)
       }
     });
+  }
+
+  updatePanel() {
+    document.location.reload();
   }
 }
