@@ -87,9 +87,22 @@
                     title="View Submission"
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="
-                      checkIfUserisApprovedUser(data?.workflowStatus) == true || 
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true ||
-                      checkIfUserisActiveUser(data?.workflowStatus) == false
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false && 
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress <= 100
+                    ) ||
+                    (
+                      (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == true && 
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress <= 100
+                    )
+                    )
                     "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>

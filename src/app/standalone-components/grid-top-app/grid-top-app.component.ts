@@ -23,7 +23,7 @@ export class GridTopAppComponent {
 
   constructor(private transport: DataTransportService, private auth: AuthService) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheck = this.auth.checkIfRolesExist('admin')
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
   }
     /**
    * Used to display the relevant data inside the card view

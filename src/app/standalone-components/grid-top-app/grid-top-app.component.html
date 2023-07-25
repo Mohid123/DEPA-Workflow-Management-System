@@ -24,8 +24,9 @@
     </a>
     <a
       title="Edit"
-      *ngIf="currentUser?.id == appData?.createdBy ||
-      (userRoleCheck == true && checkIfUserisViewOnly(appData?.viewOnlyUsers) == false) ||
+      *ngIf="
+      currentUser?.id == appData?.createdBy ||
+      userRoleCheck == true ||
       checkIfUserisAdmin(appData?.adminUsers)"
       [routerLink]="['/modules/edit-module', appData?._id]" [queryParams]="{moduleCode: appData?.code}"
       (click)="editModuleEvent(appData?._id)"
