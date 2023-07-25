@@ -56,7 +56,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   workFlowId: string;
   categoryList: any[];
   categoryId: string;
-  items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}];
+  items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
   accessTypeValue: FormControl
 
   constructor(

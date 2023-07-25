@@ -344,7 +344,7 @@
                     [item]="items[0]"
                   >
                     <div>Any (Create)</div>
-                    <div class="text-xxs font-extralight">Users can create a new submission</div>
+                    <div class="text-xxs font-extralight mt-1">Any user can create a new submission</div>
                   </tui-radio-labeled>
 
                   <tui-radio-labeled
@@ -353,7 +353,16 @@
                     [item]="items[1]"
                   >
                     <div>Any (Create & Modify)</div>
-                    <div class="text-xxs font-extralight">Users can create a new submission and modify it's workflow</div>
+                    <div class="text-xxs font-extralight mt-1">Any user can create a new submission and modify it's workflow</div>
+                  </tui-radio-labeled>
+
+                  <tui-radio-labeled
+                    [formControl]="accessTypeValue"
+                    class="tui-space_bottom-3"
+                    [item]="items[2]"
+                  >
+                    <div>Disabled</div>
+                    <div class="text-xxs font-extralight mt-1">Only Admin users can create and modify submissions</div>
                   </tui-radio-labeled>
                 </div>
               </div>
