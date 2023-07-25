@@ -276,7 +276,7 @@
                 </ng-container>
                 <ng-container *ngFor="let log of approvalLogs; let i = index">
                   <div class="grid grid-cols-12 py-3 border-b border-gray-300 gap-x-3">
-                    <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">{{log?.performedById?.fullName}}</span></p>
+                    <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">{{log?.onBehalfOf ? log?.onBehalfOf?.fullName + ' on behalf of ' + log?.performedById?.fullName : log?.performedById?.fullName}}</span></p>
                     <p class="col-span-2 font-normal">Action: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
                     <p class="col-span-4 font-normal">
                       Approved On: <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">&nbsp;{{log?.approvedOn | date: 'medium'}}</span>
