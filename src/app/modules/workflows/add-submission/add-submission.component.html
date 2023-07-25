@@ -39,6 +39,8 @@
     </button>
     <button
       tuiTab
+      [disabled]="disableModify() == true"
+      [ngClass]="disableModify() == true ? 'cursor-not-allowed': 'cursor-pointer'"
     >
       <tui-svg
         src="tuiIconEdit"

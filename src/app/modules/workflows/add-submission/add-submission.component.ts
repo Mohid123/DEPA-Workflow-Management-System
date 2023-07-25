@@ -46,6 +46,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   errorIndex: number = 0;
   userRoleCheckAdmin: any;
   userRoleCheckUser: any;
+  adminUsers: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -59,7 +60,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     private dashboard: DashboardService
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin')
+    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin')
     this.userRoleCheckUser = this.auth.checkIfRolesExist('user')
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => this.subModuleId = val['id']);
@@ -140,6 +141,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     ).subscribe((res: any) => {
       if(res) {
         this.subModuleData = res;
+        this.adminUsers = res?.adminUsers?.map(val => val?.id)
         this.formWithWorkflow = res?.formIds?.map(comp => {
           return {
             ...comp,
@@ -179,6 +181,19 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.initWorkflowForm(workFlowId);
       }
     })
+  }
+
+  disableModify() {
+    if(this.subModuleData?.accessType && this.subModuleData?.accessType == 'anyCreateAndModify') {
+      return false
+    }
+    if(this.userRoleCheckAdmin == true) {
+      return false
+    }
+    if(this.adminUsers?.includes(this.currentUser?.id)) {
+      return false
+    }
+    return true
   }
 
   initWorkflowForm(item?: any) {

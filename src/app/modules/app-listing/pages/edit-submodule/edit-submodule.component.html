@@ -206,51 +206,121 @@
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
-            <div class="col-span-4">
-              <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
-              <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
-              <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
-            </div>
-            <div class="col-span-4">
-              <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
-              <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="none">NONE</option>
-              </select>
-            </div>
-            <div class="col-span-1 mt-8 inline-flex">
-              <tui-tooltip
-                [content]="hint"
-                direction="right"
-                class="mr-4 mt-1 -ml-2"
-              ></tui-tooltip>
-              <tui-badged-content
-                [contentTop]="
-                  workflows.at(i).get('emailNotifyTo')?.value?.length
-                "
-                [colorTop]="'green'"
-              >
+            <ng-container *ngIf="i == 0">
+              <div class="col-span-3">
+                <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+                <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+                <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
+              </div>
+              <div class="col-span-3">
+                <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+                <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                  <option value="and">AND</option>
+                  <option value="or">OR</option>
+                  <option value="none">NONE</option>
+                </select>
+              </div>
+              <div class="col-span-1 mt-8 inline-flex">
+                <tui-tooltip
+                  [content]="hint"
+                  direction="right"
+                  class="mr-4 mt-1 -ml-2"
+                ></tui-tooltip>
+                <tui-badged-content
+                  [contentTop]="
+                    workflows.at(i).get('emailNotifyTo')?.value?.length
+                  "
+                  [colorTop]="'green'"
+                >
+                  <button
+                    tuiIconButton
+                    type="button"
+                    size="s"
+                    appearance="outline"
+                    icon="tuiIconMailLarge"
+                    (click)="openEmailNotifyModal(template, workflows, i)"
+                  ></button>
+                </tui-badged-content>
+              </div>
+              <div class="col-span-4">
+                <div class="flex justify-between mt-8">
+                  <tui-radio-labeled
+                    [formControl]="accessTypeValue"
+                    class="tui-space_bottom-3"
+                    [item]="items[0]"
+                  >
+                    <div>Any (Create)</div>
+                    <div class="text-xxs font-extralight">This user can create a new submission</div>
+                  </tui-radio-labeled>
+
+                  <tui-radio-labeled
+                    [formControl]="accessTypeValue"
+                    class="tui-space_bottom-3"
+                    [item]="items[1]"
+                  >
+                    <div>Any (Create & Modify)</div>
+                    <div class="text-xxs font-extralight">This user can create a new submission and modify it's workflow</div>
+                  </tui-radio-labeled>
+                </div>
+              </div>
+              <div class="col-span-1 mt-8">
                 <button
                   tuiIconButton
                   type="button"
                   size="s"
-                  appearance="outline"
-                  icon="tuiIconMailLarge"
-                  (click)="openEmailNotifyModal(template, workflows, i)"
+                  appearance="secondary-destructive"
+                  icon="tuiIconTrash2Large"
+                  (click)="removeWorkflowStep(i)"
                 ></button>
-              </tui-badged-content>
-            </div>
-            <div class="col-span-1 mt-8 -ml-4">
-              <button
-                tuiIconButton
-                type="button"
-                size="s"
-                appearance="secondary-destructive"
-                icon="tuiIconTrash2Large"
-                (click)="removeWorkflowStep(i)"
-              ></button>
-            </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="i > 0">
+              <div class="col-span-4">
+                <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+                <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+                <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
+              </div>
+              <div class="col-span-4">
+                <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+                <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                  <option value="and">AND</option>
+                  <option value="or">OR</option>
+                  <option value="none">NONE</option>
+                </select>
+              </div>
+              <div class="col-span-1 mt-8 inline-flex">
+                <tui-tooltip
+                  [content]="hint"
+                  direction="right"
+                  class="mr-4 mt-1 -ml-2"
+                ></tui-tooltip>
+                <tui-badged-content
+                  [contentTop]="
+                    workflows.at(i).get('emailNotifyTo')?.value?.length
+                  "
+                  [colorTop]="'green'"
+                >
+                  <button
+                    tuiIconButton
+                    type="button"
+                    size="s"
+                    appearance="outline"
+                    icon="tuiIconMailLarge"
+                    (click)="openEmailNotifyModal(template, workflows, i)"
+                  ></button>
+                </tui-badged-content>
+              </div>
+              <div class="col-span-1 mt-8 -ml-4">
+                <button
+                  tuiIconButton
+                  type="button"
+                  size="s"
+                  appearance="secondary-destructive"
+                  icon="tuiIconTrash2Large"
+                  (click)="removeWorkflowStep(i)"
+                ></button>
+              </div>
+            </ng-container>
           </div>
         </ng-container>
       </ng-container>

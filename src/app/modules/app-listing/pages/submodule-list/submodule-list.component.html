@@ -9,7 +9,10 @@
       <div class="flex justify-end mb-5">
         <div
           *ngIf="
-          (userRoleCheckAdmin == true && checkIfAdminUserIsOnFirstStep((moduleData | async)?.workFlowId?.stepIds[0]?.approverIds) == true) ||
+          (
+            userRoleCheckAdmin == true &&
+            checkIfAdminUserIsOnFirstStep((moduleData | async)?.workFlowId?.stepIds[0]?.approverIds) == true
+          ) ||
           checkIfUserisAdmin((moduleData | async)?.adminUsers) ||
           userRoleCheckUser == true ||
           userRoleCheckSys == true ||

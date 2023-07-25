@@ -214,7 +214,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.submissionData = val;
           this.tableDataValue = val?.results;
         })
-        break
+      break
     }
   }
 

@@ -56,6 +56,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   workFlowId: string;
   categoryList: any[];
   categoryId: string;
+  items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}];
+  accessTypeValue: FormControl
 
   constructor(
     private fb: FormBuilder,
@@ -70,6 +72,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     private media: MediaUploadService
   ) {
     this.initSubModuleForm();
+    this.accessTypeValue = new FormControl(null)
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
     // get submodule for editing and initialize form
     this.getAllCompanies();
@@ -182,6 +185,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           if(response) {
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
+            this.accessTypeValue?.setValue(response?.accessType)
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;

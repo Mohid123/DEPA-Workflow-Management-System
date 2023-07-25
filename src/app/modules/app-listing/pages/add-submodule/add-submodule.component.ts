@@ -61,6 +61,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   parentIDUnAssigned: boolean = false;
   categoryId: string;
   categoryIdForMatch: string;
+  items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}];
+  accessTypeValue: FormControl
 
   constructor(
     private fb: FormBuilder,
@@ -74,6 +76,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     private media: MediaUploadService
   ) {
     this.initSubModuleForm();
+    this.accessTypeValue = new FormControl(null)
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
 
     //get default workflow
@@ -429,8 +432,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           condition: data?.condition,
           emailNotifyTo: data?.emailNotifyTo || []
         }
-      })
+      }),
+      accessType: this.accessTypeValue?.value?.name || undefined
     }
+    debugger
     this.isCreatingSubModule.next(true);
     this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
