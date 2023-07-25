@@ -61,7 +61,7 @@ export class SubmissionTableComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin');
+    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin');
     this.activatedRoute.queryParams.subscribe(val => {
         if(val['moduleID']) {
           this.submoduleId = val['moduleID']

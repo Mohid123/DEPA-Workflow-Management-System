@@ -77,6 +77,13 @@
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       data?.summaryData?.progress < 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100 &&
+                      userRoleCheckAdmin == true
                     )
                     "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
@@ -95,13 +102,19 @@
                       data?.summaryData?.progress <= 100
                     ) ||
                     (
-                      (
                       checkIfUserisApprovedUser(data?.workflowStatus) == true && 
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
                       checkIfUserisActiveUser(data?.workflowStatus) == false &&
                       data?.summaryData?.progress <= 100
-                    )
+                    ) ||
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false && 
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress == 100 &&
+                      userRoleCheckAdmin == true
                     )
                     "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
