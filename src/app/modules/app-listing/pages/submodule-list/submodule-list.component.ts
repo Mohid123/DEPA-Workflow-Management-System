@@ -55,13 +55,13 @@ export class SubmodulesListComponent {
   }
 
   disableModify(data: any, adminUsers: any) {
-    if(data !== 'disabled') {
-      return false
+    if(data == 'disabled') {
+      return true
     }
-    if(adminUsers?.map(val => val?.id).includes(this.currentUser?.id)) {
-      return false
+    if(adminUsers?.length > 0 && adminUsers?.map(val => val?.id).includes(this.currentUser?.id)) {
+      return true
     }
-    return true
+    return false
   }
 
   addSubmissionRoute() {

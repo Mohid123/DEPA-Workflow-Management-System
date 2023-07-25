@@ -14,7 +14,6 @@
             checkIfAdminUserIsOnFirstStep((moduleData | async)?.workFlowId?.stepIds[0]?.approverIds) == true
           ) ||
           checkIfUserisAdmin((moduleData | async)?.adminUsers) ||
-          userRoleCheckUser == true ||
           userRoleCheckSys == true ||
           currentUser?.roles?.length == 0 ||
           disableModify((moduleData | async)?.accessType, (moduleData | async)?.adminUsers) == false"
