@@ -54,6 +54,16 @@ export class SubmodulesListComponent {
     })
   }
 
+  disableModify(data: any, adminUsers: any) {
+    if(data !== 'disabled') {
+      return false
+    }
+    if(adminUsers?.map(val => val?.id).includes(this.currentUser?.id)) {
+      return false
+    }
+    return true
+  }
+
   addSubmissionRoute() {
     this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/add-submission`, this.transport.moduleID?.value])
   }
