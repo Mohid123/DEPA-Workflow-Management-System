@@ -227,20 +227,20 @@
                               currentUser?.fullName === approvers?.name &&
                               checkIfUserisStillActive(currentUser?.fullName) == true &&
                               checkIfUserRejected(user?.approverIds) == false &&
-                              userApprovedCheckResult() == false &&
+                              userApprovedCheckResult(approvers?.name) == false &&
                               user?.status == 'inProgress' &&
                               workflowData?.submissionStatus !== 5 &&
                               workflowData?.status !== 2
                             ) || 
                             (
-                              userApprovedCheckResult() == false &&
+                              userApprovedCheckResult(approvers?.name) == false &&
                               user?.status == 'inProgress' &&
                               workflowData?.submissionStatus !== 5 &&
                               workflowData?.status !== 2 &&
                               currentUser?.roles.includes('sysAdmin')
                             ) ||
                             (
-                              userApprovedCheckResult() == false &&
+                              userApprovedCheckResult(approvers?.name) == false &&
                               user?.status == 'inProgress' &&
                               workflowData?.submissionStatus !== 5 &&
                               workflowData?.status !== 2 &&

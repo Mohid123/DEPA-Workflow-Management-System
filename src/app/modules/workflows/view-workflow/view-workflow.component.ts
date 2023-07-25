@@ -366,8 +366,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return this.approvedUsers?.flatMap(val => val?.users)?.includes(value)
   }
 
-  userApprovedCheckResult(): boolean {
-    return this.checkIfUserIsApproved(this.currentUser?.fullName).includes(true)
+  userApprovedCheckResult(value): boolean {
+    return this.checkIfUserIsApproved(value).includes(true)
   }
 
   checkIfUserisStillActive(value: any): boolean {
