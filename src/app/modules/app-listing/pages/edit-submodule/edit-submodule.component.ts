@@ -185,7 +185,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           if(response) {
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
-            this.accessTypeValue?.setValue(response?.accessType)
+            this.items?.forEach((value, index) => {
+              if (value?.name == response?.accessType) {
+                this.accessTypeValue?.setValue(this.items[index])
+              }
+            })
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;
@@ -470,7 +474,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || [],
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
-      })
+      }),
+      accessType: this.accessTypeValue?.value?.name
     }
     if(statusStr) {
       const status = statusStr;

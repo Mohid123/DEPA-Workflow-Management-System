@@ -425,7 +425,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
       parentId: this.parentIDUnAssigned === true ? undefined : this.parentID,
-      createdBy: this.auth.currentUserValue?.id,
       steps: this.workflows?.value?.map(data => {
         return {
           approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
@@ -435,7 +434,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }),
       accessType: this.accessTypeValue?.value?.name || undefined
     }
-    debugger
     this.isCreatingSubModule.next(true);
     this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
