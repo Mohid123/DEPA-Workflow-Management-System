@@ -71,6 +71,12 @@
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       data?.summaryData?.progress < 100
+                    ) || 
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
                     )
                     "
                     class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
