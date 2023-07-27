@@ -3,7 +3,7 @@
   <ng-container *ngIf="moduleData | async as modData">
     <div class="cursor-pointer mt-5">
       <a
-        *ngIf="currentUser.id == modData?.createdBy || checkIfUserisAdmin(modData?.adminUsers)"
+        *ngIf="currentUser.id == modData?.createdBy || checkIfUserisAdmin(modData?.adminUsers) || userRoleCheck == true"
         [routerLink]="['/modules/add-module', moduleId]"
         class="px-6 py-3 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base"
       >+ Add app
@@ -22,11 +22,8 @@
 </ng-container>
 <tui-loader [overlay]="true" size="xl" [showLoader]="fetchingTableData | async">
   <ng-container *ngIf="tableData?.results?.length == 0 && (showEmptyMessage | async) == false; else showSubModules">
-    <div class="flex justify-center items-center">
-      <img src="../../../assets/empty-box.svg" alt="empty_box" width="240" height="240">
-    </div>
-    <p class="px-5 text-lg text-center font-semibold text-gray-500">
-      No apps available. You can add a new app by clicking on the button
+    <p class="px-5 text-sm text-center font-semibold text-gray-500">
+      No apps available!
     </p>
   </ng-container>
 
@@ -94,10 +91,10 @@
                 <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white cursor-pointer">
                   <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
                 </a>
-                <a title="Edit" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
+                <a title="Edit" *ngIf="currentUser?.id == data?.createdBy" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer">
                   <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
                 </a>
-                <a title="Delete" *ngIf="currentUser?.id == data?.createdBy || userRoleCheck('admin')" (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer">
+                <a title="Delete" *ngIf="currentUser?.id == data?.createdBy" (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer">
                   <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
                 </a>
               </div>

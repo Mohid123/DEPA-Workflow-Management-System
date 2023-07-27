@@ -64,7 +64,9 @@
           <div class="col-span-4">
             <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
             <select (change)="validateSelection(i)" formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
-              <option value="and">AND</option>
+              <ng-container *ngIf="i > 0">
+                <option value="and">AND</option>
+              </ng-container>
               <option value="or">OR</option>
               <option value="none">NONE</option>
             </select>

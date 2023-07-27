@@ -25,10 +25,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   activeIndex: number = 0;
   workflowUsers = [];
   approvalLogs = []
-  approve = new FormControl(false);
-  reject = new FormControl(false);
+  approve: FormControl;
+  reject: FormControl;
   remarks = new FormControl('');
-  showLoader = new Subject<boolean>();
   workflowData: any;
   workflowID: string;
   formTabs: any[] = [];
@@ -66,26 +65,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.fetchData();
-    this.approve.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val === true) {
-        this.reject.disable();
-        this.showLoader.next(true);
-        setTimeout(() => this.showLoader.next(false), 1000)
-      }
-      if(val === false && this.reject.disabled) {
-        this.reject.enable()
-      }
-    });
-    this.reject.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val === true) {
-        this.approve.disable();
-        this.showLoader.next(true);
-        setTimeout(() => this.showLoader.next(false), 1000)
-      }
-      if(val === false && this.approve.disabled) {
-        this.approve.enable()
-      }
-    });
   }
 
   ngOnInit(): void {
@@ -201,15 +180,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
-    this.showLoader.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val === false) {
-        this.decisionData.next(data)
-        this.saveDialogSubscription.push(this.dialogs.open(content, {
-          dismissible: false,
-          closeable: false
-        }).pipe(take(1)).subscribe())
-      }
-    })
+    this.approve = new FormControl(false);
+    this.reject = new FormControl(false);
+    this.decisionData.next(data)
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false
+    }).pipe(take(1)).subscribe())
   }
 
   showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string): void {

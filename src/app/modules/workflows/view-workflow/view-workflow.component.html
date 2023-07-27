@@ -248,9 +248,24 @@
                             )"
                           class="flex justify-end gap-5 decision-buttons"
                         >
-                          <span>Approve <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="approve"></tui-toggle></span>
+                          <span>Approve
+                            <tui-toggle
+                              [showIcons]="true"
+                              (click)="showDialog(approvers, template)"
+                              size="l"
+                              [formControl]="approve"
+                            ></tui-toggle>
+                          </span>
                           <ng-container *ngIf="hideRejectButton(user?.condition, i, user?.approverIds) == false && checkApprovalLogs() == true">
-                            <span>Reject <tui-toggle [showIcons]="true" (click)="showDialog(approvers, template)" [showLoader]="showLoader | async" size="l" [formControl]="reject"></tui-toggle></span>
+                            <span>Reject
+                              <tui-toggle
+                                [showIcons]="true"
+                                (click)="showDialog(approvers, template)"
+                                size="l"
+                                [formControl]="reject"
+                              >
+                              </tui-toggle>
+                            </span>
                           </ng-container>
                         </div>
                       </div>
