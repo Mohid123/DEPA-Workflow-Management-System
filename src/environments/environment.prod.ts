@@ -8,6 +8,6 @@ export const environment = {
   production: true,
   serviceWorker: true,
   appVersion: 'v1.0.00',
-  apiUrl: 'http://quaidtech.ddns.net/v1',
+  apiUrl: 'http://quaidtech.ddns.net:3000/v1',
   appThemeName: 'Depa Frontend'
 };
