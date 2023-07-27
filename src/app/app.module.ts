@@ -1,5 +1,5 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
-import { TuiRootModule, TuiDialogModule, TuiAlertModule, TUI_SANITIZER } from "@taiga-ui/core";
+import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiNotificationModule, TUI_SANITIZER } from "@taiga-ui/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -8,6 +8,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CoreModule } from "src/core/core.module";
+import { FormioAppConfig } from "@formio/angular";
+import { AppConfig } from "./config";
+import { TuiPreviewModule } from "@taiga-ui/addon-preview";
 
 @NgModule({
   declarations: [
@@ -27,9 +30,14 @@ import { CoreModule } from "src/core/core.module";
       TuiRootModule,
       TuiDialogModule,
       TuiAlertModule,
-      TuiDialogModule
+      TuiDialogModule,
+      TuiPreviewModule,
+      TuiNotificationModule
 ],
-  providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
+  providers: [
+    {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},
+    {provide: FormioAppConfig, useValue: AppConfig},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

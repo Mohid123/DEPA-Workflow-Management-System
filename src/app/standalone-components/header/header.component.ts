@@ -6,6 +6,7 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { TuiHintModule, TuiHostedDropdownModule } from '@taiga-ui/core';
+import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   selector: 'app-header',
@@ -20,14 +21,36 @@ export class HeaderComponent implements OnDestroy {
   currentRoute: any;
   currentUser: any;
   open = false;
+  userRoleCheck: any;
 
   constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router) {
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
+  }
+
+  checkCurrentRouteIncludes() {
+    return this.currentRoute.includes('moduleID')
   }
 
   logoutSession() {
     this.subscription.push(this.auth.logout().subscribe())
+  }
+
+  encode(value: string) {
+    return value.split('?')[0]
+  }
+
+  encodeQuery(value: string) {
+    return value.split('?')[1]
+  }
+
+  finalQueryParams() {
+    return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+  }
+
+  setString(value: string): string {
+    return value?.replace(/[_-]/g, ' ')
   }
 
   ngOnDestroy(): void {

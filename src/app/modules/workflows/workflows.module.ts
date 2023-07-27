@@ -10,7 +10,6 @@ import { FormioModule } from '@formio/angular';
 import { TuiBadgeModule, TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputTagModule, TuiIslandModule, TuiPaginationModule, TuiProgressModule, TuiTabsModule, TuiToggleModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
-import { ViewSubmissionsComponent } from './view-submissions/view-submissions.component';
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
@@ -18,13 +17,14 @@ import { EmailSubmissionComponent } from './email-submission/email-submission.co
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 import { WorkflowSkeletonComponent } from 'src/app/skeleton-loaders/workflow-skeleton/workflow-skeleton.component';
+import {TuiLegendItemModule, TuiRingChartModule} from '@taiga-ui/addon-charts';
+import { TuiHoveredModule } from '@taiga-ui/cdk';
 
 
 @NgModule({
   declarations: [
     WorkflowsComponent,
     ViewWorkflowComponent,
-    ViewSubmissionsComponent,
     AddSubmissionComponent,
     EmailSubmissionComponent
   ],

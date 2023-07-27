@@ -43,7 +43,7 @@ export class UsersListComponent implements OnDestroy {
         this.cf.detectChanges()
       })
     }
-  
+
   changePage(page: number) {
     this.page = page;
     this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
@@ -59,7 +59,7 @@ export class UsersListComponent implements OnDestroy {
       data: {
         fullname: data?.fullName,
         email: data?.email,
-        role: data?.role
+        role: data?.roles
       }
     }
   }
@@ -91,26 +91,30 @@ export class UsersListComponent implements OnDestroy {
   editOrAddUser() {
     if(this.userId) {
       const payload: any = {
-        role: this.formData?.value?.data?.role
+        roles: this.formData?.value?.data?.role
       }
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
-        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
-        this.cf.detectChanges();
-        this.subscription.forEach(val => val.unsubscribe())
+        if(res) {
+          this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
+          this.cf.detectChanges();
+          this.subscription.forEach(val => val.unsubscribe())
+        }
       })
     }
     else {
       const payload: any = {
         fullName: this.formData?.value?.data?.fullname,
         email: this.formData?.value?.data?.email,
-        role: this.formData?.value?.data?.role
+        roles: this.formData?.value?.data?.role
       }
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
-        this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
-        this.cf.detectChanges();
-        this.subscription.forEach(val => val.unsubscribe())
+        if(res) {
+          this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+          this.cf.detectChanges();
+          this.subscription.forEach(val => val.unsubscribe())
+        }
       })
     }
   }

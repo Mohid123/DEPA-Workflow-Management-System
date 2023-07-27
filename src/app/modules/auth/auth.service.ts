@@ -116,7 +116,7 @@ export class AuthService extends ApiService<AuthApiData> {
           return result
         }
         else {
-          this.notif.displayNotification(result.errors[0]?.error?.message || 'Failed to send request to server', 'Login Failed!', TuiNotification.Error);
+          this.notif.displayNotification(result.errors[0]?.error?.message || 'Failed to authenticate', 'Login Failed!', TuiNotification.Error);
           throw result.errors[0].error?.message
         }
       }),
@@ -231,6 +231,10 @@ export class AuthService extends ApiService<AuthApiData> {
         return res.data
       }
     }))
+  }
+
+  checkIfRolesExist(value: string) {
+    return this.currentUserValue?.roles?.includes(value)
   }
 
 }

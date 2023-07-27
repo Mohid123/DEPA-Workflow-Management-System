@@ -26,14 +26,14 @@ export class ProfileComponent implements OnDestroy {
     this.formData.next({
       fullname: this.currentUser?.fullName,
       email: this.currentUser?.email,
-      role: this.currentUser?.role
+      roles: this.currentUser?.roles
     });
 
     this.formSubmission = {
       data: {
         fullname: this.currentUser?.fullName,
         email: this.currentUser?.email,
-        role: this.currentUser?.role
+        roles: this.currentUser?.roles
       }
     }
   }
@@ -89,7 +89,7 @@ export class ProfileComponent implements OnDestroy {
       const payload = {
         fullName: this.formSubmission?.data?.fullname,
         email: this.formSubmission?.data?.email,
-        role: this.formSubmission?.data?.role
+        roles: this.formSubmission?.data?.roles
       }
       this.dashboard.updateUser(this.currentUser?.id, payload)
       .pipe(takeUntil(this.destroy$)).subscribe((res: User | any) => {
@@ -98,7 +98,7 @@ export class ProfileComponent implements OnDestroy {
           this.formData.next({
             fullname: res?.fullName,
             email: res?.email,
-            role: res?.role
+            roles: res?.roles
           });
         }
       })

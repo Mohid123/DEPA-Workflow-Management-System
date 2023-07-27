@@ -1,7 +1,7 @@
 import { Inject, Injectable, } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { SubmoduleGuardComponent } from '../templates/submodule-guard/submodule-guard.component';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
@@ -25,7 +25,8 @@ export class SubmoduleGuard implements CanActivate {
   constructor(
     @Inject(TuiDialogService) private readonly dialog: TuiDialogService,
     private transportService: DataTransportService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   /**
@@ -44,7 +45,7 @@ export class SubmoduleGuard implements CanActivate {
       }).subscribe();
       this.transportService.dialogState.subscribe(val => {
         if(val === DialogState.DISCARD) {
-          this.router.navigate(['/submodule', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+          this.routeToBasedOnPreviousPage()
           return true
         }
         return false
@@ -54,6 +55,17 @@ export class SubmoduleGuard implements CanActivate {
       return true;
     }
     return false
+  }
+
+  routeToBasedOnPreviousPage() {
+    this.activatedRoute.queryParams.pipe(take(1)).subscribe(val => {
+      if(Object.keys(val).length > 0) {
+        return this.router.navigate(['/dashboard/home'])
+      }
+      else {
+        return this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+      }
+    })
   }
   
 }

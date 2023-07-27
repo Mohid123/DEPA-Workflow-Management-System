@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, Output, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
-import { TuiPaginationModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
@@ -11,7 +11,8 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import {TuiPreviewModule, TuiPreviewDialogService} from '@taiga-ui/addon-preview';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -19,7 +20,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-table-view',
   standalone: true,
-  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule],
+  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule, TuiBadgeModule],
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,7 +29,7 @@ export class TableViewComponent implements OnDestroy {
   /**
    * The category names to show as table column headers
    */
-  @Input() tableColumns: string[] = ['Company Name', 'Submodule Code', 'Status'];
+  @Input() tableColumns: string[] = ['Title', 'Company Name', 'Status'];
 
   /**
    * The data to display inside the table
@@ -89,11 +90,16 @@ export class TableViewComponent implements OnDestroy {
   currentUser: any;
   destroy$ =  new Subject();
   isFilterApplied: boolean = false;
+  userRoleCheck: any;
+  showEmptyMessage = new BehaviorSubject<boolean>(false)
 
   @Output() emitDeleteEvent = new EventEmitter();
   @Output() emitPagination = new EventEmitter();
   @Output() emitFilters = new EventEmitter();
   @Output() emitSearch = new EventEmitter();
+  @Output() emitPageChange = new EventEmitter();
+  @ViewChild('preview') readonly preview?: TemplateRef<TuiDialogContext>;
+  currentImg: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -101,9 +107,12 @@ export class TableViewComponent implements OnDestroy {
     private dashboardService: DashboardService,
     private transport: DataTransportService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    @Inject(TuiPreviewDialogService)
+    private previewDialogService: TuiPreviewDialogService
   ) {
-    this.currentUser = this.auth.currentUserValue
+    this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
     this.activatedRoute.queryParams.subscribe(val => this.moduleId = val['moduleID']);
     this.activatedRoute.params.subscribe(val => {
       this.transport.moduleCode.next(val['name']);
@@ -124,6 +133,23 @@ export class TableViewComponent implements OnDestroy {
     });
   }
 
+  showImage(image: string) {
+    this.currentImg = image
+    this.previewDialogService.open(this.preview)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe();
+  }
+
+  showStatus(value: number) {
+    if(value == 1) {
+      return 'Published'
+    }
+    if(value == 3) {
+      return 'Draft'
+    }
+    return 'Deleted'
+  }
+
   splitURL(url: string) {
     return url.split('/').at(-1)
   }
@@ -133,7 +159,7 @@ export class TableViewComponent implements OnDestroy {
   }
 
   checkIfUserisAdmin(value: any[]): boolean {
-    return value.includes(this.currentUser?.id)
+    return value?.map(data => data?.id).includes(this.currentUser?.id)
   }
 
   /**
@@ -192,9 +218,9 @@ export class TableViewComponent implements OnDestroy {
   }
 
   sendSearchValue(value: any) {
-    this.fetchingTableData.next(true)
+    this.fetchingTableData.next(true);
     const queryParams = {
-      field: 'subModuleCode',
+      field: 'subModuleTitle',
       search: value
     }
     if(queryParams.search == null) {
@@ -203,8 +229,14 @@ export class TableViewComponent implements OnDestroy {
     this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
+      if(res?.results?.length == 0) {
+        this.showEmptyMessage.next(true)
+      }
+      if(!value) {
+        this.showEmptyMessage.next(false)
+      }
       this.tableData = res;
-      this.fetchingTableData.next(false)
+      this.fetchingTableData.next(false);
     })
   }
 
@@ -221,8 +253,10 @@ export class TableViewComponent implements OnDestroy {
   }
 
   setSubmoduleSlug(code: string, id: string) {
-    setItem(StorageItem.subModuleSlug, code);
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}`, code, id])
+    setItem(StorageItem.moduleSlug, code);
+    setItem(StorageItem.moduleID, id);
+    this.emitPageChange.emit({code, id})
+    this.router.navigate(['/modules', code], {queryParams: {moduleID: id || ''}})
   }
 
   ngOnDestroy(): void {

@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
@@ -14,7 +14,7 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
   templateUrl: './add-submission.component.html',
   styleUrls: ['./add-submission.component.scss']
 })
-export class AddSubmissionComponent implements OnDestroy {
+export class AddSubmissionComponent implements OnDestroy, OnInit {
   formTabs: any[] = [];
   activeIndex: number = 0;
   public formWithWorkflow: any;
@@ -44,6 +44,9 @@ export class AddSubmissionComponent implements OnDestroy {
   creatingSubmission = new Subject<boolean>();
   showError = new Subject<boolean>();
   errorIndex: number = 0;
+  userRoleCheckAdmin: any;
+  userRoleCheckUser: any;
+  adminUsers: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -57,13 +60,14 @@ export class AddSubmissionComponent implements OnDestroy {
     private dashboard: DashboardService
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin')
+    this.userRoleCheckUser = this.auth.checkIfRolesExist('user')
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => this.subModuleId = val['id']);
     this.populateData();
 
      // get users for email
-
-     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
+    this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
       if (res) {
         this.userListForEmail = res?.results?.map((data) => data?.email);
       }
@@ -76,9 +80,20 @@ export class AddSubmissionComponent implements OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    const hierarchy = getItem(StorageItem.navHierarchy);
+    hierarchy.forEach(val => {
+      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+    })
+
+    this.dashboard.items = [...hierarchy, {
+      caption: 'Add Submission',
+      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
+    }];
+  }
    // email notify functions
 
-   openEmailNotifyModal(
+  openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
     fieldArray: FormArray,
     index: number
@@ -126,6 +141,7 @@ export class AddSubmissionComponent implements OnDestroy {
     ).subscribe((res: any) => {
       if(res) {
         this.subModuleData = res;
+        this.adminUsers = res?.adminUsers?.map(val => val?.id)
         this.formWithWorkflow = res?.formIds?.map(comp => {
           return {
             ...comp,
@@ -165,6 +181,19 @@ export class AddSubmissionComponent implements OnDestroy {
         this.initWorkflowForm(workFlowId);
       }
     })
+  }
+
+  disableModify() {
+    if(this.subModuleData?.accessType && this.subModuleData?.accessType == 'anyCreateAndModify') {
+      return false
+    }
+    if(this.userRoleCheckAdmin == true) {
+      return false
+    }
+    if(this.adminUsers?.includes(this.currentUser?.id)) {
+      return false
+    }
+    return true
   }
 
   initWorkflowForm(item?: any) {
@@ -216,6 +245,11 @@ export class AddSubmissionComponent implements OnDestroy {
 
   onChange(event: any, index: number) {
     if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
       const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
       this.formValues[this.activeIndex] = {...event, formId};
       const finalData = this.formValues?.map(value => {
@@ -266,10 +300,8 @@ export class AddSubmissionComponent implements OnDestroy {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
-        let moduleSlug = getItem(StorageItem.moduleSlug);
-        let submoduleSlug = getItem(StorageItem.subModuleSlug);
         this.creatingSubmission.next(false)
-        this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, this.subModuleId])
+        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
     })
   }
@@ -278,7 +310,8 @@ export class AddSubmissionComponent implements OnDestroy {
     this.errorIndex = index
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
+      this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
+      return this.showError.next(false)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
       return this.showError.next(true)
@@ -291,6 +324,7 @@ export class AddSubmissionComponent implements OnDestroy {
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none')
       this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info);
+      return this.showError.next(false)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
       return this.showError.next(true)
@@ -299,9 +333,7 @@ export class AddSubmissionComponent implements OnDestroy {
   }
 
   cancelSubmission() {
-    let moduleSlug = getItem(StorageItem.moduleSlug);
-    let submoduleSlug = getItem(StorageItem.subModuleSlug);
-    this.router.navigate([`/modules/${moduleSlug}/${submoduleSlug}`, this.subModuleId])
+    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
   sendFormForEdit(i: number, formID: string) {

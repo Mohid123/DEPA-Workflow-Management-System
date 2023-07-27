@@ -7,17 +7,13 @@
           <a [routerLink]="['/dashboard/home']" routerLinkActive="router-link-active"
             class="block px-4 py-2 text-white no-underline hover:text-gray-100">Home</a>
         </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
-          <a [routerLink]="['/dashboard/create-edit-module']" routerLinkActive="router-link-active"
-            class="block px-4 py-2 text-white no-underline hover:text-gray-100">Create Module</a>
-        </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
+        <li *ngIf="userRoleCheck == true" class="mt-2">
           <a [routerLink]="['/dashboard/categories']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Categories</a>
         </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
+        <li *ngIf="userRoleCheck == true" class="mt-2">
           <a [routerLink]="['/dashboard/companies']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Companies</a>
         </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
+        <li *ngIf="userRoleCheck == true" class="mt-2">
           <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Users</a>
         </li>
         <li class="cursor-pointer">
@@ -42,17 +38,42 @@
 <!--breadcrumbs-->
 <div class="fixed z-30 flex justify-between w-full px-5 pt-2 mt-8 bg-white border-b-2 shadow-md border-b-gray-300 top-16">
   <tui-breadcrumbs size="l"
-    class="text-[#9a9ba3] tui-space_bottom-3">
-    <ng-container *ngFor="let item of dashboardService.items; let i = index; let last = last">
-      <ng-container *ngIf="i == 0 || dashboardService.items?.length == 0">
-        <a *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[#76777f]">
-          <i class="fa fa-home fa-lg" aria-hidden="true"></i>
-        </a>
+    class="text-[#9a9ba3] tui-space_bottom-3 flex flex-wrap">
+    <ng-container *ngIf="checkCurrentRouteIncludes() === false">
+      <ng-container *ngFor="let item of dashboardService.items; let i = index; let last = last">
+        <ng-container *ngIf="i == 0 || dashboardService.items?.length == 0">
+          <a *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[rgb(118,119,127)]">
+            <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+          </a>
+        </ng-container>
+        <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
+          <ng-container *ngIf="item.caption.includes('Add'); else noAdd">
+            <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" class="hover:text-[#76777f] capitalize">
+              {{ setString(item.caption) }}
+            </a>
+          </ng-container>
+          <ng-template #noAdd>
+            <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" [queryParams]="finalQueryParams()" class="hover:text-[#76777f] capitalize">
+              {{ setString(item.caption) }}
+            </a>
+          </ng-template>
+        </ng-container>
       </ng-container>
-      <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
-        <a *tuiItem tuiLink [routerLink]="item.routerLink" class="hover:text-[#76777f] capitalize">
-          {{ item.caption }}
-        </a>
+    </ng-container>
+    <ng-container *ngIf="checkCurrentRouteIncludes() === true">
+      <ng-container *ngIf="dashboardService.tempItems | async as serverCrumbs">
+        <ng-container *ngFor="let item of serverCrumbs; let i = index; let last = last">
+          <ng-container *ngIf="i == 0 || serverCrumbs?.length == 0">
+            <a *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[rgb(118,119,127)]">
+              <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+            </a>
+          </ng-container>
+          <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
+            <a *tuiItem tuiLink [routerLink]="['/modules', item.caption]" [queryParams]="{moduleID: item.routerLink}" class="hover:text-[#76777f] capitalize">
+              {{ setString(item.caption) }}
+            </a>
+          </ng-container>
+        </ng-container>
       </ng-container>
     </ng-container>
   </tui-breadcrumbs>

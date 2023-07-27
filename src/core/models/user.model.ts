@@ -9,16 +9,8 @@ export class User extends BaseModel {
   fullName: string;
   email: string;
   password: string;
-  role: role;
+  roles: string[];
   image: string;
   authenticatedBy: string;
   supervisorGID: string;
-}
-
-/**
- * @ignore
- */
-enum role {
-  Admin = 'admin',
-  Authenticated = 'authenticated'
 }

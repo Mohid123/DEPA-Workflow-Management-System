@@ -9,15 +9,16 @@ import { TableViewComponent } from 'src/app/standalone-components/table-view/tab
 import { SearchBarComponent } from 'src/app/standalone-components/search-bar/search-bar.component';
 import { AddSubmoduleComponent } from './pages/add-submodule/add-submodule.component';
 import { TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputModule, TuiInputTagModule, TuiIslandModule, TuiMultiSelectModule, TuiPaginationModule, TuiProgressModule, TuiRadioLabeledModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiHintModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormioModule } from '@formio/angular';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
 import { EditSubmoduleComponent } from './pages/edit-submodule/edit-submodule.component';
 import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.component';
-import { SubmoduleDetailsComponent } from './pages/submodule-details/submodule-details.component';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import { SubmissionTableComponent } from 'src/app/standalone-components/submission-table/submission-table.component';
+import { EditSubmissionComponent } from './pages/edit-submission/edit-submission.component';
 
 
 @NgModule({
@@ -26,7 +27,7 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
     SubmodulesListComponent,
     AddSubmoduleComponent,
     EditSubmoduleComponent,
-    SubmoduleDetailsComponent
+    EditSubmissionComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +57,10 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
     TuiInputTagModule,
     TableLoaderComponent,
     TuiTooltipModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiLoaderModule,
+    SubmissionTableComponent,
+    TuiSvgModule
   ]
 })
 export class AppListingModule { }

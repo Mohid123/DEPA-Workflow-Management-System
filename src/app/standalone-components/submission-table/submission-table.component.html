@@ -1,0 +1,151 @@
+<ng-container *ngIf="submissionData as tableData; else noData">
+  <div class="relative overflow-x-auto rounded-lg shadow-lg">
+    <table class="w-full text-sm text-left text-gray-500">
+      <thead class="text-xs text-white uppercase bg-[#a58f81]">
+        <tr>
+          <th class="px-4 py-3 text-sm">
+            Submission Status&nbsp;
+            <filter
+              [filterBy]="'Status'"
+              [items]="statusMenu"
+              [searchEnabled]="false"
+              (applyStatus)="sendFilterValue($event)"
+              (resetFilters)="resetFilterValues($event)"
+            >
+            </filter>
+          </th>
+          <th class="px-2 py-3 text-sm">Last Activity By</th>
+          <th class="px-2 py-3 text-sm">Now Pending With</th>
+          <th class="px-2 py-3 text-sm">Workflow progress</th>
+          <th scope="col" class="px-6 py-3 text-sm">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="tableDataValue?.length == 0; else showSubmissions">
+          <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
+            No submissions available!
+          </th>
+        </ng-container>
+        <ng-template #showSubmissions>
+          <ng-container *ngFor="let data of tableDataValue; let i = index; let first = first; let last = last; trackBy: trackByFn">
+            <tr class="bg-white border-b border-gray-300">
+              <td class="px-4 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                {{showStatus(data?.submissionStatus)}}
+              </td>
+              <td class="pr-4 pl-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                {{(data?.submissionStatus === 1 || data?.submissionStatus === 4) ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
+              </td>
+                <td class="px-2 py-4 max-w-60" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  <ng-container *ngFor="let pending of getPendingOnUsers(data?.summaryData?.pendingOnUsers || []); let lastUser = last">
+                    <span>{{pending}}<span *ngIf="!lastUser">,</span> &nbsp;</span>
+                  </ng-container>
+                </td>
+              <td class="flex justify-between px-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                <progress
+                  tuiProgressBar
+                  [color]="changeProgressColor(data?.summaryData?.progress)"
+                  max="100"
+                  size="s"
+                  class="w-9/12 mt-1.5"
+                  [value]="data?.summaryData?.progress"
+                ></progress>
+                <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
+              </td>
+              <td class="px-5 py-4">
+                <!--WORKFLOW-->
+                <div style="all: unset;" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">
+                  <a
+                    title="Perform Workflow Action"
+                    (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
+                    *ngIf="
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
+                    ) || 
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
+                    ) || 
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100 &&
+                      userRoleCheckAdmin == true
+                    )
+                    "
+                    class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                  </a>
+                  <!--VIEW-->
+                  <a
+                    title="View Submission"
+                    (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
+                    *ngIf="
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false && 
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress <= 100
+                    ) ||
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == true && 
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress <= 100
+                    ) ||
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false && 
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress == 100 &&
+                      userRoleCheckAdmin == true
+                    )
+                    "
+                    class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+                  </a>
+                </div>
+                <!--EDIT SUBMISSION PAGE-->
+                <a
+                  title="Edit Submission"
+                  [routerLink]="['/modules/edit-submission', data?.id]"
+                  (click)="setWorkflowID(data?.id)"
+                  *ngIf="currentUser?.id == data?.createdBy?.id && data?.submissionStatus == 4 && data?.submissionStatus !== 5"
+                  class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                  <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+      </tbody>
+    </table>
+    <div class="pt-10 pb-6">
+      <tui-pagination
+        [length]="tableData?.totalPages || 1"
+        [index]="tableData?.page - 1 || 0"
+        (indexChange)="goToPage($event)"
+      ></tui-pagination>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noData>
+  <app-table-loader></app-table-loader>
+</ng-template>

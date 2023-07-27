@@ -9,6 +9,7 @@ import { FormsService } from '../../services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { Location } from '@angular/common';
 import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 @Component({
   templateUrl: './edit-form.component.html',
@@ -46,11 +47,10 @@ export class EditFormComponent implements OnDestroy {
 
   constructor(
     private notif: NotificationsService,
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private formService: FormsService,
-    private transportService: DataTransportService,
-    private _location: Location
+    private _location: Location,
+    private auth: AuthService
   )
   {
     this.activatedRoute?.queryParams?.subscribe(data => {
@@ -83,6 +83,17 @@ export class EditFormComponent implements OnDestroy {
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
+    this.form?.components?.map((val: any) => {
+      if(val?.label && val?.label === 'Upload') {
+        val.storage = "url";
+        val.url = 'http://localhost:3000/v1/upload';
+        val.uploadEnabled = true;
+        val.input = true;
+        val.multiple = true;
+        return val
+      }
+      return val
+    });
   }
 
   onJsonView() {
@@ -104,7 +115,7 @@ export class EditFormComponent implements OnDestroy {
 
     const formData = {
       title: this.formTitleControl?.value,
-      // key: this.form?.key ?? this.formTitleControl?.value?.replace(' ', '_'),
+      key: this.formTitleControl?.value?.replace(/\s+/g, '-').toLowerCase(),
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
@@ -115,7 +126,7 @@ export class EditFormComponent implements OnDestroy {
         if(val) {
           if(formFromEditModule) {
             removeItem(StorageItem.formEdit)
-            setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 800)
+            setTimeout(() => this._location.back(), 800)
           }
           else {
             this._location.back()
@@ -124,13 +135,13 @@ export class EditFormComponent implements OnDestroy {
       });
     }
     else {
-      Object.assign(formData, {subModuleId: this.transportService.subModuleID?.value})
+      Object.assign(formData, {subModuleId: getItem(StorageItem.moduleID)})
       this.formService.createForm(formData)
       .pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
           if(formFromEditModule) {
             removeItem(StorageItem.formEdit)
-            setTimeout(() => this.router.navigate(['/modules/edit-submodule', this.transportService.subModuleID?.value], {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}}), 800)
+            setTimeout(() => this._location.back(), 800)
           }
           else {
             this._location.back()
@@ -148,10 +159,7 @@ export class EditFormComponent implements OnDestroy {
     const formFromEditModule = getItem(StorageItem.formEdit)
     if(formFromEditModule) {
       removeItem(StorageItem.formEdit)
-      this.router.navigate(
-        ['/modules/edit-submodule', this.transportService.subModuleID?.value],
-        {queryParams: {moduleCode: this.transportService?.moduleCode?.value, moduleID: this.transportService?.moduleID?.value}
-      })
+      this._location.back()
     }
     else {
       this._location.back()

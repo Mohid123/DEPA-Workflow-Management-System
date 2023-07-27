@@ -57,7 +57,7 @@ export class WorkflowsService extends ApiService<any> {
   updateSubmissionWorkflow(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/submissions/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        this.notif.displayNotification('Descision made, Workflow updated.', 'Update Submission', TuiNotification.Success)
+        this.notif.displayNotification('Action complete. Submission updated', 'Update Submission', TuiNotification.Success)
         return res.data
       }
       else {

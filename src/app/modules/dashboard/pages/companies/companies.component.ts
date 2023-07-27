@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
@@ -16,6 +16,7 @@ export class CompaniesComponent {
   destroy$ = new Subject();
   limit: number = 6;
   page: number = 0;
+  subscription: Subscription[] = [];
 
   constructor(
     private dashboard: DashboardService,
@@ -39,6 +40,7 @@ export class CompaniesComponent {
       .subscribe(res => {
         if(res) {
           this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
+          this.subscription.forEach(val => val.unsubscribe())
         }
       });
     }
@@ -51,6 +53,7 @@ export class CompaniesComponent {
       .subscribe(res => {
         if(res) {
           this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
+          this.subscription.forEach(val => val.unsubscribe())
         }
       });
     }
@@ -62,10 +65,10 @@ export class CompaniesComponent {
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
-    this.dialogs.open(content, {
+    this.subscription.push(this.dialogs.open(content, {
       dismissible: true,
       closeable: true
-    }).subscribe();
+    }).subscribe());
     this.categoryEditControl.setValue(data?.title ? data?.title : '');
     this.categoryId = data?.id || null;
   }

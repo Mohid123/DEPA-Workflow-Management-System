@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PublishAppComponent } from './publish-app.component';
+import { SubmissionTableComponent } from './submission-table.component';
 
-describe('PublishAppComponent', () => {
-  let component: PublishAppComponent;
-  let fixture: ComponentFixture<PublishAppComponent>;
+describe('SubmissionTableComponent', () => {
+  let component: SubmissionTableComponent;
+  let fixture: ComponentFixture<SubmissionTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PublishAppComponent ]
+      imports: [ SubmissionTableComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PublishAppComponent);
+    fixture = TestBed.createComponent(SubmissionTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

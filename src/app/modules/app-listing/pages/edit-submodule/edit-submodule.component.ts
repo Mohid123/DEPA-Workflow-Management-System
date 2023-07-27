@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioOptions } from '@formio/angular';
@@ -11,12 +11,15 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
+import { MediaUploadService } from 'src/core/core-services/media-upload.service';
+import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
   styleUrls: ['./edit-submodule.component.scss']
 })
-export class EditSubmoduleComponent {
+export class EditSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   formComponents: any[] = [];
   activeIndex: number = 0;
@@ -47,6 +50,14 @@ export class EditSubmoduleComponent {
   page: number = 0;
   showError = new Subject<boolean>();
   errorIndex: number = 0;
+  file: any;
+  base64File: any;
+  submoduleFromLS: any;
+  workFlowId: string;
+  categoryList: any[];
+  categoryId: string;
+  items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
+  accessTypeValue: FormControl
 
   constructor(
     private fb: FormBuilder,
@@ -57,11 +68,15 @@ export class EditSubmoduleComponent {
     private activatedRoute: ActivatedRoute,
     private notif: NotificationsService,
     private formService: FormsService,
-    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private media: MediaUploadService
   ) {
     this.initSubModuleForm();
+    this.accessTypeValue = new FormControl(null)
+    this.submoduleFromLS = this.transportService.subModuleDraft.value;
     // get submodule for editing and initialize form
     this.getAllCompanies();
+    this.getAllCategories();
     this.getSubmoduleByIDForEdit();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['moduleID'] && val['moduleCode']) {
@@ -83,6 +98,43 @@ export class EditSubmoduleComponent {
         this.userListForEmail = res?.results?.map((data) => data?.email);
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length == 0) {
+        const hierarchy = getItem(StorageItem.navHierarchy);
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
+        this.dashboard.items = [...hierarchy, {
+          caption: 'Edit Module',
+          routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
+        }];
+      }
+    })
+  }
+
+  onFileSelect(event: any) {
+    const file = event?.target?.files[0];
+    if(calculateFileSize(file) == true) {
+      calculateAspectRatio(file).then((res) => {
+        if(res == false) {
+          this.notif.displayNotification('Image should be of 1:1 aspect ratio', 'File Upload', TuiNotification.Warning)
+        }
+        else {
+          this.file = file;
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (e) => {
+            this.base64File = reader.result;
+          };
+        }
+      });
+    }
+    else {
+      this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
+    }
   }
 
   openEmailNotifyModal(
@@ -131,33 +183,78 @@ export class EditSubmoduleComponent {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
-            this.formComponents = response?.formIds;
-            this.formTabs = response?.formIds?.map(forms => forms.title);
-            const companyName = {
-              value: response?.companyId?.id,
-              label: response?.companyId?.title
-            }
-            const url = response?.url?.split('/').at(-1);
-            const workFlowId = response?.workFlowId?.stepIds?.map(data => {
-              return {
-                id: data?.id,
-                approverIds: data?.approverIds?.map(ids => {
-                  return {
-                    name: ids?.fullName,
-                    id: ids?.id,
-                    control: new FormControl<boolean>(true)
-                  }
-                }),
-                condition: data?.condition,
-                emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
-                emailNotifyToId: data?.emailNotifyToId?.id
+            this.workFlowId = response?.workFlowId?.id;
+            this.categoryId = response?.categoryId?.id;
+            this.items?.forEach((value, index) => {
+              if (value?.name == response?.accessType) {
+                this.accessTypeValue?.setValue(this.items[index])
               }
-            });
-            delete response?.workFlowId;
-            delete response?.url;
-            delete response?.companyId;
-            const finalObject = Object.assign(response, {workFlowId: workFlowId}, {url: url}, {companyId: companyName})
-            this.initSubModuleForm(finalObject)
+            })
+            if(Object.keys(this.submoduleFromLS)?.length > 0) {
+              this.initSubModuleForm(this.submoduleFromLS);
+              this.base64File = this.submoduleFromLS?.image;
+              this.file = this.submoduleFromLS?.file;
+              this.formComponents = response?.formIds;
+              this.formTabs = response?.formIds?.map(forms => forms.title);
+            }
+            else {
+              this.formComponents = response?.formIds;
+              this.formTabs = response?.formIds?.map(forms => forms.title);
+              const companyId = {
+                value: response?.companyId?.id,
+                label: response?.companyId?.title
+              }
+              const categoryId = {
+                value: response?.categoryId?.id,
+                label: response?.categoryId?.name
+              }
+              this.file = response?.image
+              this.base64File = response?.image
+              // const url = response?.url?.split('/').at(-1);
+              const workFlowId = response?.workFlowId?.stepIds?.map(data => {
+                return {
+                  id: data?.id,
+                  approverIds: data?.approverIds?.map(ids => {
+                    return {
+                      name: ids?.fullName,
+                      id: ids?.id,
+                      control: new FormControl<boolean>(true)
+                    }
+                  }),
+                  condition: data?.condition,
+                  emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
+                  emailNotifyToId: data?.emailNotifyToId?.id
+                }
+              });
+              const adminUsers = response?.adminUsers?.map(val => {
+                return {
+                  name: val?.fullName,
+                  id: val?.id,
+                  control: new FormControl<boolean>(true)
+                }
+              });
+              const viewOnlyUsers = response?.viewOnlyUsers?.map(val => {
+                return {
+                  name: val?.fullName,
+                  id: val?.id,
+                  control: new FormControl<boolean>(true)
+                }
+              })
+              delete response?.workFlowId;
+              delete response?.url;
+              delete response?.companyId;
+              delete response?.categoryId;
+              const finalObject = Object.assign(
+                response,
+                {workFlowId: workFlowId},
+                {categoryId: categoryId},
+                {companyId: companyId},
+                {viewOnlyUsers: viewOnlyUsers},
+                {adminUsers: adminUsers}
+              )
+              this.transportService.saveDraftLocally(finalObject);
+              this.initSubModuleForm(finalObject)
+            }
           }
         })
       }
@@ -176,26 +273,44 @@ export class EditSubmoduleComponent {
     });
   }
 
+  getAllCategories() {
+    this.dashboard.getAllCategories(10)
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      this.categoryList = res.results?.map(data => {
+        return {
+          value: data?.id,
+          label: data?.name
+        }
+      });
+    });
+  }
+
+  get categories() {
+    return this.f["categories"] as FormArray;
+  }
+
+  addCategory() {
+    const categoryForm = this.fb.group({
+      name: ['', Validators.required]
+    });
+    this.categories.push(categoryForm)
+  }
+
+  removeCategory(index: number) {
+    this.categories.removeAt(index);
+  }
+
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
-      subModuleUrl: [item?.url || null, Validators.required],
+      categoryId: [item?.categoryId?.value ? item?.categoryId?.value : this.categoryList?.filter(val => item?.categoryId === val.value)[0]?.value || null, Validators.required],
       code: [{value: item?.code || null, disabled: true}],
-      companyName: [item?.companyId?.value || null, Validators.required],
-      adminUsers: [item?.adminUsers?.map(val => {
-        return {
-          name: val?.fullName,
-          id: val?.id,
-          control: new FormControl<boolean>(true)
-        }
-      }) || [], Validators.required],
-      viewOnlyUsers: [item?.viewOnlyUsers?.map(val => {
-        return {
-          name: val?.fullName,
-          id: val?.id,
-          control: new FormControl<boolean>(true)
-        }
-      }) || [], Validators.required],
-      workflows: item?.workFlowId ?
+      companyId: [item?.companyId?.value ? item?.companyId?.value : this.companyList?.filter(val => item?.companyId === val.value)[0]?.value || null, Validators.required],
+      title: [item?.title || null, Validators.required],
+      image: [item?.image || null, Validators.required],
+      description: [item?.description || null, Validators.required],
+      adminUsers: [item?.adminUsers || [], Validators.required],
+      viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
+      workFlowId: item?.workFlowId ?
       this.fb.array(
         item?.workFlowId?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId: any; id: any }) => {
           return this.fb.group({
@@ -232,13 +347,15 @@ export class EditSubmoduleComponent {
 
   sendFormForEdit(i: number, formID: string) {
     if(formID) {
-      setItem(StorageItem.formEdit, true)
+      setItem(StorageItem.formEdit, true);
+      this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
     else {
       setItem(StorageItem.formEdit, true)
       this.transportService.isFormEdit.next(true);
       this.transportService.sendFormDataForEdit.next(this.formComponents[i]);
+      this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
       this.router.navigate(['/forms/edit-form'], {queryParams: {submoduleID: this.transportService.subModuleID?.value}});
     }
   }
@@ -252,11 +369,12 @@ export class EditSubmoduleComponent {
 
   saveDraft() {
     this.transportService.sendFormBuilderData(this.formComponents)
+    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.router.navigate(['/forms/edit-form']);
   }
 
   get workflows() {
-    return this.f['workflows'] as FormArray
+    return this.f['workFlowId'] as FormArray
   }
 
   addWorkflowStep() {
@@ -279,10 +397,12 @@ export class EditSubmoduleComponent {
   validateSelection(index: number) {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
+      this.workflows.at(index)?.get('condition')?.setValue('none');
+      
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      
       return this.showError.next(true)
     }
     this.showError.next(false)
@@ -291,10 +411,12 @@ export class EditSubmoduleComponent {
   countUsers(value: number, index: number) {
     this.errorIndex = index;
     if(value < 2) {
-      this.workflows.at(index)?.get('condition')?.setValue('none')
+      this.workflows.at(index)?.get('condition')?.setValue('none');
+      
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
+      
       return this.showError.next(true)
     }
     this.showError.next(false)
@@ -302,10 +424,8 @@ export class EditSubmoduleComponent {
 
   dataSubmitValidation() {
     if(
-      this.f['subModuleUrl']?.invalid ||
-      this.f['companyName']?.invalid ||
-      this.f['adminUsers']?.value?.length == 0 ||
-      this.f['viewOnlyUsers']?.value?.length == 0 ||
+      // this.f['url']?.invalid ||
+      this.f['companyId']?.invalid ||
       this.workflows?.length == 0 ||
       this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
       this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||
@@ -317,7 +437,13 @@ export class EditSubmoduleComponent {
   }
 
   cancelSubmodule() {
-    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    let slug = getItem(StorageItem.moduleSlug);
+    if(slug) {
+      this.router.navigate(['/modules', getItem(StorageItem.moduleSlug)], {queryParams: {moduleID: getItem(StorageItem.moduleID)}});
+    }
+    else {
+      this.router.navigate(['/dashboard/home'])
+    }
   }
 
   saveSubModule(statusStr?: number) {
@@ -329,13 +455,17 @@ export class EditSubmoduleComponent {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
     }
     this.isCreatingSubModule.next(true)
-    const payload = {
-      url: `/modules/submodule-details/${this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-')}`,
-      companyId: this.subModuleForm.get('companyName')?.value,
-      code: this.subModuleForm.get('subModuleUrl')?.value.replace(/\s/g, '-'),
+    let payload = {
+      url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
+      companyId: this.subModuleForm.get('companyId')?.value,
+      categoryId: this.subModuleForm.get('categoryId')?.value ? this.subModuleForm.get('categoryId')?.value : this.categoryId,
+      image: this.subModuleForm.get('image')?.value,
+      workFlowId: this.workFlowId,
+      title: this.subModuleForm.get('title')?.value,
+      description: this.subModuleForm.get('description')?.value,
+      code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-      // formIds: this.formComponents,
       steps: this.workflows?.value?.map(data => {
         return {
           id: data?.id ? data?.id : undefined,
@@ -344,23 +474,66 @@ export class EditSubmoduleComponent {
           emailNotifyTo: data?.emailNotifyTo || [],
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
-      })
+      }),
+      accessType: this.accessTypeValue?.value?.name
     }
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})
     }
-    this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
-    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if(res) {
-        this.isCreatingSubModule.next(false);
-        this.transportService.saveDraftLocally({});
-        this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    else {
+      Object.assign(payload, {status: 1})
+    }
+    if(typeof this.file == 'string') {
+      const url = 'uploads' + payload?.image.split('uploads')[1];
+      payload = {...payload, image: url };
+      this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
+      .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if(res) {
+          this.isCreatingSubModule.next(false);
+          this.transportService.saveDraftLocally({});
+          this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+          this.routeToBasedOnPreviousPage()
+        }
+        else {
+          this.isCreatingSubModule.next(false);
+        }
+      })
+    }
+    else {
+      this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          payload = {...payload, image: res?.data?.fileUrl };
+          this.dashboard.updateSubModule(this.transportService.subModuleID?.value, payload)
+          .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+            if(res) {
+              this.isCreatingSubModule.next(false);
+              this.transportService.saveDraftLocally({});
+              this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+              this.routeToBasedOnPreviousPage();
+            }
+            else {
+              this.isCreatingSubModule.next(false);
+            }
+          })
+        }
+      })
+    }
+  }
+
+  routeToBasedOnPreviousPage() {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length > 0) {
+        this.router.navigate(['/dashboard/home'])
       }
       else {
-        this.isCreatingSubModule.next(false);
+        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }
