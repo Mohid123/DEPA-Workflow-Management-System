@@ -55,5 +55,19 @@
       "type": "image/png",
       "purpose": "maskable any"
     }
-  ]
+  ],
+  "dir": "ltr",
+  "lang": "en",
+  "orientation": "landscape",
+  "iarc_rating_id": "3+",
+  "prefer_related_applications": false,
+  "categories": [
+    "business",
+    "navigation",
+    "productivity",
+    "utilities"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 1200
+  }
 }
