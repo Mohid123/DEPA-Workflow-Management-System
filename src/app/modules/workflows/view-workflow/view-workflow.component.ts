@@ -178,7 +178,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             approverIds: userData?.allUsers?.map(val => {
               return {
                 name: val?.performedBy == null ? val?.assignedTo?.fullName : val?.performedBy?.fullName + ' on behalf of ' + val?.assignedTo?.fullName,
-                id: val?._id,
+                id: val?.assignedTo?._id,
                 stepId: userData?.stepId
               }
             }),
@@ -202,6 +202,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
     this.approve = new FormControl(false);
     this.reject = new FormControl(false);
+    console.log(data)
     this.decisionData.next(data)
     this.saveDialogSubscription.push(this.dialogs.open(content, {
       dismissible: false,
@@ -258,6 +259,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       type: 'submittal'
     }
     if(this.currentUser?.id !== this.decisionData?.value?.id) {
+      debugger
       Object.assign(payload, {onBehalfOf: this.currentUser?.id}, {userId: this.decisionData?.value?.id})
     }
     this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
