@@ -36,6 +36,10 @@ export const calculateFileSize = (file: any): boolean => {
   return false;
 }
 
+export const getUniqueListBy = (arr: any, key: any) => {
+  return [...new Map(arr.map((item: any) => [item[key], item])).values()]
+}
+
 export class CodeValidator {
   static createValidator(dashboard: DashboardService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {

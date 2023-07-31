@@ -174,6 +174,60 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  getAllAdminUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
+    let params: any = {
+      limit: limit,
+      page: page+ 1,
+      fullName: name ? name : ' '
+    }
+    if(name) {
+      params = {
+        limit: limit,
+        fullName: name ? name : ' '
+      }
+    }
+    return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data?.results?.map((value: User) => {
+          return {
+            id: value?.id,
+            name: value?.fullName,
+            control: new FormControl<boolean>(false)
+          }
+        })
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch users', 'Get Users', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  getAdminUsers(limit: number, page?: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
+    let params: any = {
+      limit: limit,
+      page: page+ 1,
+      fullName: name ? name : ' '
+    }
+    if(name) {
+      params = {
+        limit: limit,
+        fullName: name ? name : ' '
+      }
+    }
+    return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch users', 'Get Users', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
   updateUser(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/users/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

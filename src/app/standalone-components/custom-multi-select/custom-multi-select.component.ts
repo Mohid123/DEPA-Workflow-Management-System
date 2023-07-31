@@ -6,6 +6,7 @@ import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, debounceTime, distinctUntilChanged, of, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { TrimDirective } from 'src/core/directives/trim.directive';
+import { getUniqueListBy } from 'src/core/utils/utility-functions';
 
 /**
  * @ignore
@@ -95,23 +96,19 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
       debounceTime(400),
       switchMap(searchStr => searchStr == '' ?
         of(null) :
-        this.dashboard.getAllUsers(this.limit, this.page, searchStr)),
+        this.dashboard.getAllAdminUsers(this.limit, this.page, searchStr)),
       takeUntil(this.destroy$)
     ).subscribe((users: any) => {
       if(users !== null) {
         const userData = [...users, ...this.users?.value];
-        const result = this.getUniqueListBy(userData, 'name')
+        const result = getUniqueListBy(userData, 'name')
         this.users.next(result)
       }
     })
   }
 
-  getUniqueListBy(arr: any, key: any) {
-    return [...new Map(arr.map((item: any) => [item[key], item])).values()]
-  }
-
   getUserData(limit: number, page: number) {
-    this.dashboard.getAllUsers(limit, page)
+    this.dashboard.getAllAdminUsers(limit, page)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
       this.users.next(res);
@@ -198,7 +195,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
         }
       });
       if(this.inputFieldArr?.length > 0) {
-        this.inputFieldArr = this.getUniqueListBy([...this.inputFieldArr, ...user], 'name')
+        this.inputFieldArr = getUniqueListBy([...this.inputFieldArr, ...user], 'name')
       }
       else {
         this.inputFieldArr = user;
