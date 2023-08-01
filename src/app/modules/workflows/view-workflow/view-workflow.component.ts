@@ -259,7 +259,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       type: 'submittal'
     }
     if(this.currentUser?.id !== this.decisionData?.value?.id) {
-      debugger
       Object.assign(payload, {onBehalfOf: this.currentUser?.id}, {userId: this.decisionData?.value?.id})
     }
     this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
