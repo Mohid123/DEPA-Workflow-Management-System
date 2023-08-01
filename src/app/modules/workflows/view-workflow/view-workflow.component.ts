@@ -139,7 +139,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             status: data?.status
           }
         });
-        this.approvedUsers = await this.workflowData?.workflowStatus?.map(data => {
+        this.approvedUsers = this.workflowData?.workflowStatus?.map(data => {
           return {
             users: data?.approvedUsers?.map(user => user?.fullName),
             status: data?.status
@@ -259,7 +259,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       type: 'submittal'
     }
     if(this.currentUser?.id !== this.decisionData?.value?.id) {
-      debugger
       Object.assign(payload, {onBehalfOf: this.currentUser?.id}, {userId: this.decisionData?.value?.id})
     }
     this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
@@ -374,6 +373,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   checkIfUserIsApproved(value: any): any[] {
+    if(value?.includes('of')) {
+      value = value?.split('of')[1].trimStart();
+    }
     return this.approvedUsers?.map(val => {
       if(val.users?.includes(value) && val.status == 'inProgress') {
         return true
@@ -383,7 +385,10 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   checkApprovedStatus(value: any, index: number): boolean {
-    if(this.approvedUsers?.map(data => data.status)[index] === 'approved') {
+    if(value?.includes('of')) {
+      value = value?.split('of')[1].trimStart();
+    }
+    if(this.approvedUsers?.map(data => data.status)[index] === 'approved' || this.approvedUsers?.map(data => data.status)[index] === 'inProgress') {
       return this.approvedUsers[index].users?.includes(value)
     }
     return false
