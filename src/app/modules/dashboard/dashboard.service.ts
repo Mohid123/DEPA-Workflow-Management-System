@@ -186,7 +186,7 @@ export class DashboardService extends ApiService<any> {
         fullName: name ? name : ' '
       }
     }
-    return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+    return this.get(`/users/admins`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data?.results?.map((value: User) => {
           return {
@@ -216,7 +216,7 @@ export class DashboardService extends ApiService<any> {
         fullName: name ? name : ' '
       }
     }
-    return this.get(`/users`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+    return this.get(`/users/admins`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
       }
