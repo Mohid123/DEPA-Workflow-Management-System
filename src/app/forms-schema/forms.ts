@@ -410,10 +410,6 @@ export const userAddFormAdmin = {
                 {
                     "label": "User",
                     "value": "user"
-                },
-                {
-                  "label": "Any",
-                  "value": "any"
                 }
             ]
           },
