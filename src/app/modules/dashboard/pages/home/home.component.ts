@@ -3,8 +3,8 @@ import { DashboardService } from '../../dashboard.service';
 import { Observable, Subscription } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { FormControl, Validators } from '@angular/forms';
 @Component({
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
@@ -15,10 +15,41 @@ export class HomeComponent implements OnDestroy {
   moduleId: string;
   subscription: Subscription[] = [];
   currentUser: any;
+  userRoleCheck: any;
+  formData = new FormControl(null,
+    Validators.compose([
+      Validators.required
+    ])
+  )
 
-  constructor(private dashboard: DashboardService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private router: Router, private auth: AuthService) {
+
+  constructor(
+    private dashboard: DashboardService,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private auth: AuthService
+  ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist('admin');
     this.dashboardApps = this.dashboard.getDashboardApps();
+  }
+
+  showAddDialog(content: PolymorpheusContent<TuiDialogContext>) {
+    this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe();
+  }
+
+  addCategory() {
+    const payload: {name: string} = {
+      name: this.formData.value
+    }
+    this.subscription.push(this.dashboard.addCategory(payload)
+    .subscribe(res => {
+      if(res) {
+        this.dashboardApps = this.dashboard.getDashboardApps();
+      }
+    }))
   }
 
   showDialog(moduleID: string, content: PolymorpheusContent<TuiDialogContext>): void {

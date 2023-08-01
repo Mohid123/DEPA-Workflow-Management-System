@@ -1,18 +1,14 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
-    <h3 class="text-xl font-semibold">Create new module</h3>
+    <h3 class="text-xl font-semibold">Create a new app</h3>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
     <!--Title-->
     <div class="mt-3 mb-5">
-      <label class="block pb-1">Module Title <span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">App Title <span class="text-xs text-red-400">*</span></label>
         <input required
-          [ngClass]="
-            f['title']?.invalid && f['title']?.dirty
-              ? 'is-invalid'
-              : ''
-          "
+          [ngClass]="f['title']?.invalid && f['title']?.dirty ? 'is-invalid' : ''"
           formControlName="title"
           class="form-control"
           type="text"
@@ -21,15 +17,19 @@
           [ngTemplateOutlet]="formError"
           [ngTemplateOutletContext]="{
             validation: 'required',
-            message: 'Module Title is required',
+            message: 'App Title is required',
             control: f['title']
           }"
         ></ng-container>
+        <span class="text-red-500 text-xs"
+          *ngIf="f['title']?.hasError('codeExists')">
+          An app by this title already exists. Please select another name
+        </span>
     </div>
 
     <!--Description-->
     <div class="mt-3 mb-5">
-      <label class="block pb-1">Module Description<span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">App Description<span class="text-xs text-red-400">*</span></label>
         <textarea
           required
           [ngClass]="
@@ -47,7 +47,7 @@
           [ngTemplateOutlet]="formError"
           [ngTemplateOutletContext]="{
             validation: 'required',
-            message: 'Module Description is required',
+            message: 'A Description is required',
             control: f['description']
           }"
         ></ng-container>
@@ -55,7 +55,7 @@
 
     <!--Image-->
     <div class="my-5">
-      <label class="block pb-1">Module Icon<span class="text-xs text-red-400">*</span></label>
+      <label class="block pb-1">App Icon<span class="text-xs text-red-400">*</span></label>
       <label
         (change)="onFileSelect($event)"
         for="dropzone-file"
@@ -86,10 +86,9 @@
               </div>
               <div class="flex flex-col">
                 <p class="mb-3 text-lg font-semibold text-black">
-                  Module Icon
+                  App Icon
                 </p>
                 <ul class="text-sm text-gray-400 list-disc">
-                  <li>Icon should be 1:1 ratio</li>
                   <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
                   <li>Up to 2MB file size is allowed</li>
                 </ul>
@@ -100,30 +99,7 @@
       </label>
     </div>
 
-    <!--URL-->
-    <!-- <div class="my-3">
-      <label class="block pb-1">Module URL Endpoint<span class="text-xs text-red-400">*</span></label>
-      <div class="mb-3 input-group">
-        <input
-          required
-          [ngClass]="f['subModuleUrl']?.invalid && f['subModuleUrl']?.dirty ? 'is-invalid' : ''"
-          formControlName="subModuleUrl"
-          class="form-control"
-          type="text"
-        >
-        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-          validation: 'required',
-          message: 'Module URL is required',
-          control: f['subModuleUrl']
-        }"></ng-container>
-      </div>
-      <span class="text-red-500 text-xs"
-        *ngIf="f['subModuleUrl']?.hasError('codeExists')">
-        This Code is already taken
-      </span>
-      <p class="block mb-2 text-xs text-gray-600">Please provide an endpoint for your module</p>
-    </div> -->
-
+    <!--Companies-->
     <div class="my-7">
       <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
       <select required [ngClass]="f['companyName']?.invalid && f['companyName']?.dirty ? 'is-invalid' : ''" formControlName="companyName" class="form-control" type="text">
@@ -185,6 +161,70 @@
       (click)="addCompany()"
     ></button>
 
+    <!--Categories-->
+    <ng-container *ngIf="parentIDUnAssigned == true">
+      <div class="my-7">
+        <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
+        <select required [ngClass]="f['categoryName']?.invalid && f['categoryName']?.dirty ? 'is-invalid' : ''" formControlName="categoryName" class="form-control" type="text">
+          <ng-container *ngFor="let category of categoryList;">
+            <option [value]="category?.value">{{category?.label}}</option>
+          </ng-container>
+        </select>
+        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+          validation: 'required',
+          message: 'Category is required',
+          control: f['categoryName']
+        }"></ng-container>
+      </div>
+      <div class="my-2">
+        <p class="text-xs text-gray-500">If your desired category isn't listed, you can add it below</p>
+      </div>
+      <ng-container formArrayName="categories">
+        <ng-container *ngFor="let category of categories.controls; let i = index; let first = first; let last = last">
+          <div class="w-7/12 px-8" [formGroupName]="i">
+            <div class="flex items-center justify-between w-full gap-2 mb-3">
+              <div class="w-full">
+                <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
+                  <input
+                    class="form-control"
+                    formControlName="name"
+                    type="text"
+                  />
+              </div>
+              <div [ngClass]="first ? 'mt-7': 'mt-0'">
+                <button
+                  tuiIconButton
+                  type="button"
+                  size="s"
+                  appearance="secondary-destructive"
+                  icon="tuiIconTrash2Large"
+                  (click)="removeCategory(i)"
+                ></button>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button
+                *ngIf="last"
+                tuiButton
+                type="button"
+                class="mb-3"
+                size="m"
+                (click)="submitNewCategory()"
+              >Submit</button>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <button
+        tuiIconButton
+        type="button"
+        size="m"
+        appearance="secondary"
+        icon="tuiIconPlusLarge"
+        (click)="addCategory()"
+      ></button>
+    </ng-container>
+
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">
@@ -210,25 +250,6 @@
       <h4 class="text-base font-semibold text-center">Form/s Preview</h4>
       <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
         <ng-container *ngIf="formComponents[0]?.components?.length > 0">
-          <!-- <div class="inline-flex gap-3 mt-3 mb-8" [formGroup]="languageForm">
-            <tui-radio-labeled
-              formControlName="languages"
-              size="l"
-              [item]="langItems[0]"
-              (click)="changeLanguage(langItems[0]?.name)"
-
-            >
-              English
-            </tui-radio-labeled>
-            <tui-radio-labeled
-              formControlName="languages"
-              size="l"
-              [item]="langItems[1]"
-              (click)="changeLanguage(langItems[1]?.name)"
-            >
-              Arabic
-            </tui-radio-labeled>
-          </div> -->
           <section class="flex justify-between my-8">
             <nav
               tuiTabs
@@ -274,57 +295,137 @@
 
     <!--Edit Workflow-->
     <div class="mt-12">
-      <h4 class="text-lg font-semibold">Modify default workflow</h4>
-      <p class="my-2 text-sm text-gray-500">The default workflow will be used if you choose not to modify it</p>
+      <h4 class="text-lg font-semibold">Create workflow</h4>
       <ng-container formArrayName="workflows">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
-            <div class="col-span-4">
-              <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
-              <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
-              <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
-            </div>
-            <div class="col-span-4">
-              <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
-              <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
-                <option value="and">AND</option>
-                <option value="or">OR</option>
-                <option value="none">NONE</option>
-              </select>
-            </div>
-            <div class="col-span-1 mt-8 inline-flex">
-              <tui-tooltip
-                [content]="hint"
-                direction="right"
-                class="mr-4 mt-1 -ml-2"
-              ></tui-tooltip>
-              <tui-badged-content
-                [contentTop]="
-                  workflows.at(i).get('emailNotifyTo')?.value?.length
-                "
-                [colorTop]="'green'"
-              >
+            <ng-container *ngIf="i == 0">
+              <div class="col-span-3">
+                <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+                <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+                <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
+              </div>
+              <div class="col-span-3">
+                <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+                <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                  <ng-container *ngIf="i > 0">
+                    <option value="and">AND</option>
+                  </ng-container>
+                  <option value="or">OR</option>
+                  <option value="none">NONE</option>
+                </select>
+              </div>
+              <div class="col-span-1 mt-8 inline-flex">
+                <tui-tooltip
+                  [content]="hint"
+                  direction="right"
+                  class="mr-4 mt-1 -ml-2"
+                ></tui-tooltip>
+                <tui-badged-content
+                  [contentTop]="
+                    workflows.at(i).get('emailNotifyTo')?.value?.length
+                  "
+                  [colorTop]="'green'"
+                >
+                  <button
+                    tuiIconButton
+                    type="button"
+                    size="s"
+                    appearance="outline"
+                    icon="tuiIconMailLarge"
+                    (click)="openEmailNotifyModal(template, workflows, i)"
+                  ></button>
+                </tui-badged-content>
+              </div>
+              <div class="col-span-4">
+                <div class="flex justify-between mt-8">
+                  <tui-radio-labeled
+                    [formControl]="accessTypeValue"
+                    class="tui-space_bottom-3"
+                    [item]="items[0]"
+                  >
+                    <div>Any (Create)</div>
+                    <div class="text-xxs font-extralight mt-1">Any user can create a new submission</div>
+                  </tui-radio-labeled>
+
+                  <tui-radio-labeled
+                    [formControl]="accessTypeValue"
+                    class="tui-space_bottom-3"
+                    [item]="items[1]"
+                  >
+                    <div>Any (Create & Modify)</div>
+                    <div class="text-xxs font-extralight mt-1">Any user can create a new submission and modify it's workflow</div>
+                  </tui-radio-labeled>
+
+                  <tui-radio-labeled
+                    [formControl]="accessTypeValue"
+                    class="tui-space_bottom-3"
+                    [item]="items[2]"
+                  >
+                    <div>Disabled</div>
+                    <div class="text-xxs font-extralight mt-1">Only Admin users can create and modify submissions</div>
+                  </tui-radio-labeled>
+                </div>
+              </div>
+              <div class="col-span-1 mt-8">
                 <button
                   tuiIconButton
                   type="button"
                   size="s"
-                  appearance="outline"
-                  icon="tuiIconMailLarge"
-                  (click)="openEmailNotifyModal(template, workflows, i)"
+                  appearance="secondary-destructive"
+                  icon="tuiIconTrash2Large"
+                  (click)="removeWorkflowStep(i)"
                 ></button>
-              </tui-badged-content>
-            </div>
-            <div class="col-span-1 mt-8 -ml-4">
-              <button
-                tuiIconButton
-                type="button"
-                size="s"
-                appearance="secondary-destructive"
-                icon="tuiIconTrash2Large"
-                (click)="removeWorkflowStep(i)"
-              ></button>
-            </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="i > 0">
+              <div class="col-span-4">
+                <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+                <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
+                <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
+              </div>
+              <div class="col-span-4">
+                <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+                <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
+                  <option value="and">AND</option>
+                  <option value="or">OR</option>
+                  <option value="none">NONE</option>
+                </select>
+              </div>
+              <div class="col-span-1 mt-8 inline-flex">
+                <tui-tooltip
+                  [content]="hint"
+                  direction="right"
+                  class="mr-4 mt-1 -ml-2"
+                ></tui-tooltip>
+                <tui-badged-content
+                  [contentTop]="
+                    workflows.at(i).get('emailNotifyTo')?.value?.length
+                  "
+                  [colorTop]="'green'"
+                >
+                  <button
+                    tuiIconButton
+                    type="button"
+                    size="s"
+                    appearance="outline"
+                    icon="tuiIconMailLarge"
+                    (click)="openEmailNotifyModal(template, workflows, i)"
+                  ></button>
+                </tui-badged-content>
+              </div>
+              <div class="col-span-1 mt-8 -ml-4">
+                <button
+                  tuiIconButton
+                  type="button"
+                  size="s"
+                  appearance="secondary-destructive"
+                  icon="tuiIconTrash2Large"
+                  (click)="removeWorkflowStep(i)"
+                ></button>
+              </div>
+            </ng-container>
           </div>
         </ng-container>
       </ng-container>

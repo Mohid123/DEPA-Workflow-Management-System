@@ -1,25 +1,28 @@
 <app-header></app-header>
-<section class="w-11/12 h-auto min-h-screen mx-auto mt-48">
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-48 mb-10">
   <ng-container *ngIf="(subModuleData | async) as data; else noData">
     <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data" (emitPageChange)="fetchFreshData($event)"></app-table-view>
     <div class="mt-8">
       <hr>
     </div>
     <div class="my-8">
-      <app-submission-table></app-submission-table>
-    </div>
-    <div class="flex justify-start mb-8 max-w-48 w-full">
-      <div class="flex flex-col p-3 rounded-md shadow-md drop-shadow-md">
-        <p class="text-sm font-semibold mb-2">Legend</p>
-        <div class="flex gap-2 mb-2">
-          <div class="h-6 w-6 bg-[#F15B41]"></div>
-          <span>Modules</span>
-        </div>
-        <div class="flex gap-2">
-          <div class="h-6 w-6 bg-[#a58f81]"></div>
-          <span>Submissions</span>
+      <div class="flex justify-end mb-5">
+        <div
+          *ngIf="
+          (
+            userRoleCheckAdmin == true &&
+            checkIfAdminUserIsOnFirstStep((moduleData | async)?.workFlowId?.stepIds[0]?.approverIds) == true
+          ) ||
+          checkIfUserisAdmin((moduleData | async)?.adminUsers) ||
+          userRoleCheckSys == true ||
+          currentUser?.roles?.length == 0 ||
+          disableModify((moduleData | async)?.accessType, (moduleData | async)?.adminUsers) == false"
+          class="mt-2 cursor-pointer"
+        >
+          <a (click)="addSubmissionRoute()" class="px-6 py-3 rounded-md bg-[#a58f81] text-white no-underline hover:text-white text-base">+ Add submission</a>
         </div>
       </div>
+      <app-submission-table [moduleData]="moduleData"></app-submission-table>
     </div>
   </ng-container>
   <ng-template #noData>

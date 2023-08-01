@@ -233,4 +233,8 @@ export class AuthService extends ApiService<AuthApiData> {
     }))
   }
 
+  checkIfRolesExist(value: string) {
+    return this.currentUserValue?.roles?.includes(value)
+  }
+
 }

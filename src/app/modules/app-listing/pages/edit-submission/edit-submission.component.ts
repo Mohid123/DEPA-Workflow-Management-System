@@ -9,6 +9,7 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
+import { Location } from '@angular/common';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -42,6 +43,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   subModuleId: string;
   subModuleData: any;
   formValues: any[] = [];
+  workFlowId: string;
+  userRoleCheck: any;
 
   constructor(
     private auth: AuthService,
@@ -51,9 +54,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private dashboard: DashboardService,
     private workflowService: WorkflowsService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private location: Location
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleCheck = this.auth.checkIfRolesExist
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.subModuleId = val['id'];
@@ -90,6 +95,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     .subscribe((res: any) => {
       if(res) {
         this.subModuleData = res;
+        this.workFlowId = res?.workFlowId?._id;
         this.forms = res?.formIds?.map(data => {
           return {
             ...data,
@@ -122,6 +128,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         });
         const workFlowId = res?.workFlowId?.stepIds?.map(data => {
           return {
+            id: data?.id,
             approverIds: data?.approverIds?.map(ids => {
               return {
                 name: ids?.fullName,
@@ -130,7 +137,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
               }
             }),
             condition: data?.condition,
-            emailNotifyTo: data?.emailNotifyToId?.notifyUsers || []
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
+            emailNotifyToId: data?.emailNotifyToId?.id
           }
         });
         delete this.subModuleData?.workFlowId;
@@ -146,9 +154,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         workflows: this.fb.array(
           item?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId?: any; id?: any }) => {
             return this.fb.group({
+              id: val.id,
               condition: [val.condition, Validators.required],
               approverIds: [val.approverIds, Validators.required],
-              emailNotifyTo: [val?.emailNotifyTo || [], Validators.required]
+              emailNotifyTo: [val.emailNotifyTo || [], Validators.required],
+              emailNotifyToId: val?.emailNotifyToId,
             })
           }))
         })
@@ -281,11 +291,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-      const formId = this.subModuleData?.formIds[this.activeIndex]?._id;
-      this.formValues[this.activeIndex] = {...event, formId};
+      const id = this.subModuleData?.formDataIds[this.activeIndex]?._id;
+      this.formValues[this.activeIndex] = {...event, id};
       const finalData = this.formValues?.map(value => {
         return {
-          formId: value?.formId,
+          _id: value?.id,
           data: value?.data
         }
       })
@@ -305,20 +315,27 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     }
     this.creatingSubmission.next(true);
     const payload: any = {
-      subModuleId: this.subModuleId,
-      formIds: this.subModuleData?.formIds?.map(val => val._id),
+      workFlowId: this.workFlowId,
       formDataIds: this.formSubmission?.value,
       submissionStatus: status ? status : 1,
-      createdBy: this.auth.currentUserValue?.id,
+      type: 'edit',
       steps: this.workflows?.value?.map(data => {
         return {
-          approverIds: data?.approverIds?.map(ids => ids._id ? ids._id : ids),
+          id: data?.id ? data?.id : undefined,
+          approverIds: data?.approverIds?.map(ids => ids.id ? ids.id : ids),
           condition: data?.condition,
-          emailNotifyTo: data?.emailNotifyTo || []
+          emailNotifyTo: data?.emailNotifyTo || [],
+          emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       })
     }
-    console.log(payload)
+    this.workflowService.updateSubmissionWorkflow(this.subModuleId, payload).pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      if(res) {
+        this.creatingSubmission.next(true);
+        this.location.back()
+      }
+    })
   }
 
   ngOnDestroy(): void {

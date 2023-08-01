@@ -7,17 +7,13 @@
           <a [routerLink]="['/dashboard/home']" routerLinkActive="router-link-active"
             class="block px-4 py-2 text-white no-underline hover:text-gray-100">Home</a>
         </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
-          <a [routerLink]="['/dashboard/create-edit-category']" routerLinkActive="router-link-active"
-            class="block px-4 py-2 text-white no-underline hover:text-gray-100">Create Category</a>
-        </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
+        <li *ngIf="userRoleCheck == true" class="mt-2">
           <a [routerLink]="['/dashboard/categories']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Categories</a>
         </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
+        <li *ngIf="userRoleCheck == true" class="mt-2">
           <a [routerLink]="['/dashboard/companies']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Companies</a>
         </li>
-        <li *ngIf="currentUser?.role == 'admin'" class="mt-2">
+        <li *ngIf="userRoleCheck == true" class="mt-2">
           <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Users</a>
         </li>
         <li class="cursor-pointer">

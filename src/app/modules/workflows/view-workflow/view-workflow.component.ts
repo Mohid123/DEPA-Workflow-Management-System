@@ -1,15 +1,16 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
-import { jsPDF } from 'jspdf';
 import domToImage from 'dom-to-image';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
+import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   templateUrl: './view-workflow.component.html',
@@ -24,10 +25,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   activeIndex: number = 0;
   workflowUsers = [];
   approvalLogs = []
-  approve = new FormControl(false);
-  reject = new FormControl(false);
+  approve: FormControl = new FormControl(false);
+  reject: FormControl = new FormControl(false);
   remarks = new FormControl('');
-  showLoader = new Subject<boolean>();
   workflowData: any;
   workflowID: string;
   formTabs: any[] = [];
@@ -46,37 +46,36 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   loadingData = new Subject<boolean>();
   index = NaN;
   labels = ['Active', 'Approved', 'Pending', 'Rejected'];
+  sendingDecision = new Subject<boolean>();
+  dialogTitle: string
+  isDeleting: string;
+  currentStepId: string;
+  downloadingPDF = new Subject<boolean>();
+  adminUsers: any[] = [];
+  formData = new BehaviorSubject<any>(null);
+  readonly control = new FormControl([]);
+  userItems: any[] = [];
+  nonListuserItems: any[] = [];
+  limit = 10;
+  page = 0;
+  search$ = new BehaviorSubject<string>('');
+  editStepUserData = new BehaviorSubject<any>({})
+  editingStep = new Subject<boolean>();
+  userRoleSysAdmin: any;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private activatedRoute: ActivatedRoute,
     private workflowService: WorkflowsService,
     private auth: AuthService,
-    private dashboard: DashboardService
+    private dashboard: DashboardService,
+    private router: Router,
+    private pdfGeneratorService: PdfGeneratorService
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
     this.fetchData();
-    this.approve.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val === true) {
-        this.reject.disable();
-        this.showLoader.next(true);
-        setTimeout(() => this.showLoader.next(false), 1000)
-      }
-      if(val === false && this.reject.disabled) {
-        this.reject.enable()
-      }
-    });
-
-    this.reject.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val === true) {
-        this.approve.disable();
-        this.showLoader.next(true);
-        setTimeout(() => this.showLoader.next(false), 1000)
-      }
-      if(val === false && this.approve.disabled) {
-        this.approve.enable()
-      }
-    });
+    this.getUserData(this.limit, this.page);
   }
 
   ngOnInit(): void {
@@ -88,22 +87,38 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       caption: getItem(StorageItem.formKey),
       routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}`
     }];
+
+    this.search$.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(value => {
+      this.dashboard.getAdminUsers(this.limit, this.page, value)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        this.userItems = [...new Set(res.results?.map(value => value?.fullName))];
+      });
+    })
   }
 
-  get label(): string {
-    return Number.isNaN(this.index) ? '' : this.labels[this.index];
+  getUserData(limit: number, page: number) {
+    this.dashboard.getAdminUsers(limit, page)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      this.nonListuserItems = res.results;
+      this.userItems = res.results?.map(value => value?.fullName);
+    });
   }
 
-  getColor(index: number): string {
-    return `var(--tui-chart-${index})`;
-  }
-  
-  isItemActive(index: number): boolean {
-    return this.index === index;
+  onSearch(search: any) {
+    this.search$.next(search);
   }
 
-  onHover(index: number, hovered: any): void {
-    this.index = hovered ? index : 0;
+  onChange(event: any) {
+    if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      this.formData.next(event)
+    }
   }
 
   fetchData() {
@@ -112,16 +127,19 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       pluck('id'),
       map(id => this.workflowID = id),
       switchMap((subId => this.workflowService.getWorkflowSubmission(subId)))
-    ).subscribe(data => {
+    ).subscribe(async (data) => {
       if(data) {
         this.workflowData = data;
-        this.formAllowedForEditUsers = this.workflowData?.workflowStatus?.map(data => {
+        this.currentStepId = await this.workflowData?.workflowStatus?.filter(data => {
+          return data?.status == 'inProgress' ? data : null
+        })[0]?.stepId;
+        this.formAllowedForEditUsers = await this.workflowData?.workflowStatus?.map(data => {
           return {
             users: data?.activeUsers?.map(val => val?.fullName),
             status: data?.status
           }
         });
-        this.approvedUsers = this.workflowData?.workflowStatus?.map(data => {
+        this.approvedUsers = await this.workflowData?.workflowStatus?.map(data => {
           return {
             users: data?.approvedUsers?.map(user => user?.fullName),
             status: data?.status
@@ -131,10 +149,17 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           status: this.workflowData?.approvalLog.at(-1)?.approvalStatus,
           user: this.workflowData?.approvalLog.at(-1)?.performedById?.fullName
         };
-        this.formTabs = this.workflowData?.formIds?.map(val => val.title);
-        this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
+        this.formTabs = await this.workflowData?.formIds?.map(val => val.title);
+        this.formWithWorkflow = await this.workflowData?.formIds?.map(data => {
           return {
             ...data,
+            components: data.components?.map(data => {
+              if(data?.label && data?.label == 'Submit') {
+                data.hidden = true;
+                return data
+              }
+              return data
+            }),
             formDataId: this.workflowData?.formDataIds?.map(val => {
               if(val.formId == data?._id) {
                 return val?._id
@@ -147,47 +172,95 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
-        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
-        this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
+        this.activeUsers = await this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
+        this.workflowUsers = await this.workflowData?.workflowStatus?.map(userData => {
           return {
             approverIds: userData?.allUsers?.map(val => {
               return {
-                name: val?.fullName,
-                id: val?._id,
+                name: val?.performedBy == null ? val?.assignedTo?.fullName : val?.performedBy?.fullName + ' on behalf of ' + val?.assignedTo?.fullName,
+                id: val?.assignedTo?._id,
                 stepId: userData?.stepId
               }
             }),
             condition: userData?.condition,
-            status: userData?.status
+            status: userData?.status,
+            stepId: userData?.stepId,
+            _id: userData?._id,
+            allUsers: userData?.allUsers,
+            activeUsers: userData?.activeUsers?.map(value => value?.fullName),
           }
         });
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
         this.approvalLogs = this.workflowData?.approvalLog;
         this.allApproved = this.workflowData?.workflowStatus?.map(userData => userData?.status == 'approved' ? true: false);
+        this.adminUsers = this.workflowData?.subModuleId?.adminUsers;
         this.loadingData.next(false)
       }
     });
   }
 
   showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
-    this.showLoader.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val === false) {
-        this.decisionData.next(data)
-        this.saveDialogSubscription.push(this.dialogs.open(content, {
-          dismissible: false,
-          closeable: false
-        }).pipe(take(1)).subscribe())
-      }
-    })
+    this.approve = new FormControl(false);
+    this.reject = new FormControl(false);
+    console.log(data)
+    this.decisionData.next(data)
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false
+    }).pipe(take(1)).subscribe())
   }
 
-  sendDecisionData() {
-    this.savingDecision.next(true)
+  openEditUserDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
+    this.control.setValue(data?.activeUsers);
+    this.editStepUserData.next(data);
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false
+    }).pipe(take(1)).subscribe())
+  }
+
+  updateUserStep() {
+    this.editingStep.next(true)
+    let finalData = {...this.editStepUserData?.value}
+    delete finalData?.approverIds;
+    delete finalData?.condition;
+    delete finalData?.status;
+    const payload = Object.assign(finalData, {activeUsers: this.control.value})
+    console.log(payload);
+    // this.editingStep.next(false);
+    // this.saveDialogSubscription.forEach(val => val.unsubscribe())
+  }
+
+  showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string): void {
+    this.isDeleting = checkDecision;
+    if(checkDecision == 'delete') {
+      this.dialogTitle = 'Delete'
+    }
+    if(checkDecision == 'cancel') {
+      this.dialogTitle = 'Cancel'
+    }
+    if(checkDecision == 'enable') {
+      this.dialogTitle = 'Enable'
+    }
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe());
+  }
+
+  sendApproveOrRejectDecisionData() {
+    this.savingDecision.next(true);
+    this.updateFormData();
     const payload: any = {
-      stepId: this.decisionData?.value?.stepId,
+      stepId: this.decisionData?.value?.stepId || this.decisionData?.value[0]?.stepId,
       userId: this.currentUser?.id,
-      remarks: this.remarks?.value,
-      isApproved: this.approve?.value == true ? true : false
+      remarks: this.remarks?.value || undefined,
+      isApproved: this.approve?.value == true ? true : false,
+      type: 'submittal'
+    }
+    if(this.currentUser?.id !== this.decisionData?.value?.id) {
+      debugger
+      Object.assign(payload, {onBehalfOf: this.currentUser?.id}, {userId: this.decisionData?.value?.id})
     }
     this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
@@ -205,6 +278,52 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.savingDecision.next(false);
       }
     })
+  }
+
+  sendDeleteOrCancelDecision() {
+    this.sendingDecision.next(true)
+    let payload: any = {
+      stepId: this.currentStepId,
+      userId: this.currentUser?.id,
+      remarks: this.remarks?.value || undefined,
+      type: 'submittal'
+    }
+    if(this.isDeleting == 'delete') {
+      Object.assign(payload, {status: 2})
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe());
+          this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
+    if(this.isDeleting == 'cancel') {
+      Object.assign(payload, {submissionStatus: 5});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.remarks.reset();
+          this.fetchData();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
+    if(this.isDeleting == 'enable') {
+      Object.assign(payload, {submissionStatus: 2});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.fetchData();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
   }
 
   cancelDecision() {
@@ -227,6 +346,18 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       return '#32de84'
     }
     return '#fff'
+  }
+
+  checkIfUserisPartofWorkflow(data: any) {
+    return data?.map(val => val?._id)?.includes(this.currentUser?.id)
+  }
+
+  checkIfUserisActiveUser() {
+    return this.workflowData?.workflowStatus?.flatMap(val => val?.status == 'inProgress' ? val.activeUsers: null)?.filter(val => val).includes(this.currentUser?.id)
+  }
+
+  checkIfUserisAllUser() {
+    return this.workflowData?.workflowStatus?.flatMap(val => val?.status == 'inProgress' ? val.allUsers: null)?.filter(val => val).includes(this.currentUser?.id)
   }
 
   checkIfUserCanEditForm(): any[] {
@@ -252,14 +383,14 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   checkApprovedStatus(value: any, index: number): boolean {
-    if(this.approvedUsers?.map(value => value.status)[index] === 'inProgress') {
+    if(this.approvedUsers?.map(data => data.status)[index] === 'approved') {
       return this.approvedUsers[index].users?.includes(value)
     }
-    return this.approvedUsers?.flatMap(val => val?.users)?.includes(value)
+    return false
   }
 
-  userApprovedCheckResult(): boolean {
-    return this.checkIfUserIsApproved(this.currentUser?.fullName).includes(true)
+  userApprovedCheckResult(value): boolean {
+    return this.checkIfUserIsApproved(value).includes(true)
   }
 
   checkIfUserisStillActive(value: any): boolean {
@@ -278,18 +409,18 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return !this.allApproved.includes(false)
   }
 
-  updateFormData(event: any) {
+  checkIfUserIsInAdminUsers() {
+    return this.adminUsers?.includes(this.currentUser?.id)
+  }
+
+  updateFormData() {
     const payload: any = {
-      formId: event?._id,
-      data: event?.data
+      formId: this.formData?.value?._id,
+      data: this.formData?.value?.data
     }
-    this.workflowService.updateFormsData(payload, event?.formDataId)
+    this.workflowService.updateFormsData(payload, this.formData?.value?.formDataId)
     .pipe(takeUntil(this.destroy$))
-    .subscribe((res: any) => {
-      if(res) {
-        this.fetchData();
-      }
-    })
+    .subscribe()
   }
 
   hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {
@@ -302,43 +433,36 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return false
   }
 
+  checkApprovalLogs() {
+    return (
+      this.approvalLogs?.map(value => value?.approvalStatus)?.includes('approved') ||
+      this.approvalLogs?.map(value => value?.approvalStatus)?.includes('created')
+    )
+  }
+
   downloadAsPDF() {
-    const width = this.formPdf.nativeElement.clientWidth;
-    const height = this.formPdf.nativeElement.clientHeight + 40;
-    let orientation: any = '';
-    let imageUnit: any = 'pt';
-    if (width > height) {
-      orientation = 'l';
-    }
-    else {
-      orientation = 'p';
-    }
-    document.getElementById('legend').style.display = 'none';
-    domToImage.toPng(this.formPdf.nativeElement, {
-      width: width * 2,
-      height: height  * 2,
-      style: {
-        transform: "scale(" + 2 + ")",
-        transformOrigin: "top left"
-      }
-    })
-    .then((result) => {
-      let jsPdfOptions = {
-        orientation: orientation,
-        unit: imageUnit,
-        format: [width + 100, height + 220]
-      };
-      const pdf = new jsPDF(jsPdfOptions);
-      const image: HTMLImageElement | any = new Image();
-      image.src = 'https://i.ibb.co/Wt2PxM6/depa-logo.png';
-      image.alt = 'logo';
-      pdf.addImage(image, 'PNG', 25, 45, 60, 60)
-      pdf.addImage(result, 'PNG', 25, 105, width, height);
-      pdf.save('Form_Data_and_Workflow'+ '.pdf');
-      document.getElementById('legend').style.display = 'block';
-    })
-    .catch(error => {
-      throw error
+    this.downloadingPDF.next(true);
+    this.formWithWorkflow?.forEach(formData => {
+      const width = this.formPdf.nativeElement.clientWidth;
+      const height = this.formPdf.nativeElement.clientHeight + 300;
+      const domElements = this.formPdf?.nativeElement;
+      domToImage.toPng(domElements, {
+        width: width * 2,
+        height: height  * 2,
+        style: {
+          transform: "scale(" + 2 + ")",
+          transformOrigin: "top left"
+        }
+      })
+      .then(async (value: any) => {
+        const pdfBytes = await this.pdfGeneratorService.generatePdf(formData?.data, value, width);
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        saveAs(blob, 'form_data.pdf');
+        this.downloadingPDF.next(false);
+      })
+      .catch(error => {
+        throw error
+      })
     })
   }
 

@@ -281,27 +281,32 @@ export const userAddForm = {
   "display": "form",
   "components": [
       {
-          "label": "Role",
-          "widget": "choicesjs",
-          "tableView": true,
-          "validate": {
-            "required": true
-          },
-          "data": {
-              "values": [
-                  {
-                      "label": "Admin",
-                      "value": "admin"
-                  },
-                  {
-                      "label": "User",
-                      "value": "user"
-                  }
-              ]
+        "label": "Role",
+        "widget": "choicesjs",
+        "tableView": true,
+        "validate": {
+          "required": true
+        },
+        "data": {
+          "values": [
+              {
+                  "label": "Admin",
+                  "value": "admin"
+              },
+              {
+                  "label": "User",
+                  "value": "user"
+              },
+              {
+                "label": "Any",
+                "value": "any"
+              }
+            ]
           },
           "key": "role",
           "type": "select",
-          "input": true
+          "input": true,
+          "multiple": true
       }
   ]
 }
@@ -332,7 +337,7 @@ export const userAddFormProfile = {
           "input": true
       },
       {
-          "label": "Role",
+          "label": "Roles",
           "widget": "choicesjs",
           "tableView": true,
           "disabled": true,
@@ -348,12 +353,17 @@ export const userAddFormProfile = {
                   {
                       "label": "User",
                       "value": "user"
+                  },
+                  {
+                    "label": "Any",
+                    "value": "any"
                   }
               ]
           },
-          "key": "role",
+          "key": "roles",
           "type": "select",
-          "input": true
+          "input": true,
+          "multiple": true
       }
   ]
 }
@@ -364,24 +374,24 @@ export const userAddFormAdmin = {
   "display": "form",
   "components": [
       {
-          "label": "Full Name",
-          "tableView": true,
-          "key": "fullname",
-          "type": "textfield",
-          "input": true,
-          "validate": {
-            "required": true
-          },
+        "label": "Full Name",
+        "tableView": true,
+        "key": "fullname",
+        "type": "textfield",
+        "input": true,
+        "validate": {
+          "required": true
+        },
       },
       {
-          "label": "Email",
-          "tableView": true,
-          "key": "email",
-          "type": "email",
-          "validate": {
-            "required": true
-          },
-          "input": true
+        "label": "Email",
+        "tableView": true,
+        "key": "email",
+        "type": "email",
+        "validate": {
+          "required": true
+        },
+        "input": true
       },
       {
           "label": "Role",
@@ -392,20 +402,25 @@ export const userAddFormAdmin = {
             "required": true
           },
           "data": {
-              "values": [
-                  {
-                      "label": "Admin",
-                      "value": "admin"
-                  },
-                  {
-                      "label": "User",
-                      "value": "user"
-                  }
-              ]
+            "values": [
+                {
+                    "label": "Admin",
+                    "value": "admin"
+                },
+                {
+                    "label": "User",
+                    "value": "user"
+                },
+                {
+                  "label": "Any",
+                  "value": "any"
+                }
+            ]
           },
           "key": "role",
           "type": "select",
-          "input": true
+          "input": true,
+          "multiple": true,
       }
   ]
 }
@@ -511,4 +526,21 @@ export const resetPasswordForm = {
   ]
 }
 
+export const categoryForm = {
+  "title": "category form",
+  "key": "category-form",
+  "display": "form",
+  "components": [
+    {
+      "label": "Category Name",
+      "tableView": true,
+      "validate": {
+          "required": true
+      },
+      "key": "categoryName",
+      "type": "textfield",
+      "input": true
+    }
+  ]
+}
 // "suffix": "<i style=\"cursor: pointer;\" id=\"showPass\" class=\"fa fa-eye\"></i>",

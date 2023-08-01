@@ -1,3 +1,13 @@
 <tui-root dir="ltr">
   <router-outlet></router-outlet>
 </tui-root>
+<ng-container *ngIf="(isNewVersionAvailable | async) == true">
+  <div class="absolute top-5 left-0 right-0 mx-auto w-116">
+    <tui-notification
+      status="info"
+      [hasIcon]="true"
+    >
+      <span class="text-base">A new version of the application is available.</span>&nbsp; <a (click)="updatePanel()" class="text-yellow-600 font-semibold hover:text-yellow-600 text-base cursor-pointer">Update</a>
+    </tui-notification>
+  </div>
+</ng-container>

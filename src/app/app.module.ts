@@ -1,5 +1,5 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
-import { TuiRootModule, TuiDialogModule, TuiAlertModule, TUI_SANITIZER } from "@taiga-ui/core";
+import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiNotificationModule, TUI_SANITIZER } from "@taiga-ui/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -31,7 +31,8 @@ import { TuiPreviewModule } from "@taiga-ui/addon-preview";
       TuiDialogModule,
       TuiAlertModule,
       TuiDialogModule,
-      TuiPreviewModule
+      TuiPreviewModule,
+      TuiNotificationModule
 ],
   providers: [
     {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},

@@ -22,12 +22,12 @@ const routes: Routes = [
       {
         path: 'add-module/:id',
         component: AddSubmoduleComponent,
-        data: {breadcrumb:'Add Module'},
+        data: {breadcrumb:'Add App'},
       },
       {
         path: 'edit-module/:id',
         component: EditSubmoduleComponent,
-        data: {breadcrumb:'Edit Module'},
+        data: {breadcrumb:'Edit App'},
       },
       {
         path: 'edit-submission/:id',

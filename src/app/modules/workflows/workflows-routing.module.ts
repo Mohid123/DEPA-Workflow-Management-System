@@ -11,7 +11,6 @@ const routes: Routes = [
   {
     path: '',
     component: WorkflowsComponent,
-    // resolve: { breadcrumb: WorkflowResolver },
     children:[
       {
         path: 'add-submission/:id',
