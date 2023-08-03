@@ -390,27 +390,56 @@
     Edit Step Users
   </p>
   <p class="text-xs text-center font-extralight">Users that have not performed an action can be changed</p>
-  <div class="my-5">
-    <tui-multi-select
-      [formControl]="control"
-      [tuiTextfieldLabelOutside]="true"
-      [editable]="true"
-      (searchChange)="onSearch($event)"
-    >
-      Users
-      <tui-data-list-wrapper
-        *tuiDataList
-        tuiMultiSelectGroup
-        [items]="userItems"
-      ></tui-data-list-wrapper>
-    </tui-multi-select>
+  <div class="flex justify-between mt-5 gap-2">
+    <div class="w-full">
+      <label class="block pb-1">Users <span class="text-xs text-red-400">*</span></label>
+      <tui-multi-select
+        [formControl]="control"
+        [tuiTextfieldLabelOutside]="true"
+        [editable]="true"
+        (searchChange)="onSearch($event)"
+      >
+        Users
+        <tui-data-list-wrapper
+          *tuiDataList
+          tuiMultiSelectGroup
+          [items]="userItems"
+        ></tui-data-list-wrapper>
+      </tui-multi-select>
+    </div>
+    <div class="w-full">
+      <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+      <tui-select
+        tuiTextfieldSize="l"
+        [formControl]="condition"
+        [tuiTextfieldLabelOutside]="true"
+        class="uppercase"
+      >
+        Condition
+        <input
+          tuiTextfield
+          placeholder="Condition"
+        />
+        <tui-data-list-wrapper
+          *tuiDataList
+          [items]="['and', 'or', 'none']"
+        ></tui-data-list-wrapper>
+    </tui-select>
+    </div>
   </div>
-  <div class="flex justify-start gap-x-3">
+  <ng-container *ngIf="control?.hasError('required')">
+    <span class="text-xs text-red-500 text-left">Please provide at least one user</span>
+  </ng-container>
+  <ng-container *ngIf="(showConditionError | async) == true">
+    <span class="text-xs text-red-500 text-left">Please select either AND/OR as condition</span>
+  </ng-container>
+  <div class="flex justify-start gap-x-3 mt-5">
     <button
       tuiButton
       type="button"
       size="m"
       [showLoader]="(editingStep | async)"
+      [disabled]="control?.invalid || (showConditionError | async) == true"
       (click)="updateUserStep()"
     >
       Update

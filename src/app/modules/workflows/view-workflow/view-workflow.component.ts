@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
@@ -54,7 +54,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   downloadingPDF = new Subject<boolean>();
   adminUsers: any[] = [];
   formData = new BehaviorSubject<any>(null);
-  readonly control = new FormControl([]);
+  readonly control = new FormControl([], Validators.required);
   userItems: any[] = [];
   nonListuserItems: any[] = [];
   limit = 10;
@@ -63,6 +63,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   editStepUserData = new BehaviorSubject<any>({})
   editingStep = new Subject<boolean>();
   userRoleSysAdmin: any;
+  condition = new FormControl('none');
+  showConditionError = new Subject<boolean>();
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -95,6 +97,25 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       .subscribe((res: any) => {
         this.userItems = [...new Set(res.results?.map(value => value?.fullName))];
       });
+    });
+
+    this.control?.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      if(data?.length < 2) {
+        this.condition.setValue('none');
+        this.condition.disable();
+      }
+      if(data?.length >= 2) {
+        this.condition.enable();
+        if(this.condition?.value == 'none') {
+          this.showConditionError.next(true)
+        }
+      }
+    });
+
+    this.condition?.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      if(data !== 'none') {
+        this.showConditionError.next(false)
+      }
     })
   }
 
@@ -208,7 +229,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
     this.approve = new FormControl(false);
     this.reject = new FormControl(false);
-    console.log(data)
     this.decisionData.next(data)
     this.saveDialogSubscription.push(this.dialogs.open(content, {
       dismissible: false,
@@ -218,10 +238,12 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   openEditUserDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
     this.control.setValue(data?.activeUsers);
+    this.condition.setValue(data?.condition);
     this.editStepUserData.next(data);
     this.saveDialogSubscription.push(this.dialogs.open(content, {
       dismissible: false,
-      closeable: false
+      closeable: false,
+      size: 'l'
     }).pipe(take(1)).subscribe())
   }
 
@@ -241,7 +263,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     const payload = {stepStatus: Object.assign(
       finalData,
       {activeUsers: activeNewUsers},
-      {allUsers: allnewUsers}
+      {allUsers: allnewUsers},
+      {condition: this.condition?.value}
     )}
     this.workflowService.updateWorkflowStep(payload, this.workflowID)
     .pipe(takeUntil(this.destroy$))
