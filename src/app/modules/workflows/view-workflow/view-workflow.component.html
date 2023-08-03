@@ -92,11 +92,11 @@
           </nav>
           <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
             <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-              <div *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true" class="flex justify-end">
+              <!-- <div *ngIf="checkIfLoggedInUserIsPartOfActiveUsers() == true || userRoleSysAdmin == true" class="flex justify-end">
                 <button (click)="downloadAsPDF()" class="px-2 py-1 rounded-md ml-2 bg-[#FF0000] text-white">
                   <i class="fa fa-file-pdf-o fa-lg" aria-hidden="true"></i>&nbsp; {{(downloadingPDF | async) == true ? 'Saving...' : 'Save as PDF'}}
                 </button>
-              </div>
+              </div> -->
               <formio
                 [readOnly]="
                 checkIfAllApproved() == true ||
@@ -166,27 +166,33 @@
                 [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
               >
                 <ng-container *ngIf="user?.status == 'pending'">
-                  <div class="flex justify-between">
-                    <tui-badge
-                      class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
-                      [value]="'Pending'"
-                      status="custom"
-                    >
-                      <tui-svg src="tuiIconClock"></tui-svg>
-                    </tui-badge>
-                  </div>
+                  <tui-badge
+                    class="px-2 font-semibold text-white bg-yellow-600 tui-space_right-2 tui-space_bottom-4"
+                    [value]="'Pending'"
+                    status="custom"
+                  >
+                    <tui-svg src="tuiIconClock"></tui-svg>
+                  </tui-badge>
+                  <ng-container *ngIf="userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true">
+                    <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                  </ng-container>
                   <hr class="mb-2">
                 </ng-container>
                 <ng-container *ngIf="user?.status == 'inProgress'">
-                  <div class="flex justify-between">
-                    <tui-badge
-                      class="px-2 font-semibold text-white bg-blue-600 tui-space_right-2 tui-space_bottom-4"
-                      [value]="'Active'"
-                      status="custom"
-                    >
-                      <tui-svg src="tuiIconRadio"></tui-svg>
-                    </tui-badge>
-                  </div>
+                  <tui-badge
+                    class="px-2 font-semibold text-white bg-blue-600 tui-space_right-2 tui-space_bottom-4"
+                    [value]="'Active'"
+                    status="custom"
+                  >
+                    <tui-svg src="tuiIconRadio"></tui-svg>
+                  </tui-badge>
+                  <ng-container *ngIf="userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true">
+                    <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                  </ng-container>
                   <hr class="mb-2">
                 </ng-container>
                 <ng-container *ngIf="user?.status == 'rejected'">
@@ -373,6 +379,48 @@
       type="button"
       size="m"
       (click)="remarks.reset(); observer.complete()"
+    >
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #editUsersDialog let-observer>
+  <p class="text-lg font-semibold text-center">
+    Edit Step Users
+  </p>
+  <p class="text-xs text-center font-extralight">Users that have not performed an action can be changed</p>
+  <div class="my-5">
+    <tui-multi-select
+      [formControl]="control"
+      [tuiTextfieldLabelOutside]="true"
+      [editable]="true"
+      (searchChange)="onSearch($event)"
+    >
+      Users
+      <tui-data-list-wrapper
+        *tuiDataList
+        tuiMultiSelectGroup
+        [items]="userItems"
+      ></tui-data-list-wrapper>
+    </tui-multi-select>
+  </div>
+  <div class="flex justify-start gap-x-3">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      [showLoader]="(editingStep | async)"
+      (click)="updateUserStep()"
+    >
+      Update
+    </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="accent"
+      size="m"
+      (click)="observer.complete()"
     >
       Cancel
     </button>

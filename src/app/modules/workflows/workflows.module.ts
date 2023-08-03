@@ -7,7 +7,7 @@ import { ViewWorkflowComponent } from './view-workflow/view-workflow.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
 import { FooterComponent } from 'src/app/standalone-components/footer/footer.component';
 import { FormioModule } from '@formio/angular';
-import { TuiBadgeModule, TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputTagModule, TuiIslandModule, TuiPaginationModule, TuiProgressModule, TuiTabsModule, TuiToggleModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiBadgedContentModule, TuiCarouselModule, TuiDataListWrapperModule, TuiInputTagModule, TuiIslandModule, TuiMultiSelectModule, TuiPaginationModule, TuiProgressModule, TuiTabsModule, TuiToggleModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule, TuiTooltipModule } from '@taiga-ui/core';
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
@@ -17,8 +17,6 @@ import { EmailSubmissionComponent } from './email-submission/email-submission.co
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 import { WorkflowSkeletonComponent } from 'src/app/skeleton-loaders/workflow-skeleton/workflow-skeleton.component';
-import {TuiLegendItemModule, TuiRingChartModule} from '@taiga-ui/addon-charts';
-import { TuiHoveredModule } from '@taiga-ui/cdk';
 
 
 @NgModule({
@@ -56,7 +54,8 @@ import { TuiHoveredModule } from '@taiga-ui/cdk';
     FilterComponent,
     TuiHintModule,
     TuiTooltipModule,
-    WorkflowSkeletonComponent
+    WorkflowSkeletonComponent,
+    TuiMultiSelectModule
   ]
 })
 export class WorkflowsModule { }
