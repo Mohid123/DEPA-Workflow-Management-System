@@ -11,6 +11,7 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
 import { saveAs } from 'file-saver';
+import { ApiResponse } from 'src/core/models/api-response.model';
 
 @Component({
   templateUrl: './view-workflow.component.html',
@@ -101,7 +102,12 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     this.dashboard.getAdminUsers(limit, page)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
-      this.nonListuserItems = res.results;
+      this.nonListuserItems = res.results?.map(value => {
+        return {
+          id: value?.id,
+          fullName: value?.fullName
+        }
+      });
       this.userItems = res.results?.map(value => value?.fullName);
     });
   }
@@ -187,7 +193,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             stepId: userData?.stepId,
             _id: userData?._id,
             allUsers: userData?.allUsers,
-            activeUsers: userData?.activeUsers?.map(value => value?.fullName),
+            activeUsers: userData?.activeUsers?.map(value => value?.fullName)
           }
         });
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
@@ -220,15 +226,32 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   updateUserStep() {
-    this.editingStep.next(true)
+    this.editingStep.next(true);
     let finalData = {...this.editStepUserData?.value}
+    let activeNewUsers = this.nonListuserItems?.map((value, index) => {
+      if(this.control.value?.includes(value?.fullName)) {
+        return value?.id
+      }
+    }).filter(val => val);
+
+    let allnewUsers = activeNewUsers?.map((value, index) => {
+      return {assignedTo: value}
+    }).filter(val => val);
     delete finalData?.approverIds;
-    delete finalData?.condition;
-    delete finalData?.status;
-    const payload = Object.assign(finalData, {activeUsers: this.control.value})
-    console.log(payload);
-    // this.editingStep.next(false);
-    // this.saveDialogSubscription.forEach(val => val.unsubscribe())
+    const payload = {stepStatus: Object.assign(
+      finalData,
+      {activeUsers: activeNewUsers},
+      {allUsers: allnewUsers}
+    )}
+    this.workflowService.updateWorkflowStep(payload, this.workflowID)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      if(res) {
+        this.editingStep.next(false);
+        this.saveDialogSubscription.forEach(val => val.unsubscribe());
+        this.fetchData()
+      }
+    })
   }
 
   showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string): void {

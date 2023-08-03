@@ -95,4 +95,18 @@ export class WorkflowsService extends ApiService<any> {
       }
     }))
   }
+
+  updateWorkflowStep(data: any, id: string): Observable<ApiResponse<any>> {
+    return this.patch(`/submissions/workflow/${id}`, data).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification(res?.data?.message, 'Update Workflow Step', TuiNotification.Success)
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Workflow Step', TuiNotification.Error)
+        }
+      }
+    }))
+  }
 }
