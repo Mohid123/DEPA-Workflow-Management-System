@@ -7,7 +7,8 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
-import { Location } from '@angular/common';;
+import { Location } from '@angular/common';
+import { environment } from 'src/environments/environment';;
 
 @Component({
   templateUrl: './form-builder.component.html',
@@ -87,7 +88,7 @@ export class FormBuilderComponent{
     this.form?.components?.map(val => {
       if(val?.label && val?.label === 'Upload') {
         val.storage = "url";
-        val.url = 'http://localhost:3000/v1/upload';
+        val.url = `${environment.apiUrl}/upload`;
         val.uploadEnabled = true;
         val.sendFileAsQueryParam = false;
         val.input = true;
