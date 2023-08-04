@@ -34,7 +34,7 @@
               <td class="px-4 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                 {{showStatus(data?.submissionStatus)}}
               </td>
-              <td class="pr-4 pl-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+              <td class="py-4 pl-2 pr-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                 {{(data?.submissionStatus === 1 || data?.submissionStatus === 4) ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
               </td>
                 <td class="px-2 py-4 max-w-60" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
@@ -65,13 +65,13 @@
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       data?.summaryData?.progress < 100
-                    ) || 
+                    ) ||
                     (
                       checkIfUserisActiveUser(data?.workflowStatus) == false &&
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       data?.summaryData?.progress < 100
-                    ) || 
+                    ) ||
                     (
                       checkIfUserisActiveUser(data?.workflowStatus) == true &&
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
@@ -95,21 +95,21 @@
                     (click)="editWorkflowRoute(data?.id, data?.formIds[0]?.key)"
                     *ngIf="
                     (
-                      checkIfUserisApprovedUser(data?.workflowStatus) == false && 
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true &&
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
                       checkIfUserisActiveUser(data?.workflowStatus) == false &&
                       data?.summaryData?.progress <= 100
                     ) ||
                     (
-                      checkIfUserisApprovedUser(data?.workflowStatus) == true && 
+                      checkIfUserisApprovedUser(data?.workflowStatus) == true &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
                       checkIfUserisActiveUser(data?.workflowStatus) == false &&
                       data?.summaryData?.progress <= 100
                     ) ||
                     (
-                      checkIfUserisApprovedUser(data?.workflowStatus) == false && 
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&
                       checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
                       checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
                       checkIfUserisActiveUser(data?.workflowStatus) == false &&
@@ -126,7 +126,16 @@
                   title="Edit Submission"
                   [routerLink]="['/modules/edit-submission', data?.id]"
                   (click)="setWorkflowID(data?.id)"
-                  *ngIf="currentUser?.id == data?.createdBy?.id && data?.submissionStatus == 4 && data?.submissionStatus !== 5"
+                  *ngIf="(
+                    currentUser?.id == data?.createdBy?.id &&
+                    data?.submissionStatus == 4 &&
+                    data?.submissionStatus !== 5
+                  ) ||
+                  (
+                    checkIfUserIsFirstUser(data?.workflowStatus) &&
+                    data?.submissionStatus == 4 &&
+                    data?.submissionStatus !== 5
+                  )"
                   class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
                 </a>

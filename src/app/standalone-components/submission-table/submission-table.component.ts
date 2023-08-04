@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -88,6 +88,12 @@ export class SubmissionTableComponent implements OnDestroy {
 
   checkIfUserisAdmin(value: any[]): boolean {
     return value?.map(data => data?.id).includes(this.currentUser?.id)
+  }
+
+  checkIfUserIsFirstUser(value: any) {
+    if(value[0]?.status == 'inProgress') {
+      return value[0]?.activeUsers?.includes(this.currentUser?.id)
+    }
   }
 
   checkIfUserisViewOnly(value: any[]): boolean {
