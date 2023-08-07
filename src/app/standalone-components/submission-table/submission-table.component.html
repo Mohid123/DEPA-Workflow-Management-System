@@ -135,6 +135,11 @@
                     checkIfUserIsFirstUser(data?.workflowStatus) &&
                     data?.submissionStatus == 4 &&
                     data?.submissionStatus !== 5
+                  ) ||
+                  (
+                    checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                    data?.submissionStatus == 4 &&
+                    data?.submissionStatus !== 5
                   )"
                   class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
