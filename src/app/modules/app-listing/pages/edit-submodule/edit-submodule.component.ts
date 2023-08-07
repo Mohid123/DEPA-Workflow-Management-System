@@ -517,6 +517,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             }
           })
         }
+        else {
+          this.isCreatingSubModule.next(false);
+        }
       })
     }
   }

@@ -454,6 +454,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           }
         })
       }
+      else {
+        this.isCreatingSubModule.next(false);
+      }
     })
   }
 
