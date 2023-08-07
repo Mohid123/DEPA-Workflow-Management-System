@@ -114,7 +114,7 @@
   <ng-container *ngIf="activeItemIndex == 0">
     <tui-island
       size="l"
-      class="w-full my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"
+      class="w-[97.5%] my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"
     >
       <h4 class="mb-5 text-base font-semibold text-gray-700">Workflow Steps</h4>
       <tui-carousel
@@ -157,7 +157,7 @@
       [showLoader]="(creatingSubmission | async)"
       (click)="editSubmission()"
     >
-      Publish
+      Create Submission
     </button>
     <button
       tuiButton

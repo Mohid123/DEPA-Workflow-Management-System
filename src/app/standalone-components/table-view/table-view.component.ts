@@ -4,7 +4,7 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { TuiBadgeModule, TuiPaginationModule } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiTooltipModule } from '@taiga-ui/core';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
@@ -12,7 +12,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
-import {TuiPreviewModule, TuiPreviewDialogService} from '@taiga-ui/addon-preview';
+import {TuiPreviewDialogService} from '@taiga-ui/addon-preview';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -20,7 +20,7 @@ import {TuiPreviewModule, TuiPreviewDialogService} from '@taiga-ui/addon-preview
 @Component({
   selector: 'app-table-view',
   standalone: true,
-  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule, TuiBadgeModule],
+  imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule, TuiBadgeModule, TuiHintModule, TuiTooltipModule],
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
