@@ -1,6 +1,7 @@
 <app-header></app-header>
 
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
+  <p class="text-lg font-semibold">Forms</p>
   <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
     <section class="flex justify-between my-8">
       <nav
@@ -179,6 +180,31 @@
       Cancel
     </button>
   </div>
+
+  <section class="my-4">
+    <p class="mb-5 text-lg font-semibold">Approval Logs</p>
+    <div class="grid grid-cols-12">
+      <div class="col-span-12 w-[97.5%]">
+        <tui-island size="l" class="w-full shadow-lg">
+          <ng-container *ngIf="approvalLogs?.length == 0">
+            <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>
+          </ng-container>
+          <ng-container *ngFor="let log of approvalLogs; let i = index">
+            <div class="grid grid-cols-12 py-3 border-b border-gray-300 gap-x-3">
+              <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">{{log?.onBehalfOf ? log?.onBehalfOf?.fullName + ' on behalf of ' + log?.performedById?.fullName : log?.performedById?.fullName}}</span></p>
+              <p class="col-span-2 font-normal">Action: &nbsp; <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>
+              <p class="col-span-4 font-normal">
+                Approved On: <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">&nbsp;{{log?.approvedOn | date: 'medium'}}</span>
+              </p>
+              <p class="col-span-3 font-normal">Comments:
+                <span [ngClass]="log?.approvalStatus == 'approved' ? 'text-green-500': 'text-gray-600'" class="font-semibold">&nbsp;{{log?.remarks}}</span>
+              </p>
+            </div>
+          </ng-container>
+        </tui-island>
+      </div>
+    </div>
+  </section>
 </section>
 
 

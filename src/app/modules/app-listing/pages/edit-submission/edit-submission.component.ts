@@ -45,6 +45,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   formValues: any[] = [];
   workFlowId: string;
   userRoleCheck: any;
+  approvalLogs = []
 
   constructor(
     private auth: AuthService,
@@ -83,10 +84,9 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     hierarchy.forEach(val => {
       val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
     })
-
     this.dashboard.items = [...hierarchy, {
-      caption: 'Edit Submission',
-      routerLink: `/modules/edit-submission/${getItem(StorageItem.workflowID)}`
+      caption: getItem(StorageItem.formKey),
+      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}`
     }];
   }
 
@@ -96,6 +96,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       if(res) {
         this.subModuleData = res;
         this.workFlowId = res?.workFlowId?._id;
+        this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(data => {
           return {
             ...data,
@@ -146,6 +147,13 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.initWorkflowForm(workFlowId);
       }
     })
+  }
+
+  checkApprovalLogs() {
+    return (
+      this.approvalLogs?.map(value => value?.approvalStatus)?.includes('approved') ||
+      this.approvalLogs?.map(value => value?.approvalStatus)?.includes('created')
+    )
   }
 
   initWorkflowForm(item?: any) {
