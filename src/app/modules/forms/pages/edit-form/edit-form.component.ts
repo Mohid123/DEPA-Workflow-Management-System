@@ -77,18 +77,26 @@ export class EditFormComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(Object.keys(val).length > 0) {
-        const hierarchy = getItem(StorageItem.navHierarchy);
-        hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
-        })
-        this.dashboard.items = [...hierarchy, {
-          caption: 'Add Submission',
-          routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
-        }];
-      }
-    })
+    // this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+    //   if(Object.keys(val).length > 0) {
+    //     const hierarchy = getItem(StorageItem.navHierarchy);
+    //     hierarchy.forEach(val => {
+    //       val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+    //     })
+    //     if(this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('moduleCode')) {
+    //       this.dashboard.items = [...hierarchy, {
+    //         caption: 'Add Submission',
+    //         routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
+    //       }];
+    //     }
+    //     if(this.dashboard.previousRoute && this.dashboard.previousRoute.includes('moduleCode')) {
+    //       this.dashboard.items = [{
+    //         caption: 'Edit App',
+    //         routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}?moduleCode=${StorageItem.moduleSlug}`
+    //       }];
+    //     }
+    //   }
+    // })
   }
 
   onChange(event: any) {
