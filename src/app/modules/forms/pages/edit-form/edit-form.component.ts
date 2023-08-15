@@ -1,4 +1,4 @@
-import { Component, ViewChild, EventEmitter, ElementRef, OnDestroy } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
@@ -6,16 +6,16 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
-import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { Location } from '@angular/common';
 import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 
 @Component({
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.scss']
 })
-export class EditFormComponent implements OnDestroy {
+export class EditFormComponent implements OnDestroy, OnInit {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
   public form: {title: string, key: string, display: string, components: []};
@@ -50,7 +50,8 @@ export class EditFormComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute,
     private formService: FormsService,
     private _location: Location,
-    private auth: AuthService
+    private auth: AuthService,
+    private dashboard: DashboardService
   )
   {
     this.activatedRoute?.queryParams?.subscribe(data => {
@@ -71,6 +72,21 @@ export class EditFormComponent implements OnDestroy {
       else {
         this.form = {
           title: this.formTitleControl?.value, key: null, display: this.formDisplayType.value || null, components: []};
+      }
+    })
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length > 0) {
+        const hierarchy = getItem(StorageItem.navHierarchy);
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
+        this.dashboard.items = [...hierarchy, {
+          caption: 'Add Submission',
+          routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
+        }];
       }
     })
   }

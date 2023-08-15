@@ -1,4 +1,4 @@
-import { Component, ViewChild, EventEmitter, ElementRef } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
@@ -8,13 +8,15 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
-import { environment } from 'src/environments/environment';;
+import { environment } from 'src/environments/environment';import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
+;
 
 @Component({
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
-export class FormBuilderComponent{
+export class FormBuilderComponent implements OnInit {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
   public form: {title: string, key: string, display: string, components: any};
@@ -47,7 +49,8 @@ export class FormBuilderComponent{
     private notif: NotificationsService,
     private location: Location,
     private activatedRoute: ActivatedRoute,
-    private formService: FormsService
+    private formService: FormsService,
+    private dashboard: DashboardService
   )
   {
     this.editMode = this.transportService.isFormEdit.value;
@@ -73,6 +76,53 @@ export class FormBuilderComponent{
           display: this.formDisplayType.value,
           components: []
         };
+      }
+    })
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(Object.keys(val).length == 0) {
+        const hierarchy = getItem(StorageItem.navHierarchy);
+        if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('?')) {
+          hierarchy.forEach(val => {
+            val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+          })
+          this.dashboard.items = [...hierarchy,
+            {
+              caption: 'Add App',
+              routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
+            },
+            {
+              caption: 'Add Form',
+              routerLink: `/forms/form-builder`
+            }
+          ];
+        }
+        else {
+          this.dashboard.items = [
+            {
+              caption: 'Add App',
+              routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
+            },
+            {
+              caption: 'Add Form',
+              routerLink: `/forms/form-builder`
+            }
+          ];
+        }
+      }
+      else {
+        this.dashboard.items = [
+          {
+            caption: 'Add App',
+            routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
+          },
+          {
+            caption: 'Add Form',
+            routerLink: `/forms/form-builder`
+          }
+        ];
       }
     })
   }

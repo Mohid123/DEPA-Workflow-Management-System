@@ -62,7 +62,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   categoryId: string;
   categoryIdForMatch: string;
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
-  accessTypeValue: FormControl
+  accessTypeValue: FormControl;
+  paramID: string
 
   constructor(
     private fb: FormBuilder,
@@ -114,13 +115,21 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length == 0) {
         const hierarchy = getItem(StorageItem.navHierarchy);
-        hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
-        })
-        this.dashboard.items = [...hierarchy, {
-          caption: 'Add App',
-          routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
-        }];
+        if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('isParent')) {
+          hierarchy.forEach(val => {
+            val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+          })
+          this.dashboard.items = [...hierarchy, {
+            caption: 'Add App',
+            routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
+          }];
+        }
+        else {
+          this.dashboard.items = [{
+            caption: 'Add App',
+            routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
+          }];
+        }
       }
     })
   }
@@ -392,7 +401,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   saveDraft() {
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
-    this.router.navigate(['/forms/form-builder']);
+    if(this.categoryIdForMatch) {
+      this.router.navigate(['/forms/form-builder'], {queryParams: {isParent: true}});
+    }
+    else {
+      this.router.navigate(['/forms/form-builder']);
+    }
   }
 
   sendFormForEdit(index: number) {

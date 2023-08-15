@@ -1,4 +1,5 @@
-<section class="py-5">
+<app-header></app-header>
+<section class="pt-40 pb-5">
   <tui-tabs tuiMobileTabs class="flex justify-center mx-2 lg:mx-20 md:mx-10" [activeItemIndex]="activeIndex">
     <ng-container *ngFor="let item of items; let i = index">
       <button
@@ -18,32 +19,8 @@
       <label for="titleField">Title</label>
       <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">
     </div>
-    <!-- <div class="col-span-6">
-      <label for="titleField">Display as: </label>
-      <select (change)="setSelectValue($event)" [formControl]="formDisplayType" class="form-select form-control" aria-label="Default select">
-        <option value="form">Form</option>
-        <option value="pdf">PDF</option>
-      </select>
-    </div> -->
   </div>
   <form-builder [form]="form" (change)="onChange($event)"></form-builder>
-  <!-- <div class="grid grid-cols-12 gap-3 my-6">
-    <div class="col-span-6">
-      <label class="block pb-1 text-sm">Users that can perform CRUD on this form</label>
-      <custom-multi-select
-        [formControl]="crudUsers"
-        (approverList)="setCRUDUsers($event)"
-      ></custom-multi-select>
-    </div>
-
-    <div class="col-span-6">
-      <label class="block pb-1 text-sm">Users that can View-Only</label>
-      <custom-multi-select
-        [formControl]="viewUsers"
-        (approverList)="setReadOnlyUsers($event)"
-      ></custom-multi-select>
-    </div>
-  </div> -->
   <div class="flex justify-center py-3">
     <button
       (click)="submitFormData()"

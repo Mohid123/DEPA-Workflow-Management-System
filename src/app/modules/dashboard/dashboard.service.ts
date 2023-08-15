@@ -45,7 +45,8 @@ export class DashboardService extends ApiService<any> {
    * Breadcrumb array to display
    */
   items: BreadCrumbs[] = [];
-  tempItems = new EventEmitter<BreadCrumbs[]>()
+  tempItems = new EventEmitter<BreadCrumbs[]>();
+  previousRoute: string
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
