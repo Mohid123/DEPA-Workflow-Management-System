@@ -108,7 +108,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
         this.dashboard.items = [...hierarchy, {
-          caption: 'Edit Module',
+          caption: 'Edit App',
           routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
         }];
       }

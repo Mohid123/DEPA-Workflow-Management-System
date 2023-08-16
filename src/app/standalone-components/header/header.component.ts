@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule, Location, NgOptimizedImage } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TuiAvatarModule, TuiBreadcrumbsModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
@@ -23,7 +23,7 @@ export class HeaderComponent implements OnDestroy {
   open = false;
   userRoleCheck: any;
 
-  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router) {
+  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location) {
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
@@ -47,6 +47,10 @@ export class HeaderComponent implements OnDestroy {
 
   finalQueryParams() {
     return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+  }
+  
+  goBack() {
+    this.location.back();
   }
 
   setString(value: string): string {
