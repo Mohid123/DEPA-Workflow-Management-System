@@ -177,6 +177,9 @@
                     <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right">
                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </button>
+                    <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="rounded-md bg-red-500 text-white px-2 float-right">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
                   </ng-container>
                   <hr class="mb-2">
                 </ng-container>
@@ -189,8 +192,11 @@
                     <tui-svg src="tuiIconRadio"></tui-svg>
                   </tui-badge>
                   <ng-container *ngIf="userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true">
-                    <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right">
+                    <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right mx-2">
                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="rounded-md bg-red-500 text-white px-2 float-right">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
                     </button>
                   </ng-container>
                   <hr class="mb-2">
@@ -283,10 +289,13 @@
               <div class="flex items-center">
                 <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
               </div>
+              <div *ngIf="lastItem" class="flex items-center">
+                <button tuiIconButton icon="tuiIconPlusCircleLarge" size="m" (click)="openAddStepDialog(addUserDialog)"></button>
+              </div>
             </ng-container>
           </div>
         </section>
-        <!--Workflow progress-->
+        <!--Approval Logs-->
         <section class="my-4">
           <p class="mb-5 text-lg font-semibold">Approval Logs</p>
           <div class="grid grid-cols-12">
@@ -385,6 +394,7 @@
   </div>
 </ng-template>
 
+<!--Edit user step dialog-->
 <ng-template #editUsersDialog let-observer>
   <p class="text-lg font-semibold text-center">
     Edit Step Users
@@ -443,6 +453,105 @@
       (click)="updateUserStep()"
     >
       Update
+    </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="accent"
+      size="m"
+      (click)="observer.complete()"
+    >
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<!--Delete Step dialog-->
+<ng-template #deleteTemplate let-observer>
+  <p class="pb-2 text-xl font-semibold text-center border-b border-gray-400">Delete Workflow Step</p>
+  <p class="mt-4 text-base font-medium text-center">Are you sure you want to delete this step?</p>
+  <div class="flex justify-center mt-4">
+    <button
+      tuiButton
+      appearance="secondary-destructive"
+      type="button"
+      [showLoader]="(editingStep | async) == true"
+      size="m"
+      class="mx-3"
+      (click)="observer.complete()"
+      >
+      Confirm
+    </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      (click)="observer.complete()"
+      >
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<!--Add new step dialog-->
+<ng-template #addUserDialog let-observer>
+  <p class="text-lg font-semibold text-center">
+    Add New Step
+  </p>
+  <div class="flex justify-between mt-5 gap-2">
+    <div class="w-full">
+      <label class="block pb-1">Users <span class="text-xs text-red-400">*</span></label>
+      <tui-multi-select
+        [formControl]="addControl"
+        [tuiTextfieldLabelOutside]="true"
+        [editable]="true"
+        (searchChange)="onSearch($event)"
+      >
+        Users
+        <tui-data-list-wrapper
+          *tuiDataList
+          tuiMultiSelectGroup
+          [items]="userItems"
+        ></tui-data-list-wrapper>
+      </tui-multi-select>
+    </div>
+    <div class="w-full">
+      <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
+      <tui-select
+        tuiTextfieldSize="l"
+        [formControl]="conditionAddUser"
+        [tuiTextfieldLabelOutside]="true"
+        class="uppercase"
+      >
+        Condition
+        <input
+          tuiTextfield
+          placeholder="Condition"
+        />
+        <tui-data-list-wrapper
+          *tuiDataList
+          [items]="['and', 'or', 'none']"
+        ></tui-data-list-wrapper>
+    </tui-select>
+    </div>
+  </div>
+  <ng-container *ngIf="addControl?.hasError('required')">
+    <span class="text-xs text-red-500 text-left">Please provide at least one user</span>
+  </ng-container>
+  <ng-container *ngIf="(showConditionError | async) == true">
+    <span class="text-xs text-red-500 text-left">Please select either AND/OR as condition</span>
+  </ng-container>
+  <div class="flex justify-start gap-x-3 mt-5">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      [showLoader]="(editingStep | async)"
+      [disabled]="addControl?.invalid || (showConditionError | async) == true"
+      (click)="addNewStep()"
+    >
+      Create
     </button>
     <button
       tuiButton

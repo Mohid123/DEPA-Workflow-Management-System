@@ -280,10 +280,31 @@ export const userAddForm = {
   "key": "user-form",
   "display": "form",
   "components": [
-      {
+    {
+      "label": "Full Name",
+      "tableView": true,
+      "key": "fullname",
+      "type": "textfield",
+      "input": true,
+      "validate": {
+        "required": true
+      },
+    },
+    {
+      "label": "Email",
+      "tableView": true,
+      "key": "email",
+      "type": "email",
+      "validate": {
+        "required": true
+      },
+      "input": true
+    },
+    {
         "label": "Role",
         "widget": "choicesjs",
         "tableView": true,
+        "disabled": false,
         "validate": {
           "required": true
         },
@@ -296,19 +317,15 @@ export const userAddForm = {
               {
                   "label": "User",
                   "value": "user"
-              },
-              {
-                "label": "Any",
-                "value": "any"
               }
-            ]
-          },
-          "key": "role",
-          "type": "select",
-          "input": true,
-          "multiple": true
-      }
-  ]
+          ]
+        },
+        "key": "role",
+        "type": "select",
+        "input": true,
+        "multiple": true,
+    }
+]
 }
 
 export const userAddFormProfile = {

@@ -91,7 +91,9 @@ export class UsersListComponent implements OnDestroy {
   editOrAddUser() {
     if(this.userId) {
       const payload: any = {
-        roles: this.formData?.value?.data?.role
+        roles: this.formData?.value?.data?.role,
+        fullName: this.formData?.value?.data?.fullname,
+        email: this.formData?.value?.data?.email,
       }
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {

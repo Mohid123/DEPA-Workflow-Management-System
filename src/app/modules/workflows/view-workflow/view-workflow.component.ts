@@ -55,6 +55,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   adminUsers: any[] = [];
   formData = new BehaviorSubject<any>(null);
   readonly control = new FormControl([], Validators.required);
+  readonly addControl = new FormControl([], Validators.required);
   userItems: any[] = [];
   nonListuserItems: any[] = [];
   limit = 10;
@@ -64,7 +65,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   editingStep = new Subject<boolean>();
   userRoleSysAdmin: any;
   condition = new FormControl('none');
+  conditionAddUser = new FormControl('none');
   showConditionError = new Subject<boolean>();
+  deleteUserID: string;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -112,7 +115,26 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       }
     });
 
+    this.addControl?.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      if(data?.length < 2) {
+        this.conditionAddUser.setValue('none');
+        this.conditionAddUser.disable();
+      }
+      if(data?.length >= 2) {
+        this.conditionAddUser.enable();
+        if(this.conditionAddUser?.value == 'none') {
+          this.showConditionError.next(true)
+        }
+      }
+    });
+
     this.condition?.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      if(data !== 'none') {
+        this.showConditionError.next(false)
+      }
+    })
+
+    this.conditionAddUser?.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(data => {
       if(data !== 'none') {
         this.showConditionError.next(false)
       }
@@ -245,6 +267,30 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       closeable: false,
       size: 'l'
     }).pipe(take(1)).subscribe())
+  }
+
+  openAddStepDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'l'
+    }).pipe(take(1)).subscribe())
+  }
+
+  openDeleteUserDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
+    this.deleteUserID = data?._id;
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false,
+    }).pipe(take(1)).subscribe())
+  }
+
+  deleteStep() {
+    this.editingStep.next(true);
+  }
+
+  addNewStep() {
+    this.editingStep.next(true);
   }
 
   updateUserStep() {
