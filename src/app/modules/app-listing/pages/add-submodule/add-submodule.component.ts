@@ -39,6 +39,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleFormIoValue = new BehaviorSubject<any>({});
   destroy$ = new Subject();
   isCreatingSubModule = new Subject<boolean>();
+  isSavingAsDraft = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
   categoryList: any[];
@@ -448,7 +449,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }),
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
-    this.isCreatingSubModule.next(true);
+    
+    if(statusStr) {
+      this.isSavingAsDraft.next(true)
+    } else {
+      this.isCreatingSubModule.next(true)
+    }
     this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         payload = {...payload, image: res?.data?.fileUrl };
@@ -459,17 +465,20 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
           if(res) {
             this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
             this.transportService.saveDraftLocally({});
             this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
             this.routeToBasedOnPreviousPage()
           }
           else {
             this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
           }
         })
       }
       else {
         this.isCreatingSubModule.next(false);
+        this.isSavingAsDraft.next(false)
       }
     })
   }

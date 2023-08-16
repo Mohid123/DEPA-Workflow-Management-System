@@ -38,6 +38,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   subModuleFormIoValue = new BehaviorSubject<any>({});
   destroy$ = new Subject();
   isCreatingSubModule = new Subject<boolean>();
+  isSavingAsDraft = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
   domainUrl = window.location.origin;
@@ -454,7 +455,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
     }
-    this.isCreatingSubModule.next(true)
+    if(statusStr) {
+      this.isSavingAsDraft.next(true)
+    } else {
+      this.isCreatingSubModule.next(true)
+    }
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
@@ -491,12 +496,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if(res) {
           this.isCreatingSubModule.next(false);
+          this.isSavingAsDraft.next(false)
           this.transportService.saveDraftLocally({});
           this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
           this.routeToBasedOnPreviousPage()
         }
         else {
           this.isCreatingSubModule.next(false);
+          this.isSavingAsDraft.next(false)
         }
       })
     }
@@ -514,11 +521,13 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             }
             else {
               this.isCreatingSubModule.next(false);
+              this.isSavingAsDraft.next(false)
             }
           })
         }
         else {
           this.isCreatingSubModule.next(false);
+          this.isSavingAsDraft.next(false)
         }
       })
     }
