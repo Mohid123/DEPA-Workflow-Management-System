@@ -6,16 +6,16 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import {  TuiCheckboxModule, TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
+import {  TuiCheckboxModule, TuiInputModule, TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 
 @Component({
   selector: 'app-submission-table',
   standalone: true,
-  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule, RouterModule, TuiCheckboxModule],
+  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule, RouterModule, TuiCheckboxModule, TuiInputModule, TuiTextfieldControllerModule],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
 })
@@ -30,6 +30,7 @@ export class SubmissionTableComponent implements OnDestroy {
   destroy$ = new Subject();
   dialogTitle: string;
   searchValue: FormControl = new FormControl();
+  searchSubmission: FormControl = new FormControl();
 
   // filters
   filterMenuCompany =  [
@@ -70,8 +71,6 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true)
     }
   ];
-
-  toggleColumns = [...this.tableHeaders]
 
   constructor(
     private workflowService: WorkflowsService,
