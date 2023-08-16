@@ -9,13 +9,13 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import {  TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
+import {  TuiCheckboxModule, TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 
 @Component({
   selector: 'app-submission-table',
   standalone: true,
-  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule, RouterModule],
+  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule, RouterModule, TuiCheckboxModule],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
 })
@@ -52,6 +52,26 @@ export class SubmissionTableComponent implements OnDestroy {
   submoduleData: any;
   remarks = new FormControl('');
   userRoleCheckAdmin: any;
+  tableHeaders: any[] = [
+    {
+      key: 'Submission Status',
+      isVisible: new FormControl<boolean>(true)
+    },
+    {
+      key: 'Last Activity By',
+      isVisible: new FormControl<boolean>(true)
+    },
+    {
+      key: 'Now Pending With',
+      isVisible: new FormControl<boolean>(true)
+    },
+    {
+      key: 'Workflow progress',
+      isVisible: new FormControl<boolean>(true)
+    }
+  ];
+
+  toggleColumns = [...this.tableHeaders]
 
   constructor(
     private workflowService: WorkflowsService,
@@ -81,7 +101,12 @@ export class SubmissionTableComponent implements OnDestroy {
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
     .subscribe((val: any) => {
       this.submissionData = val;
-      this.tableDataValue = val?.results;
+      this.tableDataValue = val?.results?.map(data => {
+        return {
+          ...data,
+          isVisible: true
+        }
+      });
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
   }
