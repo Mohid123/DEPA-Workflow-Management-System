@@ -161,7 +161,7 @@
             <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
               <tui-island
                 size="l"
-                class="my-4 shadow-lg w-96"
+                class="my-4 shadow-lg w-[398px]"
                 [hoverable]="true"
                 [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
               >
@@ -174,7 +174,7 @@
                     <tui-svg src="tuiIconClock"></tui-svg>
                   </tui-badge>
                   <ng-container *ngIf="userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true">
-                    <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right">
+                    <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right mx-2">
                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </button>
                     <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="rounded-md bg-red-500 text-white px-2 float-right">
