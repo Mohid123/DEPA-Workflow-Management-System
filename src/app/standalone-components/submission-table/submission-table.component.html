@@ -45,6 +45,7 @@
                 (resetFilters)="resetFilterValues($event)"
               >
               </filter>
+              <tui-svg *ngIf="data?.key !== 'Submission Status' && data?.key !== 'Workflow progress'" new src="tuiIconArrowDown" class="tui-space_bottom-1 cursor-pointer"></tui-svg>
             </th>
           </ng-container>
           <th scope="col" class="px-6 py-3 text-sm">

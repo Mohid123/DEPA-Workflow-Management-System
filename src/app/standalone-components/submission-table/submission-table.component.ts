@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiInputModule, TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
@@ -15,7 +15,20 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
 @Component({
   selector: 'app-submission-table',
   standalone: true,
-  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule, RouterModule, TuiCheckboxModule, TuiInputModule, TuiTextfieldControllerModule],
+  imports: [
+    CommonModule,
+    FilterComponent,
+    TuiProgressModule,
+    TuiPaginationModule,
+    TableLoaderComponent,
+    ReactiveFormsModule,
+    TuiButtonModule,
+    RouterModule,
+    TuiCheckboxModule,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
+    TuiSvgModule
+  ],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
 })

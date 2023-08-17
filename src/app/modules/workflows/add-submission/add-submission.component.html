@@ -169,6 +169,7 @@
       type="button"
       size="m"
       appearance="secondary"
+      [showLoader]="(draftingSubmission | async)"
       (click)="createSubmission(4)"
     >
       Save as Draft

@@ -253,7 +253,8 @@ export const subModuleForm = {
       "widget": "html5",
       "tableView": true,
       "validate": {
-        "required": true
+        "required": true,
+        "maxLength": 50
       },
       "key": "companyName",
       "type": "select",
@@ -548,7 +549,8 @@ export const categoryForm = {
       "label": "Category Name",
       "tableView": true,
       "validate": {
-          "required": true
+        "required": true,
+        "maxLength": 40
       },
       "key": "categoryName",
       "type": "textfield",

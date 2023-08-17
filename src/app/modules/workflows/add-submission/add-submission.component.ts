@@ -42,6 +42,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   limit: number = 10;
   page: number = 0;
   creatingSubmission = new Subject<boolean>();
+  draftingSubmission = new Subject<boolean>();
   showError = new Subject<boolean>();
   errorIndex: number = 0;
   userRoleCheckAdmin: any;
@@ -274,16 +275,23 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   createSubmission(status?: any) {
+    if(!status) {
+      if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
+        return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
+      }
+    }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
-    if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
-      return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
+    if(!status) {
+      this.creatingSubmission.next(true)
     }
-    this.creatingSubmission.next(true)
+    else {
+      this.draftingSubmission.next(true)
+    }
     const payload: any = {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
@@ -300,8 +308,13 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
-        this.creatingSubmission.next(false)
+        this.creatingSubmission.next(false);
+        this.draftingSubmission.next(false)
         this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+      }
+      else {
+        this.creatingSubmission.next(false);
+        this.draftingSubmission.next(false);
       }
     })
   }

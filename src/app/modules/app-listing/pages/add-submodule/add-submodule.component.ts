@@ -327,9 +327,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCompany() {
     const companyForm = this.fb.group({
-      title: ['', Validators.required]
+      title: ['', Validators.compose([Validators.required, Validators.maxLength(50)])]
     });
     this.companies.push(companyForm)
+  }
+
+  getValidityForCompany(i) {
+    return (<FormArray>this.companies).controls[i].invalid;
+  }
+
+  getValidityForCategory(i) {
+    return (<FormArray>this.categories).controls[i].invalid;
   }
 
   removeCompany(index: number) {
@@ -342,7 +350,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCategory() {
     const categoryForm = this.fb.group({
-      name: ['', Validators.required]
+      name: ['', Validators.compose([Validators.required, Validators.maxLength(40)])]
     });
     this.categories.push(categoryForm)
   }
@@ -422,12 +430,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   saveSubModule(statusStr?: number) {
-    if(this.dataSubmitValidation() == false) {
-      this.subModuleForm.markAllAsTouched();
-      return this.notif.displayNotification('Please provide complete data for all fields', 'Create module', TuiNotification.Warning)
-    }
-    if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
-      return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)
+    if(!statusStr) {
+      if(this.dataSubmitValidation() == false) {
+        this.subModuleForm.markAllAsTouched();
+        return this.notif.displayNotification('Please provide complete data for all fields', 'Create module', TuiNotification.Warning)
+      }
+      if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
+        return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)
+      }
     }
     let payload: any = {
       title: this.subModuleForm.get('title')?.value,
@@ -449,38 +459,54 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }),
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
-    
     if(statusStr) {
       this.isSavingAsDraft.next(true)
     } else {
       this.isCreatingSubModule.next(true)
     }
-    this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
-      if(!res.hasErrors()) {
-        payload = {...payload, image: res?.data?.fileUrl };
-        if(statusStr) {
-          const status = statusStr;
-          Object.assign(payload, {status})
+    if(this.file) {
+      this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          payload = {...payload, image: res?.data?.fileUrl };
+          if(statusStr) {
+            const status = statusStr;
+            Object.assign(payload, {status})
+          }
+          this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+            if(res) {
+              this.isCreatingSubModule.next(false);
+              this.isSavingAsDraft.next(false)
+              this.transportService.saveDraftLocally({});
+              this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+              this.routeToBasedOnPreviousPage()
+            }
+            else {
+              this.isCreatingSubModule.next(false);
+              this.isSavingAsDraft.next(false)
+            }
+          })
         }
-        this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-          if(res) {
-            this.isCreatingSubModule.next(false);
-            this.isSavingAsDraft.next(false)
-            this.transportService.saveDraftLocally({});
-            this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-            this.routeToBasedOnPreviousPage()
-          }
-          else {
-            this.isCreatingSubModule.next(false);
-            this.isSavingAsDraft.next(false)
-          }
-        })
-      }
-      else {
-        this.isCreatingSubModule.next(false);
-        this.isSavingAsDraft.next(false)
-      }
-    })
+        else {
+          this.isCreatingSubModule.next(false);
+          this.isSavingAsDraft.next(false)
+        }
+      })
+    }
+    else {
+      this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+        if(res) {
+          this.isCreatingSubModule.next(false);
+          this.isSavingAsDraft.next(false)
+          this.transportService.saveDraftLocally({});
+          this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+          this.routeToBasedOnPreviousPage()
+        }
+        else {
+          this.isCreatingSubModule.next(false);
+          this.isSavingAsDraft.next(false)
+        }
+      })
+    }
   }
 
   routeToBasedOnPreviousPage() {

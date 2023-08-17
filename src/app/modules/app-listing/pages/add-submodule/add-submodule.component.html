@@ -126,7 +126,11 @@
                   class="form-control"
                   formControlName="title"
                   type="text"
+                  [ngClass]="getValidityForCompany(i) ? 'is-invalid': ''"
                 />
+                <span *ngIf="getValidityForCompany(i)" class="text-xs text-red-500">
+                  Please provide a company name with upto 50 characters
+                </span>
             </div>
             <div [ngClass]="first ? 'mt-7': 'mt-0'">
               <button
@@ -189,7 +193,11 @@
                     class="form-control"
                     formControlName="name"
                     type="text"
+                    [ngClass]="getValidityForCategory(i) ? 'is-invalid': ''"
                   />
+                  <span *ngIf="getValidityForCategory(i)" class="text-xs text-red-500">
+                    Please provide a category name with upto 40 characters
+                  </span>
               </div>
               <div [ngClass]="first ? 'mt-7': 'mt-0'">
                 <button
