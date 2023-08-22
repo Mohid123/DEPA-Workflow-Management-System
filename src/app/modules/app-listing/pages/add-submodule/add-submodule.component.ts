@@ -65,6 +65,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
   accessTypeValue: FormControl;
   paramID: string
+  readonly summarySchemaControl = new FormControl([]);
+  readonly viewSchemaControl = new FormControl(['Submission Status', 'Last Activity By', 'Now Pending With', 'Workflow progress']);
 
   constructor(
     private fb: FormBuilder,
@@ -457,6 +459,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
+      summarySchema: this.summarySchemaControl.value,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
     if(statusStr) {

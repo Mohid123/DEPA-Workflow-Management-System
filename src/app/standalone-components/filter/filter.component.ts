@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TuiButtonModule, TuiHintModule, TuiHostedDropdownModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiHostedDropdownModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiDataListWrapperModule, TuiInputModule } from '@taiga-ui/kit';
-import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Dynamic Filter component for handling search, sorting and other filters on the Table component Example usage:
@@ -22,17 +22,18 @@ import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'filter',
   standalone: true,
-  imports: [CommonModule, TuiHostedDropdownModule, TuiButtonModule, TuiDataListWrapperModule, TuiInputModule, SearchBarComponent, TuiHintModule],
+  imports: [CommonModule, TuiHostedDropdownModule, TuiButtonModule, TuiDataListWrapperModule, TuiInputModule, TuiHintModule, ReactiveFormsModule, TuiTextfieldControllerModule],
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilterComponent {
+export class FilterComponent implements OnDestroy {
   /**
    * handles the state of the dropdown that shows the filters and searchbar
    */
   open = false;
 
+  destroy$ = new Subject();
   /**
    * The items to display in the filter dropdown
    */
@@ -72,6 +73,19 @@ export class FilterComponent {
    */
   isFilterApplied: boolean = false;
   previousFilterValues = new BehaviorSubject<any>([]);
+  searchValue: FormControl = new FormControl();
+
+  constructor() {
+    this.searchValue.valueChanges
+    .pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$))
+    .subscribe(typedValue => {
+      this.sendSearchToTable.emit(typedValue ? typedValue : null)
+    })
+  }
+
 
   /**
    * @description
@@ -156,5 +170,10 @@ export class FilterComponent {
    */
   trackByFn(item: any, index: number) {
     return index
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

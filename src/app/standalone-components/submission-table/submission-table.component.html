@@ -14,7 +14,12 @@
         </div>
       </div>
       <div class="w-1/3">
-        <tui-input
+        <label class="font-semibold text-base mb-1">Data to display</label>
+        <select class="form-control form-select" [formControl]="showSchema">
+          <option value="1">Show default</option>
+          <option value="2">Show via View Schema</option>
+        </select>
+        <!-- <tui-input
           tuiTextfieldIconLeft="tuiIconSearchLarge"
           [formControl]="searchSubmission"
           [tuiTextfieldCleaner]="true"
@@ -25,7 +30,7 @@
             tuiTextfield
             placeholder="Type to start searching..."
           />
-        </tui-input>
+        </tui-input> -->
       </div>
     </div>
     <table class="w-full text-sm text-left text-gray-500">
@@ -37,15 +42,30 @@
               [ngClass]="first ? 'px-4 py-3 text-sm': 'px-2 py-3 text-sm'"
             >
               {{data?.key}}&nbsp;
-              <filter *ngIf="data?.key == 'Submission Status'"
-                [filterBy]="'Status'"
-                [items]="statusMenu"
-                [searchEnabled]="false"
-                (applyStatus)="sendFilterValue($event)"
-                (resetFilters)="resetFilterValues($event)"
-              >
-              </filter>
-              <tui-svg *ngIf="data?.key !== 'Submission Status' && data?.key !== 'Workflow progress'" new src="tuiIconArrowDown" class="tui-space_bottom-1 cursor-pointer"></tui-svg>
+              <ng-container *ngIf="data?.key !== 'Workflow progress'">
+                <ng-container *ngIf="data?.key == 'Submission Status'; else otherFilters">
+                  <filter
+                    [filterBy]="data?.key"
+                    [items]="statusMenu"
+                    [searchEnabled]="false"
+                    (applyStatus)="sendFilterValue($event)"
+                    (resetFilters)="resetFilterValues($event)"
+                  >
+                  </filter>
+                </ng-container>
+                <ng-template #otherFilters>
+                  <filter
+                    [filterBy]="data?.key"
+                    [showSortCategories]="true"
+                    [items]="sortItems"
+                    [searchEnabled]="true"
+                    (applyStatus)="sendFilterValue($event)"
+                    (sendSearchToTable)="searchViaFilter($event)"
+                    (resetFilters)="resetFilterValues($event)"
+                  >
+                  </filter>
+                </ng-template>
+              </ng-container>
             </th>
           </ng-container>
           <th scope="col" class="px-6 py-3 text-sm">

@@ -43,7 +43,7 @@ export class SubmissionTableComponent implements OnDestroy {
   destroy$ = new Subject();
   dialogTitle: string;
   searchValue: FormControl = new FormControl();
-  searchSubmission: FormControl = new FormControl();
+  showSchema: FormControl = new FormControl(1);
 
   // filters
   filterMenuCompany =  [
@@ -60,6 +60,10 @@ export class SubmissionTableComponent implements OnDestroy {
     {name: 'Cancelled', status: 'idle', icon: ''},
     {name: 'Deleted', status: 'idle', icon: ''}
   ];
+  sortItems = [
+    {name: 'Sort by Ascending', status: 'idle', icon: ''},
+    {name: 'Sort by Descending', status: 'idle', icon: ''}
+  ]
   page = 1;
   tableDataValue: any;
   limit: number = 7;
@@ -242,7 +246,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Sort by Latest':
+      case 'Sort by Ascending':
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'latest')
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -250,7 +254,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.tableDataValue = val?.results;
         })
         break
-      case 'Sort by Oldest':
+      case 'Sort by Descending':
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'oldest')
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -259,6 +263,10 @@ export class SubmissionTableComponent implements OnDestroy {
         })
       break
     }
+  }
+
+  searchViaFilter(value: any) {
+    console.log(value)
   }
 
   resetFilterValues(value: any) {

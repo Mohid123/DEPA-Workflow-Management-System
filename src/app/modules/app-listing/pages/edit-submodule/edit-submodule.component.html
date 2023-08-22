@@ -199,6 +199,28 @@
       </a>
     </div>
 
+    <!--View Schema users-->
+    <div class="mt-10 mb-4 grid grid-cols-12 gap-3">
+      <div class="col-span-6">
+        <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
+        <tui-input-tag
+          [tuiTextfieldLabelOutside]="true"
+          [formControl]="summarySchemaControl"
+        >
+          Type and click enter...
+        </tui-input-tag>
+      </div>
+      <div class="col-span-6">
+        <label class="mb-2 font-medium">View Schema <sup>(Optional)</sup></label>
+        <tui-input-tag
+          [tuiTextfieldLabelOutside]="true"
+          [formControl]="viewSchemaControl"
+        >
+          Type and click enter...
+        </tui-input-tag>
+      </div>
+    </div>
+
     <!--Edit Workflow-->
     <div class="mt-12">
       <h4 class="text-lg font-semibold">Edit workflow</h4>
