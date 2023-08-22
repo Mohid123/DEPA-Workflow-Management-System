@@ -287,10 +287,48 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   deleteStep() {
     this.editingStep.next(true);
+    const payload = {
+      action: 'delete',
+      stepStatus: {
+        _id: this.deleteUserID
+      }
+    }
+    this.workflowService.updateWorkflowStep(payload, this.workflowID)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      if(res) {
+        this.editingStep.next(false);
+        this.saveDialogSubscription.forEach(val => val.unsubscribe());
+        this.fetchData()
+      }
+    })
   }
 
   addNewStep() {
     this.editingStep.next(true);
+    let activeNewUsers = this.nonListuserItems?.map((value, index) => {
+      if(this.addControl.value?.includes(value?.fullName)) {
+        return value?.id
+      }
+    }).filter(val => val);
+    const payload = {
+      action: 'add',
+      stepStatus: {
+        approverIds: activeNewUsers,
+        condition: this.conditionAddUser?.value
+      }
+    }
+    this.workflowService.updateWorkflowStep(payload, this.workflowID)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      if(res) {
+        this.editingStep.next(false);
+        this.saveDialogSubscription.forEach(val => val.unsubscribe());
+        this.addControl.reset();
+        this.conditionAddUser.reset();
+        this.fetchData()
+      }
+    })
   }
 
   updateUserStep() {
@@ -306,7 +344,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       return {assignedTo: value}
     }).filter(val => val);
     delete finalData?.approverIds;
-    const payload = {stepStatus: Object.assign(
+    const payload = {
+      action: 'edit',
+      stepStatus: Object.assign(
       finalData,
       {activeUsers: activeNewUsers},
       {allUsers: allnewUsers},
