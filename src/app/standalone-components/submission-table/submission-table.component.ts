@@ -43,7 +43,6 @@ export class SubmissionTableComponent implements OnDestroy {
   destroy$ = new Subject();
   dialogTitle: string;
   searchValue: FormControl = new FormControl();
-  showSchema: FormControl = new FormControl(1);
 
   // filters
   filterMenuCompany =  [
