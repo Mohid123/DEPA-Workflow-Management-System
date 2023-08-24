@@ -165,7 +165,7 @@ export class EditFormComponent implements OnDestroy, OnInit {
       const jsonElement = document.getElementById('json_code');
       if(jsonElement)
         jsonElement.innerHTML = '';
-        jsonElement?.appendChild(document.createTextNode(JSON.stringify(this.formValue, null, 4)));
+        jsonElement?.appendChild(document.createTextNode(JSON.stringify(this.formValue || this.form, null, 4)));
     }, 500)
   }
 

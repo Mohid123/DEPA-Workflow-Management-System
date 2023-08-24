@@ -53,11 +53,11 @@
   <div *ngIf="activeItemIndex == 1" class="mt-12" [formGroup]="workflowForm">
     <h4 class="text-lg font-semibold">Modify workflow</h4>
     <ng-container formArrayName="workflows">
-      <ng-container *ngFor="let workflow of workflows.controls; let i = index">
+      <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first">
         <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
         <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
           <div class="col-span-4">
-            <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+            <label class="block pb-1">{{first ? 'Creators': 'Approvers'}} <span class="text-xs text-red-400">*</span></label>
             <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
             <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
           </div>

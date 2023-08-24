@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, disti
 import { DashboardService } from '../../dashboard.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { userAddForm, userAddFormAdmin } from 'src/app/forms-schema/forms';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 @Component({
   templateUrl: './users-list.component.html',
@@ -27,6 +28,7 @@ export class UsersListComponent implements OnDestroy {
 
   constructor(
     private dashboard: DashboardService,
+    private auth: AuthService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private cf: ChangeDetectorRef
   ) {
@@ -91,7 +93,7 @@ export class UsersListComponent implements OnDestroy {
   editOrAddUser() {
     if(this.userId) {
       const payload: any = {
-        roles: this.formData?.value?.data?.role,
+        roles: this.auth.currentUserValue?.roles.includes('sysAdmin') ? undefined : this.formData?.value?.data?.role,
         fullName: this.formData?.value?.data?.fullname,
         email: this.formData?.value?.data?.email,
       }

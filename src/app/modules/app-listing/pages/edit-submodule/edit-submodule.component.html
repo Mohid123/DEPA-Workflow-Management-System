@@ -230,7 +230,7 @@
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
             <ng-container *ngIf="i == 0">
               <div class="col-span-3">
-                <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+                <label class="block pb-1">{{first ? 'Creators': 'Approvers'}} <span class="text-xs text-red-400">*</span></label>
                 <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
                 <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
               </div>
