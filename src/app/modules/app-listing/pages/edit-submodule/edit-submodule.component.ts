@@ -469,7 +469,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       companyId: this.subModuleForm.get('companyId')?.value,
       categoryId: this.subModuleForm.get('categoryId')?.value ? this.subModuleForm.get('categoryId')?.value : this.categoryId,
       image: this.subModuleForm.get('image')?.value,
-      workFlowId: this.workFlowId,
+      // workFlowId: this.workFlowId,
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
       code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
