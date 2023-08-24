@@ -1,5 +1,5 @@
 import { Component, ViewChild, EventEmitter, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
 import { TuiNotification } from '@taiga-ui/core';
@@ -10,6 +10,7 @@ import { Location } from '@angular/common';
 import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
+import { FormKeyValidator } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './edit-form.component.html',
@@ -37,7 +38,9 @@ export class EditFormComponent implements OnDestroy, OnInit {
       icon: 'fa fa-file-code-o fa-lg',
     }
   ];
-  formTitleControl = new FormControl({value: '', disabled: this.editMode});
+  formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
+    Validators.required
+  ]), [FormKeyValidator.createValidator(this.dashboard)]);
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   editFormID: string;
@@ -50,7 +53,6 @@ export class EditFormComponent implements OnDestroy, OnInit {
     private activatedRoute: ActivatedRoute,
     private formService: FormsService,
     private _location: Location,
-    private auth: AuthService,
     private dashboard: DashboardService
   )
   {

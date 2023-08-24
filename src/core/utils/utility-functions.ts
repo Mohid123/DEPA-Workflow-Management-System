@@ -59,6 +59,25 @@ export class CodeValidator {
   }
 }
 
+export class FormKeyValidator {
+  static createValidator(dashboard: DashboardService): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors> => {
+      if (!control.valueChanges || control.pristine) {
+        return of(null);
+      }
+      else {
+        return control.valueChanges.pipe(
+          debounceTime(400),
+          distinctUntilChanged(),
+          switchMap(value => dashboard.validateFormCode(value?.replace(/\s/g, '-').toLowerCase())),
+          map((res: ApiResponse<any>) => (res.data?.isKeyTaken == true ? {codeExists: true} : null)),
+          first()
+        )
+      }
+    }
+  }
+}
+
 export class Sort {
   private sortOrder = 1;
   private collator = new Intl.Collator(undefined, {

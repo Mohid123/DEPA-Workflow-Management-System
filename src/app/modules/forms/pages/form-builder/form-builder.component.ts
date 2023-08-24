@@ -1,5 +1,5 @@
 import { Component, ViewChild, EventEmitter, ElementRef, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
 import { TuiNotification } from '@taiga-ui/core';
@@ -10,7 +10,7 @@ import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-;
+import {  FormKeyValidator } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './form-builder.component.html',
@@ -38,7 +38,9 @@ export class FormBuilderComponent implements OnInit {
       icon: 'fa fa-file-code-o fa-lg',
     }
   ];
-  formTitleControl = new FormControl({value: '', disabled: this.editMode});
+  formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
+    Validators.required
+  ]), [FormKeyValidator.createValidator(this.dashboard)]);
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);

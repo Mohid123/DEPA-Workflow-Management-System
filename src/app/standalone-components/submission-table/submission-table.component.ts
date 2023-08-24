@@ -98,10 +98,16 @@ export class SubmissionTableComponent implements OnDestroy {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin');
     this.activatedRoute.queryParams.subscribe(val => {
-        if(val['moduleID']) {
+      if(val['moduleID']) {
           this.submoduleId = val['moduleID']
           this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
           this.submoduleData = val;
+          this.tableHeaders = this.submoduleData?.viewSchema?.map(data => {
+            return {
+              key: data,
+              isVisible: new FormControl<boolean>(true)
+            }
+          })
         }));
         this.fetchDataAndPopulate()
       }

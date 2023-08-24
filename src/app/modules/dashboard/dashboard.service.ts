@@ -106,6 +106,11 @@ export class DashboardService extends ApiService<any> {
     return this.get(`/subModules/validate`, params)
   }
 
+  validateFormCode(codeValue: string): Observable<ApiResponse<any>> {
+    let params = {key: codeValue}
+    return this.get(`/forms/validate-key`, params)
+  }
+
   getSubModuleByModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/module/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

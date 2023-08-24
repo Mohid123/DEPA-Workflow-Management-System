@@ -48,7 +48,7 @@ export class WorkflowsService extends ApiService<any> {
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification('Failed to fetch workflow', 'Get Submodule workflow', TuiNotification.Error)
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch submissions', 'Get Submissions', TuiNotification.Error)
         }
       }
     }))

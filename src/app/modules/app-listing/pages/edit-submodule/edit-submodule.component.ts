@@ -186,6 +186,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
+            this.summarySchemaControl.setValue(response?.summarySchema)
+            this.viewSchemaControl.setValue(response?.viewSchema)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
             this.items?.forEach((value, index) => {
@@ -449,6 +451,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  setSummarySchemaToViewSchema(value: any) {
+    if(this.viewSchemaControl?.value?.length < 4) {
+      this.viewSchemaControl.patchValue(
+        [...this.viewSchemaControl?.value, ...value]
+      )
+    }
+    else {
+      this.viewSchemaControl.setErrors({uptoFour: true})
+    }
+  }
+
   saveSubModule(statusStr?: number) {
     if(!statusStr) {
       if(this.dataSubmitValidation() == false) {
@@ -485,6 +498,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }
       }),
       summarySchema: this.summarySchemaControl.value,
+      viewSchema: this.viewSchemaControl?.value,
       accessType: this.accessTypeValue?.value?.name
     }
     if(statusStr) {

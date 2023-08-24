@@ -431,7 +431,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.language.emit(lang);
   }
 
-  saveSubModule(statusStr?: number) {
+  setSummarySchemaToViewSchema(value: any) {
+    if(this.viewSchemaControl?.value?.length < 4) {
+      this.viewSchemaControl.patchValue(
+        [...this.viewSchemaControl?.value, ...value]
+      )
+    }
+    else {
+      this.viewSchemaControl.setErrors({uptoFour: true})
+    }
+  }
+
+   saveSubModule(statusStr?: number) {
     if(!statusStr) {
       if(this.dataSubmitValidation() == false) {
         this.subModuleForm.markAllAsTouched();
@@ -460,6 +471,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }),
       summarySchema: this.summarySchemaControl.value,
+      viewSchema: this.viewSchemaControl?.value,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
     if(statusStr) {

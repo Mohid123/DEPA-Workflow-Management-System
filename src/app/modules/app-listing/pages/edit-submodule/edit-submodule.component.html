@@ -206,9 +206,11 @@
         <tui-input-tag
           [tuiTextfieldLabelOutside]="true"
           [formControl]="summarySchemaControl"
+          (ngModelChange)="setSummarySchemaToViewSchema($event)"
         >
           Type and click enter...
         </tui-input-tag>
+        <p class="mt-1 text-xxs">e.g. formKey.fieldValue</p>
       </div>
       <div class="col-span-6">
         <label class="mb-2 font-medium">View Schema <sup>(Optional)</sup></label>
@@ -218,6 +220,7 @@
         >
           Type and click enter...
         </tui-input-tag>
+        <p [ngClass]="viewSchemaControl.hasError('uptoFour') ? 'text-red-500': 'text-black'" class="mt-1 text-xxs">Upto four fields are allowed at a time</p>
       </div>
     </div>
 

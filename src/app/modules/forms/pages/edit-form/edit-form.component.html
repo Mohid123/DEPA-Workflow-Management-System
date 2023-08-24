@@ -18,6 +18,10 @@
     <div class="col-span-6">
       <label for="titleField">Title</label>
       <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">
+      <p class="text-red-500 text-xs mt-1"
+        *ngIf="formTitleControl?.hasError('codeExists')">
+        A form by this title already exists. Please select another name
+      </p>
     </div>
     <!-- <div class="col-span-6">
       <label for="titleField">Display as: </label>
