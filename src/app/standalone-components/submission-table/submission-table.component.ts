@@ -200,6 +200,15 @@ export class SubmissionTableComponent implements OnDestroy {
   getPendingOnUsers(value: any[]) {
     return value?.map(data => data?.fullName)
   }
+  
+  bindValueFromSummaryData(obj: any) {
+    let newObj = new Object(obj)
+    for (const key in newObj) {
+      if(this.tableHeaders.map(data => data.key)?.includes(key)) {
+        return obj[key]
+      }
+    }
+  }
 
   sendFilterValue(value: any) {
     switch (value?.sortType) {

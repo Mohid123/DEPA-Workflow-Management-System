@@ -438,6 +438,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       )
     }
     else {
+      this.summarySchemaControl.value.pop()
       this.viewSchemaControl.setErrors({uptoFour: true})
     }
   }
@@ -447,6 +448,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       if(this.dataSubmitValidation() == false) {
         this.subModuleForm.markAllAsTouched();
         return this.notif.displayNotification('Please provide complete data for all fields', 'Create module', TuiNotification.Warning)
+      }
+      if(this.viewSchemaControl?.value?.length > 4) {
+        return this.notif.displayNotification('Summary Schema cannot exceed 4 values', 'Create module', TuiNotification.Warning)
       }
       if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
         return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)

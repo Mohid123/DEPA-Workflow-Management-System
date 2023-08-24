@@ -173,7 +173,7 @@
                   >
                     <tui-svg src="tuiIconClock"></tui-svg>
                   </tui-badge>
-                  <ng-container *ngIf="userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true">
+                  <ng-container *ngIf="(userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
                     <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right mx-2">
                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </button>
@@ -191,7 +191,7 @@
                   >
                     <tui-svg src="tuiIconRadio"></tui-svg>
                   </tui-badge>
-                  <ng-container *ngIf="userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true">
+                  <ng-container *ngIf="(userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
                     <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right mx-2">
                       <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </button>
@@ -289,7 +289,7 @@
               <div class="flex items-center">
                 <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
               </div>
-              <div *ngIf="lastItem" class="flex items-center">
+              <div *ngIf="lastItem && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)" class="flex items-center">
                 <button tuiIconButton icon="tuiIconPlusCircleLarge" size="m" (click)="openAddStepDialog(addUserDialog)"></button>
               </div>
             </ng-container>

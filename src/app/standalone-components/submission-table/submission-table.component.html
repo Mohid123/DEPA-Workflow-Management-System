@@ -63,28 +63,53 @@
         <ng-template #showSubmissions>
           <ng-container *ngFor="let data of tableDataValue; let i = index; let first = first; let last = last; trackBy: trackByFn">
             <tr class="bg-white border-b border-gray-300">
-              <td *ngIf="tableHeaders[0]?.isVisible?.value == true" class="px-4 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
-                {{showStatus(data?.submissionStatus)}}
-              </td>
-              <td *ngIf="tableHeaders[1]?.isVisible?.value == true" class="py-4 pl-2 pr-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
-                {{(data?.submissionStatus === 1 || data?.submissionStatus === 4) ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
-              </td>
-                <td *ngIf="tableHeaders[2]?.isVisible?.value == true" class="px-2 py-4 max-w-60" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+              <!--Submission Status-->
+              <ng-container *ngIf="tableHeaders[0]?.isVisible?.value == true">
+                <td *ngIf="tableHeaders[0]?.key == 'Submission Status'" class="px-4 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  {{showStatus(data?.submissionStatus)}}
+                </td>
+                <td *ngIf="tableHeaders[0]?.key != 'Submission Status'" class="px-4 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  {{bindValueFromSummaryData(data?.summaryData)}}
+                </td>
+              </ng-container>
+              <!--Last activity By-->
+              <ng-container *ngIf="tableHeaders[1]?.isVisible?.value == true">
+                <td *ngIf="tableHeaders[1]?.key == 'Last Activity By'" class="py-4 pl-2 pr-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  {{(data?.submissionStatus === 1 || data?.submissionStatus === 4 || data?.submissionStatus === 2) ? data?.createdBy?.fullName : data?.summaryData?.userName || ''}}
+                </td>
+                <td *ngIf="tableHeaders[1]?.key != 'Last Activity By'" class="py-4 pl-2 pr-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  {{bindValueFromSummaryData(data?.summaryData)}}
+                </td>
+              </ng-container>
+              <!--Pending with-->
+              <ng-container *ngIf="tableHeaders[2]?.isVisible?.value == true">
+                <td *ngIf="tableHeaders[2]?.key == 'Now Pending With'" class="px-2 py-4 max-w-60" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
                   <ng-container *ngFor="let pending of getPendingOnUsers(data?.summaryData?.pendingOnUsers || []); let lastUser = last">
                     <span>{{pending}}<span *ngIf="!lastUser">,</span> &nbsp;</span>
                   </ng-container>
                 </td>
-              <td *ngIf="tableHeaders[3]?.isVisible?.value == true" class="flex justify-between px-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
-                <progress
-                  tuiProgressBar
-                  [color]="changeProgressColor(data?.summaryData?.progress)"
-                  max="100"
-                  size="s"
-                  class="w-9/12 mt-1.5"
-                  [value]="data?.summaryData?.progress"
-                ></progress>
-                <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
-              </td>
+                <td *ngIf="tableHeaders[2]?.key != 'Now Pending With'" class="px-2 py-4 max-w-60" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  {{bindValueFromSummaryData(data?.summaryData)}}
+                </td>
+              </ng-container>
+              <!--Workflow progress-->
+              <ng-container *ngIf="tableHeaders[3]?.isVisible?.value == true">
+                <td *ngIf="tableHeaders[3]?.key == 'Workflow progress'" class="flex justify-between px-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  <progress
+                    tuiProgressBar
+                    [color]="changeProgressColor(data?.summaryData?.progress)"
+                    max="100"
+                    size="s"
+                    class="w-9/12 mt-1.5"
+                    [value]="data?.summaryData?.progress"
+                  ></progress>
+                  <span>{{data?.summaryData?.progress | number : '1.1-2'}} %</span>
+                </td>
+                <td *ngIf="tableHeaders[3]?.key != 'Workflow progress'" class="flex justify-between px-2 py-4" [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''">
+                  {{bindValueFromSummaryData(data?.summaryData)}} 
+                </td>
+              </ng-container>
+              <!--Actions-->
               <td class="px-5 py-4">
                 <!--WORKFLOW-->
                 <div style="all: unset;" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">

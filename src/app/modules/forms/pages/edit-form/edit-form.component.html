@@ -35,6 +35,7 @@
   <div class="flex justify-center py-3">
     <button
       (click)="submitFormData()"
+      [disabled]="formTitleControl?.hasError('codeExists')"
       tuiButton
       type="button"
       size="m"
