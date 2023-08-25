@@ -14,6 +14,13 @@
           </div>
         </div>
       </div>
+      <div class="w-1/3">
+        <label class="font-semibold text-base mb-1">Data to display</label>
+        <select class="form-control form-select" [formControl]="showSchema">
+          <option value="1">Display default</option>
+          <option value="2">Display via View Schema</option>
+        </select>
+      </div>
     </div>
     <table class="w-full text-sm text-left text-gray-500">
       <thead class="text-xs text-white uppercase bg-[#a58f81]">

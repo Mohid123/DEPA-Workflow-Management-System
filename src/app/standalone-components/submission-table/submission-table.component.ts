@@ -69,6 +69,7 @@ export class SubmissionTableComponent implements OnDestroy {
   limit: number = 7;
   submoduleData: any;
   remarks = new FormControl('');
+  showSchema: FormControl = new FormControl(1);
   userRoleCheckAdmin: any;
   tableHeaders: any[] = [
     {
@@ -85,7 +86,7 @@ export class SubmissionTableComponent implements OnDestroy {
     },
     {
       key: 'Workflow progress',
-      isVisible: new FormControl<boolean>(false)
+      isVisible: new FormControl<boolean>(true)
     }
   ];
 
@@ -104,31 +105,50 @@ export class SubmissionTableComponent implements OnDestroy {
         this.fetchAndPopulate()
         this.fetchDataAndPopulate()
       }
+    });
+
+    // switch schemas
+    this.showSchema.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(val == 1) {
+        this.tableHeaders = [
+          {
+            key: 'Submission Status',
+            isVisible: new FormControl<boolean>(true)
+          },
+          {
+            key: 'Last Activity By',
+            isVisible: new FormControl<boolean>(true)
+          },
+          {
+            key: 'Now Pending With',
+            isVisible: new FormControl<boolean>(true)
+          },
+          {
+            key: 'Workflow progress',
+            isVisible: new FormControl<boolean>(true)
+          }
+        ];
+        this.fetchDataAndPopulate()
+      }
+      if(val == 2) {
+        this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
+          this.submoduleData = val;
+          let tableKeys = this.submoduleData?.viewSchema?.map(data => {
+            return {
+              key: data,
+              isVisible: new FormControl<boolean>(true)
+            }
+          });
+          this.tableHeaders = tableKeys
+        }));
+      }
     })
   }
 
   fetchAndPopulate() {
     this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
       this.submoduleData = val;
-      let tableKeys = this.submoduleData?.viewSchema?.map(data => {
-        return {
-          key: data,
-          isVisible: new FormControl<boolean>(true)
-        }
-      });
-      // this.tableHeaders = this.tableHeaders?.map((data, index) => {
-      //   if(tableKeys?.map(val => val.key).includes(data.key)) {
-      //     data.isVisible.setValue(true)
-      //     return data
-      //   }
-      //   if(index < 4) {
-      //     data.isVisible.setValue(true)
-      //     return data
-      //   }
-      //   return data
-      // })
-      this.tableHeaders = getUniqueListBy([...this.tableHeaders, ...tableKeys], 'key')
-      }));
+    }));
   }
 
   setWorkflowID(id: string) {
