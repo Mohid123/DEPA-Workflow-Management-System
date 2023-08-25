@@ -452,15 +452,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setSummarySchemaToViewSchema(value: any) {
-    if(this.viewSchemaControl?.value?.length < 4) {
-      this.viewSchemaControl.patchValue(
-        [...this.viewSchemaControl?.value, ...value]
-      )
-    }
-    else {
-      this.summarySchemaControl.value.pop()
-      this.viewSchemaControl.setErrors({uptoFour: true})
-    }
+    this.viewSchemaControl.patchValue(value)
   }
 
   saveSubModule(statusStr?: number) {

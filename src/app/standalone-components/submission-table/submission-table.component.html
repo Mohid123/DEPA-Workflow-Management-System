@@ -7,6 +7,7 @@
           <div class="flex gap-x-2" *ngFor="let topData of tableHeaders; let i = index; let firstItem = first">
             <tui-checkbox
               [formControl]="topData?.isVisible"
+              (click)="fetchDataAndPopulate()"
               class="mt-0.5"
             ></tui-checkbox>
             <p class="capitalize">{{topData?.key}}</p>

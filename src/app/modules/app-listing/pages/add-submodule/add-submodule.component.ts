@@ -66,7 +66,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   accessTypeValue: FormControl;
   paramID: string
   readonly summarySchemaControl = new FormControl([]);
-  readonly viewSchemaControl = new FormControl(['Submission Status', 'Last Activity By', 'Now Pending With', 'Workflow progress']);
+  readonly viewSchemaControl = new FormControl([]);
 
   constructor(
     private fb: FormBuilder,
@@ -432,15 +432,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setSummarySchemaToViewSchema(value: any) {
-    if(this.viewSchemaControl?.value?.length < 4) {
-      this.viewSchemaControl.patchValue(
-        [...this.viewSchemaControl?.value, ...value]
-      )
-    }
-    else {
-      this.summarySchemaControl.value.pop()
-      this.viewSchemaControl.setErrors({uptoFour: true})
-    }
+    this.viewSchemaControl.patchValue(value)
   }
 
    saveSubModule(statusStr?: number) {
@@ -448,9 +440,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       if(this.dataSubmitValidation() == false) {
         this.subModuleForm.markAllAsTouched();
         return this.notif.displayNotification('Please provide complete data for all fields', 'Create module', TuiNotification.Warning)
-      }
-      if(this.viewSchemaControl?.value?.length > 4) {
-        return this.notif.displayNotification('Summary Schema cannot exceed 4 values', 'Create module', TuiNotification.Warning)
       }
       if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
         return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)

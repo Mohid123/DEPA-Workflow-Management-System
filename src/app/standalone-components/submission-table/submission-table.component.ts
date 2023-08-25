@@ -11,6 +11,7 @@ import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiInputModule, TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import { getUniqueListBy } from 'src/core/utils/utility-functions';
 
 @Component({
   selector: 'app-submission-table',
@@ -84,7 +85,7 @@ export class SubmissionTableComponent implements OnDestroy {
     },
     {
       key: 'Workflow progress',
-      isVisible: new FormControl<boolean>(true)
+      isVisible: new FormControl<boolean>(false)
     }
   ];
 
@@ -99,19 +100,35 @@ export class SubmissionTableComponent implements OnDestroy {
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin');
     this.activatedRoute.queryParams.subscribe(val => {
       if(val['moduleID']) {
-          this.submoduleId = val['moduleID']
-          this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
-          this.submoduleData = val;
-          this.tableHeaders = this.submoduleData?.viewSchema?.map(data => {
-            return {
-              key: data,
-              isVisible: new FormControl<boolean>(true)
-            }
-          })
-        }));
+        this.submoduleId = val['moduleID']
+        this.fetchAndPopulate()
         this.fetchDataAndPopulate()
       }
     })
+  }
+
+  fetchAndPopulate() {
+    this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
+      this.submoduleData = val;
+      let tableKeys = this.submoduleData?.viewSchema?.map(data => {
+        return {
+          key: data,
+          isVisible: new FormControl<boolean>(true)
+        }
+      });
+      // this.tableHeaders = this.tableHeaders?.map((data, index) => {
+      //   if(tableKeys?.map(val => val.key).includes(data.key)) {
+      //     data.isVisible.setValue(true)
+      //     return data
+      //   }
+      //   if(index < 4) {
+      //     data.isVisible.setValue(true)
+      //     return data
+      //   }
+      //   return data
+      // })
+      this.tableHeaders = getUniqueListBy([...this.tableHeaders, ...tableKeys], 'key')
+      }));
   }
 
   setWorkflowID(id: string) {
