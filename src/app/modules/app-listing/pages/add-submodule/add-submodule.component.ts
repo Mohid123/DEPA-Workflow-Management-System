@@ -21,6 +21,7 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
+  formKeys: any;
   formComponents: any[] = [];
   activeIndex: number = 0;
   public options: FormioOptions;
@@ -49,6 +50,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   userListForEmail: any[] = [];
   private readonly search$ = new Subject<string>();
   saveDialogSubscription: Subscription[] = [];
+  schemaSubscription: Subscription[] = [];
   limit: number = 10;
   page: number = 0;
   showError = new Subject<boolean>();
@@ -67,6 +69,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   paramID: string
   readonly summarySchemaControl = new FormControl([]);
   readonly viewSchemaControl = new FormControl([]);
+  formKeysForViewSchema: any[] = [];
+  summarySchemaFields: any[] = [];
+  viewSchemaFields: any[] = [];
+  viewSchemaTitle: FormControl = new FormControl('')
 
   constructor(
     private fb: FormBuilder,
@@ -96,18 +102,43 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }
     })
     this.formComponents = this.transportService.formBuilderData.value;
+    this.formKeys = this.formComponents?.map(comp => {
+      return {
+        key: comp.key,
+        fields: comp.components?.map(value => {
+          return  {
+            fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
+            displayAs: value.label
+          }
+        })
+      }
+    })
+    this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
+    this.viewSchemaTitle.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      this.viewSchemaFields = this.formKeys?.flatMap(val => {
+        if(val.key == res) {
+          return val.fields.map(data => data.fieldKey)
+        }
+      }).filter(val => val)
+    })
+
+    this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
     this.formTabs = this.formComponents.map(val => val.title);
 
     this.getAllCompanies();
     // get users for email
 
-    this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
+    this.search$.pipe(
+      switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search)),
+      takeUntil(this.destroy$))
+    .subscribe((res: any) => {
       if (res) {
         this.userListForEmail = res?.results?.map((data) => data?.email);
       }
     });
 
-    this.dashboard.getAllUsersForListing(this.limit, this.page).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+    this.dashboard.getAllUsersForListing(this.limit, this.page)
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.userListForEmail = res?.results?.map((data) => data?.email);
       }
@@ -431,11 +462,28 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.language.emit(lang);
   }
 
-  setSummarySchemaToViewSchema(value: any) {
-    this.viewSchemaControl.patchValue(value)
+  setSummaryAndViewSchema() {
+    console.log(this.viewSchemaControl.value)
+    console.log(this.summarySchemaControl.value)
+    let viewSchemaVal = this.formKeys?.flatMap(form => {
+      return form.fields.map(field => {
+        if(this.viewSchemaControl.value.includes(field.fieldKey)) {
+          return field
+        }
+        return null
+      }).filter(val => val)
+    })
+    console.log(viewSchemaVal)
   }
 
-   saveSubModule(statusStr?: number) {
+  closeSchemaDialog() {
+    this.viewSchemaControl.reset()
+    this.summarySchemaControl.reset()
+    this.viewSchemaTitle.reset();
+    this.schemaSubscription.forEach(val => val.unsubscribe())
+  }
+
+  saveSubModule(statusStr?: number) {
     if(!statusStr) {
       if(this.dataSubmitValidation() == false) {
         this.subModuleForm.markAllAsTouched();
@@ -577,6 +625,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   setViewUsers(users: string[]) {
     this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
+  }
+
+  openSummarySchemaDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.schemaSubscription.push(this.dialogs
+    .open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'l'
+    })
+    .subscribe());
   }
 
   ngOnDestroy(): void {
