@@ -69,6 +69,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   paramID: string
   readonly summarySchemaControl = new FormControl([]);
   readonly viewSchemaControl = new FormControl([]);
+  readonly viewSchemaControlFinal = new FormControl([]);
   formKeysForViewSchema: any[] = [];
   summarySchemaFields: any[] = [];
   viewSchemaFields: any[] = [];
@@ -114,14 +115,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }
     })
     this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-    this.viewSchemaTitle.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      this.viewSchemaFields = this.formKeys?.flatMap(val => {
-        if(val.key == res) {
-          return val.fields.map(data => data.fieldKey)
-        }
-      }).filter(val => val)
-    })
-
+    this.viewSchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey + ' as ' + data.displayAs))
     this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
     this.formTabs = this.formComponents.map(val => val.title);
 
@@ -463,17 +457,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setSummaryAndViewSchema() {
-    console.log(this.viewSchemaControl.value)
-    console.log(this.summarySchemaControl.value)
-    let viewSchemaVal = this.formKeys?.flatMap(form => {
-      return form.fields.map(field => {
-        if(this.viewSchemaControl.value.includes(field.fieldKey)) {
-          return field
-        }
-        return null
-      }).filter(val => val)
+    let newSchemaVal = this.viewSchemaControl.value?.map(eachVal => {
+      let first = eachVal.split('as')[0].trim();
+      let second = eachVal.split('as')[1].trim();
+      return {
+        fieldKey: first,
+        displayAs: second
+      }
     })
-    console.log(viewSchemaVal)
+    this.viewSchemaControlFinal.setValue(newSchemaVal);
+    this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
   closeSchemaDialog() {
@@ -512,7 +505,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }),
       summarySchema: this.summarySchemaControl.value,
-      viewSchema: this.viewSchemaControl?.value,
+      viewSchema: this.viewSchemaControlFinal?.value,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
     if(statusStr) {

@@ -557,27 +557,8 @@
     </tui-multi-select>
     <p class="mt-1 text-xxs">e.g. formKey.fieldValue</p>
 
-    <p class="mt-4 mb-2 font-semibold">View Schema <sup>(Optional)</sup></p>
     <div class="mt-4">
-      <label class="mb-2 font-medium">Select Form</label>
-      <tui-select
-        [formControl]="viewSchemaTitle"
-        [tuiTextfieldLabelOutside]="true"
-      >
-        Form
-        <input
-          tuiTextfield
-          placeholder="Choose form"
-        />
-        <tui-data-list-wrapper
-          *tuiDataList
-          [items]="formKeysForViewSchema"
-        ></tui-data-list-wrapper>
-      </tui-select>
-    </div>
-
-    <div class="mt-4">
-      <label class="mb-2 font-medium">Fields to display</label>
+      <label class="mb-2 font-medium">View Schema <sup>(Optional)</sup></label>
       <tui-multi-select
         [formControl]="viewSchemaControl"
         [tuiTextfieldLabelOutside]="true"
@@ -609,7 +590,7 @@
       appearance="accent"
       (click)="closeSchemaDialog()"
     >
-      Close
+      Cancel
     </button>
   </div>
 </ng-template>
