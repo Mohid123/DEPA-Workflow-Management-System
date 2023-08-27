@@ -22,12 +22,13 @@ export enum StorageItem {
   workflowID = 'App/workflowID',
   formKey = 'App/formKey',
   formEdit = 'App/formEdit',
-  navHierarchy = 'App/navHierarchy'
+  navHierarchy = 'App/navHierarchy',
+  approvers = 'App/approvers'
 }
 
 /**
  * Get item from local storage
- * @param {StorageItem} itemName 
+ * @param {StorageItem} itemName
  * @returns {any | null} Either null or any other primitive or non-primitive type apart from undefined
  */
 export const getItem = (itemName: StorageItem): any | null => {
@@ -37,8 +38,8 @@ export const getItem = (itemName: StorageItem): any | null => {
 
 /**
  * Set or update already set item in local storage
- * @param {StorageItem} itemName 
- * @param {unknown} value 
+ * @param {StorageItem} itemName
+ * @param {unknown} value
  */
 export const setItem = (itemName: StorageItem, value: unknown): void => {
   localStorage.setItem(itemName, JSON.stringify(value));
@@ -46,7 +47,7 @@ export const setItem = (itemName: StorageItem, value: unknown): void => {
 
 /**
  * Remove item from local storage
- * @param {StorageItem} itemName 
+ * @param {StorageItem} itemName
  */
 export const removeItem = (itemName: StorageItem): void => {
   localStorage.removeItem(itemName);

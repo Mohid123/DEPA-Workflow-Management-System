@@ -19,7 +19,7 @@ import { TuiNotification } from '@taiga-ui/core';
 @Injectable()
 export class ServerErrorInterceptor implements HttpInterceptor, OnDestroy {
 
-  subscription: Subscription[] = []; 
+  subscription: Subscription[] = [];
   /**
    * @constructor
    * @param {AuthService} auth Auth Service holds the user's logged in status and JWT token.
@@ -33,10 +33,10 @@ export class ServerErrorInterceptor implements HttpInterceptor, OnDestroy {
   /**
    * Interceptor method for attaching token to request. Angular provides this build in method for intercepting requests.
    * For more:
-   * 
+   *
    * @see [HttpInterceptor]{@link https://angular.io/api/common/http/HttpInterceptor}
-   * @param {HttpRequest<unknown>} request 
-   * @param {HttpHandler} next 
+   * @param {HttpRequest<unknown>} request
+   * @param {HttpHandler} next
    * @returns {Observable<HttpEvent<unknown>>}
    */
   intercept(
@@ -48,6 +48,7 @@ export class ServerErrorInterceptor implements HttpInterceptor, OnDestroy {
         if ([401, 403].includes(error.status) && this.auth.currentUserValue) {
           this.subscription.push(this.auth.logout()?.subscribe());
           this.notif.displayNotification('Your session has expired. Log in again to continue', 'Session Expired', TuiNotification.Error)
+          window.location.reload()
           return throwError(error)
         } else if (error.status === 500) {
           return throwError(error);

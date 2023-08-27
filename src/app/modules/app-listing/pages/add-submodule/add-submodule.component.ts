@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
@@ -67,7 +67,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
   accessTypeValue: FormControl;
   paramID: string
-  readonly viewSchemaControlFinal = new FormControl([]);
   formKeysForViewSchema: any[] = [];
   summarySchemaFields: any[] = [];
   schemaForm = new FormGroup({
@@ -457,6 +456,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   saveDraft() {
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
+    let approvers = this.workflows?.value?.flatMap(data => {
+      return data?.approverIds?.map(approver => {
+        return {
+          id: approver.id,
+          name: approver.name
+        }
+      })
+    })
+    if(approvers.length == 0) {
+      return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
+    }
+    setItem(StorageItem.approvers, approvers)
     if(this.categoryIdForMatch) {
       this.router.navigate(['/forms/form-builder'], {queryParams: {isParent: true}});
     }

@@ -8,7 +8,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
-import { environment } from 'src/environments/environment';import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { environment } from 'src/environments/environment';import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import {  FormKeyValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -131,6 +131,19 @@ export class FormBuilderComponent implements OnInit {
           }
         ];
       }
+    });
+
+    this.transportService.updatedComponent
+    .pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if(value) {
+        this.form.components = this.form?.components?.map(comp => {
+          if(comp.key === value.key) {
+            comp = value;
+            return comp
+          }
+          return comp
+        })
+      }
     })
   }
 
@@ -199,6 +212,7 @@ export class FormBuilderComponent implements OnInit {
   }
 
   submitFormData() {
+    removeItem(StorageItem.approvers)
     if(!this.formTitleControl?.value || this.formTitleControl?.value == '') {
       return this.notif.displayNotification('Please provide a title for your form', 'Create Form', TuiNotification.Warning)
     }
@@ -236,6 +250,7 @@ export class FormBuilderComponent implements OnInit {
   }
 
   cancelFormData() {
+    removeItem(StorageItem.approvers)
     if(this.editMode == false) {
       this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
       this.location.back()

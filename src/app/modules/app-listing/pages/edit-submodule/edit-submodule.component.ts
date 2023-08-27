@@ -59,8 +59,18 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   categoryId: string;
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
   accessTypeValue: FormControl
-  readonly summarySchemaControl = new FormControl([]);
-  readonly viewSchemaControl = new FormControl(['Submission Status', 'Last Activity By', 'Now Pending With', 'Workflow progress']);
+  formKeysForViewSchema: any[] = [];
+  summarySchemaFields: any[] = [];
+  formKeys: any;
+  schemaForm = new FormGroup({
+    summarySchema: new FormControl([]),
+    viewSchema: new FormArray([
+      new FormGroup({
+        fieldKey: new FormControl(''),
+        displayAs: new FormControl('')
+      })
+    ])
+  })
 
   constructor(
     private fb: FormBuilder,
@@ -89,7 +99,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     });
 
     // get users for email
-
     this.search$.pipe(switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) => {
       if (res) {
         this.userListForEmail = res?.results?.map((data) => data?.email);
@@ -116,6 +125,22 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }];
       }
     })
+  }
+
+  get viewSchema() {
+    return this.schemaForm.controls['viewSchema'] as FormArray;
+  }
+
+  addViewSchema() {
+    const schemaForm = this.fb.group({
+      fieldKey: new FormControl(''),
+      displayAs: new FormControl('')
+    });
+    this.viewSchema.push(schemaForm)
+  }
+
+  deleteViewSchema(index: number) {
+    this.viewSchema.removeAt(index)
   }
 
   onFileSelect(event: any) {
@@ -186,8 +211,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
-            this.summarySchemaControl.setValue(response?.summarySchema)
-            this.viewSchemaControl.setValue(response?.viewSchema)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
             this.items?.forEach((value, index) => {
@@ -201,10 +224,36 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.file = this.submoduleFromLS?.file;
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
+              this.formKeys = this.formComponents?.map(comp => {
+                return {
+                  key: comp.key,
+                  fields: comp.components?.map(value => {
+                    return  {
+                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
+                      displayAs: value.label
+                    }
+                  })
+                }
+              })
+              this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
+              this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
             }
             else {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
+              this.formKeys = this.formComponents?.map(comp => {
+                return {
+                  key: comp.key,
+                  fields: comp.components?.map(value => {
+                    return  {
+                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
+                      displayAs: value.label
+                    }
+                  })
+                }
+              })
+              this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
+              this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
               const companyId = {
                 value: response?.companyId?.id,
                 label: response?.companyId?.title
@@ -373,6 +422,18 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   saveDraft() {
+    let approvers = this.workflows?.value?.flatMap(data => {
+      return data?.approverIds?.map(approver => {
+        return {
+          id: approver.id,
+          name: approver.name
+        }
+      })
+    })
+    if(approvers.length == 0) {
+      return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
+    }
+    setItem(StorageItem.approvers, approvers)
     this.transportService.sendFormBuilderData(this.formComponents)
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.router.navigate(['/forms/edit-form']);
@@ -403,11 +464,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none');
-      
+
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      
+
       return this.showError.next(true)
     }
     this.showError.next(false)
@@ -417,11 +478,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.errorIndex = index;
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none');
-      
+
       return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-      
+
       return this.showError.next(true)
     }
     this.showError.next(false)
@@ -452,7 +513,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setSummarySchemaToViewSchema(value: any) {
-    this.viewSchemaControl.patchValue(value)
+
   }
 
   saveSubModule(statusStr?: number) {
@@ -460,9 +521,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       if(this.dataSubmitValidation() == false) {
         this.subModuleForm.markAllAsTouched();
         return this.notif.displayNotification('Please provide all data', 'Edit Submodule', TuiNotification.Warning)
-      }
-      if(this.viewSchemaControl?.value?.length > 4) {
-        return this.notif.displayNotification('Summary Schema cannot exceed 4 values', 'Edit module', TuiNotification.Warning)
       }
       if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
         return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submodule', TuiNotification.Warning)
@@ -493,8 +551,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       }),
-      summarySchema: this.summarySchemaControl.value,
-      viewSchema: this.viewSchemaControl?.value,
+      // summarySchema: this.summarySchemaControl.value,
+      // viewSchema: this.viewSchemaControl?.value,
       accessType: this.accessTypeValue?.value?.name
     }
     if(statusStr) {
