@@ -10,7 +10,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { CodeValidator, calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
+import { CodeValidator, calculateFileSize } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 
@@ -67,13 +67,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
   accessTypeValue: FormControl;
   paramID: string
-  readonly summarySchemaControl = new FormControl([]);
-  readonly viewSchemaControl = new FormControl([]);
   readonly viewSchemaControlFinal = new FormControl([]);
   formKeysForViewSchema: any[] = [];
   summarySchemaFields: any[] = [];
-  viewSchemaFields: any[] = [];
-  viewSchemaTitle: FormControl = new FormControl('')
+  schemaForm = new FormGroup({
+    summarySchema: new FormControl([]),
+    viewSchema: new FormArray([
+      new FormGroup({
+        fieldKey: new FormControl(''),
+        displayAs: new FormControl('')
+      })
+    ])
+  })
 
   constructor(
     private fb: FormBuilder,
@@ -115,7 +120,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }
     })
     this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-    this.viewSchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey + ' as ' + data.displayAs))
     this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
     this.formTabs = this.formComponents.map(val => val.title);
 
@@ -160,6 +164,22 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }
     })
+  }
+
+  get viewSchema() {
+    return this.schemaForm.controls['viewSchema'] as FormArray;
+  }
+
+  addViewSchema() {
+    const schemaForm = this.fb.group({
+      fieldKey: new FormControl(''),
+      displayAs: new FormControl('')
+    });
+    this.viewSchema.push(schemaForm)
+  }
+
+  deleteViewSchema(index: number) {
+    this.viewSchema.removeAt(index)
   }
 
   getDefaultWorkflowByModule() {
@@ -457,22 +477,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setSummaryAndViewSchema() {
-    let newSchemaVal = this.viewSchemaControl.value?.map(eachVal => {
-      let first = eachVal.split('as')[0].trim();
-      let second = eachVal.split('as')[1].trim();
-      return {
-        fieldKey: first,
-        displayAs: second
-      }
-    })
-    this.viewSchemaControlFinal.setValue(newSchemaVal);
+    console.log(this.schemaForm.value)
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
   closeSchemaDialog() {
-    this.viewSchemaControl.reset()
-    this.summarySchemaControl.reset()
-    this.viewSchemaTitle.reset();
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
@@ -504,8 +513,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
-      summarySchema: this.summarySchemaControl.value,
-      viewSchema: this.viewSchemaControlFinal?.value,
+      summarySchema: this.schemaForm.value?.summarySchema,
+      viewSchema: this.schemaForm?.value?.viewSchema,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
     if(statusStr) {

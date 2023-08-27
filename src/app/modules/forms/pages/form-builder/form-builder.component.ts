@@ -1,16 +1,18 @@
-import { Component, ViewChild, EventEmitter, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef, OnInit, Inject, TemplateRef, Injector } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
-import { TuiNotification } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import {  FormKeyValidator } from 'src/core/utils/utility-functions';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { DialogTemplate } from '../../templates/permission-template.component';
 
 @Component({
   templateUrl: './form-builder.component.html',
@@ -45,6 +47,7 @@ export class FormBuilderComponent implements OnInit {
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
   viewUsers = new FormControl<any>([]);
+  dialogSubscription: Subscription[] = [];
 
   constructor(
     private transportService: DataTransportService,
@@ -52,7 +55,9 @@ export class FormBuilderComponent implements OnInit {
     private location: Location,
     private activatedRoute: ActivatedRoute,
     private formService: FormsService,
-    private dashboard: DashboardService
+    private dashboard: DashboardService,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector,
   )
   {
     this.editMode = this.transportService.isFormEdit.value;
@@ -150,6 +155,38 @@ export class FormBuilderComponent implements OnInit {
       }
       return val
     });
+    this.addCustomEventTrigger()
+  }
+
+  addCustomEventTrigger() {
+    let componentMenu = document.getElementsByClassName('component-btn-group');
+    Array.from(componentMenu).forEach((value, index) => {
+      let div = document.createElement('div');
+      div.id = 'custom-div'
+      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa');
+      div.tabIndex = -1;
+      div.role = 'button';
+      div.ariaLabel = 'Permissions Button';
+      div.innerHTML = `<i class="fa fa-key"></i>`;
+      div.addEventListener('click', () => {
+        let comp = this.form?.components[index];
+        this.openPermissionDialog(comp)
+      })
+      value.append(div);
+    })
+  }
+
+  openPermissionDialog(
+    data: any
+  ): void {
+    this.dialogs.open<any>(
+      new PolymorpheusComponent(DialogTemplate, this.injector),
+      {
+        data: data,
+        dismissible: false,
+        closeable: false
+      }
+    ).pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   onJsonView() {
