@@ -329,11 +329,17 @@
 
           </section>
         </ng-container>
-        <ng-container *ngIf="formComponents[0]?.components?.length == 0">
+        <ng-container *ngIf="formComponents[0]?.components?.length == 0 || formComponents?.length == 0">
           <div class="grid grid-cols-12 gap-2">
-            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
-            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
-            <div data-placeholder class="h-32 col-span-12 mb-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            <div data-placeholder class="h-8 col-span-12 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            <div class="grid grid-cols-12 col-span-12 gap-2">
+              <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
+              <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
+            </div>
+            <div class="grid grid-cols-12 col-span-12 gap-2">
+              <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+              <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            </div>
           </div>
         </ng-container>
       </div>
