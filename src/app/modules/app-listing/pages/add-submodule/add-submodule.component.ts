@@ -73,7 +73,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     summarySchema: new FormControl([]),
     viewSchema: new FormArray([
       new FormGroup({
-        fieldKey: new FormControl(''),
+        fieldKey: new FormControl([]),
         displayAs: new FormControl('')
       })
     ])
@@ -165,6 +165,28 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     })
   }
 
+  handleChangeOnSummarySchema(value: any) {
+    if(value.length == 0) {
+      this.schemaForm.controls['viewSchema'].at(0).get('fieldKey').setValue([])
+    }
+    else {
+      if(value.length !== this.schemaForm.controls['viewSchema']?.length) {
+        value?.map((field, index) => {
+          this.schemaForm.controls['viewSchema'].removeAt(index)
+        })
+      }
+      value?.map((field, index) => {
+        if(this.schemaForm.controls['viewSchema'].at(index)) {
+          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
+        }
+        else {
+          this.addViewSchema();
+          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
+        }
+      })
+    }
+  }
+
   get viewSchema() {
     return this.schemaForm.controls['viewSchema'] as FormArray;
   }
@@ -178,6 +200,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   deleteViewSchema(index: number) {
+    this.viewSchema.removeAt(index);
+    let val = this.schemaForm.controls['summarySchema'].value;
+    val = val.splice(index, 1);
     this.viewSchema.removeAt(index)
   }
 
@@ -483,13 +508,21 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.router.navigate(['/forms/form-builder']);
   }
 
+  deleteForm(index: number) {
+    this.formComponents.splice(index, 1)
+  }
+
   changeLanguage(lang: string) {
     this.language.emit(lang);
   }
 
   setSummaryAndViewSchema() {
-    console.log(this.schemaForm.value)
-    this.schemaSubscription.forEach(val => val.unsubscribe())
+    if (this.schemaForm?.value?.viewSchema[0]?.displayAs) {
+      this.schemaSubscription.forEach(val => val.unsubscribe())
+    }
+    else {
+      return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)
+    }
   }
 
   closeSchemaDialog() {
@@ -506,6 +539,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)
       }
     }
+    let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
+      value.fieldKey = value.fieldKey[0];
+      return value
+    })
     let payload: any = {
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
@@ -525,7 +562,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }),
       summarySchema: this.schemaForm.value?.summarySchema,
-      viewSchema: this.schemaForm?.value?.viewSchema,
+      viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
     if(statusStr) {

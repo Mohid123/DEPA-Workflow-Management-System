@@ -72,8 +72,8 @@
                 <img
                   [src]="base64File"
                   alt="app_icon"
-                  width="200"
-                  height="200"
+                  width="100"
+                  height="130"
                   class="rounded-md"
                 />
               </div>
@@ -421,6 +421,9 @@
                     <a (click)="sendFormForEdit(i)" class="rounded-md cursor-pointer" title="Edit Form">
                       <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
                     </a>
+                    <a (click)="deleteForm(i)" class="rounded-md cursor-pointer">
+                      <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
+                    </a>
                   </div>
                 </div>
                 <formio [language]="language" [options]="options" [form]="form"></formio>
@@ -547,6 +550,7 @@
     <tui-multi-select
       formControlName="summarySchema"
       [tuiTextfieldLabelOutside]="true"
+      (ngModelChange)="handleChangeOnSummarySchema($event)"
     >
       Summary Schema fields
       <tui-data-list-wrapper
@@ -562,24 +566,17 @@
       <ng-container formArrayName="viewSchema">
         <label class="mb-2 font-medium">View Schema <sup>(Optional)</sup></label>
         <ng-container *ngFor="let schema of viewSchema.controls; let i = index; let first = first; let last = last">
-          <div [formGroupName]="i">
-            <tui-select
-              formControlName="fieldKey"
+          <div [formGroupName]="i" class="grid grid-cols-12 gap-2 mb-3">
+            <tui-input-tag
               [tuiTextfieldLabelOutside]="true"
+              formControlName="fieldKey"
+              class="col-span-6"
             >
-              View Schema Fields
-              <input
-                tuiTextfield
-                placeholder="Choose view schema fields"
-              />
-              <tui-data-list-wrapper
-                *tuiDataList
-                [items]="summarySchemaFields"
-              ></tui-data-list-wrapper>
-            </tui-select>
+              View Schema fields
+            </tui-input-tag>
             <!--Display As-->
-            <tui-input formControlName="displayAs" class="mt-4">
-              Display As...
+            <tui-input formControlName="displayAs" class="col-span-6">
+              Specify field label
               <input
                 tuiTextfield
                 [tuiTextfieldLabelOutside]="true"
@@ -587,7 +584,7 @@
               />
             </tui-input>
           </div>
-          <div class="flex justify-end my-2">
+          <div *ngIf="!first" class="flex justify-end my-2">
             <button
               tuiIconButton
               type="button"
@@ -599,17 +596,6 @@
           </div>
         </ng-container>
       </ng-container>
-      <div>
-        <button
-          tuiIconButton
-          type="button"
-          size="s"
-          appearance="primary"
-          class="mt-2"
-          icon="tuiIconPlus"
-          (click)="addViewSchema()"
-        ></button>
-      </div>
     </div>
   </div>
   <!--Action BTNS-->

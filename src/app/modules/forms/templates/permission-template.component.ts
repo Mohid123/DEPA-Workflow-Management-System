@@ -65,7 +65,7 @@ export class DialogTemplate {
     this.workflowApprovers.forEach(user => {
       this.userFormControls[user.id] = {
         canEdit: new FormControl(false),
-        canView: new FormControl(false)
+        canView: new FormControl(true)
       };
     });
   }
@@ -83,7 +83,6 @@ export class DialogTemplate {
         canView: this.userFormControls[user.id]?.canView?.value,
       }
     })
-    console.log(this.workflowApprovers)
     let updatedData = {
       ...this.data,
       permissions: this.workflowApprovers

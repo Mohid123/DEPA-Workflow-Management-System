@@ -62,11 +62,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   formKeysForViewSchema: any[] = [];
   summarySchemaFields: any[] = [];
   formKeys: any;
+  schemaSubscription: Subscription[] = [];
   schemaForm = new FormGroup({
     summarySchema: new FormControl([]),
     viewSchema: new FormArray([
       new FormGroup({
-        fieldKey: new FormControl(''),
+        fieldKey: new FormControl([]),
         displayAs: new FormControl('')
       })
     ])
@@ -124,7 +125,29 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
         }];
       }
-    })
+    });
+  }
+
+  handleChangeOnSummarySchema(value: any) {
+    if(value.length == 0) {
+      this.schemaForm.controls['viewSchema'].at(0).get('fieldKey').setValue([])
+    }
+    else {
+      if(value.length !== this.schemaForm.controls['viewSchema']?.length) {
+        value?.map((field, index) => {
+          this.schemaForm.controls['viewSchema'].removeAt(index)
+        })
+      }
+      value?.map((field, index) => {
+        if(this.schemaForm.controls['viewSchema'].at(index)) {
+          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
+        }
+        else {
+          this.addViewSchema();
+          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
+        }
+      })
+    }
   }
 
   get viewSchema() {
@@ -133,14 +156,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   addViewSchema() {
     const schemaForm = this.fb.group({
-      fieldKey: new FormControl(''),
+      fieldKey: new FormControl([]),
       displayAs: new FormControl('')
     });
     this.viewSchema.push(schemaForm)
   }
 
   deleteViewSchema(index: number) {
-    this.viewSchema.removeAt(index)
+    this.viewSchema.removeAt(index);
+    let val = this.schemaForm.controls['summarySchema'].value;
+    val = val.splice(index, 1);
+    this.schemaForm.controls['summarySchema'].setValue(val)
   }
 
   onFileSelect(event: any) {
@@ -399,7 +425,29 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
   }
 
+  openSummarySchemaDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.schemaSubscription.push(this.dialogs
+    .open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'l'
+    })
+    .subscribe());
+  }
+
   sendFormForEdit(i: number, formID: string) {
+    let approvers = this.workflows?.value?.flatMap(data => {
+      return data?.approverIds?.map(approver => {
+        return {
+          id: approver.id,
+          name: approver.name
+        }
+      })
+    })
+    if(approvers.length == 0) {
+      return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
+    }
+    setItem(StorageItem.approvers, approvers)
     if(formID) {
       setItem(StorageItem.formEdit, true);
       this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
@@ -512,8 +560,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
-  setSummarySchemaToViewSchema(value: any) {
+  setSummaryAndViewSchema() {
+    if (this.schemaForm?.value?.viewSchema[0]?.displayAs) {
+      this.schemaSubscription.forEach(val => val.unsubscribe())
+    }
+    else {
+      return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)
+    }
+  }
 
+  closeSchemaDialog() {
+    this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
   saveSubModule(statusStr?: number) {
@@ -531,6 +588,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     } else {
       this.isCreatingSubModule.next(true)
     }
+    let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
+      value.fieldKey = value.fieldKey[0];
+      return value
+    })
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
@@ -551,8 +612,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       }),
-      // summarySchema: this.summarySchemaControl.value,
-      // viewSchema: this.viewSchemaControl?.value,
+      summarySchema: this.schemaForm.value?.summarySchema,
+      viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
       accessType: this.accessTypeValue?.value?.name
     }
     if(statusStr) {

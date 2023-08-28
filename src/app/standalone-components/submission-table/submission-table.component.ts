@@ -9,9 +9,8 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { TuiButtonModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import {  TuiCheckboxModule, TuiInputModule, TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
+import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
-import { getUniqueListBy } from 'src/core/utils/utility-functions';
 
 @Component({
   selector: 'app-submission-table',
@@ -28,7 +27,9 @@ import { getUniqueListBy } from 'src/core/utils/utility-functions';
     TuiCheckboxModule,
     TuiInputModule,
     TuiTextfieldControllerModule,
-    TuiSvgModule
+    TuiSvgModule,
+    TuiDataListWrapperModule,
+    TuiSelectModule
   ],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
@@ -44,6 +45,7 @@ export class SubmissionTableComponent implements OnDestroy {
   destroy$ = new Subject();
   dialogTitle: string;
   searchValue: FormControl = new FormControl();
+  items = ['Display default', 'Display via View Schema']
 
   // filters
   filterMenuCompany =  [
@@ -69,24 +71,34 @@ export class SubmissionTableComponent implements OnDestroy {
   limit: number = 7;
   submoduleData: any;
   remarks = new FormControl('');
-  showSchema: FormControl = new FormControl(1);
+  showSchema: FormControl = new FormControl('Display default');
   userRoleCheckAdmin: any;
+  showUpIcon = true;
+  showDownIcon = false;
   tableHeaders: any[] = [
     {
       key: 'Submission Status',
-      isVisible: new FormControl<boolean>(true)
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false
     },
     {
       key: 'Last Activity By',
-      isVisible: new FormControl<boolean>(true)
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false
     },
     {
       key: 'Now Pending With',
-      isVisible: new FormControl<boolean>(true)
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false
     },
     {
       key: 'Workflow progress',
-      isVisible: new FormControl<boolean>(true)
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false
     }
   ];
 
@@ -109,34 +121,44 @@ export class SubmissionTableComponent implements OnDestroy {
 
     // switch schemas
     this.showSchema.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val == 1) {
+      if(val == 'Display default') {
         this.tableHeaders = [
           {
             key: 'Submission Status',
-            isVisible: new FormControl<boolean>(true)
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false
           },
           {
             key: 'Last Activity By',
-            isVisible: new FormControl<boolean>(true)
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false
           },
           {
             key: 'Now Pending With',
-            isVisible: new FormControl<boolean>(true)
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false
           },
           {
             key: 'Workflow progress',
-            isVisible: new FormControl<boolean>(true)
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false
           }
         ];
         this.fetchDataAndPopulate()
       }
-      if(val == 2) {
+      if(val == 'Display via View Schema') {
         this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
           this.submoduleData = val;
           let tableKeys = this.submoduleData?.viewSchema?.map(data => {
             return {
               key: data,
-              isVisible: new FormControl<boolean>(true)
+              isVisible: new FormControl<boolean>(true),
+              showUpIcon: true,
+              showDownIcon: false
             }
           });
           this.tableHeaders = tableKeys
@@ -318,6 +340,19 @@ export class SubmissionTableComponent implements OnDestroy {
 
   searchViaFilter(value: any) {
     console.log(value)
+  }
+
+  sortFields(key: string, sortBy: string, index: number) {
+    console.log(key)
+    console.log(sortBy)
+    if(sortBy == 'asc') {
+      this.tableHeaders[index].showUpIcon = false;
+      this.tableHeaders[index].showDownIcon = true;
+    }
+    if(sortBy == 'desc') {
+      this.tableHeaders[index].showUpIcon = true;
+      this.tableHeaders[index].showDownIcon = false;
+    }
   }
 
   resetFilterValues(value: any) {

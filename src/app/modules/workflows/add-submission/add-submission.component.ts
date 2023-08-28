@@ -144,6 +144,26 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.subModuleData = res;
         this.adminUsers = res?.adminUsers?.map(val => val?.id)
         this.formWithWorkflow = res?.formIds?.map(comp => {
+          comp.components?.map(data => {
+            if(data?.permissions?.length > 0) {
+              data?.permissions?.map(permit => {
+                if(this.currentUser?.id == permit?.id) {
+                  if(permit.canEdit == true) {
+                    data.disabled = false
+                  }
+                  else {
+                    data.disabled = true
+                  }
+                  if(permit.canView == false) {
+                    data.hidden = true
+                  }
+                  else {
+                    data.hidden = false
+                  }
+                }
+              })
+            }
+          })
           return {
             ...comp,
             components: comp.components?.map(data => {

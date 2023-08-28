@@ -1,7 +1,7 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
-    <h3 class="text-xl font-semibold text-center">Create a new app</h3>
+    <h3 class="text-xl font-semibold text-center">Edit app</h3>
     <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">App Details</h4>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
@@ -73,8 +73,8 @@
                 <img
                   [src]="base64File"
                   alt="app_icon"
-                  width="200"
-                  height="200"
+                  width="100"
+                  height="100"
                   class="rounded-md"
                 />
               </div>
@@ -310,13 +310,18 @@
             </nav>
             <ng-container *ngFor="let form of formComponents; let i = index;">
               <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-                <div class="flex justify-end gap-x-2">
-                  <a (click)="sendFormForEdit(i, form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
-                    <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
-                  </a>
-                  <a (click)="deleteForm(form?.id)" class="px-2 py-1 bg-red-100 rounded-md cursor-pointer">
-                    <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
-                  </a>
+                <div class="flex justify-end gap-x-2 relative">
+                  <div class="absolute z-10 flex justify-end -top-1 right-1 gap-x-2">
+                    <a (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 pt-1 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
+                      <span>Summary & View Schema</span>
+                    </a>
+                    <a (click)="sendFormForEdit(i, form?.id)" class="rounded-md cursor-pointer" title="Edit Form">
+                      <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
+                    </a>
+                    <a (click)="deleteForm(form?.id)" class="rounded-md cursor-pointer">
+                      <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
+                    </a>
+                  </div>
                 </div>
                 <formio [language]="language" [options]="options" [form]="form"></formio>
               </div>
@@ -427,4 +432,83 @@
     <li class="my-2"><strong>OR</strong> implies that any one of the users may provide approval</li>
     <li><strong>NONE</strong> implies that there is only one user per step and hence no conditon is necessary</li>
   </ul>
+</ng-template>
+
+<ng-template #summarySchemaTemplate let-observer>
+  <h2 class="text-lg font-semibold text-center">Modify Summary & View Schema</h2>
+  <div [formGroup]="schemaForm" class="my-5">
+    <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
+    <tui-multi-select
+      formControlName="summarySchema"
+      [tuiTextfieldLabelOutside]="true"
+      (ngModelChange)="handleChangeOnSummarySchema($event)"
+    >
+      Summary Schema fields
+      <tui-data-list-wrapper
+        *tuiDataList
+        tuiMultiSelectGroup
+        [items]="summarySchemaFields"
+      ></tui-data-list-wrapper>
+    </tui-multi-select>
+    <p class="mt-1 text-xxs">e.g. formKey.fieldValue</p>
+
+    <!--View Schema-->
+    <div class="mt-4">
+      <ng-container formArrayName="viewSchema">
+        <label class="mb-2 font-medium">View Schema <sup>(Optional)</sup></label>
+        <ng-container *ngFor="let schema of viewSchema.controls; let i = index; let first = first; let last = last">
+          <div [formGroupName]="i" class="grid grid-cols-12 gap-2 mb-3">
+            <tui-input-tag
+              [tuiTextfieldLabelOutside]="true"
+              formControlName="fieldKey"
+              class="col-span-6"
+            >
+              View Schema fields
+            </tui-input-tag>
+            <!--Display As-->
+            <tui-input formControlName="displayAs" class="col-span-6">
+              Specify field label
+              <input
+                tuiTextfield
+                [tuiTextfieldLabelOutside]="true"
+                type="text"
+              />
+            </tui-input>
+          </div>
+          <div *ngIf="!first" class="flex justify-end my-2">
+            <button
+              tuiIconButton
+              type="button"
+              size="s"
+              appearance="secondary-destructive"
+              icon="tuiIconTrash2"
+              (click)="deleteViewSchema(i)"
+            ></button>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+  <!--Action BTNS-->
+  <div class="flex justify-center gap-2">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="setSummaryAndViewSchema()"
+    >
+      Confirm
+    </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      (click)="closeSchemaDialog()"
+    >
+      Cancel
+    </button>
+  </div>
 </ng-template>

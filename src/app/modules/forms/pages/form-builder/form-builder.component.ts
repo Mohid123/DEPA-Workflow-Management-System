@@ -47,7 +47,6 @@ export class FormBuilderComponent implements OnInit {
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
   viewUsers = new FormControl<any>([]);
-  dialogSubscription: Subscription[] = [];
 
   constructor(
     private transportService: DataTransportService,
@@ -174,9 +173,10 @@ export class FormBuilderComponent implements OnInit {
   addCustomEventTrigger() {
     let componentMenu = document.getElementsByClassName('component-btn-group');
     Array.from(componentMenu).forEach((value, index) => {
+      let tooltip = document.createElement('div');
       let div = document.createElement('div');
       div.id = 'custom-div'
-      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa');
+      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
       div.tabIndex = -1;
       div.role = 'button';
       div.ariaLabel = 'Permissions Button';
@@ -184,6 +184,14 @@ export class FormBuilderComponent implements OnInit {
       div.addEventListener('click', () => {
         let comp = this.form?.components[index];
         this.openPermissionDialog(comp)
+      })
+      div.addEventListener('mouseover', () => {
+        tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
+        tooltip.innerText = 'Permissions'
+        div.append(tooltip)
+      })
+      div.addEventListener('mouseleave', () => {
+        tooltip.remove()
       })
       value.append(div);
     })
@@ -212,13 +220,13 @@ export class FormBuilderComponent implements OnInit {
   }
 
   submitFormData() {
-    removeItem(StorageItem.approvers)
     if(!this.formTitleControl?.value || this.formTitleControl?.value == '') {
       return this.notif.displayNotification('Please provide a title for your form', 'Create Form', TuiNotification.Warning)
     }
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
     }
+    removeItem(StorageItem.approvers)
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
     this.form.key = this.formTitleControl?.value?.replace(/\s+/g, '-').trim().toLowerCase()
