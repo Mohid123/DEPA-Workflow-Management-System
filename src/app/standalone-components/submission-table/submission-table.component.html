@@ -229,7 +229,6 @@
         <div class="flex gap-x-2 mt-4" *ngFor="let topData of tableHeaders; let i = index; let firstItem = first">
           <tui-checkbox
             [formControl]="topData?.isVisible"
-            (ngModelChange)="checkBoxPrevention()"
             class="mt-0.5"
           ></tui-checkbox>
           <p class="capitalize">{{topData?.key}}</p>

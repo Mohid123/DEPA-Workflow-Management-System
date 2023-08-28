@@ -102,6 +102,8 @@ export class SubmissionTableComponent implements OnDestroy {
     }
   ];
 
+  summaryData: any
+
   constructor(
     private workflowService: WorkflowsService,
     private auth: AuthService,
@@ -168,29 +170,30 @@ export class SubmissionTableComponent implements OnDestroy {
     })
   }
 
-  checkBoxPrevention() {
-    let checked = this.tableHeaders?.filter(data => data?.isVisible?.value == true)
-    let nonChecked = this.tableHeaders?.filter(data => data?.isVisible?.value != true)
-    if(checked.length >= 4) {
-      nonChecked = nonChecked?.map(data => data?.key);
-      this.tableHeaders = this.tableHeaders?.map(header => {
-        if(nonChecked?.includes(header?.key)) {
-          header?.isVisible?.disable();
-          return header
-        }
-        return header
-      })
-    }
-    else {
-      nonChecked = nonChecked?.map(data => data?.key);
-      this.tableHeaders = this.tableHeaders?.map(header => {
-        if(nonChecked?.includes(header?.key)) {
-          header?.isVisible?.enable();
-          return header
-        }
-        return header
-      })
-    }
+  checkBoxPrevention(index: number, key: any) {
+    this.fetchSummaryDataForValues(index, key);
+    // let checked = this.tableHeaders?.filter(data => data?.isVisible?.value == true)
+    // let nonChecked = this.tableHeaders?.filter(data => data?.isVisible?.value != true)
+    // if(checked.length >= 4) {
+    //   nonChecked = nonChecked?.map(data => data?.key);
+    //   this.tableHeaders = this.tableHeaders?.map(header => {
+    //     if(nonChecked?.includes(header?.key)) {
+    //       header?.isVisible?.disable();
+    //       return header
+    //     }
+    //     return header
+    //   })
+    // }
+    // else {
+    //   nonChecked = nonChecked?.map(data => data?.key);
+    //   this.tableHeaders = this.tableHeaders?.map(header => {
+    //     if(nonChecked?.includes(header?.key)) {
+    //       header?.isVisible?.enable();
+    //       return header
+    //     }
+    //     return header
+    //   })
+    // }
   }
 
   fetchAndPopulate() {
@@ -214,6 +217,15 @@ export class SubmissionTableComponent implements OnDestroy {
         }
       });
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+    }))
+  }
+
+  fetchSummaryDataForValues(index: number, key: any) {
+    this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+    .subscribe((val: any) => {
+      this.summaryData = val.results[index]?.summaryData;
+      debugger
+      this.bindValueFromSummaryData(this.summaryData, key)
     }))
   }
 
