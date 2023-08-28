@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -371,6 +371,18 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
 
   sendFormForEdit(i: number, formID: string) {
     if(formID) {
+      let approvers = this.workflows?.value?.flatMap(data => {
+        return data?.approverIds?.map(approver => {
+          return {
+            id: approver.id,
+            name: approver.name
+          }
+        })
+      })
+      if(approvers.length == 0) {
+        return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
+      }
+      setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
   }
