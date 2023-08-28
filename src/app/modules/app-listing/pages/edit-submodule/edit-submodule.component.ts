@@ -239,6 +239,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           if(response) {
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
+            this.schemaForm.controls['summarySchema']?.setValue(response?.summarySchema)
+            if(response.viewSchema?.length > 0) {
+              this.schemaForm.controls['viewSchema'].removeAt(0);
+            }
+            response.viewSchema?.map(data => {
+              const schemaForm = this.fb.group({
+                fieldKey: new FormControl([data?.fieldKey]),
+                displayAs: new FormControl(data?.displayAs)
+              });
+              this.schemaForm.controls['viewSchema'].push(schemaForm)
+            })
             this.items?.forEach((value, index) => {
               if (value?.name == response?.accessType) {
                 this.accessTypeValue?.setValue(this.items[index])
@@ -560,7 +571,18 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  checkIfLabelIsUnique() {
+    let unique = new Set(this.schemaForm.controls['viewSchema'].value?.map(data => data?.displayAs));
+    if(unique.size !== this.schemaForm.controls['viewSchema'].value?.length) {
+      return false
+    }
+    return true
+  }
+
   setSummaryAndViewSchema() {
+    if(this.checkIfLabelIsUnique() == false) {
+      return this.notif.displayNotification('Field labels must be unique', 'Schema Controls', TuiNotification.Warning)
+    }
     if (this.schemaForm?.value?.viewSchema[0]?.displayAs) {
       this.schemaSubscription.forEach(val => val.unsubscribe())
     }

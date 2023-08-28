@@ -5,7 +5,7 @@ import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/c
 import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
@@ -97,10 +97,30 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.subModuleData = res;
         this.workFlowId = res?.workFlowId?._id;
         this.approvalLogs = res?.approvalLog;
-        this.forms = res?.formIds?.map(data => {
+        this.forms = res?.formIds?.map(comp => {
+          comp.components?.map(data => {
+            if(data?.permissions?.length > 0) {
+              data?.permissions?.map(permit => {
+                if(this.currentUser?.id == permit?.id) {
+                  if(permit.canEdit == true) {
+                    data.disabled = false
+                  }
+                  else {
+                    data.disabled = true
+                  }
+                  if(permit.canView == false) {
+                    data.hidden = true
+                  }
+                  else {
+                    data.hidden = false
+                  }
+                }
+              })
+            }
+          })
           return {
-            ...data,
-            components: data?.components?.map(data => {
+            ...comp,
+            components: comp?.components?.map(data => {
               if(data?.label && data?.label == 'Submit') {
                 data.hidden = true;
                 return data
@@ -108,12 +128,12 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
               return data
             }),
             formDataId: res?.formDataIds?.map(val => {
-              if(val.formId == data?._id) {
+              if(val.formId == comp?._id) {
                 return val?._id
               }
             }).filter(val => val)[0],
             data: res?.formDataIds?.map(val => {
-              if(val.formId == data?._id) {
+              if(val.formId == comp?._id) {
                 return val?.data
               }
             }).filter(val => val)[0]
@@ -207,6 +227,18 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
 
   sendFormForEdit(i: number, formID: string) {
     if(formID) {
+      let approvers = this.workflows?.value?.flatMap(data => {
+        return data?.approverIds?.map(approver => {
+          return {
+            id: approver.id,
+            name: approver.name
+          }
+        })
+      })
+      if(approvers.length == 0) {
+        return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
+      }
+      setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
   }
@@ -318,9 +350,9 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
-    if(this.formSubmission?.value?.length !== this.forms?.length) {
-      return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
-    }
+    // if(this.formSubmission?.value?.length !== this.forms?.length) {
+    //   return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
+    // }
     this.creatingSubmission.next(true);
     const payload: any = {
       workFlowId: this.workFlowId,

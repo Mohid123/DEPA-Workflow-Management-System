@@ -198,6 +198,26 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         };
         this.formTabs = await this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = await this.workflowData?.formIds?.map(data => {
+          data.components?.map(innerData => {
+            if(innerData?.permissions?.length > 0) {
+              innerData?.permissions?.map(permit => {
+                if(this.currentUser?.id == permit?.id) {
+                  if(permit.canEdit == true) {
+                    innerData.disabled = false
+                  }
+                  else {
+                    innerData.disabled = true
+                  }
+                  if(permit.canView == false) {
+                    innerData.hidden = true
+                  }
+                  else {
+                    innerData.hidden = false
+                  }
+                }
+              })
+            }
+          })
           return {
             ...data,
             components: data.components?.map(data => {

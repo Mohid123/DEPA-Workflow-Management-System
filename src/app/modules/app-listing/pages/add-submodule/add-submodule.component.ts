@@ -187,6 +187,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  checkIfLabelIsUnique() {
+    let unique = new Set(this.schemaForm.controls['viewSchema'].value?.map(data => data?.displayAs));
+    if(unique.size !== this.schemaForm.controls['viewSchema'].value?.length) {
+      return false
+    }
+    return true
+  }
+
   get viewSchema() {
     return this.schemaForm.controls['viewSchema'] as FormArray;
   }
@@ -517,6 +525,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setSummaryAndViewSchema() {
+    if(this.checkIfLabelIsUnique() == false) {
+      return this.notif.displayNotification('Field labels must be unique', 'Schema Controls', TuiNotification.Warning)
+    }
     if (this.schemaForm?.value?.viewSchema[0]?.displayAs) {
       this.schemaSubscription.forEach(val => val.unsubscribe())
     }

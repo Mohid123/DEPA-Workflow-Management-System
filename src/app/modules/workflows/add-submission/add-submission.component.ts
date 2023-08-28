@@ -295,11 +295,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   createSubmission(status?: any) {
-    if(!status) {
-      if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
-        return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
-      }
-    }
+    // if(!status) {
+    //   if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
+    //     return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
+    //   }
+    // }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }

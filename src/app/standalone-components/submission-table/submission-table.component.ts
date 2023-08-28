@@ -153,10 +153,11 @@ export class SubmissionTableComponent implements OnDestroy {
       if(val == 'Display via View Schema') {
         this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
           this.submoduleData = val;
-          let tableKeys = this.submoduleData?.viewSchema?.map(data => {
+          let tableKeys = this.submoduleData?.viewSchema?.map((data, index) => {
             return {
-              key: data,
-              isVisible: new FormControl<boolean>(true),
+              key: data?.displayAs,
+              field: data?.fieldKey,
+              isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
               showDownIcon: false
             }
@@ -165,6 +166,31 @@ export class SubmissionTableComponent implements OnDestroy {
         }));
       }
     })
+  }
+
+  checkBoxPrevention() {
+    let checked = this.tableHeaders?.filter(data => data?.isVisible?.value == true)
+    let nonChecked = this.tableHeaders?.filter(data => data?.isVisible?.value != true)
+    if(checked.length >= 4) {
+      nonChecked = nonChecked?.map(data => data?.key);
+      this.tableHeaders = this.tableHeaders?.map(header => {
+        if(nonChecked?.includes(header?.key)) {
+          header?.isVisible?.disable();
+          return header
+        }
+        return header
+      })
+    }
+    else {
+      nonChecked = nonChecked?.map(data => data?.key);
+      this.tableHeaders = this.tableHeaders?.map(header => {
+        if(nonChecked?.includes(header?.key)) {
+          header?.isVisible?.enable();
+          return header
+        }
+        return header
+      })
+    }
   }
 
   fetchAndPopulate() {
@@ -260,13 +286,12 @@ export class SubmissionTableComponent implements OnDestroy {
     return value?.map(data => data?.fullName)
   }
   
-  bindValueFromSummaryData(obj: any) {
-    let newObj = new Object(obj)
-    for (const key in newObj) {
-      if(this.tableHeaders.map(data => data.key)?.includes(key)) {
-        return obj[key]
-      }
+  bindValueFromSummaryData(obj: any, headerKey: string) {
+    const matchingField = this.tableHeaders.find(data => data.field === headerKey);
+    if (matchingField) {
+      return obj[matchingField.field];
     }
+    return "";
   }
 
   sendFilterValue(value: any) {

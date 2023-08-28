@@ -266,7 +266,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       });
     }
     else {
-      Object.assign(formData, {subModuleId: getItem(StorageItem.moduleID)})
+      Object.assign(formData, {subModuleId: this.transportService.subModuleID?.value})
       this.formService.createForm(formData)
       .pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val) {
