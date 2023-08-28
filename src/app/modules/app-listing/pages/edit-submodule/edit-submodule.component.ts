@@ -166,6 +166,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.viewSchema.removeAt(index);
     let val = this.schemaForm.controls['summarySchema'].value;
     val = val.splice(index, 1);
+    this.viewSchema.removeAt(index)
     this.schemaForm.controls['summarySchema'].setValue(val)
   }
 
