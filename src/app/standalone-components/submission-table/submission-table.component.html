@@ -1,41 +1,23 @@
 <ng-container *ngIf="submissionData as tableData; else noData">
   <div class="relative overflow-x-auto rounded-lg shadow-lg border border-[#a58f81]">
-    <div class="text-sm text-black bg-white px-4 py-5 w-full flex justify-between">
+    <div class="text-sm text-white bg-[#a58f81] px-4 py-5 w-full flex justify-between">
       <div class="w-1/3">
-        <div class="flex justify-start">
-          <div class="w-full">
-            <label class="font-medium text-base mb-1">Search submissions</label>
-            <tui-input
-              tuiTextfieldIconLeft="tuiIconSearchLarge"
-              class="w-full"
-              [formControl]="searchValue"
-              [tuiTextfieldCleaner]="true"
-              class="shadow-md"
-            >
-              <p class="mt-2">Search by any key</p>
-              <input
-                tuiTextfield
-                placeholder="Type to start searching..."
-              />
-            </tui-input>
-          </div>
-            <tui-hosted-dropdown
-              tuiDropdownAlign="right"
-              [content]="dropdown"
-              [(open)]="open"
-            >
-            <button
-              tuiIconButton
-              type="button"
-              size="m"
-              class="tui-space_left-3 tui-space_top-9 border border-[#a58f81] bg-white"
-              appearance="custom"
-              icon="tuiIconMenuLarge"
-              [tuiHint]="hint"
-              tuiHintDirection="right"
-            ></button>
-          </tui-hosted-dropdown>
-        </div>
+        <tui-hosted-dropdown
+          tuiDropdownAlign="left"
+          [content]="dropdown"
+          [(open)]="open"
+        >
+        <button
+          tuiIconButton
+          type="button"
+          size="m"
+          class="tui-space_left-3 tui-space_top-2 border border-[#a58f81] bg-white"
+          appearance="custom"
+          icon="tuiIconMenuLarge"
+          [tuiHint]="hint"
+          tuiHintDirection="right"
+        ></button>
+      </tui-hosted-dropdown>
       </div>
       <div class="w-1/3">
         <label class="font-medium text-base mb-1">Data to display</label>
@@ -73,6 +55,8 @@
               <ng-template #otherFilters>
                 <tui-svg *ngIf="data?.showUpIcon" new src="tuiIconArrowUp" (click)="sortFields(data?.key, 'asc', j)" class="cursor-pointer -ml-2 -mt-1"></tui-svg>
                 <tui-svg *ngIf="data?.showDownIcon" new src="tuiIconArrowDown" (click)="sortFields(data?.key, 'desc', j)" class="cursor-pointer -ml-2 -mt-1"></tui-svg>
+                <br>
+                <input type="text" class="form-control" [formControl]="data?.search">
               </ng-template>
             </th>
           </ng-container>

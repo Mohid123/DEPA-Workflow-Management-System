@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { Observable, Subject, Subscription, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
@@ -83,25 +83,29 @@ export class SubmissionTableComponent implements OnDestroy {
       key: 'Submission Status',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
-      showDownIcon: false
+      showDownIcon: false,
+      search: new FormControl(null)
     },
     {
       key: 'Last Activity By',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
-      showDownIcon: false
+      showDownIcon: false,
+      search: new FormControl(null)
     },
     {
       key: 'Now Pending With',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
-      showDownIcon: false
+      showDownIcon: false,
+      search: new FormControl(null)
     },
     {
       key: 'Workflow progress',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
-      showDownIcon: false
+      showDownIcon: false,
+      search: new FormControl(null)
     }
   ];
 
@@ -131,25 +135,29 @@ export class SubmissionTableComponent implements OnDestroy {
             key: 'Submission Status',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
-            showDownIcon: false
+            showDownIcon: false,
+            search: new FormControl(null)
           },
           {
             key: 'Last Activity By',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
-            showDownIcon: false
+            showDownIcon: false,
+            search: new FormControl(null)
           },
           {
             key: 'Now Pending With',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
-            showDownIcon: false
+            showDownIcon: false,
+            search: new FormControl(null)
           },
           {
             key: 'Workflow progress',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
-            showDownIcon: false
+            showDownIcon: false,
+            search: new FormControl(null)
           }
         ];
         this.fetchDataAndPopulate()
@@ -163,13 +171,27 @@ export class SubmissionTableComponent implements OnDestroy {
               field: data?.fieldKey,
               isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
-              showDownIcon: false
+              showDownIcon: false,
+              search: new FormControl(null)
             }
           });
           this.tableHeaders = tableKeys
         }));
       }
     })
+
+    //search via table header
+    this.tableHeaders.forEach(header => {
+      if (header.search) {
+        header.search.valueChanges.pipe(
+          debounceTime(400),
+          distinctUntilChanged(),
+          takeUntil(this.destroy$))
+        .subscribe(value => {
+          console.log(`Typed value for ${header.key}: ${value}`);
+        });
+      }
+    });
   }
 
   checkBoxPrevention(index: number, key: any) {
