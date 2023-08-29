@@ -2,7 +2,7 @@
 
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
-    <section class="flex justify-between my-8">
+    <section class="relative flex justify-between my-8">
       <nav
         tuiTabs
         vertical="left"
@@ -14,9 +14,9 @@
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
         <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <div class="flex justify-end gap-x-2">
-            <a (click)="sendFormForEdit(i, form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
-              <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
+          <div class="absolute -top-1 right-1 z-10">
+            <a (click)="sendFormForEdit(i, form?.id)" class="rounded-md cursor-pointer" title="Edit Form">
+              <i class="fa fa-pencil-square fa-2x text-blue-500 hover:text-blue-600" aria-hidden="true"></i>
             </a>
           </div>
           <formio [submission]="formValues[activeIndex]" [options]="options" [form]="form" (change)="onChange($event, i)"></formio>
@@ -53,11 +53,11 @@
   <div *ngIf="activeItemIndex == 1" class="mt-12" [formGroup]="workflowForm">
     <h4 class="text-lg font-semibold">Modify workflow</h4>
     <ng-container formArrayName="workflows">
-      <ng-container *ngFor="let workflow of workflows.controls; let i = index">
+      <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first">
         <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
         <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
           <div class="col-span-4">
-            <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+            <label class="block pb-1">{{first ? 'Creators': 'Approvers'}} <span class="text-xs text-red-400">*</span></label>
             <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
             <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
           </div>
@@ -169,6 +169,7 @@
       type="button"
       size="m"
       appearance="secondary"
+      [showLoader]="(draftingSubmission | async)"
       (click)="createSubmission(4)"
     >
       Save as Draft

@@ -34,10 +34,12 @@ export class DataTransportService {
   moduleID = new BehaviorSubject<string>('');
 
   moduleCode = new BehaviorSubject<string>('');
-  
+
   subModuleID = new BehaviorSubject<string>('');
 
   formEditId = new BehaviorSubject<string>('');
+
+  updatedComponent = new EventEmitter<any>()
 
   /**
    * @ignore
@@ -74,5 +76,5 @@ export class DataTransportService {
   saveDraftLocally(data: any) {
     this.subModuleDraft.next(data);
   }
-  
+
 }

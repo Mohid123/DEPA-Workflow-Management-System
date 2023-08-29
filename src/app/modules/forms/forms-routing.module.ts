@@ -12,12 +12,12 @@ const routes: Routes = [
       {
         path: 'form-builder',
         component: FormBuilderComponent,
-        data: {breadcrumb:'Form builder'},
+        data: {breadcrumb:'Form Builder'},
       },
       {
         path: 'edit-form',
         component: EditFormComponent,
-        data: {breadcrumb: 'Edit-Form'}
+        data: {breadcrumb: 'Edit Form'}
       },
       {
         path: '',

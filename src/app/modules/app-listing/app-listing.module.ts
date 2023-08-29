@@ -60,7 +60,8 @@ import { EditSubmissionComponent } from './pages/edit-submission/edit-submission
     TuiHintModule,
     TuiLoaderModule,
     SubmissionTableComponent,
-    TuiSvgModule
+    TuiSvgModule,
+    TuiInputTagModule
   ]
 })
 export class AppListingModule { }

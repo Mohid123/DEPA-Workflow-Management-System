@@ -1,7 +1,8 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
-    <h3 class="text-xl font-semibold">Edit app</h3>
+    <h3 class="text-xl font-semibold text-center">Edit app</h3>
+    <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">App Details</h4>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
     <!--Title-->
@@ -27,79 +28,76 @@
         ></ng-container>
     </div>
 
-    <!--Description-->
-    <div class="mt-3 mb-5">
-      <label class="block pb-1">App Description<span class="text-xs text-red-400">*</span></label>
-        <textarea
-          required
-          [ngClass]="
-            f['description']?.invalid &&
-            f['description']?.dirty
-              ? 'is-invalid'
-              : ''
-          "
-          formControlName="description"
-          class="form-control"
-          type="text"
-          rows="4"
-        ></textarea>
-        <ng-container
-          [ngTemplateOutlet]="formError"
-          [ngTemplateOutletContext]="{
-            validation: 'required',
-            message: 'A Description is required',
-            control: f['description']
-          }"
-        ></ng-container>
-    </div>
-
+     <!--Description & Image-->
+     <div class="grid grid-cols-12 gap-3">
+      <!--Description-->
+      <div class="col-span-6 mt-3 mb-3">
+        <label class="block pb-1">App Description<span class="text-xs text-red-400">*</span></label>
+          <textarea
+            required
+            [ngClass]="
+              f['description']?.invalid &&
+              f['description']?.dirty
+                ? 'is-invalid'
+                : ''
+            "
+            formControlName="description"
+            class="form-control"
+            type="text"
+            rows="6"
+          ></textarea>
+          <ng-container
+            [ngTemplateOutlet]="formError"
+            [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'A Description is required',
+              control: f['description']
+            }"
+          ></ng-container>
+      </div>
     <!--Image-->
-    <div class="my-5">
-      <label class="block pb-1">App Icon<span class="text-xs text-red-400">*</span></label>
-      <label
-        (change)="onFileSelect($event)"
-        for="dropzone-file"
-        class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-        >
-          <tui-loader
-            [inheritColor]="true"
-            [size]="'l'"
-            [showLoader]="false"
-            [overlay]="true"
+      <div class="col-span-6 mt-3 mb-3">
+        <label class="block pb-1">App Icon<span class="text-xs text-red-400">*</span></label>
+        <label
+          (change)="onFileSelect($event)"
+          for="dropzone-file"
+          class="flex flex-col items-center justify-center w-full h-[9.85rem] border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100"
           >
-            <div *ngIf="file" class="flex justify-center">
-              <img
-                [src]="base64File"
-                alt="app_icon"
-                width="200"
-                height="200"
-                class="rounded-md"
-              />
-            </div>
-            <div *ngIf="!file" class="flex justify-start">
-              <div class="mx-8">
+            <tui-loader
+              [inheritColor]="true"
+              [size]="'l'"
+              [showLoader]="false"
+              [overlay]="true"
+            >
+              <div *ngIf="file" class="flex justify-center">
                 <img
-                  src="../../../../../assets/windows.svg"
-                  width="32"
-                  height="32"
+                  [src]="base64File"
+                  alt="app_icon"
+                  width="100"
+                  height="100"
+                  class="rounded-md"
                 />
               </div>
-              <div class="flex flex-col">
-                <p class="mb-3 text-lg font-semibold text-black">
-                  App Icon
-                </p>
+              <div *ngIf="!file" class="flex justify-start">
+                <div class="mx-8 mt-1">
+                  <img
+                    src="../../../../../assets/windows.svg"
+                    width="32"
+                    height="32"
+                  />
+                </div>
                 <ul class="text-sm text-gray-400 list-disc">
-                  <li>Icon should be 1:1 ratio</li>
                   <li>Only (JPEG, PNG, WEBP) extensions are allowed</li>
                   <li>Up to 2MB file size is allowed</li>
                 </ul>
               </div>
-            </div>
-          </tui-loader>
-          <input id="dropzone-file" type="file" class="hidden" />
-      </label>
+            </tui-loader>
+            <input id="dropzone-file" type="file" class="hidden" />
+        </label>
+      </div>
     </div>
 
+    <!--Company-->
     <div class="my-7">
       <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
       <select required [ngClass]="f['companyId']?.invalid && f['companyId']?.dirty ? 'is-invalid' : ''" formControlName="companyId" class="form-control" type="text">
@@ -114,6 +112,7 @@
       }"></ng-container>
     </div>
 
+    <!--Category-->
     <div class="my-7">
       <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
       <select required [ngClass]="f['categoryId']?.invalid && f['categoryId']?.dirty ? 'is-invalid' : ''" formControlName="categoryId" class="form-control" type="text">
@@ -147,68 +146,16 @@
       </div>
     </div>
 
-    <!--Form preview-->
-    <div class="mb-5 mt-7">
-      <h3 class="mb-5 text-lg font-semibold">Edit Form/s</h3>
-      <h4 class="text-base font-semibold text-center">Form/s Preview</h4>
-      <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
-        <ng-container *ngIf="formComponents[0]?.components?.length > 0">
-          <section class="flex justify-between my-8">
-            <nav
-              tuiTabs
-              vertical="left"
-              class="w-32 mr-5"
-            >
-              <ng-container *ngFor="let tab of formTabs; let j = index">
-                <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
-              </ng-container>
-            </nav>
-            <ng-container *ngFor="let form of formComponents; let i = index;">
-              <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-                <div class="flex justify-end gap-x-2">
-                  <a (click)="sendFormForEdit(i, form?.id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
-                    <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
-                  </a>
-                  <a (click)="deleteForm(form?.id)" class="px-2 py-1 bg-red-100 rounded-md cursor-pointer">
-                    <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
-                  </a>
-                </div>
-                <formio [language]="language" [options]="options" [form]="form"></formio>
-              </div>
-            </ng-container>
-
-          </section>
-        </ng-container>
-        <ng-container *ngIf="formComponents[0]?.components?.length == 0">
-          <div class="grid grid-cols-12 gap-2">
-            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
-            <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
-            <div data-placeholder class="h-32 col-span-12 mb-3 overflow-hidden bg-gray-200 rounded-md"></div>
-          </div>
-        </ng-container>
-      </div>
-      <div class="w-full mx-auto my-1">
-        <p class="text-xs text-gray-500">The form you add will appear here</p>
-      </div>
-    </div>
-
-    <!--Add new Form-->
-    <div class="mt-7">
-      <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
-        {{formComponents[0]?.components?.length == 0 ? 'Add form' : 'Add another'}}
-      </a>
-    </div>
-
     <!--Edit Workflow-->
     <div class="mt-12">
-      <h4 class="text-lg font-semibold">Edit workflow</h4>
+      <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">Edit Workflow</h4>
       <ng-container formArrayName="workFlowId">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
             <ng-container *ngIf="i == 0">
               <div class="col-span-3">
-                <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
+                <label class="block pb-1">{{first ? 'Creators': 'Approvers'}} <span class="text-xs text-red-400">*</span></label>
                 <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
                 <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
               </div>
@@ -345,6 +292,69 @@
       ></button>
     </div>
 
+    <!--Form preview-->
+    <div class="mb-5 mt-7">
+      <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">Edit Form/s</h4>
+      <h4 class="mt-3 text-base font-semibold text-center">Form/s Preview</h4>
+      <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
+        <ng-container *ngIf="formComponents[0]?.components?.length > 0">
+          <section class="flex justify-between my-8">
+            <nav
+              tuiTabs
+              vertical="left"
+              class="w-32 mr-5"
+            >
+              <ng-container *ngFor="let tab of formTabs; let j = index">
+                <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+              </ng-container>
+            </nav>
+            <ng-container *ngFor="let form of formComponents; let i = index;">
+              <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+                <div class="flex justify-end gap-x-2 relative">
+                  <div class="absolute z-10 flex justify-end -top-1 right-1 gap-x-2">
+                    <a (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 pt-1 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
+                      <span>Summary & View Schema</span>
+                    </a>
+                    <a (click)="sendFormForEdit(i, form?.id)" class="rounded-md cursor-pointer" title="Edit Form">
+                      <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
+                    </a>
+                    <a (click)="deleteForm(form?.id)" class="rounded-md cursor-pointer">
+                      <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </div>
+                <formio [language]="language" [options]="options" [form]="form"></formio>
+              </div>
+            </ng-container>
+
+          </section>
+        </ng-container>
+        <ng-container *ngIf="formComponents[0]?.components?.length == 0 || formComponents?.length == 0">
+          <div class="grid grid-cols-12 gap-2">
+            <div data-placeholder class="h-8 col-span-12 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            <div class="grid grid-cols-12 col-span-12 gap-2">
+              <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
+              <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
+            </div>
+            <div class="grid grid-cols-12 col-span-12 gap-2">
+              <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+              <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="w-full mx-auto my-1">
+        <p class="text-xs text-gray-500">The form you add will appear here</p>
+      </div>
+    </div>
+
+    <!--Add new Form-->
+    <div class="mt-7">
+      <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
+        {{formComponents[0]?.components?.length == 0 ? 'Add form' : 'Add another'}}
+      </a>
+    </div>
+
     <div class="flex justify-center gap-2 mt-10">
       <button
         tuiButton
@@ -354,7 +364,7 @@
         (click)="saveSubModule()"
         [showLoader]="(isCreatingSubModule | async) == true"
       >
-        Publish
+        Edit
       </button>
       <button
         tuiButton
@@ -362,7 +372,7 @@
         size="m"
         appearance="secondary"
         (click)="saveSubModule(3)"
-        [showLoader]="(isCreatingSubModule | async) == true"
+        [showLoader]="(isSavingAsDraft | async) == true"
       >
         Save as Draft
       </button>
@@ -428,4 +438,83 @@
     <li class="my-2"><strong>OR</strong> implies that any one of the users may provide approval</li>
     <li><strong>NONE</strong> implies that there is only one user per step and hence no conditon is necessary</li>
   </ul>
+</ng-template>
+
+<ng-template #summarySchemaTemplate let-observer>
+  <h2 class="text-lg font-semibold text-center">Modify Summary & View Schema</h2>
+  <div [formGroup]="schemaForm" class="my-5">
+    <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
+    <tui-multi-select
+      formControlName="summarySchema"
+      [tuiTextfieldLabelOutside]="true"
+      (ngModelChange)="handleChangeOnSummarySchema($event)"
+    >
+      Summary Schema fields
+      <tui-data-list-wrapper
+        *tuiDataList
+        tuiMultiSelectGroup
+        [items]="summarySchemaFields"
+      ></tui-data-list-wrapper>
+    </tui-multi-select>
+    <p class="mt-1 text-xxs">e.g. formKey.fieldValue</p>
+
+    <!--View Schema-->
+    <div class="mt-4">
+      <ng-container formArrayName="viewSchema">
+        <label class="mb-2 font-medium">View Schema <sup>(Optional)</sup></label>
+        <ng-container *ngFor="let schema of viewSchema.controls; let i = index; let first = first; let last = last">
+          <div [formGroupName]="i" class="grid grid-cols-12 gap-2 mb-3">
+            <tui-input-tag
+              [tuiTextfieldLabelOutside]="true"
+              formControlName="fieldKey"
+              class="col-span-6"
+            >
+              View Schema fields
+            </tui-input-tag>
+            <!--Display As-->
+            <tui-input formControlName="displayAs" class="col-span-6">
+              Specify field label
+              <input
+                tuiTextfield
+                [tuiTextfieldLabelOutside]="true"
+                type="text"
+              />
+            </tui-input>
+          </div>
+          <div *ngIf="!first" class="flex justify-end my-2">
+            <button
+              tuiIconButton
+              type="button"
+              size="s"
+              appearance="secondary-destructive"
+              icon="tuiIconTrash2"
+              (click)="deleteViewSchema(i)"
+            ></button>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+  <!--Action BTNS-->
+  <div class="flex justify-center gap-2">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="setSummaryAndViewSchema()"
+    >
+      Confirm
+    </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      (click)="closeSchemaDialog()"
+    >
+      Cancel
+    </button>
+  </div>
 </ng-template>

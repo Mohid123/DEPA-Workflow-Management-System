@@ -1,8 +1,8 @@
 import { ApplicationRef, Component } from '@angular/core';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
-import { Subject, concat, filter, first, interval } from 'rxjs';
+import { Subject, concat, filter, first, interval, pairwise } from 'rxjs';
 import { AuthService } from './modules/auth/auth.service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { DashboardService } from './modules/dashboard/dashboard.service';
 
 /**
@@ -49,6 +49,13 @@ export class AppComponent {
     if(auth.currentUserValue && (window.location.pathname === '/' || window.location.pathname === '/auth/login')) {
       router.navigate(['/dashboard/home'])
     }
+
+    router.events.pipe(
+      filter(e => e instanceof RoutesRecognized),
+      pairwise())
+    .subscribe((event: any[]) => {
+      this.dashboardService.previousRoute = event[0].urlAfterRedirects;
+    });
     
     router.events
     .pipe(filter(event => event instanceof NavigationEnd))

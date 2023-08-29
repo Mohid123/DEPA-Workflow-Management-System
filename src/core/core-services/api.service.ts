@@ -69,10 +69,14 @@ export class ApiService<T> {
    */
   public post(
     path: string,
-    body: Object = {}
+    body: Object = {},
+    params?: any
   ): Observable<ApiResponse<T>> {
 
-    const options = { headers: this.setHeaders() };
+    const options = {
+      params: params,
+      headers: this.setHeaders()
+    };
     return this.mapAndCatchError<T>(
       this.http.post<ApiResponse<T>>(
         `${environment.apiUrl}${path}`,

@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, disti
 import { DashboardService } from '../../dashboard.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { userAddForm, userAddFormAdmin } from 'src/app/forms-schema/forms';
+import { AuthService } from 'src/app/modules/auth/auth.service';
 
 @Component({
   templateUrl: './users-list.component.html',
@@ -27,6 +28,7 @@ export class UsersListComponent implements OnDestroy {
 
   constructor(
     private dashboard: DashboardService,
+    private auth: AuthService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private cf: ChangeDetectorRef
   ) {
@@ -59,7 +61,8 @@ export class UsersListComponent implements OnDestroy {
       data: {
         fullname: data?.fullName,
         email: data?.email,
-        role: data?.roles
+        role: data?.roles,
+        password: data?.password
       }
     }
   }
@@ -91,7 +94,10 @@ export class UsersListComponent implements OnDestroy {
   editOrAddUser() {
     if(this.userId) {
       const payload: any = {
-        roles: this.formData?.value?.data?.role
+        roles: this.auth.currentUserValue?.roles.includes('sysAdmin') ? undefined : this.formData?.value?.data?.role,
+        fullName: this.formData?.value?.data?.fullname,
+        email: this.formData?.value?.data?.email,
+        password: this.formData?.value?.data?.password
       }
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
@@ -106,7 +112,8 @@ export class UsersListComponent implements OnDestroy {
       const payload: any = {
         fullName: this.formData?.value?.data?.fullname,
         email: this.formData?.value?.data?.email,
-        roles: this.formData?.value?.data?.role
+        roles: this.formData?.value?.data?.role,
+        password: this.formData?.value?.data?.password
       }
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {

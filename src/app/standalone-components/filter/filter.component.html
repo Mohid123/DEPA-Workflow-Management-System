@@ -15,9 +15,23 @@
   <ng-template #dropdown>
     <div class="px-5 py-3 w-80">
       <h4 class="text-sm font-semibold my-3">Filter by {{filterBy}}</h4>
+      <div *ngIf="searchEnabled == true" class="my-3">
+        <tui-input
+          tuiTextfieldIconLeft="tuiIconSearchLarge"
+          class="w-full"
+          [formControl]="searchValue"
+          [tuiTextfieldCleaner]="true"
+        >
+          <p class="mt-2">Search here...</p>
+          <input
+            tuiTextfield
+            placeholder="Type to start searching..."
+          />
+        </tui-input>
+      </div>
       <ul class="my-3">
         <ng-container *ngFor="let item of items; let i = index; trackBy:trackByFn">
-          <ng-container *ngIf="(item?.name == 'Sort by Latest' || item?.name == 'Sort by Oldest'); else otherFilter">
+          <ng-container *ngIf="(item?.name == 'Sort by Ascending' || item?.name == 'Sort by Descending'); else otherFilter">
             <li
               *ngIf="showSortCategories == true"
               class="px-2 py-3 my-1 text-sm rounded-lg cursor-pointer"

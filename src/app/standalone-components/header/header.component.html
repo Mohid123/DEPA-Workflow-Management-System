@@ -48,14 +48,28 @@
         </ng-container>
         <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
           <ng-container *ngIf="item.caption.includes('Add'); else noAdd">
-            <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" class="hover:text-[#76777f] capitalize">
-              {{ setString(item.caption) }}
-            </a>
+            <ng-container *ngIf="item.caption.includes('Edit App'); else noGoback">
+              <a *tuiItem tuiLink (click)="goBack()" class="hover:text-[#76777f] capitalize cursor-pointer">
+                {{ setString(item.caption) }}
+              </a>
+            </ng-container>
+            <ng-template #noGoback>
+              <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" class="hover:text-[#76777f] capitalize">
+                {{ setString(item.caption) }}
+              </a>
+            </ng-template>
           </ng-container>
           <ng-template #noAdd>
-            <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" [queryParams]="finalQueryParams()" class="hover:text-[#76777f] capitalize">
-              {{ setString(item.caption) }}
-            </a>
+            <ng-container *ngIf="item.caption.includes('Edit App'); else noGoback">
+              <a *tuiItem tuiLink (click)="goBack()" class="hover:text-[#76777f] capitalize cursor-pointer">
+                {{ setString(item.caption) }}
+              </a>
+            </ng-container>
+            <ng-template #noGoback>
+              <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" [queryParams]="finalQueryParams()" class="hover:text-[#76777f] capitalize">
+                {{ setString(item.caption) }}
+              </a>
+            </ng-template>
           </ng-template>
         </ng-container>
       </ng-container>

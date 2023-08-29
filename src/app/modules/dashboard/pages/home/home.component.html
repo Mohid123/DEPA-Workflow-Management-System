@@ -5,24 +5,19 @@
     <section class="grid w-11/12 grid-cols-12 gap-4 pb-20 mx-auto mt-52">
       <ng-container *ngIf="(dashboardApps | async)?.length == 0">
         <p class="col-span-12 my-8 text-base font-semibold text-center">
-        There are currently no apps. Create a category to start adding new apps
+        Create a category to start adding new apps
         <br>
         <br>
         <a (click)="showAddDialog(addTemplate)" class="px-2 py-1 bg-[#A58F81] text-white text-sm rounded-md cursor-pointer hover:text-white">+ Add Category</a>
       </p>
       </ng-container>
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
-        <div class="flex justify-between py-2 px-2 bg-[#eae4d8] rounded-md col-span-12">
+        <div class="flex justify-between py-2 px-2 bg-[#eae4d8] rounded-md col-span-12 relative">
           <p class="mt-2 text-lg font-semibold">{{app.name}}</p>
           <a *ngIf="userRoleCheck == true" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base">+ Add new app</a>
         </div>
         <ng-container *ngIf="!app.submodules || app.subsubmodules?.length == 0; else showApps">
-          <div class="col-span-12">
-            <div class="flex justify-center items-center">
-              <img src="../../../assets/empty-box.svg" alt="empty_box" width="240" height="240">
-            </div>
-            <p class="text-base font-semibold text-center text-gray-500">No apps available. You can add a new app by clicking on the button</p>
-          </div>
+          <div class="h-5"></div>
         </ng-container>
         <ng-template #showApps>
           <ng-container *ngFor="let appdata of app?.submodules; let i = index; let firstModule = first; let last = last;">

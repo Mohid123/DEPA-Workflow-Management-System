@@ -1,21 +1,38 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { Observable, Subject, Subscription, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import {  TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
+import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 
 @Component({
   selector: 'app-submission-table',
   standalone: true,
-  imports: [CommonModule, FilterComponent, TuiProgressModule, TuiPaginationModule, TableLoaderComponent, ReactiveFormsModule, TuiButtonModule, RouterModule],
+  imports: [
+    CommonModule,
+    FilterComponent,
+    TuiProgressModule,
+    TuiPaginationModule,
+    TableLoaderComponent,
+    ReactiveFormsModule,
+    TuiButtonModule,
+    RouterModule,
+    TuiCheckboxModule,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
+    TuiSvgModule,
+    TuiDataListWrapperModule,
+    TuiSelectModule,
+    TuiHostedDropdownModule,
+    TuiHintModule
+  ],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
 })
@@ -30,14 +47,8 @@ export class SubmissionTableComponent implements OnDestroy {
   destroy$ = new Subject();
   dialogTitle: string;
   searchValue: FormControl = new FormControl();
-
-  // filters
-  filterMenuCompany =  [
-    {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
-    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg'},
-    {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg'},
-    {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
-  ];
+  items = ['Display default', 'Display via View Schema'];
+  open = false;
   statusMenu = [
     {name: 'Created', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
@@ -51,7 +62,45 @@ export class SubmissionTableComponent implements OnDestroy {
   limit: number = 7;
   submoduleData: any;
   remarks = new FormControl('');
+  showSchema: FormControl = new FormControl('Display default');
   userRoleCheckAdmin: any;
+  showUpIcon = true;
+  showDownIcon = false;
+  tableHeaders: any[] = [
+    {
+      key: 'Submission Status',
+      searchKey: 'submissionStatus',
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false,
+      search: new FormControl(null)
+    },
+    {
+      key: 'Last Activity By',
+      searchKey: 'lastActivityPerformedBy',
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false,
+      search: new FormControl(null)
+    },
+    {
+      key: 'Now Pending With',
+      searchKey: 'pendingOnUsers',
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false,
+      search: new FormControl(null)
+    },
+    {
+      key: 'Workflow progress',
+      searchKey: 'progress',
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false,
+      search: new FormControl(null)
+    }
+  ];
+  summaryData: any
 
   constructor(
     private workflowService: WorkflowsService,
@@ -63,16 +112,104 @@ export class SubmissionTableComponent implements OnDestroy {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin');
     this.activatedRoute.queryParams.subscribe(val => {
-        if(val['moduleID']) {
-          this.submoduleId = val['moduleID']
-          this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
-          this.submoduleData = val;
-        }));
+      if(val['moduleID']) {
+        this.submoduleId = val['moduleID']
         this.fetchDataAndPopulate()
+      }
+    });
+
+    // switch schemas
+    this.showSchema.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(val == 'Display default') {
+        this.tableHeaders = [
+          {
+            key: 'Submission Status',
+            searchKey: 'submissionStatus',
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false,
+            search: new FormControl(null)
+          },
+          {
+            key: 'Last Activity By',
+            searchKey: 'lastActivityPerformedBy',
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false,
+            search: new FormControl(null)
+          },
+          {
+            key: 'Now Pending With',
+            searchKey: 'pendingOnUsers',
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false,
+            search: new FormControl(null)
+          },
+          {
+            key: 'Workflow progress',
+            searchKey: 'progress',
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false,
+            search: new FormControl(null)
+          }
+        ];
+        this.fetchDataAndPopulate()
+      }
+      if(val == 'Display via View Schema') {
+        this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
+          this.submoduleData = val;
+          let tableKeys = this.submoduleData?.viewSchema?.map((data, index) => {
+            return {
+              key: data?.displayAs,
+              field: data?.fieldKey,
+              searchKey: data.fieldKey,
+              isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
+              showUpIcon: true,
+              showDownIcon: false,
+              search: new FormControl(null)
+            }
+          });
+          this.tableHeaders = tableKeys;
+          this.tableHeaders.forEach(header => {
+            if (header.search) {
+              header.search.valueChanges.pipe(
+                debounceTime(400),
+                distinctUntilChanged(),
+                takeUntil(this.destroy$))
+              .subscribe(value => {
+                let payload: any
+                if(value) {
+                  if(header?.searchKey == "lastActivityPerformedBy") {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: {
+                          fullName: value
+                        }
+                      }
+                    }
+                  }
+                  else {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: value
+                      }
+                    }
+                  }
+                }
+                else {
+                  payload = {}
+                }
+                this.sendSearchCallForFilters(payload)
+              });
+            }
+          });
+        }));
       }
     })
   }
-
+  
   setWorkflowID(id: string) {
     setItem(StorageItem.workflowID, id)
   }
@@ -81,8 +218,75 @@ export class SubmissionTableComponent implements OnDestroy {
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
     .subscribe((val: any) => {
       this.submissionData = val;
-      this.tableDataValue = val?.results;
+      this.tableDataValue = val?.results?.map(data => {
+        return {
+          ...data,
+          isVisible: true
+        }
+      });
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+      this.tableHeaders.forEach(header => {
+        if (header.search) {
+          header.search.valueChanges.pipe(
+            debounceTime(400),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$))
+          .subscribe(value => {
+            let payload: any
+            if(value) {
+              if(header?.searchKey == "lastActivityPerformedBy") {
+                payload = { 
+                  summaryData: {
+                    [header?.searchKey]: {
+                      fullName: value
+                    }
+                  }
+                }
+              }
+              if(header?.searchKey == "progress") {
+                payload = {
+                  summaryData: {
+                    [header?.searchKey]: Number(value)
+                  }
+                }
+              }
+              else {
+                payload = {
+                  summaryData: {
+                    [header?.searchKey]: value
+                  }
+                }
+              }
+            }
+            else {
+              payload = {}
+            }
+            this.sendSearchCallForFilters(payload)
+          });
+        }
+      });
+    }))
+  }
+
+  sendSearchCallForFilters(payload: any) {
+    this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, undefined, payload)
+    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+      this.submissionData = val;
+      this.tableDataValue = val?.results?.map(data => {
+        return {
+          ...data,
+          isVisible: true
+        }
+      });
+      this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+    })
+  }
+
+  fetchSummaryDataForValues(index: number, key: any) {
+    this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+    .subscribe((val: any) => {
+      this.summaryData = val.results[index]?.summaryData;
+      this.bindValueFromSummaryData(this.summaryData, key)
     }))
   }
 
@@ -154,6 +358,14 @@ export class SubmissionTableComponent implements OnDestroy {
   getPendingOnUsers(value: any[]) {
     return value?.map(data => data?.fullName)
   }
+  
+  bindValueFromSummaryData(obj: any, headerKey: string) {
+    const matchingField = this.tableHeaders.find(data => data.field === headerKey);
+    if (matchingField) {
+      return obj[matchingField.field];
+    }
+    return "";
+  }
 
   sendFilterValue(value: any) {
     switch (value?.sortType) {
@@ -205,7 +417,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Sort by Latest':
+      case 'Sort by Ascending':
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'latest')
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -213,7 +425,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.tableDataValue = val?.results;
         })
         break
-      case 'Sort by Oldest':
+      case 'Sort by Descending':
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'oldest')
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -221,6 +433,23 @@ export class SubmissionTableComponent implements OnDestroy {
           this.tableDataValue = val?.results;
         })
       break
+    }
+  }
+
+  searchViaFilter(value: any) {
+    console.log(value)
+  }
+
+  sortFields(key: string, sortBy: string, index: number) {
+    console.log(key)
+    console.log(sortBy)
+    if(sortBy == 'asc') {
+      this.tableHeaders[index].showUpIcon = false;
+      this.tableHeaders[index].showDownIcon = true;
+    }
+    if(sortBy == 'desc') {
+      this.tableHeaders[index].showUpIcon = true;
+      this.tableHeaders[index].showDownIcon = false;
     }
   }
 

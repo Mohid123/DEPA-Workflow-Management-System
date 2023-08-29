@@ -45,7 +45,8 @@ export class DashboardService extends ApiService<any> {
    * Breadcrumb array to display
    */
   items: BreadCrumbs[] = [];
-  tempItems = new EventEmitter<BreadCrumbs[]>()
+  tempItems = new EventEmitter<BreadCrumbs[]>();
+  previousRoute: string
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
@@ -103,6 +104,11 @@ export class DashboardService extends ApiService<any> {
   validateModuleCode(codeValue: string): Observable<ApiResponse<any>> {
     let params = {code: codeValue}
     return this.get(`/subModules/validate`, params)
+  }
+
+  validateFormCode(codeValue: string): Observable<ApiResponse<any>> {
+    let params = {key: codeValue}
+    return this.get(`/forms/validate-key`, params)
   }
 
   getSubModuleByModule(moduleID: string): Observable<ApiResponse<any>> {
@@ -496,12 +502,12 @@ export class DashboardService extends ApiService<any> {
   deleteSubModule(id: string): Observable<ApiResponse<any>> {
     return this.delete(`/subModules/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        this.notif.displayNotification('Submodule removed successfully', 'Delete SubModule', TuiNotification.Success);
+        this.notif.displayNotification('App removed successfully', 'Delete App', TuiNotification.Success);
         return res.data
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to remove submodule', 'Delete SubModule', TuiNotification.Error);
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to remove app', 'Delete App', TuiNotification.Error);
         }
       }
     }))

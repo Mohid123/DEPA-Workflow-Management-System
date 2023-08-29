@@ -1,4 +1,5 @@
-<section class="py-5">
+<app-header></app-header>
+<section class="pb-5 pt-44">
   <tui-tabs tuiMobileTabs class="mx-2 lg:mx-20 md:mx-10 flex justify-center" [activeItemIndex]="activeIndex">
     <ng-container *ngFor="let item of items; let i = index">
       <button
@@ -17,6 +18,10 @@
     <div class="col-span-6">
       <label for="titleField">Title</label>
       <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">
+      <p class="text-red-500 text-xs mt-1"
+        *ngIf="formTitleControl?.hasError('codeExists')">
+        A form by this title already exists. Please select another name
+      </p>
     </div>
     <!-- <div class="col-span-6">
       <label for="titleField">Display as: </label>
@@ -30,6 +35,7 @@
   <div class="flex justify-center py-3">
     <button
       (click)="submitFormData()"
+      [disabled]="formTitleControl?.hasError('codeExists')"
       tuiButton
       type="button"
       size="m"
