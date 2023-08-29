@@ -126,19 +126,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }];
       }
     });
-
-    let formComps = JSON.parse(JSON.stringify(this.formComponents));
-    this.formKeys = formComps?.map(comp => {
-      return {
-        key: comp.key,
-        fields: comp.components?.map(value => {
-          return  {
-            fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-            displayAs: value.label
-          }
-        })
-      }
-    })
   }
 
   handleChangeOnSummarySchema(value: any) {
@@ -275,12 +262,36 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.file = this.submoduleFromLS?.file;
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
+              let formComps = JSON.parse(JSON.stringify(this.formComponents));
+              this.formKeys = formComps?.map(comp => {
+                return {
+                  key: comp.key,
+                  fields: comp.components?.map(value => {
+                    return  {
+                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
+                      displayAs: value.label
+                    }
+                  })
+                }
+              })
               this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
               this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
             }
             else {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
+              let formComps = JSON.parse(JSON.stringify(this.formComponents));
+              this.formKeys = formComps?.map(comp => {
+                return {
+                  key: comp.key,
+                  fields: comp.components?.map(value => {
+                    return  {
+                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
+                      displayAs: value.label
+                    }
+                  })
+                }
+              })
               this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
               this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
               const companyId = {

@@ -108,6 +108,20 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     })
     this.formComponents = this.transportService.formBuilderData.value;
     this.formTabs = this.formComponents.map(val => val.title);
+    let formComps = JSON.parse(JSON.stringify(this.formComponents));
+    this.formKeys = formComps?.map(comp => {
+      return {
+        key: comp.key,
+        fields: comp.components?.map(value => {
+          return  {
+            fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
+            displayAs: value.label
+          }
+        })
+      }
+    })
+    this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
+    this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
 
     this.getAllCompanies();
     // get users for email
@@ -150,20 +164,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }
     });
-    let formComps = JSON.parse(JSON.stringify(this.formComponents));
-    this.formKeys = formComps?.map(comp => {
-      return {
-        key: comp.key,
-        fields: comp.components?.map(value => {
-          return  {
-            fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-            displayAs: value.label
-          }
-        })
-      }
-    })
-    this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-    this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
   }
 
   handleChangeOnSummarySchema(value: any) {
