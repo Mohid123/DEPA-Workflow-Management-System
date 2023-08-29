@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
@@ -29,7 +29,9 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
     TuiTextfieldControllerModule,
     TuiSvgModule,
     TuiDataListWrapperModule,
-    TuiSelectModule
+    TuiSelectModule,
+    TuiHostedDropdownModule,
+    TuiHintModule
   ],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
@@ -45,7 +47,8 @@ export class SubmissionTableComponent implements OnDestroy {
   destroy$ = new Subject();
   dialogTitle: string;
   searchValue: FormControl = new FormControl();
-  items = ['Display default', 'Display via View Schema']
+  items = ['Display default', 'Display via View Schema'];
+  open = false;
 
   // filters
   filterMenuCompany =  [
