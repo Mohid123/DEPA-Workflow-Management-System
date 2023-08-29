@@ -61,7 +61,8 @@ export class UsersListComponent implements OnDestroy {
       data: {
         fullname: data?.fullName,
         email: data?.email,
-        role: data?.roles
+        role: data?.roles,
+        password: data?.password
       }
     }
   }
@@ -96,6 +97,7 @@ export class UsersListComponent implements OnDestroy {
         roles: this.auth.currentUserValue?.roles.includes('sysAdmin') ? undefined : this.formData?.value?.data?.role,
         fullName: this.formData?.value?.data?.fullname,
         email: this.formData?.value?.data?.email,
+        password: this.formData?.value?.data?.password
       }
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
@@ -110,7 +112,8 @@ export class UsersListComponent implements OnDestroy {
       const payload: any = {
         fullName: this.formData?.value?.data?.fullname,
         email: this.formData?.value?.data?.email,
-        roles: this.formData?.value?.data?.role
+        roles: this.formData?.value?.data?.role,
+        password: this.formData?.value?.data?.password
       }
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {

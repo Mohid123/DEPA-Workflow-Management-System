@@ -325,7 +325,20 @@ export const userAddForm = {
         "type": "select",
         "input": true,
         "multiple": true,
-    }
+    },
+    {
+      "label": "Password",
+      "tableView": false,
+      "validate": {
+          "required": true,
+          "pattern": "^(?=.*[0-9])(?=.*[a-zA-Z]).*$",
+          "minLength": 8
+      },
+      "key": "password",
+      "type": "password",
+      "input": true,
+      "protected": true
+  },
 ]
 }
 
@@ -435,7 +448,20 @@ export const userAddFormAdmin = {
           "type": "select",
           "input": true,
           "multiple": true,
-      }
+      },
+      {
+        "label": "Password",
+        "tableView": false,
+        "validate": {
+            "required": true,
+            "pattern": "^(?=.*[0-9])(?=.*[a-zA-Z]).*$",
+            "minLength": 8
+        },
+        "key": "password",
+        "type": "password",
+        "input": true,
+        "protected": true
+    },
   ]
 }
 

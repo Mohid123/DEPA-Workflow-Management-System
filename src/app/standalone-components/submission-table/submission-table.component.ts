@@ -164,7 +164,7 @@ export class SubmissionTableComponent implements OnDestroy {
             return {
               key: data?.displayAs,
               field: data?.fieldKey,
-              searchKey: data.fieldKey?.split('.')[1].trim(),
+              searchKey: data.fieldKey,
               isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
               showDownIcon: false,
@@ -235,11 +235,18 @@ export class SubmissionTableComponent implements OnDestroy {
             let payload: any
             if(value) {
               if(header?.searchKey == "lastActivityPerformedBy") {
-                payload = {
+                payload = { 
                   summaryData: {
                     [header?.searchKey]: {
                       fullName: value
                     }
+                  }
+                }
+              }
+              if(header?.searchKey == "progress") {
+                payload = {
+                  summaryData: {
+                    [header?.searchKey]: Number(value)
                   }
                 }
               }
