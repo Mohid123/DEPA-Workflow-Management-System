@@ -57,7 +57,7 @@
                 </ng-template>
               </th>
             </ng-container>
-            <th scope="col" class="px-6 py-3 text-sm">
+            <th scope="col" class="px-6 py-3 text-sm mb-1">
               Actions
             </th>
           </tr>
@@ -71,11 +71,11 @@
           <ng-template #showSubmissions>
             <ng-container *ngFor="let data of tableDataValue; let i = index; let first = first; let last = last; trackBy: trackByFn">
               <tr class="bg-white border-b border-gray-300">
-                <ng-container *ngFor="let header of tableHeaders; let j = index">
+                <ng-container *ngFor="let header of tableHeaders; let j = index; let headerFirst = first">
                   <ng-container *ngIf="header?.isVisible?.value">
                     <td
-                      [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''"
-                      class="px-4 py-4"
+                      [ngClass]="{'text-red-500': data?.submissionStatus == 6, 'px-4': headerFirst, 'px-2': !headerFirst}"
+                      class="py-4"
                     >
                       <!-- Handle different header keys individually -->
                       <ng-container [ngSwitch]="header.key">

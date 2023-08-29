@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, map, pluck } from 'rxjs';
+import { Observable, Subject, map, pluck, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -11,7 +11,7 @@ import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.util
   templateUrl: './submodule-list.component.html',
   styleUrls: ['./submodule-list.component.scss']
 })
-export class SubmodulesListComponent {
+export class SubmodulesListComponent implements OnDestroy {
   subModuleData: Observable<any>;
   moduleData: Observable<any>;
   moduleSlug: string;
@@ -22,6 +22,7 @@ export class SubmodulesListComponent {
   userRoleCheckAdmin: any;
   userRoleCheckUser: any;
   userRoleCheckSys: any;
+  destroy$ = new Subject()
 
   constructor(
     private dashBoardService: DashboardService,
@@ -40,12 +41,13 @@ export class SubmodulesListComponent {
         setItem(StorageItem.moduleSlug, name);
         this.moduleSlug = name;
         return name
-      })
+      }),
+      takeUntil(this.destroy$)
     ).subscribe(val => {
       this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(val, this.limit, this.page)
     });
 
-    this.activatedRoute.queryParams.subscribe(val => {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['moduleID']) {
         setItem(StorageItem.moduleID, val['moduleID']);
         this.transport.moduleID.next(val['moduleID']);
@@ -94,6 +96,11 @@ export class SubmodulesListComponent {
 
   checkIfAdminUserIsOnFirstStep(value: any[]) {
     return value?.map(data => data?.id)?.includes(this.currentUser?.id)
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
 }

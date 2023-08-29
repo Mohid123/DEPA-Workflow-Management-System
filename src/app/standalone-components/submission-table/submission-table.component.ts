@@ -116,7 +116,6 @@ export class SubmissionTableComponent implements OnDestroy {
     this.activatedRoute.queryParams.subscribe(val => {
       if(val['moduleID']) {
         this.submoduleId = val['moduleID']
-        this.fetchAndPopulate()
         this.fetchDataAndPopulate()
       }
     });
@@ -195,13 +194,7 @@ export class SubmissionTableComponent implements OnDestroy {
     //   })
     // }
   }
-
-  fetchAndPopulate() {
-    this.subscriptions.push(this.dashboard.getSubModuleByID(this.submoduleId).subscribe(val => {
-      this.submoduleData = val;
-    }));
-  }
-
+  
   setWorkflowID(id: string) {
     setItem(StorageItem.workflowID, id)
   }
@@ -224,7 +217,6 @@ export class SubmissionTableComponent implements OnDestroy {
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
     .subscribe((val: any) => {
       this.summaryData = val.results[index]?.summaryData;
-      debugger
       this.bindValueFromSummaryData(this.summaryData, key)
     }))
   }
