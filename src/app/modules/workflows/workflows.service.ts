@@ -28,7 +28,7 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
-  getSubmissionFromSubModule(id: string, limit: any, page: any, submissionStatus?: number, sortBy?: string): Observable<ApiResponse<any>> {
+  getSubmissionFromSubModule(id: string, limit: any, page: any, submissionStatus?: number, sortBy?: string, payload?: any): Observable<ApiResponse<any>> {
     const params = {
       subModuleId: id,
       limit: limit,
@@ -42,7 +42,7 @@ export class WorkflowsService extends ApiService<any> {
     if(params.sortBy == undefined) {
       delete params.sortBy
     }
-    return this.get(`/submissions`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+    return this.post(`/submissions`, payload || {}, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
       }
@@ -69,7 +69,7 @@ export class WorkflowsService extends ApiService<any> {
   }
 
   addNewSubmission(payload: any): Observable<ApiResponse<any>> {
-    return this.post(`/submissions`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+    return this.post(`/submissions/create`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         this.notif.displayNotification('Submission created successfully', 'Create Submission', TuiNotification.Success)
         return res.data

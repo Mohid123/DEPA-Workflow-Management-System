@@ -81,6 +81,7 @@ export class SubmissionTableComponent implements OnDestroy {
   tableHeaders: any[] = [
     {
       key: 'Submission Status',
+      searchKey: 'submissionStatus',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
@@ -88,6 +89,7 @@ export class SubmissionTableComponent implements OnDestroy {
     },
     {
       key: 'Last Activity By',
+      searchKey: 'lastActivityPerformedBy',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
@@ -95,6 +97,7 @@ export class SubmissionTableComponent implements OnDestroy {
     },
     {
       key: 'Now Pending With',
+      searchKey: 'pendingOnUsers',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
@@ -102,6 +105,7 @@ export class SubmissionTableComponent implements OnDestroy {
     },
     {
       key: 'Workflow progress',
+      searchKey: 'progress',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
@@ -133,6 +137,7 @@ export class SubmissionTableComponent implements OnDestroy {
         this.tableHeaders = [
           {
             key: 'Submission Status',
+            searchKey: 'submissionStatus',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
@@ -140,6 +145,7 @@ export class SubmissionTableComponent implements OnDestroy {
           },
           {
             key: 'Last Activity By',
+            searchKey: 'lastActivityPerformedBy',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
@@ -147,6 +153,7 @@ export class SubmissionTableComponent implements OnDestroy {
           },
           {
             key: 'Now Pending With',
+            searchKey: 'pendingOnUsers',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
@@ -154,6 +161,7 @@ export class SubmissionTableComponent implements OnDestroy {
           },
           {
             key: 'Workflow progress',
+            searchKey: 'progress',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
@@ -169,29 +177,39 @@ export class SubmissionTableComponent implements OnDestroy {
             return {
               key: data?.displayAs,
               field: data?.fieldKey,
+              searchKey: data.fieldKey?.split('.')[1].trim(),
               isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
               showDownIcon: false,
               search: new FormControl(null)
             }
           });
-          this.tableHeaders = tableKeys
+          this.tableHeaders = tableKeys;
+          this.tableHeaders.forEach(header => {
+            if (header.search) {
+              header.search.valueChanges.pipe(
+                debounceTime(400),
+                distinctUntilChanged(),
+                takeUntil(this.destroy$))
+              .subscribe(value => {
+                let payload: any
+                if(value) {
+                  payload = {
+                    summaryData: {
+                      [header?.searchKey]: value
+                    }
+                  }
+                }
+                else {
+                  payload = {}
+                }
+                this.sendSearchCallForFilters(payload)
+              });
+            }
+          });
         }));
       }
     })
-
-    //search via table header
-    this.tableHeaders.forEach(header => {
-      if (header.search) {
-        header.search.valueChanges.pipe(
-          debounceTime(400),
-          distinctUntilChanged(),
-          takeUntil(this.destroy$))
-        .subscribe(value => {
-          console.log(`Typed value for ${header.key}: ${value}`);
-        });
-      }
-    });
   }
 
   checkBoxPrevention(index: number, key: any) {
@@ -235,7 +253,43 @@ export class SubmissionTableComponent implements OnDestroy {
         }
       });
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+      this.tableHeaders.forEach(header => {
+        if (header.search) {
+          header.search.valueChanges.pipe(
+            debounceTime(400),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$))
+          .subscribe(value => {
+            let payload: any
+            if(value) {
+              payload = {
+                summaryData: {
+                  [header?.searchKey]: value
+                }
+              }
+            }
+            else {
+              payload = {}
+            }
+            this.sendSearchCallForFilters(payload)
+          });
+        }
+      });
     }))
+  }
+
+  sendSearchCallForFilters(payload: any) {
+    this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, undefined, payload)
+    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+      this.submissionData = val;
+      this.tableDataValue = val?.results?.map(data => {
+        return {
+          ...data,
+          isVisible: true
+        }
+      });
+      this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+    })
   }
 
   fetchSummaryDataForValues(index: number, key: any) {
