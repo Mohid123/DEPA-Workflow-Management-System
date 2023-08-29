@@ -49,14 +49,6 @@ export class SubmissionTableComponent implements OnDestroy {
   searchValue: FormControl = new FormControl();
   items = ['Display default', 'Display via View Schema'];
   open = false;
-
-  // filters
-  filterMenuCompany =  [
-    {name: 'Sort by Acsending', status: 'idle', icon: 'fa fa-sort-alpha-asc fa-lg'},
-    {name: 'Sort by Decsending', status: 'idle', icon: 'fa fa-sort-alpha-desc fa-lg'},
-    {name: 'Sort by Latest', status: 'idle', icon: 'fa fa-calendar-check-o fa-lg'},
-    {name: 'Sort by Oldest', status: 'idle', icon: 'fa fa-calendar-times-o fa-lg'}
-  ];
   statusMenu = [
     {name: 'Created', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
@@ -65,10 +57,6 @@ export class SubmissionTableComponent implements OnDestroy {
     {name: 'Cancelled', status: 'idle', icon: ''},
     {name: 'Deleted', status: 'idle', icon: ''}
   ];
-  sortItems = [
-    {name: 'Sort by Ascending', status: 'idle', icon: ''},
-    {name: 'Sort by Descending', status: 'idle', icon: ''}
-  ]
   page = 1;
   tableDataValue: any;
   limit: number = 7;
@@ -112,7 +100,6 @@ export class SubmissionTableComponent implements OnDestroy {
       search: new FormControl(null)
     }
   ];
-
   summaryData: any
 
   constructor(
@@ -194,9 +181,20 @@ export class SubmissionTableComponent implements OnDestroy {
               .subscribe(value => {
                 let payload: any
                 if(value) {
-                  payload = {
-                    summaryData: {
-                      [header?.searchKey]: value
+                  if(header?.searchKey == "lastActivityPerformedBy") {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: {
+                          fullName: value
+                        }
+                      }
+                    }
+                  }
+                  else {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: value
+                      }
                     }
                   }
                 }
@@ -210,32 +208,6 @@ export class SubmissionTableComponent implements OnDestroy {
         }));
       }
     })
-  }
-
-  checkBoxPrevention(index: number, key: any) {
-    this.fetchSummaryDataForValues(index, key);
-    // let checked = this.tableHeaders?.filter(data => data?.isVisible?.value == true)
-    // let nonChecked = this.tableHeaders?.filter(data => data?.isVisible?.value != true)
-    // if(checked.length >= 4) {
-    //   nonChecked = nonChecked?.map(data => data?.key);
-    //   this.tableHeaders = this.tableHeaders?.map(header => {
-    //     if(nonChecked?.includes(header?.key)) {
-    //       header?.isVisible?.disable();
-    //       return header
-    //     }
-    //     return header
-    //   })
-    // }
-    // else {
-    //   nonChecked = nonChecked?.map(data => data?.key);
-    //   this.tableHeaders = this.tableHeaders?.map(header => {
-    //     if(nonChecked?.includes(header?.key)) {
-    //       header?.isVisible?.enable();
-    //       return header
-    //     }
-    //     return header
-    //   })
-    // }
   }
   
   setWorkflowID(id: string) {
@@ -262,9 +234,20 @@ export class SubmissionTableComponent implements OnDestroy {
           .subscribe(value => {
             let payload: any
             if(value) {
-              payload = {
-                summaryData: {
-                  [header?.searchKey]: value
+              if(header?.searchKey == "lastActivityPerformedBy") {
+                payload = {
+                  summaryData: {
+                    [header?.searchKey]: {
+                      fullName: value
+                    }
+                  }
+                }
+              }
+              else {
+                payload = {
+                  summaryData: {
+                    [header?.searchKey]: value
+                  }
                 }
               }
             }
