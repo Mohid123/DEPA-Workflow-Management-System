@@ -181,8 +181,8 @@ export class SubmissionTableComponent implements OnDestroy {
               .subscribe(value => {
                 let payload: any
                 if(value) {
-                  if(header?.searchKey == "lastActivityPerformedBy") {
-                    payload = {
+                  if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
+                    payload = { 
                       summaryData: {
                         [header?.searchKey]: {
                           fullName: value
@@ -190,7 +190,14 @@ export class SubmissionTableComponent implements OnDestroy {
                       }
                     }
                   }
-                  else {
+                  if(header?.searchKey == "progress") {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: Number(value)
+                      }
+                    }
+                  }
+                  if(![["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)]) {
                     payload = {
                       summaryData: {
                         [header?.searchKey]: value
@@ -234,7 +241,7 @@ export class SubmissionTableComponent implements OnDestroy {
           .subscribe(value => {
             let payload: any
             if(value) {
-              if(header?.searchKey == "lastActivityPerformedBy") {
+              if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
                 payload = { 
                   summaryData: {
                     [header?.searchKey]: {
@@ -250,7 +257,7 @@ export class SubmissionTableComponent implements OnDestroy {
                   }
                 }
               }
-              else {
+              if(![["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)]) {
                 payload = {
                   summaryData: {
                     [header?.searchKey]: value
