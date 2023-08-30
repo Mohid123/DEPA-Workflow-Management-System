@@ -68,7 +68,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     viewSchema: new FormArray([
       new FormGroup({
         fieldKey: new FormControl([]),
-        displayAs: new FormControl('')
+        displayAs: new FormControl(''),
+        type: new FormControl('')
       })
     ])
   })
@@ -157,7 +158,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   addViewSchema() {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl([]),
-      displayAs: new FormControl('')
+      displayAs: new FormControl(''),
+      type: new FormControl('')
     });
     this.viewSchema.push(schemaForm)
   }
@@ -247,7 +249,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             response.viewSchema?.map(data => {
               const schemaForm = this.fb.group({
                 fieldKey: new FormControl([data?.fieldKey]),
-                displayAs: new FormControl(data?.displayAs)
+                displayAs: new FormControl(data?.displayAs),
+                type: new FormControl(data?.type)
               });
               this.schemaForm.controls['viewSchema'].push(schemaForm)
             })
@@ -269,7 +272,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                   fields: comp.components?.map(value => {
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-                      displayAs: value.label
+                      displayAs: value.label,
+                      type: value?.type
                     }
                   })
                 }
@@ -287,7 +291,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                   fields: comp.components?.map(value => {
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-                      displayAs: value.label
+                      displayAs: value.label,
+                      type: value?.type
                     }
                   })
                 }

@@ -73,6 +73,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+      type: "text",
       search: new FormControl(null)
     },
     {
@@ -81,6 +82,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+      type: "text",
       search: new FormControl(null)
     },
     {
@@ -89,6 +91,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+       type: "text",
       search: new FormControl(null)
     },
     {
@@ -97,6 +100,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+      type: "number",
       search: new FormControl(null)
     }
   ];
@@ -128,6 +132,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "text",
             search: new FormControl(null)
           },
           {
@@ -136,6 +141,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "text",
             search: new FormControl(null)
           },
           {
@@ -144,6 +150,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "text",
             search: new FormControl(null)
           },
           {
@@ -152,6 +159,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "number",
             search: new FormControl(null)
           }
         ];
@@ -164,10 +172,11 @@ export class SubmissionTableComponent implements OnDestroy {
             return {
               key: data?.displayAs,
               field: data?.fieldKey,
-              searchKey: data.fieldKey,
+              searchKey: data.fieldKey?.split('.')[1].trim(),
               isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
               showDownIcon: false,
+              type: data?.type,
               search: new FormControl(null)
             }
           });
@@ -197,12 +206,21 @@ export class SubmissionTableComponent implements OnDestroy {
                       }
                     }
                   }
-                  if(![["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)]) {
+                  if(!["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)) {
+                   if(header?.type == "number") {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: Number(value)
+                      }
+                    }
+                   }
+                   else {
                     payload = {
                       summaryData: {
                         [header?.searchKey]: value
                       }
                     }
+                   }
                   }
                 }
                 else {
@@ -257,7 +275,7 @@ export class SubmissionTableComponent implements OnDestroy {
                   }
                 }
               }
-              if(![["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)]) {
+              if(!["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)) {
                 payload = {
                   summaryData: {
                     [header?.searchKey]: value
@@ -369,7 +387,7 @@ export class SubmissionTableComponent implements OnDestroy {
   bindValueFromSummaryData(obj: any, headerKey: string) {
     const matchingField = this.tableHeaders.find(data => data.field === headerKey);
     if (matchingField) {
-      return obj[matchingField.field];
+      return obj[matchingField.field?.split('.')[0]][matchingField.field?.split('.')[1]];
     }
     return "";
   }
