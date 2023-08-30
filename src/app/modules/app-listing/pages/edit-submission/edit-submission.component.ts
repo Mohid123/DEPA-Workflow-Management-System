@@ -85,8 +85,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
     })
     this.dashboard.items = [...hierarchy, {
-      caption: getItem(StorageItem.formKey),
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}`
+      caption: getItem(StorageItem.formKey) || 'Edit Submission',
+      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Submission'}`
     }];
   }
 

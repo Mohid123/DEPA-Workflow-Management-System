@@ -469,10 +469,32 @@ export class SubmissionTableComponent implements OnDestroy {
     console.log(key)
     console.log(sortBy)
     if(sortBy == 'asc') {
+      this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, key)
+      .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+        this.submissionData = val;
+        this.tableDataValue = val?.results?.map(data => {
+          return {
+            ...data,
+            isVisible: true
+          }
+        });
+      this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+      })
       this.tableHeaders[index].showUpIcon = false;
       this.tableHeaders[index].showDownIcon = true;
     }
     if(sortBy == 'desc') {
+      this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, key)
+      .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+        this.submissionData = val;
+        this.tableDataValue = val?.results?.map(data => {
+          return {
+            ...data,
+            isVisible: true
+          }
+        });
+        this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+      })
       this.tableHeaders[index].showUpIcon = true;
       this.tableHeaders[index].showDownIcon = false;
     }
