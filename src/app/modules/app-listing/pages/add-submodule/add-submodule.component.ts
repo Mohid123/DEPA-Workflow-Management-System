@@ -74,7 +74,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     viewSchema: new FormArray([
       new FormGroup({
         fieldKey: new FormControl([]),
-        displayAs: new FormControl('')
+        displayAs: new FormControl(''),
+        type: new FormControl('')
       })
     ])
   })
@@ -115,13 +116,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         fields: comp.components?.map(value => {
           return  {
             fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-            displayAs: value.label
+            displayAs: value.label,
+            type: value.type
           }
         })
       }
     })
     this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-    this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
+    this.formKeysForViewSchema = this.formKeys?.map(val => val.key);
 
     this.getAllCompanies();
     // get users for email
@@ -186,6 +188,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       })
     }
+    this.formKeys?.flatMap(val => val.fields.map((data, index) => {
+      this.schemaForm.controls['viewSchema']?.at(index)?.get('type')?.setValue(data?.type)
+    }))
   }
 
   checkIfLabelIsUnique() {
@@ -203,7 +208,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   addViewSchema() {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
-      displayAs: new FormControl('')
+      displayAs: new FormControl(''),
+      type: new FormControl('')
     });
     this.viewSchema.push(schemaForm)
   }
@@ -539,6 +545,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   closeSchemaDialog() {
+    this.schemaForm.reset()
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 

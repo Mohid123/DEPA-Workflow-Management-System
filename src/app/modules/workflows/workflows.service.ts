@@ -33,14 +33,14 @@ export class WorkflowsService extends ApiService<any> {
       subModuleId: id,
       limit: limit,
       page: page,
-      sortBy: sortBy ? sortBy : undefined,
+      sortKey: sortBy ? sortBy : undefined,
       submissionStatus: submissionStatus ? submissionStatus : undefined
     }
     if(params.submissionStatus == undefined) {
       delete params.submissionStatus
     }
-    if(params.sortBy == undefined) {
-      delete params.sortBy
+    if(params.sortKey == undefined) {
+      delete params.sortKey
     }
     return this.post(`/submissions`, payload || {}, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

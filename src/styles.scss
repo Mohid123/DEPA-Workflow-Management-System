@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-$fa-font-path: '~font-awesome/fonts';
-@import 'font-awesome';
 @import "bootstrap/scss/bootstrap.scss";
+$fa-font-path: '~font-awesome/fonts';
+@import 'font-awesome/scss/font-awesome';
 
 @tailwind base;
 @tailwind components;
@@ -24,4 +24,8 @@ a {
 a:hover {
   text-decoration: none!important;
   color: inherit!important;
+}
+
+svg {
+  overflow: auto!important
 }

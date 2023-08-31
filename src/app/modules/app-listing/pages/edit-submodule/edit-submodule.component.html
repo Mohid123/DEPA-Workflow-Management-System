@@ -169,11 +169,11 @@
                   <option value="none">NONE</option>
                 </select>
               </div>
-              <div class="col-span-1 mt-8 inline-flex">
+              <div class="inline-flex col-span-1 mt-8">
                 <tui-tooltip
                   [content]="hint"
                   direction="right"
-                  class="mr-4 mt-1 -ml-2"
+                  class="mt-1 mr-4 -ml-2"
                 ></tui-tooltip>
                 <tui-badged-content
                   [contentTop]="
@@ -199,7 +199,7 @@
                     [item]="items[0]"
                   >
                     <div>Any (Create)</div>
-                    <div class="text-xxs font-extralight mt-1">Any user can create a new submission</div>
+                    <div class="mt-1 text-xxs font-extralight">Any user can create a new submission</div>
                   </tui-radio-labeled>
 
                   <tui-radio-labeled
@@ -208,7 +208,7 @@
                     [item]="items[1]"
                   >
                     <div>Any (Create & Modify)</div>
-                    <div class="text-xxs font-extralight mt-1">Any user can create a new submission and modify it's workflow</div>
+                    <div class="mt-1 text-xxs font-extralight">Any user can create a new submission and modify it's workflow</div>
                   </tui-radio-labeled>
 
                   <tui-radio-labeled
@@ -217,7 +217,7 @@
                     [item]="items[2]"
                   >
                     <div>Disabled</div>
-                    <div class="text-xxs font-extralight mt-1">Only Admin users can create and modify submissions</div>
+                    <div class="mt-1 text-xxs font-extralight">Only Admin users can create and modify submissions</div>
                   </tui-radio-labeled>
                 </div>
               </div>
@@ -246,11 +246,11 @@
                   <option value="none">NONE</option>
                 </select>
               </div>
-              <div class="col-span-1 mt-8 inline-flex">
+              <div class="inline-flex col-span-1 mt-8">
                 <tui-tooltip
                   [content]="hint"
                   direction="right"
-                  class="mr-4 mt-1 -ml-2"
+                  class="mt-1 mr-4 -ml-2"
                 ></tui-tooltip>
                 <tui-badged-content
                   [contentTop]="
@@ -310,7 +310,7 @@
             </nav>
             <ng-container *ngFor="let form of formComponents; let i = index;">
               <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-                <div class="flex justify-end gap-x-2 relative">
+                <div class="relative flex justify-end gap-x-2">
                   <div class="absolute z-10 flex justify-end -top-1 right-1 gap-x-2">
                     <a (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 pt-1 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
                       <span>Summary & View Schema</span>
@@ -364,7 +364,7 @@
         (click)="saveSubModule()"
         [showLoader]="(isCreatingSubModule | async) == true"
       >
-        Edit
+        Update
       </button>
       <button
         tuiButton

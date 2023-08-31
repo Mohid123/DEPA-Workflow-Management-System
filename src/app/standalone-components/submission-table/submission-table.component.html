@@ -53,8 +53,10 @@
                 </filter>
               </ng-container>
               <ng-template #otherFilters>
-                <tui-svg *ngIf="data?.showUpIcon" new src="tuiIconArrowUp" (click)="sortFields(data?.key, 'asc', j)" class="cursor-pointer -ml-2 -mt-1"></tui-svg>
-                <tui-svg *ngIf="data?.showDownIcon" new src="tuiIconArrowDown" (click)="sortFields(data?.key, 'desc', j)" class="cursor-pointer -ml-2 -mt-1"></tui-svg>
+                <ng-container *ngIf="data?.key != 'Now Pending With'">
+                  <tui-svg *ngIf="data?.showUpIcon" new src="tuiIconArrowUp" (click)="sortFields(data?.searchKey, 'asc', j)" class="cursor-pointer -ml-2 -mt-1"></tui-svg>
+                  <tui-svg *ngIf="data?.showDownIcon" new src="tuiIconArrowDown" (click)="sortFields(data?.searchKey, 'desc', j)" class="cursor-pointer -ml-2 -mt-1"></tui-svg>
+                </ng-container>
                 <br>
                 <input type="text" class="form-control" [formControl]="data?.search">
               </ng-template>
@@ -245,7 +247,7 @@
     ></tui-checkbox>
     <p class="capitalize">{{topData?.key}}</p>
   </div>
-  <p class="text-xxs mt-2 invisible"><span class="underline">Note</span>: Select upto 4 keys to be displayed simultaneously for a better </p> 
+  <p class="text-xxs mt-2 invisible"><span class="underline">Note</span>: Select upto 4 keys to be displayed simultaneously for a better </p>
 </div>
 </ng-template>
 

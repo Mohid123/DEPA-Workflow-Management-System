@@ -73,6 +73,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+      type: "text",
       search: new FormControl(null)
     },
     {
@@ -81,6 +82,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+      type: "text",
       search: new FormControl(null)
     },
     {
@@ -89,6 +91,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+       type: "text",
       search: new FormControl(null)
     },
     {
@@ -97,6 +100,7 @@ export class SubmissionTableComponent implements OnDestroy {
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
       showDownIcon: false,
+      type: "number",
       search: new FormControl(null)
     }
   ];
@@ -128,6 +132,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "text",
             search: new FormControl(null)
           },
           {
@@ -136,6 +141,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "text",
             search: new FormControl(null)
           },
           {
@@ -144,6 +150,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "text",
             search: new FormControl(null)
           },
           {
@@ -152,6 +159,7 @@ export class SubmissionTableComponent implements OnDestroy {
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
             showDownIcon: false,
+            type: "number",
             search: new FormControl(null)
           }
         ];
@@ -164,10 +172,11 @@ export class SubmissionTableComponent implements OnDestroy {
             return {
               key: data?.displayAs,
               field: data?.fieldKey,
-              searchKey: data.fieldKey,
+              searchKey: data.fieldKey?.split('.')[1].trim(),
               isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
               showDownIcon: false,
+              type: data?.type,
               search: new FormControl(null)
             }
           });
@@ -181,7 +190,7 @@ export class SubmissionTableComponent implements OnDestroy {
               .subscribe(value => {
                 let payload: any
                 if(value) {
-                  if(header?.searchKey == "lastActivityPerformedBy") {
+                  if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
                     payload = {
                       summaryData: {
                         [header?.searchKey]: {
@@ -190,12 +199,28 @@ export class SubmissionTableComponent implements OnDestroy {
                       }
                     }
                   }
-                  else {
+                  if(header?.searchKey == "progress") {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: Number(value)
+                      }
+                    }
+                  }
+                  if(!["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)) {
+                   if(header?.type == "number") {
+                    payload = {
+                      summaryData: {
+                        [header?.searchKey]: Number(value)
+                      }
+                    }
+                   }
+                   else {
                     payload = {
                       summaryData: {
                         [header?.searchKey]: value
                       }
                     }
+                   }
                   }
                 }
                 else {
@@ -209,7 +234,7 @@ export class SubmissionTableComponent implements OnDestroy {
       }
     })
   }
-  
+
   setWorkflowID(id: string) {
     setItem(StorageItem.workflowID, id)
   }
@@ -234,8 +259,8 @@ export class SubmissionTableComponent implements OnDestroy {
           .subscribe(value => {
             let payload: any
             if(value) {
-              if(header?.searchKey == "lastActivityPerformedBy") {
-                payload = { 
+              if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
+                payload = {
                   summaryData: {
                     [header?.searchKey]: {
                       fullName: value
@@ -250,7 +275,7 @@ export class SubmissionTableComponent implements OnDestroy {
                   }
                 }
               }
-              else {
+              if(!["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)) {
                 payload = {
                   summaryData: {
                     [header?.searchKey]: value
@@ -358,11 +383,11 @@ export class SubmissionTableComponent implements OnDestroy {
   getPendingOnUsers(value: any[]) {
     return value?.map(data => data?.fullName)
   }
-  
+
   bindValueFromSummaryData(obj: any, headerKey: string) {
     const matchingField = this.tableHeaders.find(data => data.field === headerKey);
     if (matchingField) {
-      return obj[matchingField.field];
+      return obj[matchingField.field?.split('.')[0]][matchingField.field?.split('.')[1]];
     }
     return "";
   }
@@ -444,10 +469,32 @@ export class SubmissionTableComponent implements OnDestroy {
     console.log(key)
     console.log(sortBy)
     if(sortBy == 'asc') {
+      this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, key)
+      .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+        this.submissionData = val;
+        this.tableDataValue = val?.results?.map(data => {
+          return {
+            ...data,
+            isVisible: true
+          }
+        });
+      this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+      })
       this.tableHeaders[index].showUpIcon = false;
       this.tableHeaders[index].showDownIcon = true;
     }
     if(sortBy == 'desc') {
+      this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, key)
+      .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+        this.submissionData = val;
+        this.tableDataValue = val?.results?.map(data => {
+          return {
+            ...data,
+            isVisible: true
+          }
+        });
+        this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
+      })
       this.tableHeaders[index].showUpIcon = true;
       this.tableHeaders[index].showDownIcon = false;
     }
