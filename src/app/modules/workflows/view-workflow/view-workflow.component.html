@@ -243,7 +243,7 @@
                               user?.status == 'inProgress' &&
                               workflowData?.submissionStatus !== 5 &&
                               workflowData?.status !== 2
-                            ) || 
+                            ) ||
                             (
                               userApprovedCheckResult(approvers?.name) == false &&
                               user?.status == 'inProgress' &&
@@ -354,7 +354,7 @@
       size="m"
       (click)="sendApproveOrRejectDecisionData();"
     >
-      Send
+      Submit
     </button>
     <button
       tuiButton
