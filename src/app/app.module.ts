@@ -35,7 +35,7 @@ import { TuiPreviewModule } from "@taiga-ui/addon-preview";
       TuiNotificationModule
 ],
   providers: [
-    {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},
+    // {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},
     {provide: FormioAppConfig, useValue: AppConfig},
   ],
   bootstrap: [AppComponent]
