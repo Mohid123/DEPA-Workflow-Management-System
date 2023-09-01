@@ -13,6 +13,7 @@ import { FormKeyValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { DialogTemplate } from '../../templates/permission-template.component';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   templateUrl: './edit-form.component.html',
@@ -196,7 +197,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     this.form?.components?.map((val: any) => {
       if(val?.label && val?.label === 'Upload') {
         val.storage = "url";
-        val.url = 'http://localhost:3000/v1/upload';
+        val.url = `${environment.apiUrl}/upload`;
         val.uploadEnabled = true;
         val.input = true;
         val.multiple = true;
@@ -206,7 +207,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
        return val?.components?.map(form => {
           if(form?.label && form?.label === 'Upload')
             form.storage = "url";
-            form.url = 'http://localhost:3000/v1/upload';
+            form.url = `${environment.apiUrl}/upload`
             form.uploadEnabled = true;
             form.input = true;
             form.multiple = true;

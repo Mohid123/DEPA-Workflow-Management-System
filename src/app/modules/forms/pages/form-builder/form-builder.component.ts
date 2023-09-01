@@ -157,7 +157,7 @@ export class FormBuilderComponent implements OnInit {
     this.form?.components?.map((val: any) => {
       if(val?.label && val?.label === 'Upload') {
         val.storage = "url";
-        val.url = 'http://localhost:3000/v1/upload';
+        val.url = `${environment.apiUrl}/upload`;
         val.uploadEnabled = true;
         val.input = true;
         val.multiple = true;
@@ -167,7 +167,7 @@ export class FormBuilderComponent implements OnInit {
        return val?.components?.map(form => {
           if(form?.label && form?.label === 'Upload')
             form.storage = "url";
-            form.url = 'http://localhost:3000/v1/upload';
+            form.url = `${environment.apiUrl}/upload`;
             form.uploadEnabled = true;
             form.input = true;
             form.multiple = true;
