@@ -75,10 +75,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       new FormGroup({
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
-        type: new FormControl('')
+        type: new FormControl(''),
+        formKey: new FormControl(''),
       })
     ])
-  })
+  });
+  delIndex: number
 
   constructor(
     private fb: FormBuilder,
@@ -190,6 +192,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
     this.formKeys?.flatMap(val => val.fields.map((data, index) => {
       this.schemaForm.controls['viewSchema']?.at(index)?.get('type')?.setValue(data?.type)
+      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
     }))
   }
 
@@ -209,7 +212,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
       displayAs: new FormControl(''),
-      type: new FormControl('')
+      type: new FormControl(''),
+      formKey: new FormControl('')
     });
     this.viewSchema.push(schemaForm)
   }
@@ -527,8 +531,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.router.navigate(['/forms/form-builder']);
   }
 
-  deleteForm(index: number) {
-    this.formComponents.splice(index, 1)
+  deleteFormDialog(content: any, index: number) {
+    this.delIndex = index;
+    this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).pipe(takeUntil(this.destroy$)).subscribe()
+  }
+
+  deleteForm() {
+    this.formComponents.splice(this.delIndex, 1)
   }
 
   changeLanguage(lang: string) {
@@ -545,6 +557,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     else {
       return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)
     }
+    console.log(this.schemaForm.value)
   }
 
   closeSchemaDialog() {
@@ -563,7 +576,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }
     }
     let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      value.fieldKey = value.fieldKey[0];
+      value.fieldKey = value.fieldKey[0]?.split('.')[1].trim();
       return value
     })
     let payload: any = {

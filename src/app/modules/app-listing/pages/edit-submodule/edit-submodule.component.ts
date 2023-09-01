@@ -69,10 +69,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       new FormGroup({
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
-        type: new FormControl('')
+        type: new FormControl(''),
+        formKey: new FormControl('')
       })
     ])
-  })
+  });
+  delFormId: string
 
   constructor(
     private fb: FormBuilder,
@@ -149,6 +151,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     }
     this.formKeys?.flatMap(val => val.fields.map((data, index) => {
       this.schemaForm.controls['viewSchema']?.at(index)?.get('type')?.setValue(data?.type)
+      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
     }))
   }
 
@@ -160,7 +163,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl([]),
       displayAs: new FormControl(''),
-      type: new FormControl('')
+      type: new FormControl(''),
+      formKey: new FormControl('')
+      
     });
     this.viewSchema.push(schemaForm)
   }
@@ -251,7 +256,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               const schemaForm = this.fb.group({
                 fieldKey: new FormControl([data?.fieldKey]),
                 displayAs: new FormControl(data?.displayAs),
-                type: new FormControl(data?.type)
+                type: new FormControl(data?.type),
+                formKey: new FormControl(data?.formKey),
               });
               this.schemaForm.controls['viewSchema'].push(schemaForm)
             })
@@ -274,7 +280,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
                       displayAs: value.label,
-                      type: value?.type
+                      type: value?.type,
+                      formKey: value?.formKey
                     }
                   })
                 }
@@ -293,7 +300,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
                       displayAs: value.label,
-                      type: value?.type
+                      type: value?.type,
+                      formKey: value?.formKey
                     }
                   })
                 }
@@ -486,8 +494,16 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
-  deleteForm(id: string) {
-    this.formService.deleteForm(id).pipe(takeUntil(this.destroy$))
+  deleteFormDialog(content: any, id: string) {
+    this.delFormId = id;
+    this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).pipe(takeUntil(this.destroy$)).subscribe()
+  }
+
+  deleteForm() {
+    this.formService.deleteForm(this.delFormId).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       this.getSubmoduleByIDForEdit();
     })
@@ -625,7 +641,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       this.isCreatingSubModule.next(true)
     }
     let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      value.fieldKey = value.fieldKey[0];
+      value.fieldKey = value.fieldKey[0]?.split('.')[1].trim();
       return value
     })
     debugger
@@ -653,6 +669,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
       accessType: this.accessTypeValue?.value?.name
     }
+    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})

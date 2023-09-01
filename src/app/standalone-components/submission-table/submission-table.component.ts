@@ -172,7 +172,8 @@ export class SubmissionTableComponent implements OnDestroy {
             return {
               key: data?.displayAs,
               field: data?.fieldKey,
-              searchKey: data.fieldKey?.split('.')[1].trim(),
+              formKey: data?.formKey,
+              searchKey: data.fieldKey,
               isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
               showDownIcon: false,
@@ -386,7 +387,7 @@ export class SubmissionTableComponent implements OnDestroy {
   bindValueFromSummaryData(obj: any, headerKey: string) {
     const matchingField = this.tableHeaders.find(data => data.field === headerKey);
     if (matchingField) {
-      return obj[matchingField.field?.split('.')[0]][matchingField.field?.split('.')[1]];
+      return obj[matchingField.formKey][matchingField.field]
     }
     return "";
   }
@@ -465,8 +466,6 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   sortFields(key: string, sortBy: string, index: number) {
-    console.log(key)
-    console.log(sortBy)
     if(sortBy == 'asc') {
       this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, key)
       .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {

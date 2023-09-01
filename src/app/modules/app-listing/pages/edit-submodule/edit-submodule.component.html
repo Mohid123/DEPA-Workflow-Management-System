@@ -345,7 +345,7 @@
                     <a (click)="sendFormForEdit(i, form?.id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
                       <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
                     </a>
-                    <a (click)="deleteForm(form?.id)" class="rounded-md cursor-pointer">
+                    <a (click)="deleteFormDialog(deltemplate, form?.id)" class="rounded-md cursor-pointer">
                       <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
                     </a>
                   </div>
@@ -541,6 +541,32 @@
       appearance="accent"
       (click)="closeSchemaDialog()"
     >
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #deltemplate let-observer>
+  <p class="pb-2 text-xl font-semibold text-center border-b border-gray-400">Delete Form</p>
+  <p class="mt-4 text-base font-medium text-center">Are you sure you want to delete this form?</p>
+  <div class="flex justify-center mt-4">
+    <button
+      tuiButton
+      appearance="secondary-destructive"
+      type="button"
+      size="m"
+      class="mx-3"
+      (click)="deleteForm(); observer.complete()"
+      >
+      Confirm
+    </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      (click)="observer.complete()"
+      >
       Cancel
     </button>
   </div>
