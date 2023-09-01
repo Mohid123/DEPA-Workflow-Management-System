@@ -195,39 +195,58 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
     this.form?.components?.map((val: any) => {
-      if(val?.label && val?.label === 'Upload') {
+    
+      if (val?.type && val?.type === 'file') {
         val.storage = "url";
         val.url = `${environment.apiUrl}/upload`;
         val.uploadEnabled = true;
         val.input = true;
         val.multiple = true;
-        return val
+        return val;
       }
-      if(val?.label == 'Data Grid' || val?.label == 'Data Map' || val?.label == 'Panel') {
-       return val?.components?.map(form => {
-          if(form?.label && form?.label === 'Upload')
+    
+      if (val?.type && (val?.type == 'datagrid' || val?.type == 'datamap')) {
+        return val?.components?.map(form => {
+          if (form?.type && form?.type === 'Upload') {
             form.storage = "url";
-            form.url = `${environment.apiUrl}/upload`
+            form.url = `${environment.apiUrl}/upload`;
             form.uploadEnabled = true;
             form.input = true;
             form.multiple = true;
-            return form
-        })
+          }
+          return form;
+        });
       }
-      if(val?.label == 'Columns') {
+    
+      if (val?.type && val?.type == 'panel') {
+        return val?.components?.map(data => {
+          if(data?.type && data?.type == 'file') {
+            val.storage = "url";
+            val.url = `${environment.apiUrl}/upload`;
+            val.uploadEnabled = true;
+            val.input = true;
+            val.multiple = true;
+            return val;
+          }
+        });
+      }
+    
+      if (val?.type == 'columns') {
         return val?.columns?.map(components => {
           return components?.components?.map(form => {
-            if(form?.label && form?.label === 'Upload')
+            if (form?.type && form?.type === 'Upload') {
               form.storage = "url";
               form.url = `${environment.apiUrl}/upload`;
               form.uploadEnabled = true;
               form.input = true;
               form.multiple = true;
-              return form
-          })
-        })
+            }
+            return form;
+          });
+        });
       }
-      return val
+    
+      return val;
     });
     this.addCustomEventTrigger()
   }
