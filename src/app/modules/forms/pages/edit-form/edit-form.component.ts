@@ -203,7 +203,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         val.multiple = true;
         return val
       }
-      if(val?.label == 'Data Grid') {
+      if(val?.label == 'Data Grid' || val?.label == 'Data Map') {
        return val?.components?.map(form => {
           if(form?.label && form?.label === 'Upload')
             form.storage = "url";
@@ -212,6 +212,19 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             form.input = true;
             form.multiple = true;
             return form
+        })
+      }
+      if(val?.label == 'Columns') {
+        return val?.columns?.map(components => {
+          return components?.components?.map(form => {
+            if(form?.label && form?.label === 'Upload')
+              form.storage = "url";
+              form.url = `${environment.apiUrl}/upload`;
+              form.uploadEnabled = true;
+              form.input = true;
+              form.multiple = true;
+              return form
+          })
         })
       }
       return val
