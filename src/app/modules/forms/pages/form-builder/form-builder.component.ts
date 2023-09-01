@@ -163,7 +163,7 @@ export class FormBuilderComponent implements OnInit {
         val.multiple = true;
         return val
       }
-      if(val?.label == 'Data Grid') {
+      if(val?.label == 'Data Grid' || val?.label == 'Data Map') {
        return val?.components?.map(form => {
           if(form?.label && form?.label === 'Upload')
             form.storage = "url";
@@ -174,14 +174,29 @@ export class FormBuilderComponent implements OnInit {
             return form
         })
       }
+      if(val?.label == 'Columns') {
+        return val?.columns?.map(components => {
+          return components?.components?.map(form => {
+            if(form?.label && form?.label === 'Upload')
+              form.storage = "url";
+              form.url = `${environment.apiUrl}/upload`;
+              form.uploadEnabled = true;
+              form.input = true;
+              form.multiple = true;
+              return form
+          })
+        })
+      }
       return val
     });
     this.addCustomEventTrigger()
   }
 
   addCustomEventTrigger() {
+    // debugger
     let checkIfExists = document.getElementById('custom-div');
     if(!checkIfExists) {
+      debugger
       let componentMenu = document.getElementsByClassName('component-btn-group');
       Array.from(componentMenu).forEach((value, index) => {
         let tooltip = document.createElement('div');
