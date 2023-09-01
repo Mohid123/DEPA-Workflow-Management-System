@@ -59,7 +59,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private location: Location
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheck = this.auth.checkIfRolesExist
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.subModuleId = val['id'];
@@ -225,7 +225,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
-  sendFormForEdit(i: number, formID: string) {
+  sendFormForEdit(i: number, formID: string, key: string) {
     if(formID) {
       let approvers = this.workflows?.value?.flatMap(data => {
         return data?.approverIds?.map(approver => {
@@ -238,6 +238,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       if(approvers.length == 0) {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
+      setItem(StorageItem.formKey, key)
       setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }

@@ -89,37 +89,43 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      console.log(this.dashboard.items)
       const hierarchy = getItem(StorageItem.navHierarchy) || [];
       if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('edit-module')) {
         hierarchy.forEach(val => {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
+        
         if(Object.keys(val).length == 0) {
+          
           this.dashboard.items = [...hierarchy,
             {
-              caption: 'Edit App',
-              routerLink: ``
+              caption: getItem(StorageItem.editmoduleSlug),
+              routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
             },
             {
-              caption: 'Edit Form',
-              routerLink: `/forms/edit-form`
+              caption: getItem(StorageItem.formKey) || 'Add Form',
+              routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
             }
           ];
         }
         else {
+          
           this.dashboard.items = [
+            ...hierarchy,
             {
-              caption: 'Edit App',
-              routerLink: ``
+              caption: getItem(StorageItem.editmoduleSlug),
+              routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
             },
             {
-              caption: 'Edit Form',
-              routerLink: `/forms/edit-form`
+              caption: getItem(StorageItem.formKey) || 'Edit Form',
+              routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
             }
           ];
         }
       }
       else if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('add-submission')) {
+        
         this.dashboard.items = [
           ...hierarchy,
           {
@@ -127,21 +133,18 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
           },
           {
-            caption: 'Edit Form',
-            routerLink: `/forms/edit-form`
+            caption: getItem(StorageItem.formKey) || 'Edit Form',
+            routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
           }
         ];
       }
       else {
+        
         this.dashboard.items = [
           ...hierarchy,
           {
-            caption: 'Edit App',
-            routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
-          },
-          {
-            caption: 'Edit Form',
-            routerLink: `/forms/edit-form`
+            caption: getItem(StorageItem.formKey) || 'Edit Form',
+            routerLink: `/forms/edit-form?id=${this.editFormID}`
           }
         ];
       }

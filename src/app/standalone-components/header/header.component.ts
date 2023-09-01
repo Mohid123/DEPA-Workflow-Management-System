@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { CommonModule, Location, NgOptimizedImage } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiAvatarModule, TuiBreadcrumbsModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -22,11 +22,13 @@ export class HeaderComponent implements OnDestroy {
   currentUser: any;
   open = false;
   userRoleCheck: any;
+  path: any;
 
-  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location) {
+  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location, private ac: ActivatedRoute) {
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
+    console.log(this.dashboardService.items)
   }
 
   checkCurrentRouteIncludes() {
@@ -46,7 +48,10 @@ export class HeaderComponent implements OnDestroy {
   }
 
   finalQueryParams() {
-    return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+    if(this.router.url.includes('add-submission') || this.router.url.includes('edit-submission') || this.router.url.includes('add-module')) {
+      return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+    }
+    return null
   }
   
   goBack() {

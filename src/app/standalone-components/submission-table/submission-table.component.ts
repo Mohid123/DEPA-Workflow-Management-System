@@ -235,8 +235,8 @@ export class SubmissionTableComponent implements OnDestroy {
     })
   }
   
-  setWorkflowID(id: string) {
-    setItem(StorageItem.workflowID, id)
+  setWorkflowID(key: string) {
+    setItem(StorageItem.formKey, key)
   }
 
   fetchDataAndPopulate() {
@@ -254,8 +254,7 @@ export class SubmissionTableComponent implements OnDestroy {
         if (header.search) {
           header.search.valueChanges.pipe(
             debounceTime(400),
-            distinctUntilChanged(),
-            takeUntil(this.destroy$))
+            distinctUntilChanged())
           .subscribe(value => {
             let payload: any
             if(value) {

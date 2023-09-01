@@ -315,7 +315,7 @@
                     <a (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 pt-1 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
                       <span>Summary & View Schema</span>
                     </a>
-                    <a (click)="sendFormForEdit(i, form?.id)" class="rounded-md cursor-pointer" title="Edit Form">
+                    <a (click)="sendFormForEdit(i, form?.id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
                       <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
                     </a>
                     <a (click)="deleteForm(form?.id)" class="rounded-md cursor-pointer">

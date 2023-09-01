@@ -116,16 +116,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(Object.keys(val).length == 0) {
-        const hierarchy = getItem(StorageItem.navHierarchy);
-        hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
-        })
-        this.dashboard.items = [...hierarchy, {
-          caption: 'Edit App',
-          routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
-        }];
-      }
+      const hierarchy = getItem(StorageItem.navHierarchy) || [];
+      hierarchy.forEach(val => {
+        val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+      })
+      this.dashboard.items = [...hierarchy, {
+        caption: getItem(StorageItem.editmoduleSlug),
+        routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
+      }];
     });
   }
 
@@ -454,7 +452,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     .subscribe());
   }
 
-  sendFormForEdit(i: number, formID: string) {
+  sendFormForEdit(i: number, formID: string, key: string) {
     let approvers = this.workflows?.value?.flatMap(data => {
       return data?.approverIds?.map(approver => {
         return {
@@ -467,6 +465,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
     setItem(StorageItem.approvers, approvers)
+    setItem(StorageItem.formKey, key)
     if(formID) {
       setItem(StorageItem.formEdit, true);
       this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
