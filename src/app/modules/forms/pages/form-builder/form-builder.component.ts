@@ -163,7 +163,7 @@ export class FormBuilderComponent implements OnInit {
         val.multiple = true;
         return val
       }
-      if(val?.label == 'Data Grid' || val?.label == 'Data Map') {
+      if(val?.label == 'Data Grid' || val?.label == 'Data Map' || val?.label == 'Panel') {
        return val?.components?.map(form => {
           if(form?.label && form?.label === 'Upload')
             form.storage = "url";
@@ -187,6 +187,9 @@ export class FormBuilderComponent implements OnInit {
           })
         })
       }
+      if(val?.label == 'Panel') {
+        console.log(val)
+      }
       return val
     });
     this.addCustomEventTrigger()
@@ -196,7 +199,7 @@ export class FormBuilderComponent implements OnInit {
     // debugger
     let checkIfExists = document.getElementById('custom-div');
     if(!checkIfExists) {
-      debugger
+      // debugger
       let componentMenu = document.getElementsByClassName('component-btn-group');
       Array.from(componentMenu).forEach((value, index) => {
         let tooltip = document.createElement('div');
