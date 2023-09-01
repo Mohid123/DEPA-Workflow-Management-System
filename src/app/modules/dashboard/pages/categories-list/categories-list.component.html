@@ -124,6 +124,6 @@
     [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
     (click)="editOrAddCategory();"
     >
-    Submit
+    {{categoryId ? 'Update': 'Submit'}}
     </button>
 </ng-template>
