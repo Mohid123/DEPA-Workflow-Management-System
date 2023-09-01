@@ -47,7 +47,7 @@ export class HeaderComponent implements OnDestroy {
   }
 
   finalQueryParams() {
-    if(this.router.url.includes('add-submission') || this.router.url.includes('edit-submission') || this.router.url.includes('add-module')) {
+    if(this.router.url.includes('add-submission') || this.router.url.includes('edit-submission') || this.router.url.includes('add-module') || this.router.url.includes(getItem(StorageItem.formID))) {
       return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
     }
     return null

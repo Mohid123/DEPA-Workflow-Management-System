@@ -11,6 +11,7 @@ import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import { convertStringToKeyValuePairs } from 'src/core/utils/utility-functions';
 
 @Component({
   selector: 'app-submission-table',
@@ -209,16 +210,18 @@ export class SubmissionTableComponent implements OnDestroy {
                   }
                   if(!["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)) {
                    if(header?.type == "number") {
+                    let key = convertStringToKeyValuePairs(header?.searchKey, Number(value))
                     payload = {
                       summaryData: {
-                        [header?.searchKey]: Number(value)
+                        key
                       }
                     }
                    }
                    else {
+                    let key = convertStringToKeyValuePairs(header?.searchKey, value)
                     payload = {
                       summaryData: {
-                        [header?.searchKey]: value
+                        key
                       }
                     }
                    }
@@ -365,6 +368,7 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   checkIfUserisPartofWorkflow(data: any) {
+    console.log(data)
     return data?.map(val => val?._id)?.includes(this.currentUser?.id)
   }
 
@@ -519,6 +523,7 @@ export class SubmissionTableComponent implements OnDestroy {
 
   editWorkflowRoute(id: string, key: string) {
     setItem(StorageItem.formKey, key)
+    setItem(StorageItem.formID, id)
     this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
   }
 

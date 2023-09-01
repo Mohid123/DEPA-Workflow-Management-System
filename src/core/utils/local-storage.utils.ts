@@ -26,6 +26,7 @@ export enum StorageItem {
   approvers = 'App/approvers',
   editmoduleSlug = 'App/editmoduleSlug',
   editmoduleId = 'App/editmoduleId',
+  formID = 'App/formID'
 }
 
 /**

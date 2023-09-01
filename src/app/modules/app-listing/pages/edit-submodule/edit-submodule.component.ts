@@ -118,14 +118,23 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      const hierarchy = getItem(StorageItem.navHierarchy) || [];
-      hierarchy.forEach(val => {
-        val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
-      })
-      this.dashboard.items = getUniqueListBy([...hierarchy, {
-        caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
-        routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
-      }], 'caption')
+      if(Object.keys(val).length == 0) {
+        const hierarchy = getItem(StorageItem.navHierarchy) || [];
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
+        this.dashboard.items = getUniqueListBy([...hierarchy, {
+          caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
+          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
+        }], 'caption')
+      }
+      else {
+        const hierarchy = getItem(StorageItem.navHierarchy) || [];
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
+        this.dashboard.items = [...hierarchy]
+      }
     });
   }
 
@@ -276,12 +285,20 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formKeys = formComps?.map(comp => {
                 return {
                   key: comp.key,
-                  fields: comp.components?.map(value => {
+                  fields: comp.components?.flatMap(value => {
+                    if(value?.label == 'Data Grid') {
+                      return value?.components?.map(data => {
+                        return  {
+                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
+                          displayAs: data.label,
+                          type: data.type
+                        }
+                      })
+                    }
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
                       displayAs: value.label,
-                      type: value?.type,
-                      formKey: value?.formKey
+                      type: value.type
                     }
                   })
                 }
@@ -296,12 +313,20 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formKeys = formComps?.map(comp => {
                 return {
                   key: comp.key,
-                  fields: comp.components?.map(value => {
+                  fields: comp.components?.flatMap(value => {
+                    if(value?.label == 'Data Grid') {
+                      return value?.components?.map(data => {
+                        return  {
+                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
+                          displayAs: data.label,
+                          type: data.type
+                        }
+                      })
+                    }
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
                       displayAs: value.label,
-                      type: value?.type,
-                      formKey: value?.formKey
+                      type: value.type
                     }
                   })
                 }
@@ -641,7 +666,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       this.isCreatingSubModule.next(true)
     }
     let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      value.fieldKey = value.fieldKey[0]?.split('.')[1].trim();
+      debugger
+      value.fieldKey = value.fieldKey[0];
       return value
     })
     debugger

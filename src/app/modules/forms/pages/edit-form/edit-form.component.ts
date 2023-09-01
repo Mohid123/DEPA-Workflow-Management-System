@@ -89,39 +89,56 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      console.log(this.dashboard.items)
       const hierarchy = getItem(StorageItem.navHierarchy) || [];
       if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('edit-module')) {
         hierarchy.forEach(val => {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
-        
-        if(Object.keys(val).length == 0) {
-          
-          this.dashboard.items = [...hierarchy,
-            {
-              caption: getItem(StorageItem.editmoduleSlug),
-              routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
-            },
-            {
-              caption: getItem(StorageItem.formKey) || 'Add Form',
-              routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
-            }
-          ];
+        if(this.dashboard.previousRoute.includes('moduleCode')) {
+          if(Object.keys(val).length == 0) {
+            this.dashboard.items = [...hierarchy,
+              {
+                caption: getItem(StorageItem.formKey) || 'Add Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
+              }
+            ];
+          }
+          else {
+            this.dashboard.items = [
+              ...hierarchy,
+              {
+                caption: getItem(StorageItem.formKey) || 'Edit Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
+              }
+            ];
+          }
         }
         else {
-          
-          this.dashboard.items = [
-            ...hierarchy,
-            {
-              caption: getItem(StorageItem.editmoduleSlug),
-              routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
-            },
-            {
-              caption: getItem(StorageItem.formKey) || 'Edit Form',
-              routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
-            }
-          ];
+          if(Object.keys(val).length == 0) {
+            this.dashboard.items = [...hierarchy,
+              {
+                caption: getItem(StorageItem.editmoduleSlug),
+                routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
+              },
+              {
+                caption: getItem(StorageItem.formKey) || 'Add Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
+              }
+            ];
+          }
+          else {
+            this.dashboard.items = [
+              ...hierarchy,
+              {
+                caption: getItem(StorageItem.editmoduleSlug),
+                routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
+              },
+              {
+                caption: getItem(StorageItem.formKey) || 'Edit Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
+              }
+            ];
+          }
         }
       }
       else if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('add-submission')) {

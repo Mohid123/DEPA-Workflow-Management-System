@@ -59,6 +59,18 @@ export class CodeValidator {
   }
 }
 
+export const convertStringToKeyValuePairs = (inputString, value) => {
+  const keys = inputString.split('.');
+  if (keys.length === 1) {
+    return { [keys[0]]: value };
+  }
+
+  const key = keys.shift();
+  return {
+    [key]: convertStringToKeyValuePairs(keys.join('.'), value)
+  };
+}
+
 export class FormKeyValidator {
   static createValidator(dashboard: DashboardService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {

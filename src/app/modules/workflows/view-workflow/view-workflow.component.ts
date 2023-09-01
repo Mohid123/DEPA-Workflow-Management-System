@@ -89,7 +89,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     })
     this.dashboard.items = [...hierarchy, {
       caption: getItem(StorageItem.formKey),
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}`
+      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}/${getItem(StorageItem.formID)}`
     }];
 
     this.search$.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(value => {
@@ -400,7 +400,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   sendApproveOrRejectDecisionData() {
     this.savingDecision.next(true);
-    this.updateFormData();
     const payload: any = {
       stepId: this.decisionData?.value?.stepId || this.decisionData?.value[0]?.stepId,
       userId: this.currentUser?.id,
@@ -569,13 +568,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   updateFormData() {
-    const payload: any = {
-      formId: this.formData?.value?._id,
-      data: this.formData?.value?.data
-    }
-    this.workflowService.updateFormsData(payload, this.formData?.value?.formDataId)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe()
+   
   }
 
   hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {
