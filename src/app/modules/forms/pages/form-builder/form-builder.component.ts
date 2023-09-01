@@ -154,16 +154,25 @@ export class FormBuilderComponent implements OnInit {
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
-    this.form?.components?.map(val => {
+    this.form?.components?.map((val: any) => {
       if(val?.label && val?.label === 'Upload') {
         val.storage = "url";
-        val.url = `${environment.apiUrl}/upload`;
+        val.url = 'http://localhost:3000/v1/upload';
         val.uploadEnabled = true;
-        val.sendFileAsQueryParam = false;
         val.input = true;
-        val.type = 'file';
         val.multiple = true;
         return val
+      }
+      if(val?.label == 'Data Grid') {
+       return val?.components?.map(form => {
+          if(form?.label && form?.label === 'Upload')
+            form.storage = "url";
+            form.url = 'http://localhost:3000/v1/upload';
+            form.uploadEnabled = true;
+            form.input = true;
+            form.multiple = true;
+            return form
+        })
       }
       return val
     });

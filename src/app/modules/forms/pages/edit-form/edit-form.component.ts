@@ -202,6 +202,17 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         val.multiple = true;
         return val
       }
+      if(val?.label == 'Data Grid') {
+       return val?.components?.map(form => {
+          if(form?.label && form?.label === 'Upload')
+            form.storage = "url";
+            form.url = 'http://localhost:3000/v1/upload';
+            form.uploadEnabled = true;
+            form.input = true;
+            form.multiple = true;
+            return form
+        })
+      }
       return val
     });
     this.addCustomEventTrigger()
