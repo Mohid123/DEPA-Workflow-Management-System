@@ -203,7 +203,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         val.multiple = true;
         return val
       }
-      if(val?.label == 'Data Grid' || val?.label == 'Data Map') {
+      if(val?.label == 'Data Grid' || val?.label == 'Data Map' || val?.label == 'Panel') {
        return val?.components?.map(form => {
           if(form?.label && form?.label === 'Upload')
             form.storage = "url";
