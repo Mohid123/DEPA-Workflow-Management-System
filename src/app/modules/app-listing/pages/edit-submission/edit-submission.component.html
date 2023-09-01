@@ -3,7 +3,7 @@
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <p class="text-lg font-semibold">Forms</p>
   <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
-    <section class="flex justify-between my-8">
+    <section class="flex justify-between my-8 relative">
       <nav
         tuiTabs
         vertical="left"
@@ -14,10 +14,10 @@
         </ng-container>
       </nav>
       <ng-container *ngFor="let form of forms; let i = index;">
-        <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <div *ngIf="userRoleCheck('admin')" class="flex justify-end gap-x-2">
-            <a (click)="sendFormForEdit(i, form?._id)" class="px-2 py-1 rounded-md cursor-pointer bg-slate-200">
-              <i class="fa fa-pencil-square fa-2x text-slate-500 hover:text-slate-600" aria-hidden="true"></i>
+        <div *ngIf="userRoleCheck == true" class="w-full well jsonviewer">
+          <div class="absolute -top-1 right-1 z-10">
+            <a (click)="sendFormForEdit(i, form?._id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
+              <i class="fa fa-pencil-square fa-2x text-blue-500 hover:text-blue-600" aria-hidden="true"></i>
             </a>
           </div>
           <formio [submission]="form || formValues[activeIndex]" [options]="options" [form]="form" (change)="onChange($event, i)"></formio>

@@ -36,7 +36,7 @@ export const calculateFileSize = (file: any): boolean => {
   return false;
 }
 
-export const getUniqueListBy = (arr: any, key: any) => {
+export const getUniqueListBy = (arr: any, key: any): any => {
   return [...new Map(arr.map((item: any) => [item[key], item])).values()]
 }
 
@@ -57,6 +57,18 @@ export class CodeValidator {
       }
     }
   }
+}
+
+export const convertStringToKeyValuePairs = (inputString, value) => {
+  const keys = inputString.split('.');
+  if (keys.length === 1) {
+    return { [keys[0]]: value };
+  }
+
+  const key = keys.shift();
+  return {
+    [key]: convertStringToKeyValuePairs(keys.join('.'), value)
+  };
 }
 
 export class FormKeyValidator {

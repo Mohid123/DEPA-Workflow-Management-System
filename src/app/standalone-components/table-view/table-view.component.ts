@@ -259,6 +259,11 @@ export class TableViewComponent implements OnDestroy {
     this.router.navigate(['/modules', code], {queryParams: {moduleID: id || ''}})
   }
 
+  setEditSlug(code: string, id: string) {
+    setItem(StorageItem.editmoduleSlug, code);
+    setItem(StorageItem.editmoduleId, id);
+  }
+
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();

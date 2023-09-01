@@ -42,7 +42,9 @@ export class GridTopAppComponent {
     this.deleteModule.emit(id)
    }
 
-   editModuleEvent(id: string) {
+   editModuleEvent(id: string, code: string) {
+    setItem(StorageItem.moduleSlug, code);
+    setItem(StorageItem.moduleID, id);
     this.editModule.emit(id)
     this.transport.moduleID.next(id)
    }

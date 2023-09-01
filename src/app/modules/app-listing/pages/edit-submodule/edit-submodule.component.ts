@@ -9,9 +9,9 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { FormsService } from 'src/app/modules/forms/services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, removeItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { calculateAspectRatio, calculateFileSize } from 'src/core/utils/utility-functions';
+import { calculateAspectRatio, calculateFileSize, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 
@@ -69,10 +69,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       new FormGroup({
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
-        type: new FormControl('')
+        type: new FormControl(''),
+        formKey: new FormControl('')
       })
     ])
-  })
+  });
+  delFormId: string
 
   constructor(
     private fb: FormBuilder,
@@ -117,14 +119,21 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length == 0) {
-        const hierarchy = getItem(StorageItem.navHierarchy);
+        const hierarchy = getItem(StorageItem.navHierarchy) || [];
         hierarchy.forEach(val => {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
-        this.dashboard.items = [...hierarchy, {
-          caption: 'Edit App',
-          routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
-        }];
+        this.dashboard.items = getUniqueListBy([...hierarchy, {
+          caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
+          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
+        }], 'caption')
+      }
+      else {
+        const hierarchy = getItem(StorageItem.navHierarchy) || [];
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
+        this.dashboard.items = [...hierarchy]
       }
     });
   }
@@ -149,6 +158,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }
       })
     }
+    this.formKeys?.flatMap(val => val.fields.map((data, index) => {
+      this.schemaForm.controls['viewSchema']?.at(index)?.get('type')?.setValue(data?.type)
+      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
+    }))
   }
 
   get viewSchema() {
@@ -159,7 +172,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl([]),
       displayAs: new FormControl(''),
-      type: new FormControl('')
+      type: new FormControl(''),
+      formKey: new FormControl('')
+      
     });
     this.viewSchema.push(schemaForm)
   }
@@ -250,7 +265,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               const schemaForm = this.fb.group({
                 fieldKey: new FormControl([data?.fieldKey]),
                 displayAs: new FormControl(data?.displayAs),
-                type: new FormControl(data?.type)
+                type: new FormControl(data?.type),
+                formKey: new FormControl(data?.formKey),
               });
               this.schemaForm.controls['viewSchema'].push(schemaForm)
             })
@@ -269,11 +285,20 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formKeys = formComps?.map(comp => {
                 return {
                   key: comp.key,
-                  fields: comp.components?.map(value => {
+                  fields: comp.components?.flatMap(value => {
+                    if(value?.label == 'Data Grid') {
+                      return value?.components?.map(data => {
+                        return  {
+                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
+                          displayAs: data.label,
+                          type: data.type
+                        }
+                      })
+                    }
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
                       displayAs: value.label,
-                      type: value?.type
+                      type: value.type
                     }
                   })
                 }
@@ -288,11 +313,20 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formKeys = formComps?.map(comp => {
                 return {
                   key: comp.key,
-                  fields: comp.components?.map(value => {
+                  fields: comp.components?.flatMap(value => {
+                    if(value?.label == 'Data Grid') {
+                      return value?.components?.map(data => {
+                        return  {
+                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
+                          displayAs: data.label,
+                          type: data.type
+                        }
+                      })
+                    }
                     return  {
                       fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
                       displayAs: value.label,
-                      type: value?.type
+                      type: value.type
                     }
                   })
                 }
@@ -402,7 +436,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
       categoryId: [item?.categoryId?.value ? item?.categoryId?.value : this.categoryList?.filter(val => item?.categoryId === val.value)[0]?.value || null, Validators.required],
-      code: [{value: item?.code || null, disabled: true}],
+      code: [item?.code, Validators.compose([
+        Validators.required,
+        Validators.maxLength(7)
+      ])],
       companyId: [item?.companyId?.value ? item?.companyId?.value : this.companyList?.filter(val => item?.companyId === val.value)[0]?.value || null, Validators.required],
       title: [item?.title || null, Validators.required],
       image: [item?.image || null, Validators.required],
@@ -454,7 +491,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     .subscribe());
   }
 
-  sendFormForEdit(i: number, formID: string) {
+  sendFormForEdit(i: number, formID: string, key: string) {
     let approvers = this.workflows?.value?.flatMap(data => {
       return data?.approverIds?.map(approver => {
         return {
@@ -467,6 +504,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
     setItem(StorageItem.approvers, approvers)
+    setItem(StorageItem.formKey, key)
     if(formID) {
       setItem(StorageItem.formEdit, true);
       this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
@@ -481,8 +519,16 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
-  deleteForm(id: string) {
-    this.formService.deleteForm(id).pipe(takeUntil(this.destroy$))
+  deleteFormDialog(content: any, id: string) {
+    this.delFormId = id;
+    this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).pipe(takeUntil(this.destroy$)).subscribe()
+  }
+
+  deleteForm() {
+    this.formService.deleteForm(this.delFormId).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       this.getSubmoduleByIDForEdit();
     })
@@ -597,6 +643,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     else {
       return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)
     }
+    console.log(this.schemaForm.value)
   }
 
   closeSchemaDialog() {
@@ -619,9 +666,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       this.isCreatingSubModule.next(true)
     }
     let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
+      debugger
       value.fieldKey = value.fieldKey[0];
       return value
     })
+    debugger
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
@@ -630,7 +679,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       // workFlowId: this.workFlowId,
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
-      code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
+      code: this.subModuleForm.get('code')?.value,
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       steps: this.workflows?.value?.map(data => {
@@ -646,6 +695,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
       accessType: this.accessTypeValue?.value?.name
     }
+    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})
@@ -695,6 +745,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }
       })
     }
+    removeItem(StorageItem.editmoduleId)
+    removeItem(StorageItem.editmoduleSlug)
   }
 
   routeToBasedOnPreviousPage() {

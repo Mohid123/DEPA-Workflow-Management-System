@@ -96,6 +96,20 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  updateMultipleFormsData(payload: any): Observable<ApiResponse<any>> {
+    return this.patch(`/formsData/multiple`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Form data updated successfully', 'Update Forms data', TuiNotification.Success)
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Forms Data', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
   updateWorkflowStep(data: any, id: string): Observable<ApiResponse<any>> {
     return this.patch(`/submissions/workflow/${id}`, data).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

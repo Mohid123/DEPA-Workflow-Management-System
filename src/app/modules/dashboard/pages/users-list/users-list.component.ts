@@ -33,7 +33,6 @@ export class UsersListComponent implements OnDestroy {
     private cf: ChangeDetectorRef
   ) {
       this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
-
       this.searchValue.valueChanges.pipe(
         debounceTime(400),
         distinctUntilChanged(),
@@ -49,6 +48,10 @@ export class UsersListComponent implements OnDestroy {
   changePage(page: number) {
     this.page = page;
     this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+  }
+
+  checkRoles(data: any[]) {
+    return data?.includes('sysAdmin')
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
