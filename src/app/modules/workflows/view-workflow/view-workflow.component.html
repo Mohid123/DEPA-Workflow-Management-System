@@ -94,12 +94,12 @@
           <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
             <formio
               [readOnly]="
-              (checkIfAllApproved() == true ||
-              checkIfLoggedInUserIsPartOfActiveUsers() == false ||
-              checkIfUserIsInEditUsers() == false ||
-              workflowData?.submissionStatus == 5 ||
-              workflowData?.status == 2) &&
-              this.userRoleSysAdmin == false
+                (checkIfAllApproved() == true ||
+                checkIfLoggedInUserIsPartOfActiveUsers() == false ||
+                checkIfUserIsInEditUsers() == false ||
+                workflowData?.submissionStatus == 5 ||
+                workflowData?.status == 2) &&
+                this.userRoleSysAdmin == false
               "
               [options]="{'disableAlerts': true}"
               [submission]="form"
@@ -109,27 +109,27 @@
           </div>
         </ng-container>
       </section>
-      <div class="flex justify-end my-4 gap-x-3">
-        <button
-          tuiButton
-          type="button"
-          [showLoader]="(savingDecision | async)"
-          size="m"
-          (click)="updateFormData()"
-        >
-          Update Submission
-        </button>
-        <button
-          tuiButton
-          type="button"
-          appearance="accent"
-          [showLoader]="(savingDecision | async)"
-          size="m"
-          (click)="updateFormData()"
-        >
-          Back to Listing
-        </button>
-      </div>
+    </div>
+    <div class="flex justify-end my-4 gap-x-3">
+      <button
+        tuiButton
+        type="button"
+        [showLoader]="(savingDecision | async)"
+        size="m"
+        (click)="updateFormData()"
+      >
+        Update Forms Data
+      </button>
+      <button
+        tuiButton
+        type="button"
+        appearance="accent"
+        [showLoader]="(savingDecision | async)"
+        size="m"
+        (click)="backToListing()"
+      >
+        Back to Listing
+      </button>
     </div>
     <section #formPdf>
       <section class="my-10">

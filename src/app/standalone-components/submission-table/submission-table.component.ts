@@ -368,7 +368,6 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   checkIfUserisPartofWorkflow(data: any) {
-    console.log(data)
     return data?.map(val => val?._id)?.includes(this.currentUser?.id)
   }
 

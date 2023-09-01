@@ -568,7 +568,23 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   updateFormData() {
-   
+    let formUpdated = JSON.parse(JSON.stringify(this.formWithWorkflow));
+    const formDataIds = formUpdated?.map(data => {
+      return {
+        formId: data?.formDataId,
+        data: data?.data,
+        id: data?._id
+      }
+    })
+    this.workflowService.updateMultipleFormsData({formDataIds}).pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(val) {
+        this.fetchData()
+      }
+    })
+  }
+
+  backToListing() {
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}`], {queryParams: {moduleID: getItem(StorageItem.moduleID)}})
   }
 
   hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {
