@@ -195,7 +195,6 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
     this.form?.components?.map((val: any) => {
-    
       if (val?.type && val?.type === 'file') {
         val.storage = "url";
         val.url = `${environment.apiUrl}/upload`;
@@ -204,7 +203,6 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         val.multiple = true;
         return val;
       }
-    
       if (val?.type && (val?.type == 'datagrid' || val?.type == 'datamap')) {
         return val?.components?.map(form => {
           if (form?.type && form?.type === 'Upload') {
@@ -213,24 +211,11 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             form.uploadEnabled = true;
             form.input = true;
             form.multiple = true;
+            return form;
           }
           return form;
         });
       }
-    
-      if (val?.type && val?.type == 'panel') {
-        return val?.components?.map(data => {
-          if(data?.type && data?.type == 'file') {
-            val.storage = "url";
-            val.url = `${environment.apiUrl}/upload`;
-            val.uploadEnabled = true;
-            val.input = true;
-            val.multiple = true;
-            return val;
-          }
-        });
-      }
-    
       if (val?.type == 'columns') {
         return val?.columns?.map(components => {
           return components?.components?.map(form => {
@@ -240,14 +225,28 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
               form.uploadEnabled = true;
               form.input = true;
               form.multiple = true;
+              return form;
             }
             return form;
           });
         });
       }
     
+      if (val?.type && val?.type == 'panel') {
+        return val?.components?.map(comp => {
+          if(comp?.type == 'file') {
+            comp.storage = "url";
+            comp.url = `${environment.apiUrl}/upload`;
+            comp.uploadEnabled = true;
+            comp.input = true;
+            comp.multiple = true;
+            return comp;
+          }
+        })
+      }
       return val;
     });
+    console.log(this.form.components)
     this.addCustomEventTrigger()
   }
 
@@ -317,6 +316,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
+    debugger
     const formFromEditModule = getItem(StorageItem.formEdit)
     if(this.editFormID) {
       this.formService.updateForm(this.editFormID, formData)
