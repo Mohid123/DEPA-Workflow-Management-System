@@ -339,7 +339,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm = this.fb.group({
       companies: this.fb.array([]),
       categories: this.fb.array([]),
-      code: [{value: item?.code, disabled: true} || {value: null, disabled: true}],
+      code: [item?.code || null, Validators.compose([
+        Validators.required,
+        Validators.maxLength(7)
+      ])],
       companyName: [item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
@@ -569,7 +572,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyName')?.value,
       categoryId: this.subModuleForm.get('categoryName')?.value ? this.subModuleForm.get('categoryName')?.value : this.categoryId,
-      code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
+      code: this.subModuleForm.get('code')?.value,
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
@@ -655,8 +658,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       this.f['companyName']?.invalid ||
       this.workflows?.length == 0 ||
       this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
-      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||
-      Object.values(this.formComponents)[0]?.components?.length == 0
+      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true
     ) {
       return false
     }

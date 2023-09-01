@@ -48,9 +48,7 @@
               </div>
             </div>
             <div class="flex items-center justify-center w-full h-8 py-5 bg-gradient-to-r from-orange-200 to-slate-200 rounded-br-md rounded-bl-md">
-              <a *ngIf="data?.status !== 3 && currentUser?.id == data?.createdBy ||
-              (userRoleCheck == true && checkIfUserisViewOnly(data?.viewOnlyUsers) == false) ||
-              checkIfUserisAdmin(data?.adminUsers)" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white">
+              <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white">
                 <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
               </a>
               <a title="Edit"

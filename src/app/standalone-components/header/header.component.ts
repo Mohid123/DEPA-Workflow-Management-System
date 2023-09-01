@@ -28,7 +28,6 @@ export class HeaderComponent implements OnDestroy {
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
-    console.log(this.dashboardService.items)
   }
 
   checkCurrentRouteIncludes() {

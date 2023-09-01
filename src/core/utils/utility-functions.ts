@@ -36,7 +36,7 @@ export const calculateFileSize = (file: any): boolean => {
   return false;
 }
 
-export const getUniqueListBy = (arr: any, key: any) => {
+export const getUniqueListBy = (arr: any, key: any): any => {
   return [...new Map(arr.map((item: any) => [item[key], item])).values()]
 }
 
