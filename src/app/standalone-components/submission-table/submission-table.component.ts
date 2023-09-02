@@ -11,6 +11,7 @@ import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import { convertStringToKeyValuePairs } from 'src/core/utils/utility-functions';
 
 @Component({
   selector: 'app-submission-table',
@@ -172,7 +173,8 @@ export class SubmissionTableComponent implements OnDestroy {
             return {
               key: data?.displayAs,
               field: data?.fieldKey,
-              searchKey: data.fieldKey?.split('.')[1].trim(),
+              formKey: data?.formKey,
+              searchKey: data.fieldKey,
               isVisible: index < 4 ? new FormControl<boolean>(true) :  new FormControl<boolean>(false),
               showUpIcon: true,
               showDownIcon: false,
@@ -208,16 +210,18 @@ export class SubmissionTableComponent implements OnDestroy {
                   }
                   if(!["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)) {
                    if(header?.type == "number") {
+                    let key = convertStringToKeyValuePairs(header?.searchKey, Number(value))
                     payload = {
                       summaryData: {
-                        [header?.searchKey]: Number(value)
+                        key
                       }
                     }
                    }
                    else {
+                    let key = convertStringToKeyValuePairs(header?.searchKey, value)
                     payload = {
                       summaryData: {
-                        [header?.searchKey]: value
+                        key
                       }
                     }
                    }
@@ -235,8 +239,8 @@ export class SubmissionTableComponent implements OnDestroy {
     })
   }
   
-  setWorkflowID(id: string) {
-    setItem(StorageItem.workflowID, id)
+  setWorkflowID(key: string) {
+    setItem(StorageItem.formKey, key)
   }
 
   fetchDataAndPopulate() {
@@ -254,8 +258,7 @@ export class SubmissionTableComponent implements OnDestroy {
         if (header.search) {
           header.search.valueChanges.pipe(
             debounceTime(400),
-            distinctUntilChanged(),
-            takeUntil(this.destroy$))
+            distinctUntilChanged())
           .subscribe(value => {
             let payload: any
             if(value) {
@@ -387,7 +390,7 @@ export class SubmissionTableComponent implements OnDestroy {
   bindValueFromSummaryData(obj: any, headerKey: string) {
     const matchingField = this.tableHeaders.find(data => data.field === headerKey);
     if (matchingField) {
-      return obj[matchingField.field?.split('.')[0]][matchingField.field?.split('.')[1]];
+      return obj[matchingField.formKey][matchingField.field]
     }
     return "";
   }
@@ -466,8 +469,6 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   sortFields(key: string, sortBy: string, index: number) {
-    console.log(key)
-    console.log(sortBy)
     if(sortBy == 'asc') {
       this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, key)
       .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
@@ -521,6 +522,7 @@ export class SubmissionTableComponent implements OnDestroy {
 
   editWorkflowRoute(id: string, key: string) {
     setItem(StorageItem.formKey, key)
+    setItem(StorageItem.formID, id)
     this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
   }
 

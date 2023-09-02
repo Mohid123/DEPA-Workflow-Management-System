@@ -154,47 +154,46 @@ export class FormBuilderComponent implements OnInit {
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
-    this.form?.components?.map(val => {
-      if(val?.label && val?.label === 'Upload') {
-        val.storage = "url";
-        val.url = `${environment.apiUrl}/upload`;
-        val.uploadEnabled = true;
-        val.sendFileAsQueryParam = false;
-        val.input = true;
-        val.type = 'file';
-        val.multiple = true;
-        return val
-      }
-      return val
-    });
+    if(event.component?.type == 'file') {
+      event.component.storage = "url";
+      event.component.url = `${environment.apiUrl}/upload`;
+      event.component.uploadEnabled = true;
+      event.component.input = true;
+      event.component.multiple = true;
+    }
     this.addCustomEventTrigger()
   }
 
   addCustomEventTrigger() {
-    let componentMenu = document.getElementsByClassName('component-btn-group');
-    Array.from(componentMenu).forEach((value, index) => {
-      let tooltip = document.createElement('div');
-      let div = document.createElement('div');
-      div.id = 'custom-div'
-      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
-      div.tabIndex = -1;
-      div.role = 'button';
-      div.ariaLabel = 'Permissions Button';
-      div.innerHTML = `<i class="fa fa-key"></i>`;
-      div.addEventListener('click', () => {
-        let comp = this.form?.components[index];
-        this.openPermissionDialog(comp)
+    // debugger
+    let checkIfExists = document.getElementById('custom-div');
+    if(!checkIfExists) {
+      // debugger
+      let componentMenu = document.getElementsByClassName('component-btn-group');
+      Array.from(componentMenu).forEach((value, index) => {
+        let tooltip = document.createElement('div');
+        let div = document.createElement('div');
+        div.id = 'custom-div'
+        div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
+        div.tabIndex = -1;
+        div.role = 'button';
+        div.ariaLabel = 'Permissions Button';
+        div.innerHTML = `<i class="fa fa-key"></i>`;
+        div.addEventListener('click', () => {
+          let comp = this.form?.components[index];
+          this.openPermissionDialog(comp)
+        })
+        div.addEventListener('mouseover', () => {
+          tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
+          tooltip.innerText = 'Permissions'
+          div.append(tooltip)
+        })
+        div.addEventListener('mouseleave', () => {
+          tooltip.remove()
+        })
+        value.append(div);
       })
-      div.addEventListener('mouseover', () => {
-        tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
-        tooltip.innerText = 'Permissions'
-        div.append(tooltip)
-      })
-      div.addEventListener('mouseleave', () => {
-        tooltip.remove()
-      })
-      value.append(div);
-    })
+    }
   }
 
   openPermissionDialog(

@@ -23,7 +23,10 @@ export enum StorageItem {
   formKey = 'App/formKey',
   formEdit = 'App/formEdit',
   navHierarchy = 'App/navHierarchy',
-  approvers = 'App/approvers'
+  approvers = 'App/approvers',
+  editmoduleSlug = 'App/editmoduleSlug',
+  editmoduleId = 'App/editmoduleId',
+  formID = 'App/formID'
 }
 
 /**

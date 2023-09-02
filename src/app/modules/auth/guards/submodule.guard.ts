@@ -5,7 +5,7 @@ import { Observable, take } from 'rxjs';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { SubmoduleGuardComponent } from '../templates/submodule-guard/submodule-guard.component';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 
 /**
  * Guard that protects the Submodule page from rerouting without user feedback on the unsaved data
@@ -60,6 +60,8 @@ export class SubmoduleGuard implements CanActivate {
   routeToBasedOnPreviousPage() {
     this.activatedRoute.queryParams.pipe(take(1)).subscribe(val => {
       if(Object.keys(val).length > 0) {
+        removeItem(StorageItem.editmoduleId)
+        removeItem(StorageItem.editmoduleSlug)
         return this.router.navigate(['/dashboard/home'])
       }
       else {

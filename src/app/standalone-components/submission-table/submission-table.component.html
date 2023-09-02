@@ -195,7 +195,7 @@
                 <a
                   title="Edit Submission"
                   [routerLink]="['/modules/edit-submission', data?.id]"
-                  (click)="setWorkflowID(data?.id)"
+                  (click)="setWorkflowID(data?.formIds[0]?.key)"
                   *ngIf="(
                     currentUser?.id == data?.createdBy?.id &&
                     data?.submissionStatus == 4 &&
