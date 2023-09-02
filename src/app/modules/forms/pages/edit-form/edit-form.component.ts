@@ -143,7 +143,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         }
       }
       else if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('add-submission')) {
-        
+
         this.dashboard.items = [
           ...hierarchy,
           {
@@ -157,7 +157,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         ];
       }
       else {
-        
+
         this.dashboard.items = [
           ...hierarchy,
           {
@@ -194,59 +194,13 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
-    this.form?.components?.map((val: any) => {
-      if (val?.type && val?.type === 'file') {
-        val.storage = "url";
-        val.url = `${environment.apiUrl}/upload`;
-        val.uploadEnabled = true;
-        val.input = true;
-        val.multiple = true;
-        return val;
-      }
-      if (val?.type && (val?.type == 'datagrid' || val?.type == 'datamap')) {
-        return val?.components?.map(form => {
-          if (form?.type && form?.type === 'Upload') {
-            form.storage = "url";
-            form.url = `${environment.apiUrl}/upload`;
-            form.uploadEnabled = true;
-            form.input = true;
-            form.multiple = true;
-            return form;
-          }
-          return form;
-        });
-      }
-      if (val?.type == 'columns') {
-        return val?.columns?.map(components => {
-          return components?.components?.map(form => {
-            if (form?.type && form?.type === 'Upload') {
-              form.storage = "url";
-              form.url = `${environment.apiUrl}/upload`;
-              form.uploadEnabled = true;
-              form.input = true;
-              form.multiple = true;
-              return form;
-            }
-            return form;
-          });
-        });
-      }
-    
-      if (val?.type && val?.type == 'panel') {
-        return val?.components?.map(comp => {
-          if(comp?.type == 'file') {
-            comp.storage = "url";
-            comp.url = `${environment.apiUrl}/upload`;
-            comp.uploadEnabled = true;
-            comp.input = true;
-            comp.multiple = true;
-            return comp;
-          }
-        })
-      }
-      return val;
-    });
-    console.log(this.form.components)
+    if(event.component?.type == 'file') {
+      event.component.storage = "url";
+      event.component.url = `${environment.apiUrl}/upload`;
+      event.component.uploadEnabled = true;
+      event.component.input = true;
+      event.component.multiple = true;
+    }
     this.addCustomEventTrigger()
   }
 
