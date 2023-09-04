@@ -334,6 +334,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
+    }
+    if(event?.data && event?.changed && event?.isModified) {
       const id = this.subModuleData?.formDataIds[this.activeIndex]?._id;
       this.formValues[this.activeIndex] = {...event, id};
       const finalData = this.formValues?.map(value => {
