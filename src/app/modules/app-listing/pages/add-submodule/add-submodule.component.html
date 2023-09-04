@@ -575,18 +575,13 @@
   <h2 class="text-lg font-semibold text-center">Modify Summary & View Schema</h2>
   <div [formGroup]="schemaForm" class="my-5">
     <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
-    <tui-multi-select
+    <tui-input-tag
       formControlName="summarySchema"
       [tuiTextfieldLabelOutside]="true"
       (ngModelChange)="handleChangeOnSummarySchema($event)"
     >
       Summary Schema fields
-      <tui-data-list-wrapper
-        *tuiDataList
-        tuiMultiSelectGroup
-        [items]="summarySchemaFields"
-      ></tui-data-list-wrapper>
-    </tui-multi-select>
+    </tui-input-tag>
     <p class="mt-1 text-xxs">e.g. formKey.fieldValue</p>
 
     <!--View Schema-->

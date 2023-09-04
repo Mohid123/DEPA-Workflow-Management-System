@@ -182,7 +182,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   deleteViewSchema(index: number) {
     this.viewSchema.removeAt(index);
     let val = this.schemaForm.controls['summarySchema'].value;
-    val = val.splice(index, 1);
+    val.splice(index, 1);
     this.viewSchema.removeAt(index)
     this.schemaForm.controls['summarySchema'].setValue(val)
   }
@@ -666,11 +666,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       this.isCreatingSubModule.next(true)
     }
     let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      debugger
       value.fieldKey = value.fieldKey[0];
       return value
     })
-    debugger
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
@@ -695,7 +693,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
       accessType: this.accessTypeValue?.value?.name
     }
-    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})
