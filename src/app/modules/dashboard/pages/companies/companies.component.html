@@ -84,7 +84,7 @@
 
 <app-footer></app-footer>
 
-<ng-template #template>
+<ng-template #template let-observer>
   <p class="text-lg font-semibold text-center">
     {{categoryId ? 'Edit': 'Add'}} Company
   </p>
@@ -92,15 +92,26 @@
     <label class="block" for="Textarea1">Company Name</label>
     <input [formControl]="categoryEditControl" class="form-control">
   </div>
-  <button
+  <div class="flex justify-center gap-x-3">
+    <button
     tuiButton
     type="button"
     size="m"
     [disabled]="!categoryEditControl?.value"
     (click)="editOrAddCompany();"
     >
-    Submit
-    </button>
+    {{categoryId ? 'Update': 'Submit'}}
+  </button>
+  <button
+    tuiButton
+    type="button"
+    size="m"
+    appearance="accent"
+    (click)="observer.complete()"
+    >
+    Cancel
+  </button>
+  </div>
 </ng-template>
 
 <ng-template #deltemplate let-observer>

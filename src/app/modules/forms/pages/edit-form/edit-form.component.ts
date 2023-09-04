@@ -13,6 +13,7 @@ import { FormKeyValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { DialogTemplate } from '../../templates/permission-template.component';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   templateUrl: './edit-form.component.html',
@@ -94,32 +95,55 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         hierarchy.forEach(val => {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
-        if(Object.keys(val).length == 0) {
-          this.dashboard.items = [...hierarchy,
-            {
-              caption: 'Edit App',
-              routerLink: ``
-            },
-            {
-              caption: 'Edit Form',
-              routerLink: `/forms/edit-form`
-            }
-          ];
+        if(this.dashboard.previousRoute.includes('moduleCode')) {
+          if(Object.keys(val).length == 0) {
+            this.dashboard.items = [...hierarchy,
+              {
+                caption: getItem(StorageItem.formKey) || 'Add Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
+              }
+            ];
+          }
+          else {
+            this.dashboard.items = [
+              ...hierarchy,
+              {
+                caption: getItem(StorageItem.formKey) || 'Edit Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
+              }
+            ];
+          }
         }
         else {
-          this.dashboard.items = [
-            {
-              caption: 'Edit App',
-              routerLink: ``
-            },
-            {
-              caption: 'Edit Form',
-              routerLink: `/forms/edit-form`
-            }
-          ];
+          if(Object.keys(val).length == 0) {
+            this.dashboard.items = [...hierarchy,
+              {
+                caption: getItem(StorageItem.editmoduleSlug),
+                routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
+              },
+              {
+                caption: getItem(StorageItem.formKey) || 'Add Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
+              }
+            ];
+          }
+          else {
+            this.dashboard.items = [
+              ...hierarchy,
+              {
+                caption: getItem(StorageItem.editmoduleSlug),
+                routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
+              },
+              {
+                caption: getItem(StorageItem.formKey) || 'Edit Form',
+                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
+              }
+            ];
+          }
         }
       }
       else if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('add-submission')) {
+
         this.dashboard.items = [
           ...hierarchy,
           {
@@ -127,21 +151,18 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
           },
           {
-            caption: 'Edit Form',
-            routerLink: `/forms/edit-form`
+            caption: getItem(StorageItem.formKey) || 'Edit Form',
+            routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
           }
         ];
       }
       else {
+
         this.dashboard.items = [
           ...hierarchy,
           {
-            caption: 'Edit App',
-            routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID)}`
-          },
-          {
-            caption: 'Edit Form',
-            routerLink: `/forms/edit-form`
+            caption: getItem(StorageItem.formKey) || 'Edit Form',
+            routerLink: `/forms/edit-form?id=${this.editFormID}`
           }
         ];
       }
@@ -173,45 +194,44 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
     this.formValue = event.form;
-    this.form?.components?.map((val: any) => {
-      if(val?.label && val?.label === 'Upload') {
-        val.storage = "url";
-        val.url = 'http://localhost:3000/v1/upload';
-        val.uploadEnabled = true;
-        val.input = true;
-        val.multiple = true;
-        return val
-      }
-      return val
-    });
+    if(event.component?.type == 'file') {
+      event.component.storage = "url";
+      event.component.url = `${environment.apiUrl}/upload`;
+      event.component.uploadEnabled = true;
+      event.component.input = true;
+      event.component.multiple = true;
+    }
     this.addCustomEventTrigger()
   }
 
   addCustomEventTrigger() {
-    let componentMenu = document.getElementsByClassName('component-btn-group');
-    Array.from(componentMenu).forEach((value, index) => {
-      let tooltip = document.createElement('div');
-      let div = document.createElement('div');
-      div.id = 'custom-div'
-      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
-      div.tabIndex = -1;
-      div.role = 'button';
-      div.ariaLabel = 'Permissions Button';
-      div.innerHTML = `<i class="fa fa-key"></i>`;
-      div.addEventListener('click', () => {
-        let comp = this.form?.components[index];
-        this.openPermissionDialog(comp)
+    let checkIfExists = document.getElementById('custom-div');
+    if(!checkIfExists) {
+      let componentMenu = document.getElementsByClassName('component-btn-group');
+      Array.from(componentMenu).forEach((value, index) => {
+        let tooltip = document.createElement('div');
+        let div = document.createElement('div');
+        div.id = 'custom-div'
+        div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
+        div.tabIndex = -1;
+        div.role = 'button';
+        div.ariaLabel = 'Permissions Button';
+        div.innerHTML = `<i class="fa fa-key"></i>`;
+        div.addEventListener('click', () => {
+          let comp = this.form?.components[index];
+          this.openPermissionDialog(comp)
+        })
+        div.addEventListener('mouseover', () => {
+          tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
+          tooltip.innerText = 'Permissions'
+          div.append(tooltip)
+        })
+        div.addEventListener('mouseleave', () => {
+          tooltip.remove()
+        })
+        value.append(div);
       })
-      div.addEventListener('mouseover', () => {
-        tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
-        tooltip.innerText = 'Permissions'
-        div.append(tooltip)
-      })
-      div.addEventListener('mouseleave', () => {
-        tooltip.remove()
-      })
-      value.append(div);
-    })
+    }
   }
 
   openPermissionDialog(

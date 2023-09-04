@@ -87,14 +87,16 @@
                 *tuiCell="'actions'"
                 tuiTd
               >
-                <div class="flex justify-start">
-                  <a (click)="showDialog(template, item)" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                  </a>
-                  <button (click)="showDeleteDialog(item, deltemplate)" class="px-2 py-1 text-white bg-red-500 rounded-md">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                  </button>
-                </div>
+                <ng-container *ngIf="checkRoles(item?.roles) == false">
+                  <div class="flex justify-start">
+                    <a (click)="showDialog(template, item)" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </a>
+                    <button (click)="showDeleteDialog(item, deltemplate)" class="px-2 py-1 text-white bg-red-500 rounded-md">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </ng-container>
               </td>
             </tr>
           </ng-template>
@@ -123,14 +125,15 @@
 <app-footer></app-footer>
 
 <!--Edit User Dialog-->
-<ng-template #template>
+<ng-template #template let-observer>
   <p class="text-lg font-semibold text-center">
     Edit User
   </p>
   <div class="flex flex-col justify-center my-5">
     <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="userForm"></formio>
   </div>
-  <button
+  <div class="flex justify-center gap-x-3">
+    <button
     tuiButton
     type="button"
     size="m"
@@ -139,6 +142,17 @@
     >
     Update
     </button>
+
+    <button
+    tuiButton
+    type="button"
+    size="m"
+    appearance="accent"
+    (click)="observer.complete()"
+  >
+    Cancel
+  </button>
+  </div>
 </ng-template>
 
 <!-- Delete User Dialog-->
@@ -161,6 +175,7 @@
       tuiButton
       type="button"
       size="m"
+      appearance="accent"
       (click)="observer.complete()"
       >
       Cancel
@@ -169,21 +184,32 @@
 </ng-template>
 
 <!-- Add User Dialog -->
-<ng-template #addTemplate>
+<ng-template #addTemplate let-observer>
   <p class="text-lg font-semibold text-center">
     Add User
   </p>
   <div class="flex flex-col justify-center my-5">
     <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="addUserForm"></formio>
   </div>
-  <p class="mb-4">Note: The default password is <strong>p@$$w0rd</strong></p>
-  <button
-    tuiButton
-    type="button"
-    size="m"
-    [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
-    (click)="editOrAddUser();"
+  <div class="flex justify-center gap-x-3">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
+      (click)="editOrAddUser();"
     >
-    Submit
+      Submit
     </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      (click)="observer.complete()"
+    >
+      Cancel
+    </button>
+  </div>
 </ng-template>

@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
@@ -10,6 +10,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { Location } from '@angular/common';
+import { FormioComponent } from '@formio/angular';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -45,7 +46,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   formValues: any[] = [];
   workFlowId: string;
   userRoleCheck: any;
-  approvalLogs = []
+  approvalLogs = [];
+  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
 
   constructor(
     private auth: AuthService,
@@ -59,7 +61,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private location: Location
   ) {
     this.currentUser = this.auth.currentUserValue;
-    this.userRoleCheck = this.auth.checkIfRolesExist
+    this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
     this.initWorkflowForm();
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.subModuleId = val['id'];
@@ -225,7 +227,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
-  sendFormForEdit(i: number, formID: string) {
+  sendFormForEdit(i: number, formID: string, key: string) {
     if(formID) {
       let approvers = this.workflows?.value?.flatMap(data => {
         return data?.approverIds?.map(approver => {
@@ -238,6 +240,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       if(approvers.length == 0) {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
+      setItem(StorageItem.formKey, key)
       setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
@@ -344,6 +347,12 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   }
 
   editSubmission(status?: number) {
+    if(!this.formioComponent.submission) {
+      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
+    }
+    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
+      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
+    }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }

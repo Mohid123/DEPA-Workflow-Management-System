@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,6 +11,8 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
 import { saveAs } from 'file-saver';
+import { FormioComponent } from '@formio/angular';
+import { NotificationsService } from 'src/core/core-services/notifications.service';
 @Component({
   templateUrl: './view-workflow.component.html',
   styleUrls: ['./view-workflow.component.scss']
@@ -66,6 +68,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   conditionAddUser = new FormControl('none');
   showConditionError = new Subject<boolean>();
   deleteUserID: string;
+  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -74,7 +77,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
-    private pdfGeneratorService: PdfGeneratorService
+    private pdfGeneratorService: PdfGeneratorService,
+    private notif: NotificationsService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
@@ -89,7 +93,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     })
     this.dashboard.items = [...hierarchy, {
       caption: getItem(StorageItem.formKey),
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}`
+      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}/${getItem(StorageItem.formID)}`
     }];
 
     this.search$.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(value => {
@@ -400,7 +404,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   sendApproveOrRejectDecisionData() {
     this.savingDecision.next(true);
-    this.updateFormData();
     const payload: any = {
       stepId: this.decisionData?.value?.stepId || this.decisionData?.value[0]?.stepId,
       userId: this.currentUser?.id,
@@ -569,13 +572,29 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   updateFormData() {
-    const payload: any = {
-      formId: this.formData?.value?._id,
-      data: this.formData?.value?.data
+    if(!this.formioComponent.submission) {
+      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
     }
-    this.workflowService.updateFormsData(payload, this.formData?.value?.formDataId)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe()
+    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
+      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
+    }
+    let formUpdated = JSON.parse(JSON.stringify(this.formWithWorkflow));
+    const formDataIds = formUpdated?.map(data => {
+      return {
+        formId: data?.formDataId,
+        data: data?.data,
+        id: data?._id
+      }
+    })
+    this.workflowService.updateMultipleFormsData({formDataIds}).pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(val) {
+        this.fetchData()
+      }
+    })
+  }
+
+  backToListing() {
+    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}`], {queryParams: {moduleID: getItem(StorageItem.moduleID)}})
   }
 
   hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {

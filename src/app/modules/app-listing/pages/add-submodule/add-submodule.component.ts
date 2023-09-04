@@ -65,6 +65,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   categoryId: string;
   categoryIdForMatch: string;
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
+  selectItems = ['Text', 'Number'];
   accessTypeValue: FormControl;
   paramID: string
   formKeysForViewSchema: any[] = [];
@@ -75,10 +76,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       new FormGroup({
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
-        type: new FormControl('')
+        type: new FormControl(this.selectItems[0]),
+        formKey: new FormControl(''),
       })
     ])
-  })
+  });
+  delIndex: number
 
   constructor(
     private fb: FormBuilder,
@@ -113,7 +116,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.formKeys = formComps?.map(comp => {
       return {
         key: comp.key,
-        fields: comp.components?.map(value => {
+        fields: comp.components?.flatMap(value => {
+          if(value?.label == 'Data Grid') {
+            return value?.components?.map(data => {
+              return  {
+                fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
+                displayAs: data.label,
+                type: data.type
+              }
+            })
+          }
           return  {
             fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
             displayAs: value.label,
@@ -189,7 +201,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       })
     }
     this.formKeys?.flatMap(val => val.fields.map((data, index) => {
-      this.schemaForm.controls['viewSchema']?.at(index)?.get('type')?.setValue(data?.type)
+      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
     }))
   }
 
@@ -209,7 +221,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
       displayAs: new FormControl(''),
-      type: new FormControl('')
+      type: new FormControl(this.selectItems[0]),
+      formKey: new FormControl('')
     });
     this.viewSchema.push(schemaForm)
   }
@@ -217,7 +230,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   deleteViewSchema(index: number) {
     this.viewSchema.removeAt(index);
     let val = this.schemaForm.controls['summarySchema'].value;
-    val = val.splice(index, 1);
+    val.splice(index, 1);
     this.schemaForm.controls['summarySchema'].setValue(val)
     this.viewSchema.removeAt(index)
   }
@@ -339,7 +352,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm = this.fb.group({
       companies: this.fb.array([]),
       categories: this.fb.array([]),
-      code: [{value: item?.code, disabled: true} || {value: null, disabled: true}],
+      code: [item?.code || null, Validators.compose([
+        Validators.required,
+        Validators.maxLength(7)
+      ])],
       companyName: [item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
@@ -524,8 +540,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.router.navigate(['/forms/form-builder']);
   }
 
-  deleteForm(index: number) {
-    this.formComponents.splice(index, 1)
+  deleteFormDialog(content: any, index: number) {
+    this.delIndex = index;
+    this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).pipe(takeUntil(this.destroy$)).subscribe()
+  }
+
+  deleteForm() {
+    this.formComponents.splice(this.delIndex, 1)
   }
 
   changeLanguage(lang: string) {
@@ -542,10 +566,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     else {
       return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)
     }
+    console.log(this.schemaForm.value)
   }
 
   closeSchemaDialog() {
-    this.schemaForm.reset()
+    this.schemaForm?.reset()
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
@@ -569,7 +594,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyName')?.value,
       categoryId: this.subModuleForm.get('categoryName')?.value ? this.subModuleForm.get('categoryName')?.value : this.categoryId,
-      code: this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase(),
+      code: this.subModuleForm.get('code')?.value,
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
       formIds: this.formComponents,
@@ -655,8 +680,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       this.f['companyName']?.invalid ||
       this.workflows?.length == 0 ||
       this.workflows.controls.map(val => val.get('approverIds')?.value.length == 0).includes(true) ||
-      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true ||
-      Object.values(this.formComponents)[0]?.components?.length == 0
+      this.workflows.controls.map(val => val.get('condition')?.value).includes('') === true
     ) {
       return false
     }

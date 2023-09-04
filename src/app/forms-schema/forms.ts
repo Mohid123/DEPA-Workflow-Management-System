@@ -286,19 +286,13 @@ export const userAddForm = {
       "tableView": true,
       "key": "fullname",
       "type": "textfield",
-      "input": true,
-      "validate": {
-        "required": true
-      },
+      "input": true
     },
     {
       "label": "Email",
       "tableView": true,
       "key": "email",
       "type": "email",
-      "validate": {
-        "required": true
-      },
       "input": true
     },
     {
@@ -306,9 +300,6 @@ export const userAddForm = {
         "widget": "choicesjs",
         "tableView": true,
         "disabled": false,
-        "validate": {
-          "required": true
-        },
         "data": {
           "values": [
               {
@@ -330,7 +321,6 @@ export const userAddForm = {
       "label": "Password",
       "tableView": false,
       "validate": {
-          "required": true,
           "pattern": "^(?=.*[0-9])(?=.*[a-zA-Z]).*$",
           "minLength": 8
       },
