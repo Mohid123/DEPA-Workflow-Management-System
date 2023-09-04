@@ -63,15 +63,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   summarySchemaFields: any[] = [];
   formKeys: any;
   schemaSubscription: Subscription[] = [];
-  selectItems = ['Text', 'Number'];
+  selectItems = ['Text', 'Number', 'Date'];
   schemaForm = new FormGroup({
     summarySchema: new FormControl([]),
     viewSchema: new FormArray([
       new FormGroup({
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
-        type: new FormControl(''),
-        formKey: new FormControl('')
+        type: new FormControl(this.selectItems[0]),
+        isDisplayedInGrid: new FormControl(false)
       })
     ])
   });
@@ -134,34 +134,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         hierarchy.forEach(val => {
           val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
         })
-        this.dashboard.items = [...hierarchy]
+        this.dashboard.items = getUniqueListBy([...hierarchy, {
+          caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
+          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
+        }], 'caption')
       }
     });
-  }
-
-  handleChangeOnSummarySchema(value: any) {
-    if(value.length == 0) {
-      this.schemaForm.controls['viewSchema'].at(0).get('fieldKey').setValue([])
-    }
-    else {
-      if(value.length !== this.schemaForm.controls['viewSchema']?.length) {
-        value?.map((field, index) => {
-          this.schemaForm.controls['viewSchema'].removeAt(index)
-        })
-      }
-      value?.map((field, index) => {
-        if(this.schemaForm.controls['viewSchema'].at(index)) {
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
-        }
-        else {
-          this.addViewSchema();
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
-        }
-      })
-    }
-    this.formKeys?.flatMap(val => val.fields.map((data, index) => {
-      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
-    }))
   }
 
   get viewSchema() {
@@ -172,19 +150,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl([]),
       displayAs: new FormControl(''),
-      type: new FormControl(''),
-      formKey: new FormControl('')
-      
+      type: new FormControl(this.selectItems[0]),
+      isDisplayedInGrid: new FormControl(false)
+
     });
     this.viewSchema.push(schemaForm)
   }
 
   deleteViewSchema(index: number) {
-    this.viewSchema.removeAt(index);
-    let val = this.schemaForm.controls['summarySchema'].value;
-    val.splice(index, 1);
     this.viewSchema.removeAt(index)
-    this.schemaForm.controls['summarySchema'].setValue(val)
   }
 
   onFileSelect(event: any) {
@@ -266,7 +240,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 fieldKey: new FormControl([data?.fieldKey]),
                 displayAs: new FormControl(data?.displayAs),
                 type: new FormControl(data?.type),
-                formKey: new FormControl(data?.formKey),
+                isDisplayedInGrid: new FormControl(false),
               });
               this.schemaForm.controls['viewSchema'].push(schemaForm)
             })
@@ -405,7 +379,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       });
     });
   }
- 
+
   getAllCategories() {
     this.dashboard.getAllCategories(10)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
@@ -486,7 +460,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'l'
+      size: 'page'
     })
     .subscribe());
   }

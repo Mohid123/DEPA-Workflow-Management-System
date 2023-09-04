@@ -77,7 +77,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
         type: new FormControl(this.selectItems[0]),
-        formKey: new FormControl(''),
+        isDisplayedInGrid: new FormControl(false)
       })
     ])
   });
@@ -180,31 +180,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
-  handleChangeOnSummarySchema(value: any) {
-    if(value.length == 0) {
-      this.schemaForm.controls['viewSchema'].at(0).get('fieldKey').setValue([])
-    }
-    else {
-      if(value.length !== this.schemaForm.controls['viewSchema']?.length) {
-        value?.map((field, index) => {
-          this.schemaForm.controls['viewSchema'].removeAt(index)
-        })
-      }
-      value?.map((field, index) => {
-        if(this.schemaForm.controls['viewSchema'].at(index)) {
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
-        }
-        else {
-          this.addViewSchema();
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
-        }
-      })
-    }
-    this.formKeys?.flatMap(val => val.fields.map((data, index) => {
-      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
-    }))
-  }
-
   checkIfLabelIsUnique() {
     let unique = new Set(this.schemaForm.controls['viewSchema'].value?.map(data => data?.displayAs));
     if(unique.size !== this.schemaForm.controls['viewSchema'].value?.length) {
@@ -219,20 +194,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addViewSchema() {
     const schemaForm = this.fb.group({
-      fieldKey: new FormControl(''),
+      fieldKey: new FormControl([]),
       displayAs: new FormControl(''),
       type: new FormControl(this.selectItems[0]),
-      formKey: new FormControl('')
+      isDisplayedInGrid: new FormControl(false)
+
     });
     this.viewSchema.push(schemaForm)
   }
 
   deleteViewSchema(index: number) {
     this.viewSchema.removeAt(index);
-    let val = this.schemaForm.controls['summarySchema'].value;
-    val.splice(index, 1);
-    this.schemaForm.controls['summarySchema'].setValue(val)
-    this.viewSchema.removeAt(index)
   }
 
   getDefaultWorkflowByModule() {
@@ -726,7 +698,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'l'
+      size: 'page'
     })
     .subscribe());
   }

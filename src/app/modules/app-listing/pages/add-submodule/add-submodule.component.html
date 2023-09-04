@@ -7,7 +7,7 @@
   <form class="block pt-5" [formGroup]="subModuleForm">
     <!--Title-->
     <div class="grid grid-cols-12 gap-3">
-      <div class="mt-3 mb-5 col-span-6">
+      <div class="col-span-6 mt-3 mb-5">
         <label class="block pb-1">App Title <span class="text-xs text-red-400">*</span></label>
           <input required
             [ngClass]="f['title']?.invalid && f['title']?.dirty ? 'is-invalid' : ''"
@@ -29,7 +29,7 @@
           </span>
       </div>
 
-      <div class="mt-3 mb-5 col-span-6">
+      <div class="col-span-6 mt-3 mb-5">
         <label class="block pb-1">App Code <span class="text-xs text-red-400">*</span></label>
           <input required
             [ngClass]="f['code']?.invalid && f['code']?.dirty ? 'is-invalid' : ''"
@@ -572,42 +572,48 @@
 </ng-template>
 
 <ng-template #summarySchemaTemplate let-observer>
-  <h2 class="text-lg font-semibold text-center">Modify Summary & View Schema</h2>
-  <div [formGroup]="schemaForm" class="my-5">
+  <h2 class="mt-8 text-lg font-semibold text-center">Modify Summary & View Schema</h2>
+  <div [formGroup]="schemaForm" class="w-[80%] mx-auto my-8">
     <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
     <tui-input-tag
       formControlName="summarySchema"
       [tuiTextfieldLabelOutside]="true"
-      (ngModelChange)="handleChangeOnSummarySchema($event)"
     >
-      Summary Schema fields
+      Type the fieldname and press Enter to add
     </tui-input-tag>
-    <p class="mt-1 text-xxs">e.g. formKey.fieldValue</p>
+    <p class="mt-1 text-xxs">Type the fieldname and press Enter to add. e.g. formKey.fieldValue</p>
 
     <!--View Schema-->
-    <div class="mt-4">
+    <div class="mt-7">
       <ng-container formArrayName="viewSchema">
         <label class="mb-2 font-medium">View Schema <sup>(Optional)</sup></label>
         <ng-container *ngFor="let schema of viewSchema.controls; let i = index; let first = first; let last = last">
           <div [formGroupName]="i" class="grid grid-cols-12 gap-2 mb-3">
+
             <tui-input-tag
               [tuiTextfieldLabelOutside]="true"
               formControlName="fieldKey"
-              class="col-span-4"
+              class="col-span-3"
             >
-              View Schema fields
+              View schema field
             </tui-input-tag>
+
             <!--Display As-->
-            <tui-input formControlName="displayAs" class="col-span-4">
-              Specify field label
+            <tui-input
+              formControlName="displayAs"
+              class="col-span-3"
+              [tuiTextfieldLabelOutside]="true"
+            >
               <input
                 tuiTextfield
                 [tuiTextfieldLabelOutside]="true"
                 type="text"
               />
+                <p class="mt-2">Field label</p>
             </tui-input>
+
             <!--Type-->
-            <tui-select formControlName="type" class="col-span-4">
+            <tui-select formControlName="type" class="col-span-3">
               Specify data type
               <input
                 placeholder="Specify data type"
@@ -618,18 +624,33 @@
                 [items]="selectItems"
               ></tui-data-list-wrapper>
             </tui-select>
-          </div>
-          <div *ngIf="!first" class="flex justify-end my-2">
+
+            <!--Show?-->
+            <tui-checkbox-labeled formControlName="isDisplayedInGrid" class="col-span-2 mt-3">
+              Display in Grid?
+              <div class="text-gray-400 text-xxs">Specify whether this component should be displayed in the grid</div>
+            </tui-checkbox-labeled>
             <button
               tuiIconButton
               type="button"
               size="s"
+              class="col-span-1 mt-2"
               appearance="secondary-destructive"
               icon="tuiIconTrash2"
               (click)="deleteViewSchema(i)"
             ></button>
           </div>
         </ng-container>
+        <div class="flex justify-end my-2">
+          <button
+            tuiIconButton
+            type="button"
+            size="s"
+            appearance="primary"
+            icon="tuiIconPlus"
+            (click)="addViewSchema()"
+          ></button>
+        </div>
       </ng-container>
     </div>
   </div>
