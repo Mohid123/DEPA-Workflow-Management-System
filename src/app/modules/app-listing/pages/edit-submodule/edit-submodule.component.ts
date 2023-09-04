@@ -63,6 +63,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   summarySchemaFields: any[] = [];
   formKeys: any;
   schemaSubscription: Subscription[] = [];
+  selectItems = ['Text', 'Number'];
   schemaForm = new FormGroup({
     summarySchema: new FormControl([]),
     viewSchema: new FormArray([
@@ -159,7 +160,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       })
     }
     this.formKeys?.flatMap(val => val.fields.map((data, index) => {
-      this.schemaForm.controls['viewSchema']?.at(index)?.get('type')?.setValue(data?.type)
       this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
     }))
   }
@@ -405,7 +405,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       });
     });
   }
-
+ 
   getAllCategories() {
     this.dashboard.getAllCategories(10)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {

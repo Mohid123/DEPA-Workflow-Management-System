@@ -338,7 +338,7 @@
             <ng-container *ngFor="let form of formComponents; let i = index;">
               <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
                 <div class="relative flex justify-end gap-x-2">
-                  <div class="absolute z-10 flex justify-end -top-5 right-1 gap-x-2">
+                  <div class="absolute z-10 flex justify-end -top-7 right-1 gap-x-2">
                     <a (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 pt-1 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
                       <span>Summary & View Schema</span>
                     </a>
@@ -489,19 +489,31 @@
             <tui-input-tag
               [tuiTextfieldLabelOutside]="true"
               formControlName="fieldKey"
-              class="col-span-6"
+              class="col-span-4"
             >
-              View Schema fields
+              View schema field
             </tui-input-tag>
             <!--Display As-->
-            <tui-input formControlName="displayAs" class="col-span-6">
-              Specify field label
+            <tui-input formControlName="displayAs" class="col-span-4" [tuiTextfieldLabelOutside]="true">
               <input
                 tuiTextfield
                 [tuiTextfieldLabelOutside]="true"
                 type="text"
               />
+                <p class="mt-2">Field label</p>
             </tui-input>
+            <!--Type-->
+            <tui-select formControlName="type" class="col-span-4">
+              Specify data type
+              <input
+                placeholder="Specify data type"
+                tuiTextfield
+              />
+              <tui-data-list-wrapper
+                *tuiDataList
+                [items]="selectItems"
+              ></tui-data-list-wrapper>
+            </tui-select>
           </div>
           <div *ngIf="!first" class="flex justify-end my-2">
             <button
