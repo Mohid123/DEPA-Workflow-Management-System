@@ -136,7 +136,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         })
         this.dashboard.items = getUniqueListBy([...hierarchy, {
           caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
-          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
+          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
         }], 'caption')
       }
     });
