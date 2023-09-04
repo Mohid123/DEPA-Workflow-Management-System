@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
@@ -9,6 +9,7 @@ import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { FormioComponent } from '@formio/angular';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -48,6 +49,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   userRoleCheckAdmin: any;
   userRoleCheckUser: any;
   adminUsers: any[] = [];
+  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
 
   constructor(
     private fb: FormBuilder,
@@ -142,7 +144,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     ).subscribe((res: any) => {
       if(res) {
         this.subModuleData = res;
-        this.adminUsers = res?.adminUsers?.map(val => val?.id)
+        this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
           comp.components?.map(data => {
             if(data?.permissions?.length > 0) {
@@ -174,7 +176,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
               return data
             })
           }
-        })
+        });
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -271,6 +273,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
+    }
+    if(event?.data && event?.changed && event?.isModified) {
       const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
       this.formValues[this.activeIndex] = {...event, formId};
       const finalData = this.formValues?.map(value => {
@@ -300,6 +304,12 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     //     return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
     //   }
     // }
+    if(!this.formioComponent.submission) {
+      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
+    }
+    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
+      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
+    }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
