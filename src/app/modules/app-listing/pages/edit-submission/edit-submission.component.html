@@ -20,7 +20,13 @@
               <i class="fa fa-pencil-square fa-2x text-blue-500 hover:text-blue-600" aria-hidden="true"></i>
             </a>
           </div>
-          <formio [submission]="form || formValues[activeIndex]" [options]="options" [form]="form" (change)="onChange($event, i)"></formio>
+          <formio
+            #formioComponent
+            [submission]="form || formValues[activeIndex]"
+            [options]="options"
+            [form]="form"
+            (change)="onChange($event, i)"
+          ></formio>
         </div>
       </ng-container>
 

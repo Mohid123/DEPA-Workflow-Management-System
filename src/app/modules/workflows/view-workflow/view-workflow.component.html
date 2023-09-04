@@ -93,6 +93,7 @@
         <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
           <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
             <formio
+              #formioComponent
               [readOnly]="
                 (checkIfAllApproved() == true ||
                 checkIfLoggedInUserIsPartOfActiveUsers() == false ||

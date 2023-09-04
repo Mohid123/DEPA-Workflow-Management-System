@@ -270,7 +270,6 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
-    debugger
     const formFromEditModule = getItem(StorageItem.formEdit)
     if(this.editFormID) {
       this.formService.updateForm(this.editFormID, formData)

@@ -80,7 +80,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    */
   @Input() users: BehaviorSubject<any> = new BehaviorSubject([]);
 
-  limit: number = 6;
+  limit: number = 7;
   page: number = 0;
 
   /**
@@ -96,10 +96,11 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
       debounceTime(400),
       switchMap(searchStr => searchStr == '' ?
         of(null) :
-        this.dashboard.getAllAdminUsers(this.limit, this.page, searchStr)),
+        this.dashboard.getAllUsers(this.limit, this.page, searchStr)),
       takeUntil(this.destroy$)
     ).subscribe((users: any) => {
       if(users !== null) {
+        users = users?.filter(val => !val.roles?.includes('sysAdmin'))
         const userData = [...users, ...this.users?.value];
         const result = getUniqueListBy(userData, 'name')
         this.users.next(result)
@@ -108,9 +109,10 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
   }
 
   getUserData(limit: number, page: number) {
-    this.dashboard.getAllAdminUsers(limit, page)
+    this.dashboard.getAllUsers(limit, page)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
+      res = res?.filter(val => !val.roles?.includes('sysAdmin'))
       this.users.next(res);
     });
   }

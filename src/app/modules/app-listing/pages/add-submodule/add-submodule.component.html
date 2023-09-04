@@ -442,7 +442,7 @@
             <ng-container *ngFor="let form of formComponents; let i = index;">
               <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
                 <div class="flex justify-end">
-                  <div class="absolute z-10 flex justify-end -top-5 right-1 gap-x-2">
+                  <div class="absolute z-10 flex justify-end -top-7 right-1 gap-x-2">
                     <a (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 pt-1 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
                       <span>Summary & View Schema</span>
                     </a>
@@ -575,18 +575,13 @@
   <h2 class="text-lg font-semibold text-center">Modify Summary & View Schema</h2>
   <div [formGroup]="schemaForm" class="my-5">
     <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
-    <tui-multi-select
+    <tui-input-tag
       formControlName="summarySchema"
       [tuiTextfieldLabelOutside]="true"
       (ngModelChange)="handleChangeOnSummarySchema($event)"
     >
       Summary Schema fields
-      <tui-data-list-wrapper
-        *tuiDataList
-        tuiMultiSelectGroup
-        [items]="summarySchemaFields"
-      ></tui-data-list-wrapper>
-    </tui-multi-select>
+    </tui-input-tag>
     <p class="mt-1 text-xxs">e.g. formKey.fieldValue</p>
 
     <!--View Schema-->
@@ -598,12 +593,12 @@
             <tui-input-tag
               [tuiTextfieldLabelOutside]="true"
               formControlName="fieldKey"
-              class="col-span-6"
+              class="col-span-4"
             >
               View Schema fields
             </tui-input-tag>
             <!--Display As-->
-            <tui-input formControlName="displayAs" class="col-span-6">
+            <tui-input formControlName="displayAs" class="col-span-4">
               Specify field label
               <input
                 tuiTextfield
@@ -611,6 +606,18 @@
                 type="text"
               />
             </tui-input>
+            <!--Type-->
+            <tui-select formControlName="type" class="col-span-4">
+              Specify data type
+              <input
+                placeholder="Specify data type"
+                tuiTextfield
+              />
+              <tui-data-list-wrapper
+                *tuiDataList
+                [items]="selectItems"
+              ></tui-data-list-wrapper>
+            </tui-select>
           </div>
           <div *ngIf="!first" class="flex justify-end my-2">
             <button

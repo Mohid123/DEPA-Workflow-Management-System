@@ -144,7 +144,8 @@ export class DashboardService extends ApiService<any> {
           return {
             id: value?.id,
             name: value?.fullName,
-            control: new FormControl<boolean>(false)
+            control: new FormControl<boolean>(false),
+            roles: value?.roles
           }
         })
       }
