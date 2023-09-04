@@ -28,12 +28,13 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
-  getSubmissionFromSubModule(id: string, limit: any, page: any, submissionStatus?: number, sortBy?: string, payload?: any): Observable<ApiResponse<any>> {
+  getSubmissionFromSubModule(id: string, limit: any, page: any, submissionStatus?: number, sortBy?: string, sortByFormat?: string, payload?: any): Observable<ApiResponse<any>> {
     const params = {
       subModuleId: id,
       limit: limit,
       page: page,
       sortKey: sortBy ? sortBy : undefined,
+      sortBy: sortByFormat ? sortByFormat : undefined,
       submissionStatus: submissionStatus ? submissionStatus : undefined
     }
     if(params.submissionStatus == undefined) {
@@ -41,6 +42,9 @@ export class WorkflowsService extends ApiService<any> {
     }
     if(params.sortKey == undefined) {
       delete params.sortKey
+    }
+    if(params.sortBy == undefined) {
+      delete params.sortBy
     }
     return this.post(`/submissions`, payload || {}, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
