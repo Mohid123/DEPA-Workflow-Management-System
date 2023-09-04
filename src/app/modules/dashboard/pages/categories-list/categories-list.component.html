@@ -110,20 +110,32 @@
   </div>
 </ng-template>
 
-<ng-template #addTemplate>
+<ng-template #addTemplate let-observer>
   <p class="text-lg font-semibold text-center">
     Add/Edit Category
   </p>
   <div class="flex flex-col justify-center my-5">
     <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="categoryFormField"></formio>
   </div>
-  <button
-    tuiButton
-    type="button"
-    size="m"
-    [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
-    (click)="editOrAddCategory();"
+  <div class="flex justify-center gap-x-3">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
+      (click)="editOrAddCategory();"
     >
-    {{categoryId ? 'Update': 'Submit'}}
+      {{categoryId ? 'Update': 'Submit'}}
     </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      (click)="observer.complete()"
+    >
+      Cancel
+    </button>
+  </div>
 </ng-template>
