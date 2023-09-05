@@ -584,12 +584,16 @@
   <h2 class="mt-8 text-lg font-semibold text-center">Modify Summary & View Schema</h2>
   <div [formGroup]="schemaForm" class="w-[80%] mx-auto my-8">
     <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
-    <tui-input-tag
+    <tui-multi-select
       formControlName="summarySchema"
       [tuiTextfieldLabelOutside]="true"
     >
-      Type the fieldname and press Enter to add
-    </tui-input-tag>
+      Summary schema fields
+      <tui-data-list-wrapper
+        *tuiDataList
+        [items]="summarySchemaFields"
+      ></tui-data-list-wrapper>
+    </tui-multi-select>
     <p class="mt-1 text-xxs">Type the fieldname and press Enter to add. e.g. formKey.fieldValue</p>
 
     <!--View Schema-->
@@ -599,13 +603,17 @@
         <ng-container *ngFor="let schema of viewSchema.controls; let i = index; let first = first; let last = last">
           <div [formGroupName]="i" class="grid grid-cols-12 gap-2 mb-3">
 
-            <tui-input-tag
+            <tui-select
               [tuiTextfieldLabelOutside]="true"
               formControlName="fieldKey"
               class="col-span-3"
             >
               View schema field
-            </tui-input-tag>
+              <tui-data-list-wrapper
+                *tuiDataList
+                [items]="formKeysForViewSchema"
+              ></tui-data-list-wrapper>
+            </tui-select>
 
             <!--Display As-->
             <tui-input

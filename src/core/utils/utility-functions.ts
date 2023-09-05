@@ -71,6 +71,19 @@ export const convertStringToKeyValuePairs = (inputString, value) => {
   };
 }
 
+export const generateKeyCombinations = (inputObject) => {
+  const keys = Object.keys(inputObject);
+  const firstKey = keys[0];
+  const restKeys = keys.slice(1);
+  const combinations = [];
+
+  restKeys.forEach(key => {
+    combinations.push(`${firstKey}.${key}`);
+  });
+
+  return combinations;
+}
+
 export class FormKeyValidator {
   static createValidator(dashboard: DashboardService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {

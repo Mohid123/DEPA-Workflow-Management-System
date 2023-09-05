@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Formio, FormioForm, FormioOptions, FormioSubmission } from '@formio/angular';
+import { Formio, FormioForm, FormioOptions, FormioSubmission, FormioUtils } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -11,7 +11,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem, removeItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { calculateAspectRatio, calculateFileSize, getUniqueListBy } from 'src/core/utils/utility-functions';
+import { calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 
@@ -260,57 +260,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));
-              this.formKeys = formComps?.map(comp => {
-                return {
-                  key: comp.key,
-                  fields: comp.components?.flatMap(value => {
-                    if(value?.type == 'datagrid') {
-                      return value?.components?.map(data => {
-                        return  {
-                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
-                          displayAs: data.label,
-                          type: data.type
-                        }
-                      })
-                    }
-                    return  {
-                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-                      displayAs: value.label,
-                      type: value.type
-                    }
-                  })
-                }
-              })
-              this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-              this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
+              this.formKeys = FormioUtils.flattenComponents(formComps, true);
+              this.summarySchemaFields = generateKeyCombinations(this.formKeys)
+              this.formKeysForViewSchema = generateKeyCombinations(this.formKeys)
             }
             else {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));
-              this.formKeys = formComps?.map(comp => {
-                return {
-                  key: comp.key,
-                  fields: comp.components?.flatMap(value => {
-                    if(value?.label == 'Data Grid') {
-                      return value?.components?.map(data => {
-                        return  {
-                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
-                          displayAs: data.label,
-                          type: data.type
-                        }
-                      })
-                    }
-                    return  {
-                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-                      displayAs: value.label,
-                      type: value.type
-                    }
-                  })
-                }
-              })
-              this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-              this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
+              this.formKeys = FormioUtils.flattenComponents(formComps, true);
+              this.summarySchemaFields = generateKeyCombinations(this.formKeys)
+              this.formKeysForViewSchema = generateKeyCombinations(this.formKeys)
               const companyId = {
                 value: response?.companyId?.id,
                 label: response?.companyId?.title
@@ -668,10 +628,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     } else {
       this.isCreatingSubModule.next(true)
     }
-    let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      value.fieldKey = value.fieldKey[0];
-      return value
-    })
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
@@ -693,9 +649,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }
       }),
       summarySchema: this.schemaForm.value?.summarySchema,
-      viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
+      viewSchema: this.schemaForm.value?.viewSchema,
       accessType: this.accessTypeValue?.value?.name
     }
+    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})
