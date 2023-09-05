@@ -579,13 +579,15 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
     }
     let formUpdated = JSON.parse(JSON.stringify(this.formWithWorkflow));
+    console.log(formUpdated)
     const formDataIds = formUpdated?.map(data => {
       return {
-        formId: data?.formDataId,
+        formId: data?._id,
         data: data?.data,
-        id: data?._id
+        id: data?.formDataId
       }
     })
+    debugger
     this.workflowService.updateMultipleFormsData({formDataIds}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
         this.fetchData()
