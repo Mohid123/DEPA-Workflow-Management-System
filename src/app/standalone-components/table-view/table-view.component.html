@@ -56,7 +56,7 @@
                 (userRoleCheck == true && checkIfUserisViewOnly(data?.viewOnlyUsers) == false) ||
                 checkIfUserisAdmin(data?.adminUsers)"
                 [routerLink]="['/modules/edit-module', data?.id]"
-                (click)="setEditSlug(data?.code, data?.id)"
+                (click)="setEditSlug(data?.code, data?.id, data?.title)"
                 class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md cursor-pointer hover:text-white">
                 <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
               </a>

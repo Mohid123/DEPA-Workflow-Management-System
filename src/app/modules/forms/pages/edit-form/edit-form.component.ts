@@ -27,6 +27,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   activeIndex: number = 0;
   formValue: any;
   editMode: boolean = false;
+  options: any = {
+    "disableAlerts": true,
+    "noDefaultSubmitButton": true
+  }
   readonly items = [
     {
       text: 'Form Builder',
@@ -93,7 +97,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       const hierarchy = getItem(StorageItem.navHierarchy) || [];
       if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('edit-module')) {
         hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+          val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
         })
         if(this.dashboard.previousRoute.includes('moduleCode')) {
           if(Object.keys(val).length == 0) {
@@ -116,22 +120,24 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         }
         else {
           if(Object.keys(val).length == 0) {
+            
             this.dashboard.items = [...hierarchy,
               {
-                caption: getItem(StorageItem.editmoduleSlug),
+                caption: getItem(StorageItem.editmoduleTitle),
                 routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
               },
               {
                 caption: getItem(StorageItem.formKey) || 'Add Form',
-                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
+                routerLink: `/forms/edit-form`
               }
             ];
+            
           }
           else {
             this.dashboard.items = [
               ...hierarchy,
               {
-                caption: getItem(StorageItem.editmoduleSlug),
+                caption: getItem(StorageItem.editmoduleTitle),
                 routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
               },
               {
@@ -139,11 +145,11 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
                 routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
               }
             ];
+            
           }
         }
       }
       else if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('add-submission')) {
-
         this.dashboard.items = [
           ...hierarchy,
           {
@@ -155,16 +161,21 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
           }
         ];
+        
       }
       else {
-
+        
+        hierarchy.forEach(val => {
+          val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+        })
         this.dashboard.items = [
           ...hierarchy,
           {
-            caption: getItem(StorageItem.formKey) || 'Edit Form',
+            caption: getItem(StorageItem.formKey) || 'Add Form',
             routerLink: `/forms/edit-form?id=${this.editFormID}`
           }
         ];
+        
       }
     });
 

@@ -89,15 +89,31 @@
     {{categoryId ? 'Edit': 'Add'}} Company
   </p>
   <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea1">Company Name</label>
-    <input [formControl]="categoryEditControl" class="form-control">
+    <label class="block" for="Textarea1">Company Name <sup class="text-red-500">*</sup></label>
+    <input [formControl]="categoryEditControl" class="form-control mb-1">
+    <span *ngIf="categoryEditControl?.invalid && categoryEditControl?.touched" class="text-red-500 text-xs">
+      Company name is required
+    </span>
+  </div>
+  <div class="flex flex-col justify-center my-5">
+    <label class="block" for="Textarea2">Group Code<sup class="text-red-500">*</sup></label>
+    <input [formControl]="groupCodeControl" class="form-control mb-1">
+    <span *ngIf="groupCodeControl?.hasError('required') && groupCodeControl?.touched" class="text-red-500 text-xs">
+      Group Code is required
+    </span>
+    <span *ngIf="groupCodeControl?.hasError('minlength') && groupCodeControl?.touched" class="text-red-500 text-xs">
+      Group Code should be at least 3 characters
+    </span>
+    <span *ngIf="groupCodeControl?.hasError('maxlength') && groupCodeControl?.touched" class="text-red-500 text-xs">
+      Group Code should not exceed 7 characters
+    </span>
   </div>
   <div class="flex justify-center gap-x-3">
     <button
     tuiButton
     type="button"
     size="m"
-    [disabled]="!categoryEditControl?.value"
+    [disabled]="!categoryEditControl?.value || !groupCodeControl?.value || groupCodeControl.invalid || categoryEditControl.invalid"
     (click)="editOrAddCompany();"
     >
     {{categoryId ? 'Update': 'Submit'}}

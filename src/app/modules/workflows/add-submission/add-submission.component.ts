@@ -86,7 +86,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     const hierarchy = getItem(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
     })
 
     this.dashboard.items = [...hierarchy, {
@@ -273,8 +273,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-    }
-    if(event?.data && event?.changed && event?.isModified) {
       const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
       this.formValues[this.activeIndex] = {...event, formId};
       const finalData = this.formValues?.map(value => {
@@ -335,6 +333,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         }
       })
     }
+    debugger
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {

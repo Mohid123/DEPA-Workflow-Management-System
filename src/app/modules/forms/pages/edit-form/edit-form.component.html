@@ -31,7 +31,7 @@
       </select>
     </div> -->
   </div>
-  <form-builder [form]="form" (change)="onChange($event)"></form-builder>
+  <form-builder [form]="form" (change)="onChange($event)" [options]="options"></form-builder>
   <div class="flex justify-center py-3">
     <button
       (click)="submitFormData()"

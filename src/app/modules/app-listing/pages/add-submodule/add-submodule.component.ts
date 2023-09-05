@@ -147,7 +147,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         const hierarchy = getItem(StorageItem.navHierarchy);
         if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('isParent')) {
           hierarchy.forEach(val => {
-            val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy, {
             caption: 'Add App',
@@ -155,7 +155,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           }];
         }
         else {
-          this.dashboard.items = [{
+          hierarchy.forEach(val => {
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+          })
+          this.dashboard.items = [...hierarchy, {
             caption: 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
@@ -511,6 +514,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   confirmDefaultSubmission() {
+    this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex]
     this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
 
@@ -583,8 +587,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
-      summarySchema: this.schemaForm.value?.summarySchema,
-      viewSchema: this.schemaForm.value?.viewSchema,
+      summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
+      viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
     debugger

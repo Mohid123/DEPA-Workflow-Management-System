@@ -99,7 +99,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
         const hierarchy = getItem(StorageItem.navHierarchy);
         if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('?')) {
           hierarchy.forEach(val => {
-            val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy,
             {

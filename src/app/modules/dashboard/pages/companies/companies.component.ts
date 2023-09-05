@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
@@ -11,7 +11,12 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 })
 export class CompaniesComponent {
   companies: Observable<any>;
-  categoryEditControl: FormControl = new FormControl('');
+  categoryEditControl: FormControl = new FormControl('', Validators.required);
+  groupCodeControl: FormControl = new FormControl('', Validators.compose([
+    Validators.required,
+    Validators.minLength(3),
+    Validators.maxLength(7),
+  ]));
   categoryId: string;
   destroy$ = new Subject();
   limit: number = 6;
@@ -34,7 +39,7 @@ export class CompaniesComponent {
     if(this.categoryId) {
       this.dashboard.updateCompany({
         title: this.categoryEditControl?.value,
-        groupCode: this.categoryEditControl?.value?.replace(/\s/g, '-')
+        groupCode: this.groupCodeControl?.value
       }, this.categoryId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
@@ -47,7 +52,7 @@ export class CompaniesComponent {
     else {
       this.dashboard.addCompany({
         title: this.categoryEditControl?.value,
-        groupCode: this.categoryEditControl?.value?.replace(/\s/g, '-')
+        groupCode: this.groupCodeControl?.value
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {

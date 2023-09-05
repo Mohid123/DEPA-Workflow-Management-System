@@ -126,20 +126,20 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       if(Object.keys(val).length == 0) {
         const hierarchy = getItem(StorageItem.navHierarchy) || [];
         hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+          val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
         })
         this.dashboard.items = getUniqueListBy([...hierarchy, {
-          caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
+          caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
           routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
         }], 'caption')
       }
       else {
         const hierarchy = getItem(StorageItem.navHierarchy) || [];
         hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+          val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
         })
         this.dashboard.items = getUniqueListBy([...hierarchy, {
-          caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
+          caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
           routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
         }], 'caption')
       }
@@ -263,6 +263,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formKeys = FormioUtils.flattenComponents(formComps, true);
               this.summarySchemaFields = generateKeyCombinations(this.formKeys)
               this.formKeysForViewSchema = generateKeyCombinations(this.formKeys)
+              formComps?.map((data, index) => {
+                if(data?.defaultData) {
+                  this.defaultFormIndex = index
+                  this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
+                }
+              })
             }
             else {
               this.formComponents = response?.formIds;
@@ -271,6 +277,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formKeys = FormioUtils.flattenComponents(formComps, true);
               this.summarySchemaFields = generateKeyCombinations(this.formKeys)
               this.formKeysForViewSchema = generateKeyCombinations(this.formKeys)
+              formComps?.map((data, index) => {
+                if(data?.defaultData) {
+                  this.defaultFormIndex = index
+                  this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
+                }
+              })
               const companyId = {
                 value: response?.companyId?.id,
                 label: response?.companyId?.title
@@ -451,6 +463,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   confirmDefaultSubmission() {
+    this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex];
+    let payload = {
+      ...this.formComponents[this.defaultFormIndex],
+      revisionNo: undefined,
+      id: undefined,
+      createdBy: undefined,
+      status: undefined
+    }
+    this.formService.updateForm(this.formComponents[this.defaultFormIndex]?.id, payload).pipe(takeUntil(this.destroy$)).subscribe()
     this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
 
@@ -648,11 +669,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       }),
-      summarySchema: this.schemaForm.value?.summarySchema,
-      viewSchema: this.schemaForm.value?.viewSchema,
+      summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
+      viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name
     }
-    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})

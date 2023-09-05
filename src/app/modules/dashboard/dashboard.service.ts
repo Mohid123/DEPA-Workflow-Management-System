@@ -19,6 +19,7 @@ interface BreadCrumbs {
    * breadcrumb caption
    */
   caption: string,
+  code?: string
 
   /**
    * The route link or path to enable navigation
@@ -569,7 +570,8 @@ export class DashboardService extends ApiService<any> {
       if(!res.hasErrors()) {
         const hierarchy = res.data?.navHierarchy?.map(val => {
           return {
-            caption: val?.code,
+            caption: val?.title,
+            code: val?.code,
             routerLink: val?.id
           }
         })
