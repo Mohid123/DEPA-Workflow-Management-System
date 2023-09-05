@@ -21,7 +21,7 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
-  formKeys: any;
+  formKeys: any[] = [];
   formComponents: any[] = [];
   activeIndex: number = 0;
   public options: FormioOptions;
@@ -540,6 +540,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   deleteForm() {
     this.formComponents.splice(this.delIndex, 1)
+    this.formTabs.splice(this.delIndex, 1)
   }
 
   changeLanguage(lang: string) {
