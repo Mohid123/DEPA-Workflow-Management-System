@@ -321,7 +321,12 @@
 
     <!--Form preview-->
     <div class="mb-5 mt-7">
-      <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">Edit Form/s</h4>
+      <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">
+        <h4 class="text-lg font-semibold mt-1.5">Edit Form/s</h4>
+        <a *ngIf="formComponents[0]?.components?.length > 0" (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 py-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
+          Summary & View Schema
+        </a>
+      </div>
       <h4 class="mt-3 text-base font-semibold text-center">Form/s Preview</h4>
       <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
         <ng-container *ngIf="formComponents[0]?.components?.length > 0">
@@ -338,9 +343,9 @@
             <ng-container *ngFor="let form of formComponents; let i = index;">
               <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
                 <div class="relative flex justify-end gap-x-2">
-                  <div class="absolute z-10 flex justify-end -top-7 right-1 gap-x-2">
-                    <a (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 pt-1 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
-                      <span>Summary & View Schema</span>
+                  <div class="absolute z-10 flex justify-end -top-[30px] right-1 gap-x-2">
+                    <a (click)="addDefaultData(i, defaultForm)" class="rounded-md cursor-pointer" title="Add default data">
+                      <i class="text-green-500 hover:text-green-600 fa fa-table fa-2x" aria-hidden="true"></i>
                     </a>
                     <a (click)="sendFormForEdit(i, form?.id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
                       <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
@@ -350,7 +355,7 @@
                     </a>
                   </div>
                 </div>
-                <formio [language]="language" [options]="options" [form]="form"></formio>
+                <formio [language]="language" [options]="options" [form]="form" [submission]="deafultFormSubmission[i]"></formio>
               </div>
             </ng-container>
 
@@ -595,6 +600,39 @@
       size="m"
       (click)="observer.complete()"
       >
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #defaultForm let-observer>
+  <h2 class="mt-8 text-lg font-semibold text-center">Add default data</h2>
+  <div class="w-[90%] mx-auto">
+    <formio
+      [options]="options"
+      [form]="formForDefaultData"
+      (change)="onChangeForm($event)"
+      [submission]="deafultFormSubmission[defaultFormIndex]"
+    ></formio>
+  </div>
+  <div class="flex justify-center gap-2">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="primary"
+      (click)="confirmDefaultSubmission()"
+    >
+      Confirm
+    </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      appearance="accent"
+      (click)="observer.complete()"
+    >
       Cancel
     </button>
   </div>

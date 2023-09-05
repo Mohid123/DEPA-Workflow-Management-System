@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormioOptions } from '@formio/angular';
+import { Formio, FormioForm, FormioOptions, FormioSubmission } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -63,6 +63,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   summarySchemaFields: any[] = [];
   formKeys: any;
   schemaSubscription: Subscription[] = [];
+  defaultFormSubscription: Subscription[] = [];
   selectItems = ['Text', 'Number', 'Date'];
   schemaForm = new FormGroup({
     summarySchema: new FormControl([]),
@@ -75,7 +76,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       })
     ])
   });
-  delFormId: string
+  delFormId: string;
+  formForDefaultData: FormioForm;
+  deafultFormSubmission: any[] = [];
+  defaultFormIndex: number
 
   constructor(
     private fb: FormBuilder,
@@ -240,7 +244,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 fieldKey: new FormControl([data?.fieldKey]),
                 displayAs: new FormControl(data?.displayAs),
                 type: new FormControl(data?.type),
-                isDisplayedInGrid: new FormControl(false),
+                isDisplayedInGrid: new FormControl(data?.isDisplayedInGrid),
               });
               this.schemaForm.controls['viewSchema'].push(schemaForm)
             })
@@ -260,7 +264,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 return {
                   key: comp.key,
                   fields: comp.components?.flatMap(value => {
-                    if(value?.label == 'Data Grid') {
+                    if(value?.type == 'datagrid') {
                       return value?.components?.map(data => {
                         return  {
                           fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
@@ -463,6 +467,31 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       size: 'page'
     })
     .subscribe());
+  }
+
+  addDefaultData(i: number, content: PolymorpheusContent<TuiDialogContext>) {
+    this.formForDefaultData = this.formComponents[i]
+    this.defaultFormIndex = i;
+    this.defaultFormSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'page'
+    }).subscribe())
+  }
+
+  onChangeForm(event: any) {
+    if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      this.deafultFormSubmission[this.defaultFormIndex] = {data: event?.data}
+    }
+  }
+
+  confirmDefaultSubmission() {
+    this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
 
   sendFormForEdit(i: number, formID: string, key: string) {

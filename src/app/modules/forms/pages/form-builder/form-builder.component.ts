@@ -1,11 +1,11 @@
-import { Component, ViewChild, EventEmitter, ElementRef, OnInit, Inject, TemplateRef, Injector } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef, OnInit, Inject, Injector, AfterViewInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormioRefreshValue } from '@formio/angular';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
@@ -18,7 +18,7 @@ import { DialogTemplate } from '../../templates/permission-template.component';
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
-export class FormBuilderComponent implements OnInit {
+export class FormBuilderComponent implements OnInit, AfterViewInit {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
   public form: {title: string, key: string, display: string, components: any};
@@ -47,6 +47,10 @@ export class FormBuilderComponent implements OnInit {
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
   viewUsers = new FormControl<any>([]);
+  options: any = {
+    "disableAlerts": true,
+    "noDefaultSubmitButton": true
+  }
 
   constructor(
     private transportService: DataTransportService,
@@ -67,6 +71,7 @@ export class FormBuilderComponent implements OnInit {
           if(response) {
             this.form = response;
             this.formTitleControl.setValue(response?.title);
+            this.formValue = this.form
           }
         })
       }
@@ -74,6 +79,7 @@ export class FormBuilderComponent implements OnInit {
         this.form = this.transportService.sendFormDataForEdit.value;
         this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
         this.formTitleControl.disable();
+        this.formValue = this.form
       }
       else {
         this.form = {
@@ -83,6 +89,7 @@ export class FormBuilderComponent implements OnInit {
           components: []
         };
       }
+      this.formValue = this.form
     })
   }
 
@@ -144,6 +151,14 @@ export class FormBuilderComponent implements OnInit {
         })
       }
     })
+  }
+
+  ngAfterViewInit(): void {
+    this.onJsonView()
+  }
+
+  goback() {
+    this.location.back()
   }
 
   onChange(event: any) {

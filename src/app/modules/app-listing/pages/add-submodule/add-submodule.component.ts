@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormioOptions } from '@formio/angular';
+import { FormioForm, FormioOptions } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -81,7 +81,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       })
     ])
   });
-  delIndex: number
+  delIndex: number;
+  formForDefaultData: FormioForm;
+  deafultFormSubmission: any[] = [];
+  defaultFormIndex: number;
+  defaultFormSubscription: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -503,6 +507,31 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     else {
       this.router.navigate(['/forms/form-builder']);
     }
+  }
+
+  addDefaultData(i: number, content: PolymorpheusContent<TuiDialogContext>) {
+    this.formForDefaultData = this.formComponents[i]
+    this.defaultFormIndex = i;
+    this.defaultFormSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'page'
+    }).subscribe())
+  }
+
+  onChangeForm(event: any) {
+    if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      this.deafultFormSubmission[this.defaultFormIndex] = {data: event?.data}
+    }
+  }
+
+  confirmDefaultSubmission() {
+    this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
 
   sendFormForEdit(index: number) {
