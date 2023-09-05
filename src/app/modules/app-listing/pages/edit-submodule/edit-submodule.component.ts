@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormioOptions } from '@formio/angular';
+import { Formio, FormioForm, FormioOptions, FormioSubmission, FormioUtils } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -11,7 +11,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem, removeItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { calculateAspectRatio, calculateFileSize, getUniqueListBy } from 'src/core/utils/utility-functions';
+import { calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 
@@ -61,21 +61,26 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   accessTypeValue: FormControl
   formKeysForViewSchema: any[] = [];
   summarySchemaFields: any[] = [];
-  formKeys: any;
+  formKeys: any[] = [];
+  formKeysFinal: any[] = [];
   schemaSubscription: Subscription[] = [];
-  selectItems = ['Text', 'Number'];
+  defaultFormSubscription: Subscription[] = [];
+  selectItems = ['Text', 'Number', 'Date'];
   schemaForm = new FormGroup({
     summarySchema: new FormControl([]),
     viewSchema: new FormArray([
       new FormGroup({
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
-        type: new FormControl(''),
-        formKey: new FormControl('')
+        type: new FormControl(this.selectItems[0]),
+        isDisplayedInGrid: new FormControl(false)
       })
     ])
   });
-  delFormId: string
+  delFormId: string;
+  formForDefaultData: FormioForm;
+  deafultFormSubmission: any[] = [];
+  defaultFormIndex: number
 
   constructor(
     private fb: FormBuilder,
@@ -122,46 +127,32 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       if(Object.keys(val).length == 0) {
         const hierarchy = getItem(StorageItem.navHierarchy) || [];
         hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+          val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
         })
         this.dashboard.items = getUniqueListBy([...hierarchy, {
-          caption: getItem(StorageItem.editmoduleSlug) || getItem(StorageItem.moduleSlug),
+          caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
           routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
         }], 'caption')
       }
       else {
-        const hierarchy = getItem(StorageItem.navHierarchy) || [];
-        hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
-        })
-        this.dashboard.items = [...hierarchy]
-      }
-    });
-  }
-
-  handleChangeOnSummarySchema(value: any) {
-    if(value.length == 0) {
-      this.schemaForm.controls['viewSchema'].at(0).get('fieldKey').setValue([])
-    }
-    else {
-      if(value.length !== this.schemaForm.controls['viewSchema']?.length) {
-        value?.map((field, index) => {
-          this.schemaForm.controls['viewSchema'].removeAt(index)
-        })
-      }
-      value?.map((field, index) => {
-        if(this.schemaForm.controls['viewSchema'].at(index)) {
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
+        if(this.router.url.includes('moduleCode')) {
+          this.dashboard.items = getUniqueListBy([{
+            caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
+            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+          }], 'caption')
         }
         else {
-          this.addViewSchema();
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
+          const hierarchy = getItem(StorageItem.navHierarchy) || [];
+          hierarchy.forEach(val => {
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+          })
+          this.dashboard.items = getUniqueListBy([{
+            caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
+            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+          }], 'caption')
         }
-      })
-    }
-    this.formKeys?.flatMap(val => val.fields.map((data, index) => {
-      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
-    }))
+      }
+    });
   }
 
   get viewSchema() {
@@ -172,19 +163,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl([]),
       displayAs: new FormControl(''),
-      type: new FormControl(''),
-      formKey: new FormControl('')
-      
+      type: new FormControl(this.selectItems[0]),
+      isDisplayedInGrid: new FormControl(false)
+
     });
     this.viewSchema.push(schemaForm)
   }
 
   deleteViewSchema(index: number) {
-    this.viewSchema.removeAt(index);
-    let val = this.schemaForm.controls['summarySchema'].value;
-    val.splice(index, 1);
     this.viewSchema.removeAt(index)
-    this.schemaForm.controls['summarySchema'].setValue(val)
   }
 
   onFileSelect(event: any) {
@@ -266,7 +253,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 fieldKey: new FormControl([data?.fieldKey]),
                 displayAs: new FormControl(data?.displayAs),
                 type: new FormControl(data?.type),
-                formKey: new FormControl(data?.formKey),
+                isDisplayedInGrid: new FormControl(data?.isDisplayedInGrid),
               });
               this.schemaForm.controls['viewSchema'].push(schemaForm)
             })
@@ -282,57 +269,41 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));
-              this.formKeys = formComps?.map(comp => {
-                return {
-                  key: comp.key,
-                  fields: comp.components?.flatMap(value => {
-                    if(value?.label == 'Data Grid') {
-                      return value?.components?.map(data => {
-                        return  {
-                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
-                          displayAs: data.label,
-                          type: data.type
-                        }
-                      })
-                    }
-                    return  {
-                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-                      displayAs: value.label,
-                      type: value.type
-                    }
-                  })
+              formComps?.map(form => {
+                this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+              })
+              this.summarySchemaFields = this.formKeys.flatMap(val => {
+                let res = generateKeyCombinations(val)
+                return res
+              })
+              console.log(this.summarySchemaFields)
+              this.formKeysForViewSchema = this.summarySchemaFields;
+              formComps?.map((data, index) => {
+                if(data?.defaultData) {
+                  this.defaultFormIndex = index
+                  this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
                 }
               })
-              this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-              this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
             }
             else {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));
-              this.formKeys = formComps?.map(comp => {
-                return {
-                  key: comp.key,
-                  fields: comp.components?.flatMap(value => {
-                    if(value?.label == 'Data Grid') {
-                      return value?.components?.map(data => {
-                        return  {
-                          fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
-                          displayAs: data.label,
-                          type: data.type
-                        }
-                      })
-                    }
-                    return  {
-                      fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-                      displayAs: value.label,
-                      type: value.type
-                    }
-                  })
+              formComps?.map(form => {
+                this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+              })
+              this.summarySchemaFields = this.formKeys.flatMap(val => {
+                let res = generateKeyCombinations(val)
+                return res
+              })
+              this.formKeysForViewSchema = this.summarySchemaFields;
+
+              formComps?.map((data, index) => {
+                if(data?.defaultData) {
+                  this.defaultFormIndex = index
+                  this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
                 }
               })
-              this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-              this.formKeysForViewSchema = this.formKeys?.map(val => val.key)
               const companyId = {
                 value: response?.companyId?.id,
                 label: response?.companyId?.title
@@ -405,7 +376,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       });
     });
   }
- 
+
   getAllCategories() {
     this.dashboard.getAllCategories(10)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
@@ -486,9 +457,44 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'l'
+      size: 'page'
     })
     .subscribe());
+  }
+
+  addDefaultData(i: number, content: PolymorpheusContent<TuiDialogContext>) {
+    this.formForDefaultData = this.formComponents[i]
+    this.defaultFormIndex = i;
+    this.defaultFormSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'page'
+    }).subscribe())
+  }
+
+  onChangeForm(event: any) {
+    if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      this.deafultFormSubmission[this.defaultFormIndex] = {data: event?.data}
+    }
+  }
+
+  confirmDefaultSubmission() {
+    this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex];
+    let payload = {
+      ...this.formComponents[this.defaultFormIndex],
+      revisionNo: undefined,
+      id: undefined,
+      createdBy: undefined,
+      status: undefined,
+      updatedBy: undefined
+    }
+    this.formService.updateForm(this.formComponents[this.defaultFormIndex]?.id, payload).pipe(takeUntil(this.destroy$)).subscribe()
+    this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
 
   sendFormForEdit(i: number, formID: string, key: string) {
@@ -665,10 +671,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     } else {
       this.isCreatingSubModule.next(true)
     }
-    let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      value.fieldKey = value.fieldKey[0];
-      return value
-    })
     let payload = {
       url: `/modules/module-details/${this.subModuleForm.get('title')?.value.replace(/\s/g, '-').toLowerCase()}`,
       companyId: this.subModuleForm.get('companyId')?.value,
@@ -689,8 +691,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       }),
-      summarySchema: this.schemaForm.value?.summarySchema,
-      viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
+      summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
+      viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name
     }
     if(statusStr) {

@@ -84,7 +84,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const hierarchy = getItem(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
     })
     this.dashboard.items = [...hierarchy, {
       caption: getItem(StorageItem.formKey) || 'Edit Submission',

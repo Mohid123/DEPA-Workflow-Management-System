@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormioOptions } from '@formio/angular';
+import { FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -10,7 +10,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { CodeValidator, calculateFileSize } from 'src/core/utils/utility-functions';
+import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 
@@ -21,7 +21,7 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
-  formKeys: any;
+  formKeys: any[] = [];
   formComponents: any[] = [];
   activeIndex: number = 0;
   public options: FormioOptions;
@@ -77,11 +77,15 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         fieldKey: new FormControl([]),
         displayAs: new FormControl(''),
         type: new FormControl(this.selectItems[0]),
-        formKey: new FormControl(''),
+        isDisplayedInGrid: new FormControl(false)
       })
     ])
   });
-  delIndex: number
+  delIndex: number;
+  formForDefaultData: FormioForm;
+  deafultFormSubmission: any[] = [];
+  defaultFormIndex: number;
+  defaultFormSubscription: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -113,29 +117,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.formComponents = this.transportService.formBuilderData.value;
     this.formTabs = this.formComponents.map(val => val.title);
     let formComps = JSON.parse(JSON.stringify(this.formComponents));
-    this.formKeys = formComps?.map(comp => {
-      return {
-        key: comp.key,
-        fields: comp.components?.flatMap(value => {
-          if(value?.label == 'Data Grid') {
-            return value?.components?.map(data => {
-              return  {
-                fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
-                displayAs: data.label,
-                type: data.type
-              }
-            })
-          }
-          return  {
-            fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-            displayAs: value.label,
-            type: value.type
-          }
-        })
-      }
+    formComps?.map(form => {
+      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
     })
-    this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-    this.formKeysForViewSchema = this.formKeys?.map(val => val.key);
+    this.summarySchemaFields = this.formKeys.flatMap(val => {
+      let res = generateKeyCombinations(val)
+      return res
+    })
+    this.formKeysForViewSchema = this.summarySchemaFields;
 
     this.getAllCompanies();
     // get users for email
@@ -163,7 +152,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         const hierarchy = getItem(StorageItem.navHierarchy);
         if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('isParent')) {
           hierarchy.forEach(val => {
-            val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy, {
             caption: 'Add App',
@@ -171,38 +160,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           }];
         }
         else {
-          this.dashboard.items = [{
+          hierarchy.forEach(val => {
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+          })
+          this.dashboard.items = [...hierarchy, {
             caption: 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
         }
       }
     });
-  }
-
-  handleChangeOnSummarySchema(value: any) {
-    if(value.length == 0) {
-      this.schemaForm.controls['viewSchema'].at(0).get('fieldKey').setValue([])
-    }
-    else {
-      if(value.length !== this.schemaForm.controls['viewSchema']?.length) {
-        value?.map((field, index) => {
-          this.schemaForm.controls['viewSchema'].removeAt(index)
-        })
-      }
-      value?.map((field, index) => {
-        if(this.schemaForm.controls['viewSchema'].at(index)) {
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
-        }
-        else {
-          this.addViewSchema();
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
-        }
-      })
-    }
-    this.formKeys?.flatMap(val => val.fields.map((data, index) => {
-      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
-    }))
   }
 
   checkIfLabelIsUnique() {
@@ -219,20 +186,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addViewSchema() {
     const schemaForm = this.fb.group({
-      fieldKey: new FormControl(''),
+      fieldKey: new FormControl([]),
       displayAs: new FormControl(''),
       type: new FormControl(this.selectItems[0]),
-      formKey: new FormControl('')
+      isDisplayedInGrid: new FormControl(false)
+
     });
     this.viewSchema.push(schemaForm)
   }
 
   deleteViewSchema(index: number) {
     this.viewSchema.removeAt(index);
-    let val = this.schemaForm.controls['summarySchema'].value;
-    val.splice(index, 1);
-    this.schemaForm.controls['summarySchema'].setValue(val)
-    this.viewSchema.removeAt(index)
   }
 
   getDefaultWorkflowByModule() {
@@ -533,6 +497,32 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  addDefaultData(i: number, content: PolymorpheusContent<TuiDialogContext>) {
+    this.formForDefaultData = this.formComponents[i]
+    this.defaultFormIndex = i;
+    this.defaultFormSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'page'
+    }).subscribe())
+  }
+
+  onChangeForm(event: any) {
+    if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      this.deafultFormSubmission[this.defaultFormIndex] = {data: event?.data}
+    }
+  }
+
+  confirmDefaultSubmission() {
+    this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex]
+    this.defaultFormSubscription.forEach(val => val.unsubscribe())
+  }
+
   sendFormForEdit(index: number) {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
@@ -550,6 +540,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   deleteForm() {
     this.formComponents.splice(this.delIndex, 1)
+    this.formTabs.splice(this.delIndex, 1)
   }
 
   changeLanguage(lang: string) {
@@ -584,10 +575,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)
       }
     }
-    let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      value.fieldKey = value.fieldKey[0];
-      return value
-    })
     let payload: any = {
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
@@ -606,10 +593,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
-      summarySchema: this.schemaForm.value?.summarySchema,
-      viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
+      summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
+      viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
     }
+    debugger
     if(statusStr) {
       this.isSavingAsDraft.next(true)
     } else {
@@ -726,7 +714,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'l'
+      size: 'page'
     })
     .subscribe());
   }

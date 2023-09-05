@@ -25,6 +25,7 @@ export enum StorageItem {
   navHierarchy = 'App/navHierarchy',
   approvers = 'App/approvers',
   editmoduleSlug = 'App/editmoduleSlug',
+  editmoduleTitle = 'App/editmoduleTitle',
   editmoduleId = 'App/editmoduleId',
   formID = 'App/formID'
 }

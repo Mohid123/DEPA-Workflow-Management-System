@@ -259,8 +259,9 @@ export class TableViewComponent implements OnDestroy {
     this.router.navigate(['/modules', code], {queryParams: {moduleID: id || ''}})
   }
 
-  setEditSlug(code: string, id: string) {
+  setEditSlug(code: string, id: string, title: string) {
     setItem(StorageItem.editmoduleSlug, code);
+    setItem(StorageItem.editmoduleTitle, title);
     setItem(StorageItem.editmoduleId, id);
   }
 
