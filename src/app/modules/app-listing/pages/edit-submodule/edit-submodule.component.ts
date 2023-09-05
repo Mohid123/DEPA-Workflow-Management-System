@@ -70,7 +70,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     summarySchema: new FormControl([]),
     viewSchema: new FormArray([
       new FormGroup({
-        fieldKey: new FormControl([]),
+        fieldKey: new FormControl(),
         displayAs: new FormControl(''),
         type: new FormControl(this.selectItems[0]),
         isDisplayedInGrid: new FormControl(false)
@@ -161,7 +161,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   addViewSchema() {
     const schemaForm = this.fb.group({
-      fieldKey: new FormControl([]),
+      fieldKey: new FormControl(''),
       displayAs: new FormControl(''),
       type: new FormControl(this.selectItems[0]),
       isDisplayedInGrid: new FormControl(false)
@@ -250,7 +250,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             }
             response.viewSchema?.map(data => {
               const schemaForm = this.fb.group({
-                fieldKey: new FormControl([data?.fieldKey]),
+                fieldKey: new FormControl(data?.fieldKey),
                 displayAs: new FormControl(data?.displayAs),
                 type: new FormControl(data?.type),
                 isDisplayedInGrid: new FormControl(data?.isDisplayedInGrid),
