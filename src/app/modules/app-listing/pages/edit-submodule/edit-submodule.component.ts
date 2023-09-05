@@ -490,7 +490,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       revisionNo: undefined,
       id: undefined,
       createdBy: undefined,
-      status: undefined
+      status: undefined,
+      updatedBy: undefined
     }
     this.formService.updateForm(this.formComponents[this.defaultFormIndex]?.id, payload).pipe(takeUntil(this.destroy$)).subscribe()
     this.defaultFormSubscription.forEach(val => val.unsubscribe())
