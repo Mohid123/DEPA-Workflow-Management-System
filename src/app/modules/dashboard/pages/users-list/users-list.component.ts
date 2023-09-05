@@ -50,6 +50,11 @@ export class UsersListComponent implements OnDestroy {
     this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
   }
 
+  changeSize(page: number) {
+    this.limit = page;
+    this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
+  }
+
   checkRoles(data: any[]) {
     return data?.includes('sysAdmin')
   }

@@ -74,9 +74,8 @@ export const convertStringToKeyValuePairs = (inputString, value) => {
 export const generateKeyCombinations = (inputObject) => {
   const keys = Object.keys(inputObject);
   const firstKey = keys[0];
-  const restKeys = keys.slice(1);
+  const restKeys = Object.keys(inputObject[firstKey]);
   const combinations = [];
-
   restKeys.forEach(key => {
     combinations.push(`${firstKey}.${key}`);
   });

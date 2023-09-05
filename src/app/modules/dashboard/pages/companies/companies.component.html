@@ -10,7 +10,7 @@
       <table
         tuiTable
         class="w-full rounded-lg"
-        [columns]="['title', 'actions']"
+        [columns]="['title', 'code', 'actions']"
       >
         <thead>
           <tr tuiThGroup>
@@ -22,7 +22,15 @@
             >
               Company Name
             </th>
-            <th class="text-base" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
+            <th
+              *tuiHead="'code'"
+              tuiTh
+              [resizable]="true"
+              class="text-base"
+            >
+              Group Code
+            </th>
+            <th class="text-base w-1/12" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
           </tr>
         </thead>
         <tbody
@@ -44,6 +52,13 @@
                 tuiTd
               >
                 {{item?.title}}
+              </td>
+              <td
+                class="py-3 font-semibold"
+                *tuiCell="'code'"
+                tuiTd
+              >
+                {{item?.groupCode}}
               </td>
               <td
                 *tuiCell="'actions'"
@@ -69,6 +84,7 @@
                 [size]="limit"
                 [page]="page"
                 (pageChange)="changePage($event)"
+                (sizeChange)="changeSize($event)"
               ></tui-table-pagination>
             </td>
           </tr>

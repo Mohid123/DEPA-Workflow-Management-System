@@ -61,7 +61,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   accessTypeValue: FormControl
   formKeysForViewSchema: any[] = [];
   summarySchemaFields: any[] = [];
-  formKeys: any;
+  formKeys: any[] = [];
+  formKeysFinal: any[] = [];
   schemaSubscription: Subscription[] = [];
   defaultFormSubscription: Subscription[] = [];
   selectItems = ['Text', 'Number', 'Date'];
@@ -134,14 +135,22 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }], 'caption')
       }
       else {
-        const hierarchy = getItem(StorageItem.navHierarchy) || [];
-        hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
-        })
-        this.dashboard.items = getUniqueListBy([...hierarchy, {
-          caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
-        }], 'caption')
+        if(this.router.url.includes('moduleCode')) {
+          this.dashboard.items = getUniqueListBy([{
+            caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
+            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+          }], 'caption')
+        }
+        else {
+          const hierarchy = getItem(StorageItem.navHierarchy) || [];
+          hierarchy.forEach(val => {
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+          })
+          this.dashboard.items = getUniqueListBy([{
+            caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
+            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+          }], 'caption')
+        }
       }
     });
   }
@@ -260,9 +269,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));
-              this.formKeys = FormioUtils.flattenComponents(formComps, true);
-              this.summarySchemaFields = generateKeyCombinations(this.formKeys)
-              this.formKeysForViewSchema = generateKeyCombinations(this.formKeys)
+              formComps?.map(form => {
+                this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+              })
+              this.summarySchemaFields = this.formKeys.flatMap(val => {
+                let res = generateKeyCombinations(val)
+                return res
+              })
+              console.log(this.summarySchemaFields)
+              this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
                   this.defaultFormIndex = index
@@ -274,9 +289,15 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));
-              this.formKeys = FormioUtils.flattenComponents(formComps, true);
-              this.summarySchemaFields = generateKeyCombinations(this.formKeys)
-              this.formKeysForViewSchema = generateKeyCombinations(this.formKeys)
+              formComps?.map(form => {
+                this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+              })
+              this.summarySchemaFields = this.formKeys.flatMap(val => {
+                let res = generateKeyCombinations(val)
+                return res
+              })
+              this.formKeysForViewSchema = this.summarySchemaFields;
+
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
                   this.defaultFormIndex = index

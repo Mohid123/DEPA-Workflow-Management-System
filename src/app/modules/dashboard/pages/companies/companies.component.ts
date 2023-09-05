@@ -35,6 +35,11 @@ export class CompaniesComponent {
     this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
   }
 
+  changeSize(page: number) {
+    this.limit = page;
+    this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
+  }
+
   editOrAddCompany() {
     if(this.categoryId) {
       this.dashboard.updateCompany({
