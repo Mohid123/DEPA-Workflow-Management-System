@@ -65,7 +65,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   categoryId: string;
   categoryIdForMatch: string;
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
-  selectItems = ['Text', 'Number'];
+  selectItems = ['Text', 'Number', 'Date'];
   accessTypeValue: FormControl;
   paramID: string
   formKeysForViewSchema: any[] = [];
