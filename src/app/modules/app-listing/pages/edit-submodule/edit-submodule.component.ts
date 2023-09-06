@@ -72,8 +72,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       new FormGroup({
         fieldKey: new FormControl(),
         displayAs: new FormControl(''),
-        type: new FormControl(this.selectItems[0]),
-        isDisplayedInGrid: new FormControl(false)
+        type: new FormControl(this.selectItems[0])
       })
     ])
   });
@@ -163,9 +162,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
       displayAs: new FormControl(''),
-      type: new FormControl(this.selectItems[0]),
-      isDisplayedInGrid: new FormControl(false)
-
+      type: new FormControl(this.selectItems[0])
     });
     this.viewSchema.push(schemaForm)
   }
@@ -252,8 +249,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               const schemaForm = this.fb.group({
                 fieldKey: new FormControl(data?.fieldKey),
                 displayAs: new FormControl(data?.displayAs),
-                type: new FormControl(data?.type),
-                isDisplayedInGrid: new FormControl(data?.isDisplayedInGrid),
+                type: new FormControl(data?.type)
               });
               this.schemaForm.controls['viewSchema'].push(schemaForm)
             })
@@ -276,7 +272,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               })
-              console.log(this.summarySchemaFields)
               this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {

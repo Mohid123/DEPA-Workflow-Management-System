@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
@@ -11,7 +11,6 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
 import { saveAs } from 'file-saver';
-import { FormioComponent } from '@formio/angular';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 @Component({
   templateUrl: './view-workflow.component.html',
@@ -68,7 +67,10 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   conditionAddUser = new FormControl('none');
   showConditionError = new Subject<boolean>();
   deleteUserID: string;
-  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
+  @ViewChildren('formioForm') formioForms: QueryList<any>;
+  formValues: any[] = [];
+  formSubmission = new BehaviorSubject<Array<any>>([]);
+  
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -161,14 +163,17 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     this.search$.next(search);
   }
 
-  onChange(event: any) {
+  onChange(event: any, index) {
     if(event?.data && event?.changed) {
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-      this.formData.next(event)
+      // this.formData.next(event)
+      const formId = this.workflowData?.formDataIds[index]?._id;
+      const id = this.workflowData?.formDataIds[index]?.formId;
+      this.formValues[index] = {...event, formId, id};
     }
   }
 
@@ -572,23 +577,37 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   updateFormData() {
-    if(!this.formioComponent.submission) {
-      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
-    }
-    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
-      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
-    }
-    let formUpdated = JSON.parse(JSON.stringify(this.formWithWorkflow));
-    console.log(formUpdated)
-    const formDataIds = formUpdated?.map(data => {
-      return {
-        formId: data?._id,
-        data: data?.data,
-        id: data?.formDataId
-      }
+    let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
+    let formioInstance: any[] = [];
+    formComps?.forEach((form, index) => {
+      let instance = this.formioForms.toArray()[index].formio.checkValidity(null, true, null, false)
+      formioInstance.push(instance)
     })
-    debugger
-    this.workflowService.updateMultipleFormsData({formDataIds}).pipe(takeUntil(this.destroy$)).subscribe(val => {
+    if(formioInstance.includes(false)) {
+      return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
+    }
+    let finalData = [];
+    formComps?.forEach((form: any, i: number) => {
+      if(this.formValues[i]) {
+        finalData = this.formValues?.map(value => {
+          return {
+            formId: value?._id || value?.id,
+            data: value?.data || value?.defaultData?.data || {},
+            id: value?.formDataId || value?.formId
+          }
+        })
+      }
+      else {
+        finalData = [...finalData, {
+          formId: form._id,
+          id: form?.formDataId,
+          data: form?.defaultData?.data || {}
+        }]
+      }
+      this.formSubmission.next(finalData)
+    })
+    console.log(this.formSubmission.value)
+    this.workflowService.updateMultipleFormsData({formDataIds: this.formSubmission.value}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
         this.fetchData()
       }

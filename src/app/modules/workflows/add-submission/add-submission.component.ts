@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
@@ -18,7 +18,7 @@ import { FormioComponent } from '@formio/angular';
 export class AddSubmissionComponent implements OnDestroy, OnInit {
   formTabs: any[] = [];
   activeIndex: number = 0;
-  public formWithWorkflow: any;
+  public formWithWorkflow: any[] = [];
   workflowForm: FormGroup;
   subModuleData: any;
   subModuleId: string;
@@ -49,7 +49,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   userRoleCheckAdmin: any;
   userRoleCheckUser: any;
   adminUsers: any[] = [];
-  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
+  @ViewChildren('formioForm') formioForms: QueryList<any>;
 
   constructor(
     private fb: FormBuilder,
@@ -94,7 +94,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
     }];
   }
-   // email notify functions
 
   openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
@@ -136,6 +135,27 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
+  // comp.components?.map(data => {
+  //   if(data?.permissions?.length > 0) {
+  //     data?.permissions?.map(permit => {
+  //       if(this.currentUser?.id == permit?.id) {
+  //         if(permit.canEdit == true) {
+  //           data.disabled = false
+  //         }
+  //         else {
+  //           data.disabled = true
+  //         }
+  //         if(permit.canView == false) {
+  //           data.hidden = true
+  //         }
+  //         else {
+  //           data.hidden = false
+  //         }
+  //       }
+  //     })
+  //   }
+  // })
+
   populateData() {
     this.activatedRoute.params.pipe(
       pluck('id'),
@@ -146,26 +166,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.subModuleData = res;
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
-          comp.components?.map(data => {
-            if(data?.permissions?.length > 0) {
-              data?.permissions?.map(permit => {
-                if(this.currentUser?.id == permit?.id) {
-                  if(permit.canEdit == true) {
-                    data.disabled = false
-                  }
-                  else {
-                    data.disabled = true
-                  }
-                  if(permit.canView == false) {
-                    data.hidden = true
-                  }
-                  else {
-                    data.hidden = false
-                  }
-                }
-              })
-            }
-          })
           return {
             ...comp,
             components: comp.components?.map(data => {
@@ -273,15 +273,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-      const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
-      this.formValues[this.activeIndex] = {...event, formId};
-      const finalData = this.formValues?.map(value => {
-        return {
-          formId: value?.formId,
-          data: value?.data
-        }
-      })
-      this.formSubmission.next(finalData)
+      const formId = this.subModuleData?.formIds[index]?.id;
+      this.formValues[index] = {...event, formId};
     }
   }
 
@@ -297,16 +290,14 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   createSubmission(status?: any) {
-    // if(!status) {
-    //   if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
-    //     return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
-    //   }
-    // }
-    if(!this.formioComponent.submission) {
-      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
-    }
-    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
-      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
+    let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
+    let formioInstance: any[] = [];
+    formComps?.forEach((form, index) => {
+      let instance = this.formioForms.toArray()[index].formio.checkValidity(null, true, null, false)
+      formioInstance.push(instance)
+    })
+    if(formioInstance.includes(false)) {
+      return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
@@ -320,6 +311,24 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     else {
       this.draftingSubmission.next(true)
     }
+    let finalData = [];
+    this.formWithWorkflow.forEach((form: any, i: number) => {
+      if(this.formValues[i]) {
+        finalData = this.formValues?.map(value => {
+          return {
+            formId: value?.formId,
+            data: value?.data
+          }
+        })
+      }
+      else {
+        finalData = [...finalData, {
+          formId: form.id,
+          data: {}
+        }]
+      }
+      this.formSubmission.next(finalData)
+    })
     const payload: any = {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
@@ -333,7 +342,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         }
       })
     }
-    debugger
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {

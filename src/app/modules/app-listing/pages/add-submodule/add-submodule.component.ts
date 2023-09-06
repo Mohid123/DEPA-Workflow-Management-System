@@ -76,8 +76,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       new FormGroup({
         fieldKey: new FormControl(''),
         displayAs: new FormControl(''),
-        type: new FormControl(this.selectItems[0]),
-        isDisplayedInGrid: new FormControl(false)
+        type: new FormControl(this.selectItems[0])
       })
     ])
   });
@@ -188,9 +187,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
       displayAs: new FormControl(''),
-      type: new FormControl(this.selectItems[0]),
-      isDisplayedInGrid: new FormControl(false)
-
+      type: new FormControl(this.selectItems[0])
     });
     this.viewSchema.push(schemaForm)
   }

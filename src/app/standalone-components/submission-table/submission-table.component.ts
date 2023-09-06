@@ -11,7 +11,6 @@ import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
-import { convertStringToKeyValuePairs } from 'src/core/utils/utility-functions';
 
 @Component({
   selector: 'app-submission-table',
@@ -69,6 +68,15 @@ export class SubmissionTableComponent implements OnDestroy {
   showDownIcon = false;
   tableHeaders: any[] = [
     {
+      key: 'Submission Code',
+      searchKey: 'code',
+      isVisible: new FormControl<boolean>(true),
+      showUpIcon: true,
+      showDownIcon: false,
+      type: "text",
+      search: new FormControl(null)
+    },
+    {
       key: 'Submission Status',
       searchKey: 'submissionStatus',
       isVisible: new FormControl<boolean>(true),
@@ -119,7 +127,13 @@ export class SubmissionTableComponent implements OnDestroy {
     this.activatedRoute.queryParams.subscribe(val => {
       if(val['moduleID']) {
         this.submoduleId = val['moduleID']
-        this.fetchDataAndPopulate()
+        this.fetchDataAndPopulate();
+        this.moduleData = this.dashboard.getSubModuleByID(val['moduleID']);
+        this.moduleData.subscribe(val => {
+          if(val.viewSchema?.length == 0) {
+            this.items = ['Display default']
+          }
+        })
       }
     });
 
@@ -127,6 +141,15 @@ export class SubmissionTableComponent implements OnDestroy {
     this.showSchema.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val == 'Display default') {
         this.tableHeaders = [
+          {
+            key: 'Submission Code',
+            searchKey: 'code',
+            isVisible: new FormControl<boolean>(true),
+            showUpIcon: true,
+            showDownIcon: false,
+            type: "text",
+            search: new FormControl(null)
+          },
           {
             key: 'Submission Status',
             searchKey: 'submissionStatus',
@@ -286,7 +309,13 @@ export class SubmissionTableComponent implements OnDestroy {
                   }
                 }
               }
-              if(!["lastActivityPerformedBy", "pendingOnUsers", "progress"].includes(header?.searchKey)) {
+              if(header?.searchKey == "code") {
+                debugger
+                payload = {
+                  [header?.searchKey]: value
+                }
+              }
+              if(!["lastActivityPerformedBy", "pendingOnUsers", "progress", "code"].includes(header?.searchKey)) {
                 payload = {
                   summaryData: {
                     [header?.searchKey]: value

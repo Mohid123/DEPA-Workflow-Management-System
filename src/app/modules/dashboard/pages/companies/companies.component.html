@@ -10,18 +10,10 @@
       <table
         tuiTable
         class="w-full rounded-lg"
-        [columns]="['title', 'groupCode', 'actions']"
+        [columns]="['groupCode', 'title', 'actions']"
       >
         <thead>
           <tr tuiThGroup>
-            <th
-              *tuiHead="'title'"
-              tuiTh
-              [resizable]="true"
-              class="text-base"
-            >
-              Company Name
-            </th>
             <th
               *tuiHead="'groupCode'"
               tuiTh
@@ -29,6 +21,14 @@
               class="text-base"
             >
               Group Code
+            </th>
+            <th
+              *tuiHead="'title'"
+              tuiTh
+              [resizable]="true"
+              class="text-base"
+            >
+              Company Name
             </th>
             <th class="text-base w-1/12" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
           </tr>
