@@ -15,7 +15,7 @@ import { CodeValidator } from 'src/core/utils/utility-functions';
 })
 export class UsersListComponent implements OnDestroy {
   users: Observable<any>;
-  userId: string;
+  userId: string = null;
   destroy$ = new Subject();
   limit: number = 6;
   page: number = 0;
@@ -32,6 +32,20 @@ export class UsersListComponent implements OnDestroy {
       Validators.required,
       Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     ]), [CodeValidator.createValidator(this.dashboard, 'user')]),
+    role: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z]).*$')
+    ]))
+  })
+
+  userEditFormCustom = new FormGroup({
+    fullName: new FormControl('', Validators.required),
+    email: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    ]), [CodeValidator.createValidator(this.dashboard, 'user', undefined, undefined)]),
     role: new FormControl('', Validators.required),
     password: new FormControl('', Validators.compose([
       Validators.required,
@@ -63,6 +77,10 @@ export class UsersListComponent implements OnDestroy {
       return this.userAddFormCustom.controls
     }
 
+    get fE() {
+      return this.userEditFormCustom.controls
+    }
+
   changePage(page: number) {
     this.page = page;
     this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
@@ -79,24 +97,21 @@ export class UsersListComponent implements OnDestroy {
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
     this.subscription.push(this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe());
     this.userId = data?.id || null;
-    this.formSubmission = {
-      data: {
-        fullname: data?.fullName,
-        email: data?.email,
-        role: data?.roles[0],
-        password: data?.password
-      }
-    }
+    this.dashboard.excludeIdEmitter.emit(data?.id)
+    this.userEditFormCustom?.controls['fullName']?.setValue(data?.fullName)
+    this.userEditFormCustom?.controls['email']?.setValue(data?.email)
+    this.userEditFormCustom?.controls['role']?.setValue(data?.roles[0])
+    this.userEditFormCustom?.controls['password']?.setValue(data?.password)
   }
 
   showAddDialog(content: PolymorpheusContent<TuiDialogContext>): void {
     this.subscription.push(this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe());
     this.formSubmission = {
       data: {}
@@ -105,8 +120,8 @@ export class UsersListComponent implements OnDestroy {
 
   showDeleteDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
     this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe();
     this.userId = data?.id;
   }

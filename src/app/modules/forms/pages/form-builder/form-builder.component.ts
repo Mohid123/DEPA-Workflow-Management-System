@@ -47,6 +47,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
   viewUsers = new FormControl<any>([]);
+  appKey: string;
   options: any = {
     "disableAlerts": true,
     "noDefaultSubmitButton": true
@@ -180,10 +181,8 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   }
 
   addCustomEventTrigger() {
-    // debugger
     let checkIfExists = document.getElementById('custom-div');
     if(!checkIfExists) {
-      // debugger
       let componentMenu = document.getElementsByClassName('component-btn-group');
       Array.from(componentMenu).forEach((value, index) => {
         let tooltip = document.createElement('div');

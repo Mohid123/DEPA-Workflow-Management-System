@@ -27,6 +27,10 @@
               control: f['title']
             }"
           ></ng-container>
+          <span class="text-xs text-red-500"
+            *ngIf="f['title']?.hasError('codeExists')">
+            An app by this title already exists. Please select another title
+          </span>
       </div>
       <div class="col-span-6 mt-3 mb-5">
         <label class="block pb-1">App Code <span class="text-xs text-red-400">*</span></label>
@@ -52,6 +56,10 @@
               control: f['code']
             }"
           ></ng-container>
+          <span class="text-xs text-red-500"
+            *ngIf="f['code']?.hasError('codeExists')">
+            An app with this code already exists. Please select another code.
+          </span>
       </div>
     </div>
 

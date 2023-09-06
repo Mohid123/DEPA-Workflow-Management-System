@@ -102,7 +102,7 @@
 
 <ng-template #template let-observer>
   <p class="text-lg font-semibold text-center">
-    {{categoryId ? 'Edit': 'Add'}} Company
+    {{categoryId ? 'Update': 'Add'}} Company
   </p>
   <div class="flex flex-col justify-center my-5">
     <label class="block" for="Textarea1">Company Name <sup class="text-red-500">*</sup></label>
@@ -136,7 +136,6 @@
     tuiButton
     type="button"
     size="m"
-    [disabled]="!categoryEditControl?.value || !groupCodeControl?.value || groupCodeControl.invalid || categoryEditControl.invalid"
     (click)="editOrAddCompany();"
     >
     {{categoryId ? 'Update': 'Add'}}
@@ -155,13 +154,17 @@
 
 <ng-template #editTemplate let-observer>
   <p class="text-lg font-semibold text-center">
-    Edit Company
+    Update Company
   </p>
   <div class="flex flex-col justify-center my-5">
     <label class="block" for="Textarea1">Company Name <sup class="text-red-500">*</sup></label>
     <input [formControl]="categoryEditControlEdit" class="form-control mb-1">
     <span *ngIf="categoryEditControlEdit?.hasError('required') && categoryEditControlEdit?.dirty" class="text-red-500 text-xs">
       Company name is required
+    </span>
+    <span class="text-xs text-red-500"
+      *ngIf="categoryEditControlEdit?.hasError('codeExists')">
+      A company with this name already exists. Please provide another name.
     </span>
   </div>
   <div class="flex flex-col justify-center my-5">
@@ -176,13 +179,15 @@
     <span *ngIf="groupCodeControlEdit?.hasError('maxlength') && groupCodeControlEdit?.dirty" class="text-red-500 text-xs">
       Group Code should not exceed 4 characters
     </span>
+    <span *ngIf="groupCodeControlEdit?.hasError('codeExists')" class="text-red-500 text-xs">
+      A company with this code already exists. Please provide a different code.
+    </span>
   </div>
   <div class="flex justify-center gap-x-3">
     <button
     tuiButton
     type="button"
     size="m"
-    [disabled]="!categoryEditControl?.value || !groupCodeControl?.value || groupCodeControl.invalid || categoryEditControl.invalid"
     (click)="editOrAddCompany();"
     >
     Update

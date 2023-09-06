@@ -392,22 +392,42 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCompany() {
     const companyForm = this.fb.group({
-      title: ['', Validators.compose([Validators.required])],
-      groupCode: ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(4)])]
+      title: ['', Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]],
+      groupCode: ['',
+      Validators.compose([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(4)
+      ]), [CodeValidator.createValidator(this.dashboard, 'company')]]
     });
     this.companies.push(companyForm)
   }
 
   getValidityForCompany(i) {
-    return (<FormArray>this.companies).controls[i]?.get('title').invalid && (<FormArray>this.companies).controls[i]?.get('title').touched ;
+    return (<FormArray>this.companies).controls[i]?.get('title').hasError('required') && (<FormArray>this.companies).controls[i]?.get('title').dirty ;
   }
 
   getValidityForCompanyCode(i) {
-    return ((<FormArray>this.companies).controls[i]?.get('groupCode').invalid && (<FormArray>this.companies).controls[i]?.get('groupCode').touched) || ((<FormArray>this.companies).controls[i]?.get('groupCode').invalid && (<FormArray>this.companies).controls[i]?.get('groupCode').dirty);
+    return ((<FormArray>this.companies).controls[i]?.get('groupCode').hasError('required') || 
+    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('maxlength') ||
+    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('minlength')) && 
+    (<FormArray>this.companies).controls[i]?.get('groupCode').dirty
+  }
+
+  getValidityForCompanyCodeExists(i) {
+    return (<FormArray>this.companies).controls[i]?.get('title')?.hasError('codeExists');
+  }
+
+  getValidityForCompanyCodeExistsGroup(i) {
+    return (<FormArray>this.companies).controls[i]?.get('groupCode')?.hasError('codeExists');
   }
 
   getValidityForCategory(i) {
-    return (<FormArray>this.categories).controls[i].invalid && (<FormArray>this.categories).controls[i].touched;
+    return (<FormArray>this.categories).controls[i].hasError('required') && (<FormArray>this.categories).controls[i].touched;
+  }
+
+  getValidityForCategoryCode(i) {
+    return (<FormArray>this.categories).controls[i]?.get('name').hasError('codeExists');
   }
 
   removeCompany(index: number) {
@@ -420,7 +440,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCategory() {
     const categoryForm = this.fb.group({
-      name: ['', Validators.compose([Validators.required, Validators.maxLength(40)])]
+      name: ['', Validators.compose([Validators.required, Validators.maxLength(40)]),
+      [CodeValidator.createValidator(this.dashboard, 'category')]]
     });
     this.categories.push(categoryForm)
   }

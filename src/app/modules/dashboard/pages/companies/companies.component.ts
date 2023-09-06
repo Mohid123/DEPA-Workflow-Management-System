@@ -25,12 +25,12 @@ export class CompaniesComponent {
 
   categoryEditControlEdit: FormControl = new FormControl('', Validators.compose([
     Validators.required
-  ]));
+  ]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]);
   groupCodeControlEdit: FormControl = new FormControl('', Validators.compose([
     Validators.required,
     Validators.minLength(3),
     Validators.maxLength(4),
-  ]));
+  ]), [CodeValidator.createValidator(this.dashboard, 'company')]);
 
   categoryId: string;
   destroy$ = new Subject();
@@ -57,6 +57,11 @@ export class CompaniesComponent {
 
   editOrAddCompany() {
     if(this.categoryId) {
+      if(this.categoryEditControlEdit.invalid || this.groupCodeControlEdit.value) {
+        this.categoryEditControlEdit.markAsDirty();
+        this.groupCodeControlEdit.markAsDirty();
+        return;
+      }
       this.dashboard.updateCompany({
         title: this.categoryEditControlEdit?.value,
         groupCode: this.groupCodeControlEdit?.value
@@ -72,6 +77,11 @@ export class CompaniesComponent {
       });
     }
     else {
+      if(this.categoryEditControl.invalid || this.groupCodeControl.value) {
+        this.categoryEditControl.markAsDirty();
+        this.groupCodeControl.markAsDirty();
+        return;
+      }
       this.dashboard.addCompany({
         title: this.categoryEditControl?.value,
         groupCode: this.groupCodeControl?.value
@@ -95,9 +105,10 @@ export class CompaniesComponent {
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
     this.subscription.push(this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe());
+    this.dashboard.excludeIdEmitter.emit(data?.id)
     this.categoryEditControlEdit.setValue(data?.title ? data?.title : '');
     this.groupCodeControlEdit.setValue(data?.groupCode ? data?.groupCode : '');
     this.categoryId = data?.id || null;
@@ -105,8 +116,8 @@ export class CompaniesComponent {
 
   showDeleteDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
     this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe();
     this.categoryId = data?.id;
   }

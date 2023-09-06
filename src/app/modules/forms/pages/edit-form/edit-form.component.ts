@@ -212,7 +212,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       event.component.input = true;
       event.component.multiple = true;
     }
-    this.addCustomEventTrigger()
+    // this.addCustomEventTrigger()
   }
 
   addCustomEventTrigger() {

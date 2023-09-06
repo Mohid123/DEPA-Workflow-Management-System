@@ -160,6 +160,9 @@
                 <span *ngIf="getValidityForCompany(i)" class="text-xs text-red-500">
                   Please provide a company name
                 </span>
+                <span *ngIf="getValidityForCompanyCodeExists(i)" class="text-xs text-red-500">
+                  A company with this name already exists. Please provide another name.
+                </span>
 
                 <input
                   class="form-control mt-3"
@@ -169,6 +172,9 @@
                 />
                 <span *ngIf="getValidityForCompanyCode(i)" class="text-xs text-red-500">
                   Please provide a group code with upto 4 characters
+                </span>
+                <span *ngIf="getValidityForCompanyCodeExistsGroup(i)" class="text-xs text-red-500">
+                  A company with this code already exists. Please provide a different code.
                 </span>
               </div>
             <div [ngClass]="first ? 'mt-7': 'mt-0'">
@@ -237,6 +243,9 @@
                   <span *ngIf="getValidityForCategory(i)" class="text-xs text-red-500">
                     Please provide a category name with upto 40 characters
                   </span>
+                  <span *ngIf="getValidityForCategoryCode(i)" class="text-red-500 text-xs">
+                    A category with this name already exists. Please provide a different name.
+                  </span>
               </div>
               <div [ngClass]="first ? 'mt-7': 'mt-0'">
                 <button
@@ -256,6 +265,7 @@
                 type="button"
                 class="mb-3"
                 size="m"
+                [disabled]="getValidityForCategory(i) || getValidityForCategoryCode(i)"
                 (click)="submitNewCategory()"
               >Submit</button>
             </div>

@@ -27,7 +27,7 @@ export class GridTopAppComponent {
   }
 
   checkAccess(data: any) {
-    if(data?.accessType == 'disabled') {
+    if(data?.accessType == 'disabled' && this.userRoleCheck == false) {
       if(!data?.allUsers?.includes(this.currentUser?.id)) {
         return false
       }

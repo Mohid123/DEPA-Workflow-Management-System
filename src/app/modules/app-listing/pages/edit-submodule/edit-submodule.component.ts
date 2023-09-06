@@ -11,7 +11,7 @@ import { DataTransportService } from 'src/core/core-services/data-transport.serv
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem, removeItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
+import { CodeValidator, calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 
@@ -236,6 +236,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   getSubmoduleByIDForEdit() {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
+        this.dashboard.excludeIdEmitter.emit(params['id'])
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
@@ -405,9 +406,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       code: [item?.code, Validators.compose([
         Validators.required,
         Validators.maxLength(7)
-      ])],
+      ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyId: [item?.companyId?.value ? item?.companyId?.value : this.companyList?.filter(val => item?.companyId === val.value)[0]?.value || null, Validators.required],
-      title: [item?.title || null, Validators.required],
+      title: [item?.title || null, Validators.compose([
+        Validators.required
+      ]), [CodeValidator.createValidator(this.dashboard, 'submodule', 'title')]],
       image: [item?.image || null, Validators.required],
       description: [item?.description || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
@@ -688,7 +691,13 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       }),
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
-      accessType: this.accessTypeValue?.value?.name
+      accessType: this.accessTypeValue?.value?.name,
+      allUsers: [
+        ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
+        ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+        ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
+        this.auth.currentUserValue?.id
+      ]
     }
     if(statusStr) {
       const status = statusStr;
