@@ -154,9 +154,19 @@
                   [ngClass]="getValidityForCompany(i) ? 'is-invalid': ''"
                 />
                 <span *ngIf="getValidityForCompany(i)" class="text-xs text-red-500">
-                  Please provide a company name with upto 50 characters
+                  Please provide a company name
                 </span>
-            </div>
+
+                <input
+                  class="form-control mt-3"
+                  formControlName="groupCode"
+                  type="text"
+                  [ngClass]="getValidityForCompanyCode(i) ? 'is-invalid': ''"
+                />
+                <span *ngIf="getValidityForCompanyCode(i)" class="text-xs text-red-500">
+                  Please provide a group code with upto 7 characters
+                </span>
+              </div>
             <div [ngClass]="first ? 'mt-7': 'mt-0'">
               <button
                 tuiIconButton

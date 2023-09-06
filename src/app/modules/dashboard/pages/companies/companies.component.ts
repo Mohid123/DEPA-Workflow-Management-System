@@ -15,7 +15,7 @@ export class CompaniesComponent {
   groupCodeControl: FormControl = new FormControl('', Validators.compose([
     Validators.required,
     Validators.minLength(3),
-    Validators.maxLength(7),
+    Validators.maxLength(4),
   ]));
   categoryId: string;
   destroy$ = new Subject();
@@ -51,6 +51,8 @@ export class CompaniesComponent {
         if(res) {
           this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
           this.subscription.forEach(val => val.unsubscribe())
+          this.categoryEditControl.reset()
+          this.groupCodeControl.reset()
         }
       });
     }
@@ -63,7 +65,9 @@ export class CompaniesComponent {
       .subscribe(res => {
         if(res) {
           this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
-          this.subscription.forEach(val => val.unsubscribe())
+          this.subscription.forEach(val => val.unsubscribe());
+          this.categoryEditControl.reset()
+          this.groupCodeControl.reset()
         }
       });
     }
@@ -80,6 +84,7 @@ export class CompaniesComponent {
       closeable: true
     }).subscribe());
     this.categoryEditControl.setValue(data?.title ? data?.title : '');
+    this.groupCodeControl.setValue(data?.groupCode ? data?.groupCode : '');
     this.categoryId = data?.id || null;
   }
 

@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, forkJoin, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -318,7 +318,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       categories: this.fb.array([]),
       code: [item?.code || null, Validators.compose([
         Validators.required,
-        Validators.maxLength(7)
+        Validators.maxLength(4)
       ])],
       companyName: [item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName || null, Validators.required],
@@ -394,17 +394,22 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCompany() {
     const companyForm = this.fb.group({
-      title: ['', Validators.compose([Validators.required, Validators.maxLength(50)])]
+      title: ['', Validators.compose([Validators.required])],
+      groupCode: ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(4)])]
     });
     this.companies.push(companyForm)
   }
 
   getValidityForCompany(i) {
-    return (<FormArray>this.companies).controls[i].invalid;
+    return (<FormArray>this.companies).controls[i]?.get('title').invalid && (<FormArray>this.companies).controls[i]?.get('title').touched ;
+  }
+
+  getValidityForCompanyCode(i) {
+    return ((<FormArray>this.companies).controls[i]?.get('groupCode').invalid && (<FormArray>this.companies).controls[i]?.get('groupCode').touched) || ((<FormArray>this.companies).controls[i]?.get('groupCode').invalid && (<FormArray>this.companies).controls[i]?.get('groupCode').dirty);
   }
 
   getValidityForCategory(i) {
-    return (<FormArray>this.categories).controls[i].invalid;
+    return (<FormArray>this.categories).controls[i].invalid && (<FormArray>this.categories).controls[i].touched;
   }
 
   removeCompany(index: number) {
@@ -448,17 +453,28 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   submitNewCompany() {
-    const payload: any = {
-      title: this.f["companies"]?.value[0]?.title,
-      groupCode: this.f["companies"]?.value[0]?.title.replace(/\s/g, '-')
-    }
-    this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if(res) {
-        this.companies.reset();
-        this.companies.removeAt(0);
-        this.getAllCompanies();
+    let companySubmit: Array<Observable<any>> = [];
+    for (let i = 0; i < this.f['companies']?.value?.length; i++) {
+      const payload: any = {
+        title: this.f["companies"]?.value[i]?.title,
+        groupCode: this.f["companies"]?.value[i]?.groupCode
       }
-    })
+      companySubmit.push(
+        this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$))
+      );
+    }
+    if(companySubmit.length > 0) {
+      forkJoin(companySubmit).subscribe((values: any[]) => {
+        if(values && !values.includes(undefined)) {
+          for (let i = values?.length; i > 0; i--) {
+            this.companies.removeAt(0);
+            this.companies.removeAt(i);
+            this.companies.reset();
+          }
+          this.getAllCompanies();
+        }
+      })
+    }
   }
 
   submitNewCategory() {

@@ -125,7 +125,7 @@
       [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
       (click)="editOrAddCategory();"
     >
-      {{categoryId ? 'Update': 'Submit'}}
+      {{categoryId ? 'Update': 'Add'}}
     </button>
 
     <button
