@@ -25,7 +25,7 @@
           ></ng-container>
           <span class="text-xs text-red-500"
             *ngIf="f['title']?.hasError('codeExists')">
-            An app by this title already exists. Please select another name
+            An app by this title already exists. Please select another title
           </span>
       </div>
 
@@ -53,6 +53,10 @@
               control: f['code']
             }"
           ></ng-container>
+          <span class="text-xs text-red-500"
+            *ngIf="f['code']?.hasError('codeExists')">
+            An app with this code already exists. Please select another code.
+          </span>
       </div>
     </div>
     <!--Description & Image-->
@@ -541,7 +545,7 @@
 <ng-template #formError let-control="control" let-message="message" let-validation="validation">
   <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
     <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
-      <span class="text-red-400 fv-help-block text-xxs 2xl:text-xs 2xl:mb-2" role="alert">
+      <span class="text-red-400 fv-help-block text-xs 2xl:text-xs 2xl:mb-2" role="alert">
         {{ message }}
       </span>
     </div>

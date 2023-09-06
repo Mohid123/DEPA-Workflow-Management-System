@@ -313,15 +313,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm = this.fb.group({
       companies: this.fb.array([]),
       categories: this.fb.array([]),
-      code: [item?.code || null, Validators.compose([
+      code: [item?.code || null,
+      Validators.compose([
         Validators.required,
-        Validators.maxLength(4)
-      ])],
+        Validators.maxLength(7)
+      ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyName: [item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
-      title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]],
+      title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'submodule', 'title')]],
       image: [item?.image || null, Validators.required],
       description: [item?.description || null, Validators.required],
       workflows: this.fb.array(

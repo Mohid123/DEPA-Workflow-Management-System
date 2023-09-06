@@ -41,7 +41,7 @@ export const getUniqueListBy = (arr: any, key: any): any => {
 }
 
 export class CodeValidator {
-  static createValidator(dashboard: DashboardService): AsyncValidatorFn {
+  static createValidator(dashboard: DashboardService, model: string, key?: string, typedVal?: string): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       if (!control.valueChanges || control.pristine) {
         return of(null);
@@ -50,8 +50,8 @@ export class CodeValidator {
         return control.valueChanges.pipe(
           debounceTime(400),
           distinctUntilChanged(),
-          switchMap(value => dashboard.validateModuleCode(value?.replace(/\s/g, '-').toLowerCase())),
-          map((res: ApiResponse<any>) => (res.data?.isCodeTaken == true ? {codeExists: true} : null)),
+          switchMap(value => dashboard.validateModuleCode(value, model, key, typedVal)),
+          map((res: ApiResponse<any>) => (res.data == false ? {codeExists: true} : null)),
           first()
         )
       }

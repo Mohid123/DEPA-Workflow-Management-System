@@ -4,6 +4,7 @@ import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { CodeValidator } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './companies.component.html',
@@ -11,12 +12,26 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 })
 export class CompaniesComponent {
   companies: Observable<any>;
-  categoryEditControl: FormControl = new FormControl('', Validators.required);
+  categoryEditControl: FormControl = new FormControl('', Validators.compose([
+    Validators.required
+  ]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]);
   groupCodeControl: FormControl = new FormControl('', Validators.compose([
     Validators.required,
     Validators.minLength(3),
     Validators.maxLength(4),
+  ]), [CodeValidator.createValidator(this.dashboard, 'company')]);
+
+  //Edit controls
+
+  categoryEditControlEdit: FormControl = new FormControl('', Validators.compose([
+    Validators.required
   ]));
+  groupCodeControlEdit: FormControl = new FormControl('', Validators.compose([
+    Validators.required,
+    Validators.minLength(3),
+    Validators.maxLength(4),
+  ]));
+
   categoryId: string;
   destroy$ = new Subject();
   limit: number = 6;
@@ -43,8 +58,8 @@ export class CompaniesComponent {
   editOrAddCompany() {
     if(this.categoryId) {
       this.dashboard.updateCompany({
-        title: this.categoryEditControl?.value,
-        groupCode: this.groupCodeControl?.value
+        title: this.categoryEditControlEdit?.value,
+        groupCode: this.groupCodeControlEdit?.value
       }, this.categoryId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
@@ -83,8 +98,8 @@ export class CompaniesComponent {
       dismissible: true,
       closeable: true
     }).subscribe());
-    this.categoryEditControl.setValue(data?.title ? data?.title : '');
-    this.groupCodeControl.setValue(data?.groupCode ? data?.groupCode : '');
+    this.categoryEditControlEdit.setValue(data?.title ? data?.title : '');
+    this.groupCodeControlEdit.setValue(data?.groupCode ? data?.groupCode : '');
     this.categoryId = data?.id || null;
   }
 

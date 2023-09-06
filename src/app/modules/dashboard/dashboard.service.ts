@@ -102,9 +102,16 @@ export class DashboardService extends ApiService<any> {
 
   // Validate Module Code
 
-  validateModuleCode(codeValue: string): Observable<ApiResponse<any>> {
-    let params = {code: codeValue}
-    return this.get(`/subModules/validate`, params)
+  validateModuleCode(codeValue: string, model: string, key?: string, typedVal?: string): Observable<ApiResponse<any>> {
+    let params = {
+      model: model,
+      value: codeValue || typedVal,
+      key: key ? key : undefined
+    }
+    if(!params.key) {
+      delete params.key
+    }
+    return this.get(`/validate/unique`, params)
   }
 
   validateFormCode(codeValue: string): Observable<ApiResponse<any>> {

@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { userAddForm, userAddFormAdmin } from 'src/app/forms-schema/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { CodeValidator } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './users-list.component.html',
@@ -25,6 +26,19 @@ export class UsersListComponent implements OnDestroy {
   searchValue = new FormControl();
   fetchingUsers = new Subject<boolean>();
   subscription: Subscription[] = [];
+  userAddFormCustom = new FormGroup({
+    fullName: new FormControl('', Validators.required),
+    email: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    ]), [CodeValidator.createValidator(this.dashboard, 'user')]),
+    role: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.compose([
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z]).*$')
+    ]))
+  })
 
   constructor(
     private dashboard: DashboardService,
@@ -43,6 +57,10 @@ export class UsersListComponent implements OnDestroy {
       ).subscribe(() => {
         this.cf.detectChanges()
       })
+    }
+
+    get f() {
+      return this.userAddFormCustom.controls
     }
 
   changePage(page: number) {
@@ -69,7 +87,7 @@ export class UsersListComponent implements OnDestroy {
       data: {
         fullname: data?.fullName,
         email: data?.email,
-        role: data?.roles,
+        role: data?.roles[0],
         password: data?.password
       }
     }
@@ -102,7 +120,7 @@ export class UsersListComponent implements OnDestroy {
   editOrAddUser() {
     if(this.userId) {
       const payload: any = {
-        roles: this.auth.currentUserValue?.roles.includes('sysAdmin') ? undefined : this.formData?.value?.data?.role,
+        roles: [this.formData?.value?.data?.role],
         fullName: this.formData?.value?.data?.fullname,
         email: this.formData?.value?.data?.email,
         password: this.formData?.value?.data?.password
@@ -118,10 +136,10 @@ export class UsersListComponent implements OnDestroy {
     }
     else {
       const payload: any = {
-        fullName: this.formData?.value?.data?.fullname,
-        email: this.formData?.value?.data?.email,
-        roles: this.formData?.value?.data?.role,
-        password: this.formData?.value?.data?.password
+        roles: [this.userAddFormCustom?.value?.role],
+        fullName: this.userAddFormCustom?.value?.fullName,
+        email: this.userAddFormCustom?.value?.email,
+        password: this.userAddFormCustom?.value?.password
       }
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {

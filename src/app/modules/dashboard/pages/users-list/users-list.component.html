@@ -189,15 +189,54 @@
   <p class="text-lg font-semibold text-center">
     Add User
   </p>
-  <div class="flex flex-col justify-center my-5">
-    <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="addUserForm"></formio>
+  <div class="flex flex-col justify-center my-5" [formGroup]="userAddFormCustom">
+    <div class="mb-2">
+      <label class="block" for="Textarea2">Full Name<sup class="text-red-500">*</sup></label>
+      <input formControlName="fullName" class="form-control mb-1">
+      <span *ngIf="f['fullName']?.hasError('required') && f['fullName']?.dirty" class="text-red-500 text-xs">
+        Full name is required
+      </span>
+    </div>
+    <div class="my-2">
+      <label class="block" for="Textarea2">Email<sup class="text-red-500">*</sup></label>
+      <input formControlName="email" class="form-control mb-1">
+      <span *ngIf="f['email']?.hasError('required') && f['email']?.dirty" class="text-red-500 text-xs">
+        Email is required
+      </span>
+      <span *ngIf="f['email']?.hasError('pattern') && f['email']?.dirty" class="text-red-500 text-xs">
+        Please provide a valid email address
+      </span>
+      <span *ngIf="f['email']?.hasError('codeExists')" class="text-red-500 text-xs">
+        A user with this email already exists. Please provide a different email.
+      </span>
+    </div>
+    <div class="my-2">
+      <label class="block" for="Textarea2">Role<sup class="text-red-500">*</sup></label>
+      <select class="form-select form-control" aria-label="Default select example" formControlName="role">
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+      </select>
+      <span *ngIf="f['role']?.hasError('required') && f['role']?.dirty" class="text-red-500 text-xs">
+        Please specify user role
+      </span>
+    </div>
+    <div class="my-2">
+      <label class="block" for="Textarea2">Password<sup class="text-red-500">*</sup></label>
+      <input type="password" formControlName="password" class="form-control mb-1">
+      <span *ngIf="f['password']?.hasError('required') && f['password']?.dirty" class="text-red-500 text-xs">
+        Password is required
+      </span>
+      <span *ngIf="f['password']?.hasError('minlength') && f['password']?.dirty" class="text-red-500 text-xs">
+        Password should be at least 8 characters long and should have at least one number and one character
+      </span>
+    </div>
   </div>
   <div class="flex justify-center gap-x-3">
     <button
       tuiButton
       type="button"
       size="m"
-      [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
+      [disabled]="userAddFormCustom.invalid"
       (click)="editOrAddUser();"
     >
       Submit

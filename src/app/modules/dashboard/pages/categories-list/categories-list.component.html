@@ -112,10 +112,20 @@
 
 <ng-template #addTemplate let-observer>
   <p class="text-lg font-semibold text-center">
-    Add/Edit Category
+    {{categoryId ? 'Edit': 'Add'}} Category
   </p>
-  <div class="flex flex-col justify-center my-5">
+  <div *ngIf="categoryId" class="flex flex-col justify-center my-5">
     <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="categoryFormField"></formio>
+  </div>
+  <div *ngIf="!categoryId" class="flex flex-col justify-center my-5">
+    <label class="block" for="Textarea2">Category Name<sup class="text-red-500">*</sup></label>
+    <input [formControl]="categoryControl" class="form-control mb-1">
+    <span *ngIf="categoryControl?.hasError('required') && categoryControl?.dirty" class="text-red-500 text-xs">
+      Category is required
+    </span>
+    <span *ngIf="categoryControl?.hasError('codeExists')" class="text-red-500 text-xs">
+      A category with this name already exists. Please provide a different name.
+    </span>
   </div>
   <div class="flex justify-center gap-x-3">
     <button
