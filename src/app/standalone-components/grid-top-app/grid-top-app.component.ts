@@ -25,6 +25,15 @@ export class GridTopAppComponent {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
   }
+
+  checkAccess(data: any) {
+    if(data?.accessType == 'disabled') {
+      if(!data?.allUsers?.includes(this.currentUser?.id)) {
+        return false
+      }
+    }
+    return true
+  }
     /**
    * Used to display the relevant data inside the card view
    */

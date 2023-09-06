@@ -217,6 +217,15 @@ export class TableViewComponent implements OnDestroy {
     }
   }
 
+  checkAccess(data: any) {
+    if(data?.accessType == 'disabled') {
+      if(!data?.allUsers?.includes(this.currentUser?.id)) {
+        return false
+      }
+    }
+    return true
+  }
+
   sendSearchValue(value: any) {
     this.fetchingTableData.next(true);
     const queryParams = {

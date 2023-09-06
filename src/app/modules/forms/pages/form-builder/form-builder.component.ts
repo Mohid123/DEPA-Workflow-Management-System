@@ -10,7 +10,7 @@ import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import {  FormKeyValidator } from 'src/core/utils/utility-functions';
+import {  CodeValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { DialogTemplate } from '../../templates/permission-template.component';
 
@@ -42,7 +42,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   ];
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
-  ]), [FormKeyValidator.createValidator(this.dashboard)]);
+  ]), [CodeValidator.createValidator(this.dashboard, 'form')]);
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
@@ -78,7 +78,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
       if(this.editMode === true) {
         this.form = this.transportService.sendFormDataForEdit.value;
         this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
-        this.formTitleControl.disable();
+        // this.formTitleControl.disable();
         this.formValue = this.form
       }
       else {

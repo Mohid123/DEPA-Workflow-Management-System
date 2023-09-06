@@ -609,7 +609,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }),
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
-      accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
+      accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined,
+      allUsers: [
+        ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
+        ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+        ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
+        this.auth.currentUserValue?.id
+      ]
     }
     debugger
     if(statusStr) {
