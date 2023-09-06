@@ -25,7 +25,7 @@
           ></ng-container>
           <span class="text-xs text-red-500"
             *ngIf="f['title']?.hasError('codeExists')">
-            An app by this title already exists. Please select another name
+            An app by this title already exists. Please select another title
           </span>
       </div>
 
@@ -53,6 +53,10 @@
               control: f['code']
             }"
           ></ng-container>
+          <span class="text-xs text-red-500"
+            *ngIf="f['code']?.hasError('codeExists')">
+            An app with this code already exists. Please select another code.
+          </span>
       </div>
     </div>
     <!--Description & Image-->
@@ -154,9 +158,25 @@
                   [ngClass]="getValidityForCompany(i) ? 'is-invalid': ''"
                 />
                 <span *ngIf="getValidityForCompany(i)" class="text-xs text-red-500">
-                  Please provide a company name with upto 50 characters
+                  Please provide a company name
                 </span>
-            </div>
+                <span *ngIf="getValidityForCompanyCodeExists(i)" class="text-xs text-red-500">
+                  A company with this name already exists. Please provide another name.
+                </span>
+
+                <input
+                  class="form-control mt-3"
+                  formControlName="groupCode"
+                  type="text"
+                  [ngClass]="getValidityForCompanyCode(i) ? 'is-invalid': ''"
+                />
+                <span *ngIf="getValidityForCompanyCode(i)" class="text-xs text-red-500">
+                  Please provide a group code with upto 4 characters
+                </span>
+                <span *ngIf="getValidityForCompanyCodeExistsGroup(i)" class="text-xs text-red-500">
+                  A company with this code already exists. Please provide a different code.
+                </span>
+              </div>
             <div [ngClass]="first ? 'mt-7': 'mt-0'">
               <button
                 tuiIconButton
@@ -223,6 +243,9 @@
                   <span *ngIf="getValidityForCategory(i)" class="text-xs text-red-500">
                     Please provide a category name with upto 40 characters
                   </span>
+                  <span *ngIf="getValidityForCategoryCode(i)" class="text-red-500 text-xs">
+                    A category with this name already exists. Please provide a different name.
+                  </span>
               </div>
               <div [ngClass]="first ? 'mt-7': 'mt-0'">
                 <button
@@ -242,6 +265,7 @@
                 type="button"
                 class="mb-3"
                 size="m"
+                [disabled]="getValidityForCategory(i) || getValidityForCategoryCode(i)"
                 (click)="submitNewCategory()"
               >Submit</button>
             </div>
@@ -531,7 +555,7 @@
 <ng-template #formError let-control="control" let-message="message" let-validation="validation">
   <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
     <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
-      <span class="text-red-400 fv-help-block text-xxs 2xl:text-xs 2xl:mb-2" role="alert">
+      <span class="text-red-400 fv-help-block text-xs 2xl:text-xs 2xl:mb-2" role="alert">
         {{ message }}
       </span>
     </div>
@@ -606,7 +630,7 @@
             <tui-select
               [tuiTextfieldLabelOutside]="true"
               formControlName="fieldKey"
-              class="col-span-3"
+              class="col-span-4"
             >
               View schema field
               <tui-data-list-wrapper
@@ -618,7 +642,7 @@
             <!--Display As-->
             <tui-input
               formControlName="displayAs"
-              class="col-span-3"
+              class="col-span-4"
               [tuiTextfieldLabelOutside]="true"
             >
               <input
@@ -643,10 +667,10 @@
             </tui-select>
 
             <!--Show?-->
-            <tui-checkbox-labeled formControlName="isDisplayedInGrid" class="col-span-2 mt-3">
+            <!-- <tui-checkbox-labeled formControlName="isDisplayedInGrid" class="col-span-2 mt-3">
               Display in Grid?
               <div class="text-gray-400 text-xxs">Specify whether this component should be displayed in the grid</div>
-            </tui-checkbox-labeled>
+            </tui-checkbox-labeled> -->
             <button
               tuiIconButton
               type="button"

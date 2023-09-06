@@ -47,7 +47,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   ];
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
-  ]), [FormKeyValidator.createValidator(this.dashboard)]);
+  ]));
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   editFormID: string;
@@ -212,7 +212,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       event.component.input = true;
       event.component.multiple = true;
     }
-    this.addCustomEventTrigger()
+    // this.addCustomEventTrigger()
   }
 
   addCustomEventTrigger() {

@@ -14,15 +14,15 @@
         </ng-container>
       </nav>
       <ng-container *ngFor="let form of forms; let i = index;">
-        <div *ngIf="userRoleCheck == true && activeIndex == i" class="w-full well jsonviewer">
+        <div *ngIf="userRoleCheck == true" class="w-full well jsonviewer" [ngClass]="activeIndex == i ? 'block': 'hidden'">
           <div class="absolute -top-8 right-1 z-10">
             <a (click)="sendFormForEdit(i, form?._id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
               <i class="fa fa-pencil-square fa-2x text-blue-500 hover:text-blue-600" aria-hidden="true"></i>
             </a>
           </div>
           <formio
-            #formioComponent
-            [submission]="form || formValues[activeIndex]"
+            #formioForm
+            [submission]="form || formValues[i]"
             [options]="options"
             [form]="form"
             (change)="onChange($event, i)"

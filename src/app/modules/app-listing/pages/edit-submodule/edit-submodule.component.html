@@ -27,6 +27,10 @@
               control: f['title']
             }"
           ></ng-container>
+          <span class="text-xs text-red-500"
+            *ngIf="f['title']?.hasError('codeExists')">
+            An app by this title already exists. Please select another title
+          </span>
       </div>
       <div class="col-span-6 mt-3 mb-5">
         <label class="block pb-1">App Code <span class="text-xs text-red-400">*</span></label>
@@ -52,6 +56,10 @@
               control: f['code']
             }"
           ></ng-container>
+          <span class="text-xs text-red-500"
+            *ngIf="f['code']?.hasError('codeExists')">
+            An app with this code already exists. Please select another code.
+          </span>
       </div>
     </div>
 
@@ -503,7 +511,7 @@
             <tui-select
               [tuiTextfieldLabelOutside]="true"
               formControlName="fieldKey"
-              class="col-span-3"
+              class="col-span-4"
             >
               View schema field
               <tui-data-list-wrapper
@@ -515,7 +523,7 @@
             <!--Display As-->
             <tui-input
               formControlName="displayAs"
-              class="col-span-3"
+              class="col-span-4"
               [tuiTextfieldLabelOutside]="true"
             >
               <input
@@ -540,10 +548,10 @@
             </tui-select>
 
             <!--Show?-->
-            <tui-checkbox-labeled formControlName="isDisplayedInGrid" class="col-span-2 mt-3">
+            <!-- <tui-checkbox-labeled formControlName="isDisplayedInGrid" class="col-span-2 mt-3">
               Display in Grid?
               <div class="text-gray-400 text-xxs">Specify whether this component should be displayed in the grid</div>
-            </tui-checkbox-labeled>
+            </tui-checkbox-labeled> -->
             <button
               tuiIconButton
               type="button"

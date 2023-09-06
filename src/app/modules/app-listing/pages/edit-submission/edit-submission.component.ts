@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
@@ -10,7 +10,6 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { Location } from '@angular/common';
-import { FormioComponent } from '@formio/angular';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -47,7 +46,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   workFlowId: string;
   userRoleCheck: any;
   approvalLogs = [];
-  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
+  @ViewChildren('formioForm') formioForms: QueryList<any>;
 
   constructor(
     private auth: AuthService,
@@ -334,26 +333,22 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-    }
-    if(event?.data && event?.changed && event?.isModified) {
-      const id = this.subModuleData?.formDataIds[this.activeIndex]?._id;
-      this.formValues[this.activeIndex] = {...event, id};
-      const finalData = this.formValues?.map(value => {
-        return {
-          _id: value?.id,
-          data: value?.data
-        }
-      })
-      this.formSubmission.next(finalData)
+      const formId = this.subModuleData?.formDataIds[index]?._id;
+      const id = this.subModuleData?.formDataIds[index]?.formId;
+      debugger
+      this.formValues[index] = {...event, formId, id};
     }
   }
 
   editSubmission(status?: number) {
-    if(!this.formioComponent.submission) {
-      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
-    }
-    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
-      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
+    let formComps = JSON.parse(JSON.stringify(this.forms))
+    let formioInstance: any[] = [];
+    formComps?.forEach((form, index) => {
+      let instance = this.formioForms.toArray()[index].formio.checkValidity(null, true, null, false)
+      formioInstance.push(instance)
+    })
+    if(formioInstance.includes(false)) {
+      return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
@@ -361,10 +356,27 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
-    // if(this.formSubmission?.value?.length !== this.forms?.length) {
-    //   return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
-    // }
     this.creatingSubmission.next(true);
+    let finalData = [];
+    formComps?.forEach((form: any, i: number) => {
+      if(this.formValues[i]) {
+        finalData = this.formValues?.map(value => {
+          return {
+            formId: value?._id || value?.id,
+            data: value?.data || value?.defaultData?.data || {},
+            id: value?.formDataId || value?.formId
+          }
+        })
+      }
+      else {
+        finalData = [...finalData, {
+          formId: form._id,
+          id: form?.formDataId,
+          data: form?.defaultData?.data || {}
+        }]
+      }
+      this.formSubmission.next(finalData)
+    })
     const payload: any = {
       workFlowId: this.workFlowId,
       formDataIds: this.formSubmission?.value,

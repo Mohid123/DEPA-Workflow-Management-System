@@ -20,7 +20,7 @@
   </div>
   <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5">
     <a
-      *ngIf="appData?.status !== 3"
+      *ngIf="appData?.status !== 3 && checkAccess(appData) == true"
       title="Apps and Submissions"
       (click)="storeModuleID(appData?._id, appData?.code)"
       [routerLink]="['/modules', appData?.code]"

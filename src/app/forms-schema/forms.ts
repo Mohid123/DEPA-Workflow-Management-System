@@ -285,6 +285,9 @@ export const userAddForm = {
       "label": "Full Name",
       "tableView": true,
       "key": "fullname",
+      "validate": {
+        "required": true
+      },
       "type": "textfield",
       "input": true
     },
@@ -293,14 +296,16 @@ export const userAddForm = {
       "tableView": true,
       "key": "email",
       "type": "email",
+      "validate": {
+        "required": true
+      },
       "input": true
     },
     {
-        "label": "Role",
-        "widget": "choicesjs",
-        "tableView": true,
-        "disabled": false,
-        "data": {
+      "label": "Role",
+      "widget": "choicesjs",
+      "tableView": true,
+      "data": {
           "values": [
               {
                   "label": "Admin",
@@ -311,16 +316,19 @@ export const userAddForm = {
                   "value": "user"
               }
           ]
-        },
-        "key": "role",
-        "type": "select",
-        "input": true,
-        "multiple": true,
+      },
+      "validate": {
+          "required": true
+      },
+      "key": "role",
+      "type": "select",
+      "input": true
     },
     {
       "label": "Password",
       "tableView": false,
       "validate": {
+          "required": true,
           "pattern": "^(?=.*[0-9])(?=.*[a-zA-Z]).*$",
           "minLength": 8
       },

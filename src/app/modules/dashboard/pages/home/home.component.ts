@@ -35,8 +35,8 @@ export class HomeComponent implements OnDestroy {
 
   showAddDialog(content: PolymorpheusContent<TuiDialogContext>) {
     this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe();
   }
 

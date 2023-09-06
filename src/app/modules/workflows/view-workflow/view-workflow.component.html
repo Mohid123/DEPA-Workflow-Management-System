@@ -91,9 +91,9 @@
           </ng-container>
         </nav>
         <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
-          <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+          <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer">
             <formio
-              #formioComponent
+              #formioForm
               [readOnly]="
                 (checkIfAllApproved() == true ||
                 checkIfLoggedInUserIsPartOfActiveUsers() == false ||
@@ -105,7 +105,7 @@
               [options]="{'disableAlerts': true}"
               [submission]="form"
               [form]="form"
-              (change)="onChange($event)"
+              (change)="onChange($event, i)"
             ></formio>
           </div>
         </ng-container>

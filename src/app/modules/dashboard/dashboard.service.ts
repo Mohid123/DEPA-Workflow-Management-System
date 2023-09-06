@@ -42,12 +42,15 @@ export class DashboardService extends ApiService<any> {
 
   submissionId = new BehaviorSubject<any>('');
 
+  public excludeIdEmitter = new EventEmitter();
+
   /**
    * Breadcrumb array to display
    */
   items: BreadCrumbs[] = [];
   tempItems = new EventEmitter<BreadCrumbs[]>();
-  previousRoute: string
+  previousRoute: string;
+  id: string
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
@@ -55,6 +58,9 @@ export class DashboardService extends ApiService<any> {
    */
   constructor(protected override http: HttpClient, private notif: NotificationsService) {
     super(http)
+    this.excludeIdEmitter.subscribe(val => {
+      this.id = val
+    })
   }
 
   /**
@@ -102,9 +108,20 @@ export class DashboardService extends ApiService<any> {
 
   // Validate Module Code
 
-  validateModuleCode(codeValue: string): Observable<ApiResponse<any>> {
-    let params = {code: codeValue}
-    return this.get(`/subModules/validate`, params)
+  validateModuleCode(codeValue: string, model: string, key?: string, typedVal?: string): Observable<ApiResponse<any>> {
+    let params = {
+      model: model,
+      value: codeValue || typedVal,
+      key: key ? key : undefined,
+      excludeId: this.id ? this.id : undefined
+    }
+    if(!params.key) {
+      delete params.key
+    }
+    if(!params.excludeId) {
+      delete params.excludeId
+    }
+    return this.get(`/validate/unique`, params)
   }
 
   validateFormCode(codeValue: string): Observable<ApiResponse<any>> {

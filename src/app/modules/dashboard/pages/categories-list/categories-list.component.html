@@ -112,20 +112,38 @@
 
 <ng-template #addTemplate let-observer>
   <p class="text-lg font-semibold text-center">
-    Add/Edit Category
+    {{categoryId ? 'Update': 'Add'}} Category
   </p>
-  <div class="flex flex-col justify-center my-5">
-    <formio [submission]="formSubmission" (change)="getFormValues($event)" [form]="categoryFormField"></formio>
+  
+  <div *ngIf="categoryId" class="flex flex-col justify-center my-5">
+    <label class="block" for="Textarea2">Category Name<sup class="text-red-500">*</sup></label>
+    <input [formControl]="categoryControlEdit" class="form-control mb-1">
+    <span *ngIf="categoryControlEdit?.hasError('required') && categoryControlEdit?.dirty" class="text-red-500 text-xs">
+      Category is required
+    </span>
+    <span *ngIf="categoryControlEdit?.hasError('codeExists')" class="text-red-500 text-xs">
+      A category with this name already exists. Please provide a different name.
+    </span>
+  </div>
+  <!--ADD-->
+  <div *ngIf="!categoryId" class="flex flex-col justify-center my-5">
+    <label class="block" for="Textarea2">Category Name<sup class="text-red-500">*</sup></label>
+    <input [formControl]="categoryControl" class="form-control mb-1">
+    <span *ngIf="categoryControl?.hasError('required') && categoryControl?.dirty" class="text-red-500 text-xs">
+      Category is required
+    </span>
+    <span *ngIf="categoryControl?.hasError('codeExists')" class="text-red-500 text-xs">
+      A category with this name already exists. Please provide a different name.
+    </span>
   </div>
   <div class="flex justify-center gap-x-3">
     <button
       tuiButton
       type="button"
       size="m"
-      [disabled]="(formData | async)?.isValid == false || !(formData | async)?.changed"
       (click)="editOrAddCategory();"
     >
-      {{categoryId ? 'Update': 'Submit'}}
+      {{categoryId ? 'Update': 'Add'}}
     </button>
 
     <button

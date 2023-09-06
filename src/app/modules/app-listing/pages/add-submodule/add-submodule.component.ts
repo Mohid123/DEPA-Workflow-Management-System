@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, forkJoin, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -76,8 +76,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       new FormGroup({
         fieldKey: new FormControl(''),
         displayAs: new FormControl(''),
-        type: new FormControl(this.selectItems[0]),
-        isDisplayedInGrid: new FormControl(false)
+        type: new FormControl(this.selectItems[0])
       })
     ])
   });
@@ -155,7 +154,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
             val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy, {
-            caption: 'Add App',
+            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
         }
@@ -164,7 +163,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
             val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy, {
-            caption: 'Add App',
+            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
         }
@@ -188,9 +187,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
       displayAs: new FormControl(''),
-      type: new FormControl(this.selectItems[0]),
-      isDisplayedInGrid: new FormControl(false)
-
+      type: new FormControl(this.selectItems[0])
     });
     this.viewSchema.push(schemaForm)
   }
@@ -316,15 +313,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm = this.fb.group({
       companies: this.fb.array([]),
       categories: this.fb.array([]),
-      code: [item?.code || null, Validators.compose([
+      code: [item?.code || null,
+      Validators.compose([
         Validators.required,
         Validators.maxLength(7)
-      ])],
+      ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyName: [item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
-      title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]],
+      title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'submodule', 'title')]],
       image: [item?.image || null, Validators.required],
       description: [item?.description || null, Validators.required],
       workflows: this.fb.array(
@@ -394,17 +392,42 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCompany() {
     const companyForm = this.fb.group({
-      title: ['', Validators.compose([Validators.required, Validators.maxLength(50)])]
+      title: ['', Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]],
+      groupCode: ['',
+      Validators.compose([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(4)
+      ]), [CodeValidator.createValidator(this.dashboard, 'company')]]
     });
     this.companies.push(companyForm)
   }
 
   getValidityForCompany(i) {
-    return (<FormArray>this.companies).controls[i].invalid;
+    return (<FormArray>this.companies).controls[i]?.get('title').hasError('required') && (<FormArray>this.companies).controls[i]?.get('title').dirty ;
+  }
+
+  getValidityForCompanyCode(i) {
+    return ((<FormArray>this.companies).controls[i]?.get('groupCode').hasError('required') || 
+    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('maxlength') ||
+    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('minlength')) && 
+    (<FormArray>this.companies).controls[i]?.get('groupCode').dirty
+  }
+
+  getValidityForCompanyCodeExists(i) {
+    return (<FormArray>this.companies).controls[i]?.get('title')?.hasError('codeExists');
+  }
+
+  getValidityForCompanyCodeExistsGroup(i) {
+    return (<FormArray>this.companies).controls[i]?.get('groupCode')?.hasError('codeExists');
   }
 
   getValidityForCategory(i) {
-    return (<FormArray>this.categories).controls[i].invalid;
+    return (<FormArray>this.categories).controls[i].hasError('required') && (<FormArray>this.categories).controls[i].touched;
+  }
+
+  getValidityForCategoryCode(i) {
+    return (<FormArray>this.categories).controls[i]?.get('name').hasError('codeExists');
   }
 
   removeCompany(index: number) {
@@ -417,7 +440,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCategory() {
     const categoryForm = this.fb.group({
-      name: ['', Validators.compose([Validators.required, Validators.maxLength(40)])]
+      name: ['', Validators.compose([Validators.required, Validators.maxLength(40)]),
+      [CodeValidator.createValidator(this.dashboard, 'category')]]
     });
     this.categories.push(categoryForm)
   }
@@ -448,17 +472,28 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   submitNewCompany() {
-    const payload: any = {
-      title: this.f["companies"]?.value[0]?.title,
-      groupCode: this.f["companies"]?.value[0]?.title.replace(/\s/g, '-')
-    }
-    this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if(res) {
-        this.companies.reset();
-        this.companies.removeAt(0);
-        this.getAllCompanies();
+    let companySubmit: Array<Observable<any>> = [];
+    for (let i = 0; i < this.f['companies']?.value?.length; i++) {
+      const payload: any = {
+        title: this.f["companies"]?.value[i]?.title,
+        groupCode: this.f["companies"]?.value[i]?.groupCode
       }
-    })
+      companySubmit.push(
+        this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$))
+      );
+    }
+    if(companySubmit.length > 0) {
+      forkJoin(companySubmit).subscribe((values: any[]) => {
+        if(values && !values.includes(undefined)) {
+          for (let i = values?.length; i > 0; i--) {
+            this.companies.removeAt(0);
+            this.companies.removeAt(i);
+            this.companies.reset();
+          }
+          this.getAllCompanies();
+        }
+      })
+    }
   }
 
   submitNewCategory() {
@@ -595,7 +630,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       }),
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
-      accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
+      accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined,
+      allUsers: [
+        ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
+        ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+        ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
+        this.auth.currentUserValue?.id
+      ]
     }
     debugger
     if(statusStr) {
