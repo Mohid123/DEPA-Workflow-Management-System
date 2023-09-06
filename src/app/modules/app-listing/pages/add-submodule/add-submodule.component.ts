@@ -154,7 +154,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
             val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy, {
-            caption: 'Add App',
+            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
         }
@@ -163,7 +163,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
             val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy, {
-            caption: 'Add App',
+            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
         }

@@ -103,7 +103,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
           })
           this.dashboard.items = [...hierarchy,
             {
-              caption: 'Add App',
+              caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
               routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
             },
             {
@@ -115,7 +115,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
         else {
           this.dashboard.items = [
             {
-              caption: 'Add App',
+              caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
               routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
             },
             {
@@ -128,7 +128,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
       else {
         this.dashboard.items = [
           {
-            caption: 'Add App',
+            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           },
           {
