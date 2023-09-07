@@ -99,26 +99,6 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.workFlowId = res?.workFlowId?._id;
         this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(comp => {
-          comp.components?.map(data => {
-            if(data?.permissions?.length > 0) {
-              data?.permissions?.map(permit => {
-                if(this.currentUser?.id == permit?.id) {
-                  if(permit.canEdit == true) {
-                    data.disabled = false
-                  }
-                  else {
-                    data.disabled = true
-                  }
-                  if(permit.canView == false) {
-                    data.hidden = true
-                  }
-                  else {
-                    data.hidden = false
-                  }
-                }
-              })
-            }
-          })
           return {
             ...comp,
             components: comp?.components?.map(data => {
@@ -335,7 +315,6 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       }
       const formId = this.subModuleData?.formDataIds[index]?._id;
       const id = this.subModuleData?.formDataIds[index]?.formId;
-      debugger
       this.formValues[index] = {...event, formId, id};
     }
   }

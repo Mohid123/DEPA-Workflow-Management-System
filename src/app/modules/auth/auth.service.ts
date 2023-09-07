@@ -104,11 +104,11 @@ export class AuthService extends ApiService<AuthApiData> {
    */
   login(params: AuthCredentials) {
     this.isLoadingSubject.next(true);
+    Array.from(document.getElementsByClassName('fa-spin')).forEach(val => val.classList.remove('hidden'))
     return this.post('/auth/login', params).pipe(
       shareReplay(),
       map((result: ApiResponse<any>) => {
         if (!result.hasErrors()) {
-          Array.from(document.getElementsByClassName('fa-spin')).forEach(val => val.classList.remove('hidden'))
           setItem(StorageItem.User, result?.data?.user || null);
           setItem(StorageItem.JwtToken, result?.data?.tokens?.access?.token || null);
           setItem(StorageItem.RefreshToken, result?.data?.tokens?.refresh?.token || null);
@@ -148,6 +148,7 @@ export class AuthService extends ApiService<AuthApiData> {
    */
   loginWithActiveDirectory(params: {username: string, password: string}) {
     this.isLoadingSubject.next(true);
+    Array.from(document.getElementsByClassName('fa-spin')).forEach(val => val.classList.remove('hidden'))
     return this.post('/auth/login/active-directory', params).pipe(
       shareReplay(),
       map((result: ApiResponse<any>) => {
@@ -161,6 +162,7 @@ export class AuthService extends ApiService<AuthApiData> {
         }
         else {
           this.notif.displayNotification(result.errors[0]?.error?.message || 'Failed to authenticate', 'Login Failed!', TuiNotification.Error);
+          Array.from(document.getElementsByClassName('fa-spin')).forEach(val => val.classList.add('hidden'))
           throw result.errors[0].error?.message
         }
       }),

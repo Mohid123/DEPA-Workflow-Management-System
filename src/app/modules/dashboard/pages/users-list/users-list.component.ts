@@ -4,7 +4,6 @@ import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { userAddForm, userAddFormAdmin } from 'src/app/forms-schema/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { CodeValidator } from 'src/core/utils/utility-functions';
 
@@ -19,36 +18,33 @@ export class UsersListComponent implements OnDestroy {
   destroy$ = new Subject();
   limit: number = 6;
   page: number = 0;
-  userForm = userAddForm;
-  addUserForm = userAddFormAdmin;
-  formData = new BehaviorSubject<any>({isValid: false});
   formSubmission: any;
   searchValue = new FormControl();
   fetchingUsers = new Subject<boolean>();
   subscription: Subscription[] = [];
+
   userAddFormCustom = new FormGroup({
-    fullName: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.compose([
+    fullName: new FormControl(null, Validators.compose([Validators.required])),
+    email: new FormControl(null, Validators.compose([
       Validators.required,
       Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     ]), [CodeValidator.createValidator(this.dashboard, 'user')]),
-    role: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.compose([
-      Validators.required,
+    role: new FormControl(null, Validators.compose([Validators.required])),
+    password: new FormControl(null, Validators.compose([
       Validators.minLength(8),
       Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z]).*$')
     ]))
   })
 
   userEditFormCustom = new FormGroup({
-    fullName: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.compose([
+    fullName: new FormControl(null, Validators.compose([Validators.required])),
+    email: new FormControl(null,
+    Validators.compose([
       Validators.required,
       Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     ]), [CodeValidator.createValidator(this.dashboard, 'user', undefined, undefined)]),
-    role: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.compose([
-      Validators.required,
+    role: new FormControl(null, Validators.compose([Validators.required])),
+    password: new FormControl(null, Validators.compose([
       Validators.minLength(8),
       Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z]).*$')
     ]))
@@ -71,15 +67,15 @@ export class UsersListComponent implements OnDestroy {
       ).subscribe(() => {
         this.cf.detectChanges()
       })
-    }
+  }
 
-    get f() {
-      return this.userAddFormCustom.controls
-    }
+  get f() {
+    return this.userAddFormCustom.controls
+  }
 
-    get fE() {
-      return this.userEditFormCustom.controls
-    }
+  get fE() {
+    return this.userEditFormCustom.controls
+  }
 
   changePage(page: number) {
     this.page = page;
@@ -101,7 +97,12 @@ export class UsersListComponent implements OnDestroy {
       closeable: false
     }).subscribe());
     this.userId = data?.id || null;
-    this.dashboard.excludeIdEmitter.emit(data?.id)
+    if(data?.id) {
+      this.dashboard.excludeIdEmitter.emit(data?.id)
+    }
+    else {
+      this.dashboard.excludeIdEmitter.emit(null)
+    }
     this.userEditFormCustom?.controls['fullName']?.setValue(data?.fullName)
     this.userEditFormCustom?.controls['email']?.setValue(data?.email)
     this.userEditFormCustom?.controls['role']?.setValue(data?.roles[0])
@@ -126,41 +127,66 @@ export class UsersListComponent implements OnDestroy {
     this.userId = data?.id;
   }
 
-  getFormValues(value: any) {
-    if(value?.data) {
-      this.formData.next(value)
-    }
-  }
-
   editOrAddUser() {
     if(this.userId) {
-      const payload: any = {
-        roles: [this.formData?.value?.data?.role],
-        fullName: this.formData?.value?.data?.fullname,
-        email: this.formData?.value?.data?.email,
-        password: this.formData?.value?.data?.password
+      if(this.fE['email']?.invalid || this.fE['fullName']?.invalid || this.fE['role']?.invalid) {
+        debugger
+        this.fE['email']?.markAsDirty()
+        this.fE['fullName']?.markAsDirty()
+        this.fE['role']?.markAsDirty()
+        return
       }
+      if(this.fE['password']?.value && this.fE['password']?.invalid) {
+        debugger
+        this.fE['email']?.markAsDirty()
+        this.fE['fullName']?.markAsDirty()
+        this.fE['role']?.markAsDirty()
+        this.fE['password']?.markAsDirty()
+        return
+      }
+      const payload: any = {
+        roles: [this.userEditFormCustom?.value?.role],
+        fullName: this.userEditFormCustom?.value?.fullName,
+        email: this.userEditFormCustom?.value?.email,
+        password: this.userEditFormCustom?.value?.password || undefined
+      }
+      debugger
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
         if(res) {
           this.users = this.dashboard.getAllUsersForListing(this.limit, this.page)
           this.cf.detectChanges();
+          this.userId = null
           this.subscription.forEach(val => val.unsubscribe())
         }
       })
     }
     else {
+      if(this.f['email']?.invalid || this.f['fullName']?.invalid || this.f['role']?.invalid) {
+        this.f['email']?.markAsDirty()
+        this.f['fullName']?.markAsDirty()
+        this.f['role']?.markAsDirty()
+        return
+      }
+      if(this.f['password']?.value && this.f['password']?.invalid) {
+        this.f['email']?.markAsDirty()
+        this.f['fullName']?.markAsDirty()
+        this.f['role']?.markAsDirty()
+        this.f['password']?.markAsDirty()
+        return
+      }
       const payload: any = {
         roles: [this.userAddFormCustom?.value?.role],
         fullName: this.userAddFormCustom?.value?.fullName,
         email: this.userAddFormCustom?.value?.email,
-        password: this.userAddFormCustom?.value?.password
+        password: this.userAddFormCustom?.value?.password || undefined
       }
       this.dashboard.addNewUser(payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
         if(res) {
           this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
           this.cf.detectChanges();
+          this.userId = null
           this.subscription.forEach(val => val.unsubscribe())
         }
       })

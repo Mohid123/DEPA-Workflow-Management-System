@@ -175,7 +175,7 @@
           </div>
         </div>
         <div class="flex flex-wrap justify-start gap-2">
-          <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
+          <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last; let firstItem = first">
             <tui-island
               size="l"
               class="my-4 shadow-lg w-[398px]"
@@ -233,7 +233,7 @@
               <ng-container *ngIf="user?.status == 'approved'">
                 <tui-badge
                   class="px-2 font-semibold text-white bg-green-600 tui-space_right-2 tui-space_bottom-4"
-                  [value]="'Approved'"
+                  [value]="!firstItem ? 'Approved': 'Created'"
                   status="custom"
                 >
                   <tui-svg src="tuiIconCheckCircle"></tui-svg>
