@@ -12,7 +12,7 @@
         class="w-full rounded-lg"
         [columns]="['groupCode', 'title', 'actions']"
       >
-        <thead>
+        <thead class="border border-gray-300">
           <tr tuiThGroup>
             <th
               *tuiHead="'groupCode'"
@@ -102,10 +102,11 @@
 
 <ng-template #template let-observer>
   <p class="text-lg font-semibold text-center">
-    {{categoryId ? 'Update': 'Add'}} Company
+    Add Company
   </p>
+
   <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea1">Company Name <sup class="text-red-500">*</sup></label>
+    <label class="block">Company Name <sup class="text-red-500">*</sup></label>
     <input [formControl]="categoryEditControl" class="form-control mb-1">
     <span *ngIf="categoryEditControl?.hasError('required') && categoryEditControl?.dirty" class="text-red-500 text-xs">
       Company name is required
@@ -116,7 +117,7 @@
     </span>
   </div>
   <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea2">Group Code<sup class="text-red-500">*</sup></label>
+    <label class="block">Group Code<sup class="text-red-500">*</sup></label>
     <input [formControl]="groupCodeControl" class="form-control mb-1">
     <span *ngIf="groupCodeControl?.hasError('required') && groupCodeControl?.dirty" class="text-red-500 text-xs">
       Group Code is required
@@ -138,7 +139,7 @@
     size="m"
     (click)="editOrAddCompany();"
     >
-    {{categoryId ? 'Update': 'Add'}}
+    Add
   </button>
   <button
     tuiButton
@@ -197,7 +198,7 @@
     type="button"
     size="m"
     appearance="accent"
-    (click)="observer.complete()"
+    (click)="observer.complete(); categoryId = null"
     >
     Cancel
   </button>
