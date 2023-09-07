@@ -107,7 +107,10 @@ export class CompaniesComponent {
 
   deleteCompanyData() {
     this.dashboard.deleteCompany(this.categoryId).pipe(takeUntil(this.destroy$))
-    .subscribe(() => this.companies = this.dashboard.getAllCompanies(this.limit, this.page))
+    .subscribe(() => {
+      this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
+      this.categoryId = null;
+    })
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {

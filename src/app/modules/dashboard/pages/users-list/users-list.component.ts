@@ -130,14 +130,12 @@ export class UsersListComponent implements OnDestroy {
   editOrAddUser() {
     if(this.userId) {
       if(this.fE['email']?.invalid || this.fE['fullName']?.invalid || this.fE['role']?.invalid) {
-        debugger
         this.fE['email']?.markAsDirty()
         this.fE['fullName']?.markAsDirty()
         this.fE['role']?.markAsDirty()
         return
       }
       if(this.fE['password']?.value && this.fE['password']?.invalid) {
-        debugger
         this.fE['email']?.markAsDirty()
         this.fE['fullName']?.markAsDirty()
         this.fE['role']?.markAsDirty()
@@ -150,7 +148,6 @@ export class UsersListComponent implements OnDestroy {
         email: this.userEditFormCustom?.value?.email,
         password: this.userEditFormCustom?.value?.password || undefined
       }
-      debugger
       this.dashboard.updateUser(this.userId, payload)
       .pipe(takeUntil(this.destroy$)).subscribe(res => {
         if(res) {
@@ -197,7 +194,8 @@ export class UsersListComponent implements OnDestroy {
     this.dashboard.deleteUser(this.userId).pipe(takeUntil(this.destroy$))
     .subscribe(() => {
       this.users = this.dashboard.getAllUsersForListing(this.limit, this.page);
-      this.cf.detectChanges()
+      this.cf.detectChanges();
+      this.userId = null;
     })
   }
 
