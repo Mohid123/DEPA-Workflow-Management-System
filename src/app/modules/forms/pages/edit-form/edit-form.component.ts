@@ -86,7 +86,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       }
       else {
         this.form = {
-          title: this.formTitleControl?.value, key: null, display: this.formDisplayType.value || null, components: []
+          title: this.formTitleControl?.value,
+          key: null,
+          display: this.formDisplayType.value || null,
+          components: []
         };
       }
     })
@@ -182,13 +185,28 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     this.transportService.updatedComponent
     .pipe(takeUntil(this.destroy$)).subscribe(value => {
       if(value) {
-        this.form.components = this.form?.components?.map(comp => {
-          if(comp.key === value.key) {
-            comp = value;
-            return comp
+        FormioUtils.eachComponent(this.form.components, (comp, path) => {
+          if (comp.key === value.key) {
+            Object.assign(comp, value);
+            const pathArr = path.split('.');
+            let currObj = this.form.components;
+            for (let i = 0; i < pathArr.length - 1; i++) {
+              const key = pathArr[i];
+              currObj = currObj.find((obj) => obj.key === key);
+              if (!currObj) {
+                break;
+              }
+              currObj = currObj.components;
+            }
+            if (currObj) {
+              const componentIndex = currObj.findIndex((obj) => obj.key === value.key);
+              if (componentIndex !== -1) {
+                currObj[componentIndex] = comp;
+              }
+            }
           }
-          return comp
-        })
+        }, true);
+        console.log(this.form.components)
       }
     })
   }
