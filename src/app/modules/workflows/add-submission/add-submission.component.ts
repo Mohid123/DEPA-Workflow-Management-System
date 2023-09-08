@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
@@ -9,7 +9,7 @@ import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import { FormioComponent } from '@formio/angular';
+import { FormioUtils } from '@formio/angular';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -18,7 +18,7 @@ import { FormioComponent } from '@formio/angular';
 export class AddSubmissionComponent implements OnDestroy, OnInit {
   formTabs: any[] = [];
   activeIndex: number = 0;
-  public formWithWorkflow: any[] = [];
+  public formWithWorkflow: any = [];
   workflowForm: FormGroup;
   subModuleData: any;
   subModuleId: string;
@@ -177,6 +177,26 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             })
           }
         });
+        FormioUtils.eachComponent(this.formWithWorkflow, (comp) => {
+          if(comp?.permissions && comp?.permissions?.length > 0) {
+            return comp?.permissions?.map(permit => {
+              if(this.currentUser?.id == permit?.id) {
+                if(permit.canEdit == true) {
+                  comp.disabled = false
+                }
+                else {
+                  comp.disabled = true
+                }
+                if(permit.canView == false) {
+                  comp.hidden = true
+                }
+                else {
+                  comp.hidden = false
+                }
+              }
+            })
+          }
+        }, true);
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -293,9 +313,19 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
     let formioInstance: any[] = [];
     formComps?.forEach((form, index) => {
-      let instance = this.formioForms.toArray()[index].formio.checkValidity(null, true, null, false)
-      formioInstance.push(instance)
-    })
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        if(comp?._disabled === true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        let instance = this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
+    console.log(formioInstance)
     if(formioInstance.includes(false)) {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }

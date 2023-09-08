@@ -10,6 +10,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { Location } from '@angular/common';
+import { FormioUtils } from '@formio/angular';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -120,6 +121,26 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             }).filter(val => val)[0]
           }
         });
+        FormioUtils.eachComponent(this.forms, (comp) => {
+          if(comp?.permissions && comp?.permissions?.length > 0) {
+            return comp?.permissions?.map(permit => {
+              if(this.currentUser?.id == permit?.id) {
+                if(permit.canEdit == true) {
+                  comp.disabled = false
+                }
+                else {
+                  comp.disabled = true
+                }
+                if(permit.canView == false) {
+                  comp.hidden = true
+                }
+                else {
+                  comp.hidden = false
+                }
+              }
+            })
+          }
+        }, true);
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -323,9 +344,19 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     let formComps = JSON.parse(JSON.stringify(this.forms))
     let formioInstance: any[] = [];
     formComps?.forEach((form, index) => {
-      let instance = this.formioForms.toArray()[index].formio.checkValidity(null, true, null, false)
-      formioInstance.push(instance)
-    })
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        if(comp?._disabled === true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        let instance = this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
+    console.log(formioInstance)
     if(formioInstance.includes(false)) {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }

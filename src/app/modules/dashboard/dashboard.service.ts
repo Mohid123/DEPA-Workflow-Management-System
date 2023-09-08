@@ -302,7 +302,7 @@ export class DashboardService extends ApiService<any> {
       limit: limit,
       page: page+ 1
     }
-    return this.get(`/companies`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+    return this.get(`/companies`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
       }

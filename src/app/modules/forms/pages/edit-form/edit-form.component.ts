@@ -1,7 +1,7 @@
 import { Component, ViewChild, EventEmitter, ElementRef, OnDestroy, OnInit, Injector, Inject, AfterViewInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormioRefreshValue } from '@formio/angular';
+import { FormioRefreshValue, FormioUtils } from '@formio/angular';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -22,7 +22,7 @@ import { environment } from 'src/environments/environment';
 export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
-  public form: {title: string, key: string, display: string, components: any};
+  public form: any;
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   activeIndex: number = 0;
   formValue: any;
@@ -120,7 +120,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         }
         else {
           if(Object.keys(val).length == 0) {
-            
+
             this.dashboard.items = [...hierarchy,
               {
                 caption: getItem(StorageItem.editmoduleTitle),
@@ -131,7 +131,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
                 routerLink: `/forms/edit-form`
               }
             ];
-            
+
           }
           else {
             this.dashboard.items = [
@@ -145,7 +145,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
                 routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
               }
             ];
-            
+
           }
         }
       }
@@ -161,10 +161,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
           }
         ];
-        
+
       }
       else {
-        
+
         hierarchy.forEach(val => {
           val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
         })
@@ -175,7 +175,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             routerLink: `/forms/edit-form?id=${this.editFormID}`
           }
         ];
-        
+
       }
     });
 
@@ -212,37 +212,40 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       event.component.input = true;
       event.component.multiple = true;
     }
-    // this.addCustomEventTrigger()
+    this.addCustomEventTrigger()
   }
 
   addCustomEventTrigger() {
-    let checkIfExists = document.getElementById('custom-div');
-    if(!checkIfExists) {
-      let componentMenu = document.getElementsByClassName('component-btn-group');
-      Array.from(componentMenu).forEach((value, index) => {
-        let tooltip = document.createElement('div');
-        let div = document.createElement('div');
-        div.id = 'custom-div'
-        div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
-        div.tabIndex = -1;
-        div.role = 'button';
-        div.ariaLabel = 'Permissions Button';
-        div.innerHTML = `<i class="fa fa-key"></i>`;
-        div.addEventListener('click', () => {
-          let comp = this.form?.components[index];
-          this.openPermissionDialog(comp)
-        })
-        div.addEventListener('mouseover', () => {
-          tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
-          tooltip.innerText = 'Permissions'
-          div.append(tooltip)
-        })
-        div.addEventListener('mouseleave', () => {
-          tooltip.remove()
-        })
-        value.append(div);
-      })
-    }
+    let componentMenu = document.getElementsByClassName('component-btn-group');
+    Array.from(componentMenu).forEach((value, index) => {
+      let existingCustomDiv = value.querySelector('#custom-div');
+      if (existingCustomDiv) {
+        // If the custom icon already exists for this component, skip adding it again
+        return;
+      }
+
+      let tooltip = document.createElement('div');
+      let div = document.createElement('div');
+      div.id = 'custom-div';
+      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
+      div.tabIndex = -1;
+      div.role = 'button';
+      div.ariaLabel = 'Permissions Button';
+      div.innerHTML = `<i class="fa fa-key"></i>`;
+      div.addEventListener('click', () => {
+        let comp = FormioUtils.flattenComponents(this.form.components, true)
+        this.openPermissionDialog(Object.values(comp)[index]);
+      });
+      div.addEventListener('mouseover', () => {
+        tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
+        tooltip.innerText = 'Permissions';
+        div.append(tooltip);
+      });
+      div.addEventListener('mouseleave', () => {
+        tooltip.remove();
+      });
+      value.append(div);
+    });
   }
 
   openPermissionDialog(

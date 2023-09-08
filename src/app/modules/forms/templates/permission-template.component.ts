@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Inject, TemplateRef } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormioUtils } from "@formio/angular";
 import { TuiButtonModule, TuiDialogContext, TuiDialogService } from "@taiga-ui/core";
 import { TuiCheckboxLabeledModule } from "@taiga-ui/kit";
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -63,10 +64,22 @@ export class DialogTemplate {
   this.workflowApprovers = getItem(StorageItem.approvers) || [];
   if(this.workflowApprovers.length > 0) {
     this.workflowApprovers.forEach(user => {
-      this.userFormControls[user.id] = {
-        canEdit: new FormControl(false),
-        canView: new FormControl(true)
-      };
+      if(this.data && this.data?.permissions?.length > 0) {
+        this.data?.permissions?.map(value => {
+          if(user?.id == value?.id) {
+            this.userFormControls[user.id] = {
+              canEdit: new FormControl(value?.canEdit),
+              canView: new FormControl(value?.canView)
+            };
+          }
+        })
+      }
+      else {
+        this.userFormControls[user.id] = {
+          canEdit: new FormControl(false),
+          canView: new FormControl(true)
+        };
+      }
     });
   }
 }

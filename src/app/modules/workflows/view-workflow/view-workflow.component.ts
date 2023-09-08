@@ -12,6 +12,7 @@ import { DashboardService } from '../../dashboard/dashboard.service';
 import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
 import { saveAs } from 'file-saver';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
+import { FormioUtils } from '@formio/angular';
 @Component({
   templateUrl: './view-workflow.component.html',
   styleUrls: ['./view-workflow.component.scss']
@@ -70,7 +71,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   @ViewChildren('formioForm') formioForms: QueryList<any>;
   formValues: any[] = [];
   formSubmission = new BehaviorSubject<Array<any>>([]);
-  
+
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -207,26 +208,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         };
         this.formTabs = await this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = await this.workflowData?.formIds?.map(data => {
-          data.components?.map(innerData => {
-            if(innerData?.permissions?.length > 0) {
-              innerData?.permissions?.map(permit => {
-                if(this.currentUser?.id == permit?.id) {
-                  if(permit.canEdit == true) {
-                    innerData.disabled = false
-                  }
-                  else {
-                    innerData.disabled = true
-                  }
-                  if(permit.canView == false) {
-                    innerData.hidden = true
-                  }
-                  else {
-                    innerData.hidden = false
-                  }
-                }
-              })
-            }
-          })
           return {
             ...data,
             components: data.components?.map(data => {
@@ -248,6 +229,26 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
+        FormioUtils.eachComponent(this.formWithWorkflow, (comp) => {
+          if(comp?.permissions && comp?.permissions?.length > 0) {
+            return comp?.permissions?.map(permit => {
+              if(this.currentUser?.id == permit?.id) {
+                if(permit.canEdit == true) {
+                  comp.disabled = false
+                }
+                else {
+                  comp.disabled = true
+                }
+                if(permit.canView == false) {
+                  comp.hidden = true
+                }
+                else {
+                  comp.hidden = false
+                }
+              }
+            })
+          }
+        }, true);
         this.activeUsers = await this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
         this.workflowUsers = await this.workflowData?.workflowStatus?.map(userData => {
           return {
@@ -580,9 +581,19 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
     let formioInstance: any[] = [];
     formComps?.forEach((form, index) => {
-      let instance = this.formioForms.toArray()[index].formio.checkValidity(null, true, null, false)
-      formioInstance.push(instance)
-    })
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        if(comp?._disabled === true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        let instance = this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
+    console.log(formioInstance)
     if(formioInstance.includes(false)) {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
