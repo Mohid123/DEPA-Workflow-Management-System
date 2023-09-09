@@ -98,7 +98,9 @@ export class CompaniesComponent {
           this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
           this.subscription.forEach(val => val.unsubscribe());
           this.categoryEditControl.reset()
+          this.categoryEditControlEdit.reset()
           this.groupCodeControl.reset()
+          this.groupCodeControlEdit.reset()
           this.categoryId = null
         }
       });

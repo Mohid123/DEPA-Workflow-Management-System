@@ -76,7 +76,7 @@ export class DialogTemplate {
       }
       else {
         this.userFormControls[user.id] = {
-          canEdit: new FormControl(false),
+          canEdit: new FormControl(true),
           canView: new FormControl(true)
         };
       }

@@ -280,7 +280,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   getAllCompanies() {
-    this.dashboard.getAllCompanies(10, 0)
+    this.dashboard.getAllCompanies(20, 0)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       this.companyList = res.results?.map(data => {
         return {
@@ -292,7 +292,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   getAllCategories() {
-    this.dashboard.getAllCategories(10)
+    this.dashboard.getAllCategories(20)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       this.categoryList = res.results?.map(data => {
         return {
@@ -408,9 +408,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   getValidityForCompanyCode(i) {
-    return ((<FormArray>this.companies).controls[i]?.get('groupCode').hasError('required') || 
+    return ((<FormArray>this.companies).controls[i]?.get('groupCode').hasError('required') ||
     (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('maxlength') ||
-    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('minlength')) && 
+    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('minlength')) &&
     (<FormArray>this.companies).controls[i]?.get('groupCode').dirty
   }
 
@@ -631,14 +631,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined,
-      allUsers: [
-        ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
-        ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-        ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
-        this.auth.currentUserValue?.id
-      ]
+      // allUsers: [
+      //   ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
+      //   ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+      //   ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
+      //   this.auth.currentUserValue?.id
+      // ]
     }
-    debugger
     if(statusStr) {
       this.isSavingAsDraft.next(true)
     } else {

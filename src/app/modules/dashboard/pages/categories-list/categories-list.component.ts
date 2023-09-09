@@ -86,6 +86,8 @@ export class CategoriesListComponent implements OnDestroy {
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
           this.subscription.forEach(val => val.unsubscribe())
+          this.categoryControlEdit.reset();
+          this.categoryControl.reset();
         }
       })
     }
@@ -102,6 +104,8 @@ export class CategoriesListComponent implements OnDestroy {
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
           this.subscription.forEach(val => val.unsubscribe())
+          this.categoryControlEdit.reset();
+          this.categoryControl.reset();
         }
       })
     }

@@ -10,6 +10,7 @@ import { AuthService } from '../../auth/auth.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { FormioUtils } from '@formio/angular';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -59,6 +60,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     private submissionService: WorkflowsService,
     private router: Router,
     private auth: AuthService,
+    private transportService: DataTransportService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private dashboard: DashboardService
   ) {
@@ -325,7 +327,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         formioInstance.push(instance);
       });
     });
-    console.log(formioInstance)
     if(formioInstance.includes(false)) {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
@@ -430,6 +431,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
       setItem(StorageItem.approvers, approvers)
+      this.transportService.editBreadcrumbs.next(this.dashboard.items)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
   }

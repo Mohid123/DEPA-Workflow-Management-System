@@ -68,7 +68,7 @@ export class SubmissionTableComponent implements OnDestroy {
   showDownIcon = false;
   tableHeaders: any[] = [
     {
-      key: 'Submission Code',
+      key: 'Code',
       searchKey: 'code',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
@@ -77,7 +77,7 @@ export class SubmissionTableComponent implements OnDestroy {
       search: new FormControl(null)
     },
     {
-      key: 'Submission Status',
+      key: 'Status',
       searchKey: 'submissionStatus',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
@@ -104,7 +104,7 @@ export class SubmissionTableComponent implements OnDestroy {
       search: new FormControl(null)
     },
     {
-      key: 'Workflow progress',
+      key: 'Progress',
       searchKey: 'progress',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
@@ -142,7 +142,7 @@ export class SubmissionTableComponent implements OnDestroy {
       if(val == 'Display default') {
         this.tableHeaders = [
           {
-            key: 'Submission Code',
+            key: 'Code',
             searchKey: 'code',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
@@ -151,7 +151,7 @@ export class SubmissionTableComponent implements OnDestroy {
             search: new FormControl(null)
           },
           {
-            key: 'Submission Status',
+            key: 'Status',
             searchKey: 'submissionStatus',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
@@ -178,7 +178,7 @@ export class SubmissionTableComponent implements OnDestroy {
             search: new FormControl(null)
           },
           {
-            key: 'Workflow progress',
+            key: 'Progress',
             searchKey: 'progress',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
@@ -216,7 +216,7 @@ export class SubmissionTableComponent implements OnDestroy {
                 let payload: any
                 if(value) {
                   if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
-                    payload = { 
+                    payload = {
                       summaryData: {
                         [header?.searchKey]: {
                           fullName: value
@@ -269,9 +269,10 @@ export class SubmissionTableComponent implements OnDestroy {
       }
     })
   }
-  
-  setWorkflowID(key: string) {
+
+  setWorkflowID(key: string, submissionID: string) {
     setItem(StorageItem.formKey, key)
+    setItem(StorageItem.editSubmissionId, submissionID)
   }
 
   fetchDataAndPopulate() {
@@ -294,7 +295,7 @@ export class SubmissionTableComponent implements OnDestroy {
             let payload: any
             if(value) {
               if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
-                payload = { 
+                payload = {
                   summaryData: {
                     [header?.searchKey]: {
                       fullName: value
@@ -423,7 +424,7 @@ export class SubmissionTableComponent implements OnDestroy {
   getPendingOnUsers(value: any[]) {
     return value?.map(data => data?.fullName)
   }
-  
+
   bindValueFromSummaryData(obj: any, headerKey: string) {
     const matchingField = this.tableHeaders.find(data => data.field === headerKey);
     if (matchingField) {
@@ -433,9 +434,17 @@ export class SubmissionTableComponent implements OnDestroy {
     return "";
   }
 
-  sendFilterValue(value: any) {
-    switch (value?.sortType) {
-      case 'Created':
+  sendFilterValue(event: any) {
+    switch (Number(event?.target?.value)) {
+      case 0:
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((val: any) => {
+            this.submissionData = val;
+            this.tableDataValue = val?.results;
+          })
+        break
+      case 1:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 1)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -443,7 +452,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Completed':
+      case 3:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 3)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -451,7 +460,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'In Progress':
+      case 2:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 2)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -459,7 +468,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Draft':
+      case 4:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 4)
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -467,7 +476,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.tableDataValue = val?.results;
         })
         break
-      case 'Cancelled':
+      case 5:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 5)
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -475,7 +484,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.tableDataValue = val?.results;
         })
         break
-      case 'Deleted':
+      case 6:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 6)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -483,22 +492,6 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Sort by Ascending':
-        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'latest')
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((val: any) => {
-          this.submissionData = val;
-          this.tableDataValue = val?.results;
-        })
-        break
-      case 'Sort by Descending':
-        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'oldest')
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((val: any) => {
-          this.submissionData = val;
-          this.tableDataValue = val?.results;
-        })
-      break
     }
   }
 

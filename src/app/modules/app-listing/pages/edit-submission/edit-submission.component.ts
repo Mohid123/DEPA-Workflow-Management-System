@@ -11,6 +11,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { Location } from '@angular/common';
 import { FormioUtils } from '@formio/angular';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -58,7 +59,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private workflowService: WorkflowsService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private transportService: DataTransportService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
@@ -88,7 +90,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     })
     this.dashboard.items = [...hierarchy, {
       caption: getItem(StorageItem.formKey) || 'Edit Submission',
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Submission'}`
+      routerLink: `/modules/edit-submission/${getItem(StorageItem.editSubmissionId)}`
     }];
   }
 
@@ -240,6 +242,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       if(approvers.length == 0) {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
+      this.transportService.editBreadcrumbs.next(this.dashboard.items)
       setItem(StorageItem.formKey, key)
       setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
@@ -356,7 +359,6 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         formioInstance.push(instance);
       });
     });
-    console.log(formioInstance)
     if(formioInstance.includes(false)) {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }

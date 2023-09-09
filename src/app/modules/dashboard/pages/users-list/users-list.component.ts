@@ -155,6 +155,8 @@ export class UsersListComponent implements OnDestroy {
           this.cf.detectChanges();
           this.userId = null
           this.subscription.forEach(val => val.unsubscribe())
+          this.userEditFormCustom.reset();
+          this.userAddFormCustom.reset();
         }
       })
     }
@@ -185,6 +187,8 @@ export class UsersListComponent implements OnDestroy {
           this.cf.detectChanges();
           this.userId = null
           this.subscription.forEach(val => val.unsubscribe())
+          this.userEditFormCustom.reset();
+          this.userAddFormCustom.reset();
         }
       })
     }
