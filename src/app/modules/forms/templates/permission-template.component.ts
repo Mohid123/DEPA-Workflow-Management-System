@@ -13,13 +13,13 @@ import { StorageItem, getItem } from "src/core/utils/local-storage.utils";
     <h2 class="text-lg font-semibold text-center">Set Permissions for users</h2>
     <div class="my-6">
       <ng-container *ngFor="let user of workflowApprovers; let i = index;">
-        <div class="border-b border-gray-300 py-4">
-          <p class="font-semibold text-base mb-3">{{user?.name}}</p>
-          <tui-checkbox-labeled [formControl]="userFormControls[user.id].canEdit" class="tui-space_top-3">
+        <div class="border-b border-gray-300 py-4 flex justify-start gap-x-3">
+          <p class="font-semibold text-base mb-3 mr-4">{{user?.name}}</p>
+          <tui-checkbox-labeled [formControl]="userFormControls[user.id].canEdit" class="tui-space_top-1">
             Can Edit?
             <div class="text-gray-400">User will have the right to edit this component</div>
           </tui-checkbox-labeled>
-          <tui-checkbox-labeled [formControl]="userFormControls[user.id].canView" class="tui-space_top-3">
+          <tui-checkbox-labeled [formControl]="userFormControls[user.id].canView" class="tui-space_top-1">
             Can View?
             <div class="text-gray-400">User will have the right to only view this component</div>
           </tui-checkbox-labeled>
@@ -68,8 +68,14 @@ export class DialogTemplate {
         this.data?.permissions?.map(value => {
           if(user?.id == value?.id) {
             this.userFormControls[user.id] = {
-              canEdit: new FormControl(value?.canEdit),
+              canEdit: new FormControl(value?.canEdit ),
               canView: new FormControl(value?.canView)
+            };
+          }
+          else {
+            this.userFormControls[user.id] = {
+              canEdit: new FormControl(true),
+              canView: new FormControl(true)
             };
           }
         })
@@ -109,6 +115,6 @@ export class DialogTemplate {
   }
 
   showDialog(content: TemplateRef<TuiDialogContext>): void {
-    this.dialogs.open(content, {dismissible: false, closeable: false}).subscribe();
+    this.dialogs.open(content, {dismissible: false, closeable: false, size: 'l'}).subscribe();
   }
 }

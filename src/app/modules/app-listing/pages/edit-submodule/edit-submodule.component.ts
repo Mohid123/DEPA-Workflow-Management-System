@@ -508,6 +508,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
     this.transportService.editBreadcrumbs.next(this.dashboard.items)
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     setItem(StorageItem.approvers, approvers)
     setItem(StorageItem.formKey, key)
     if(formID) {
@@ -555,6 +556,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.transportService.sendFormBuilderData(this.formComponents)
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.transportService.editBreadcrumbs.next(this.dashboard.items)
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     this.router.navigate(['/forms/edit-form']);
   }
 

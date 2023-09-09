@@ -432,6 +432,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       }
       setItem(StorageItem.approvers, approvers)
       this.transportService.editBreadcrumbs.next(this.dashboard.items)
+      setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
   }

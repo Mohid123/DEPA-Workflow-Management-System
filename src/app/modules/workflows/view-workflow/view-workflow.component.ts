@@ -264,7 +264,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             stepId: userData?.stepId,
             _id: userData?._id,
             allUsers: userData?.allUsers,
-            activeUsers: userData?.activeUsers?.map(value => value?.fullName)
+            activeUsers: userData?.activeUsers?.map(value => value?.fullName),
+            activeStepUsers: this.workflowData?.activeStepUsers
           }
         });
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
@@ -274,6 +275,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.loadingData.next(false)
       }
     });
+  }
+
+  checkApproveOrRejectButtons(data: any, id: string) {
+    if (!this.currentUser.roles.includes('sysAdmin') && id != this.currentUser?.id) {
+      return false;
+    }
+    return true;
   }
 
   showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
@@ -558,7 +566,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   checkIfUserisStillActive(value: any): boolean {
-    return this.activeUsers.includes(value)
+    return (this.currentUser.roles.includes('sysAdmin') || this.activeUsers.includes(value))
   }
 
   checkIfUserRejected(approvers: any[]) {
@@ -593,7 +601,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         formioInstance.push(instance);
       });
     });
-    console.log(formioInstance)
     if(formioInstance.includes(false)) {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
@@ -617,7 +624,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       }
       this.formSubmission.next(finalData)
     })
-    console.log(this.formSubmission.value)
     this.workflowService.updateMultipleFormsData({formDataIds: this.formSubmission.value}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
         this.fetchData()

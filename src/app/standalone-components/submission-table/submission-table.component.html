@@ -135,66 +135,33 @@
                   <a
                     title="Perform Workflow Action"
                     (click)="editWorkflowRoute(data?.id, data?.code)"
-                    *ngIf="
-                    (
-                      checkIfUserisActiveUser(data?.workflowStatus) == true &&
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
-                      data?.summaryData?.progress < 100
-                    ) ||
-                    (
-                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
-                      data?.summaryData?.progress < 100
-                    ) ||
-                    (
-                      checkIfUserisActiveUser(data?.workflowStatus) == true &&
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
-                      data?.summaryData?.progress < 100
-                    ) ||
-                    (
-                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
-                      data?.summaryData?.progress < 100 &&
-                      userRoleCheckAdmin == true
-                    )
-                    "
-                    class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    *ngIf="checkEditDisableDeleteButton(data) == true && data?.submissionStatus == 2"
+                    class="px-1.5 py-0.5 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                   </a>
                   <!--VIEW-->
                   <a
                     title="View Submission"
                     (click)="editWorkflowRoute(data?.id, data?.code)"
-                    *ngIf="
-                    (
-                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true &&
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
-                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
-                      data?.summaryData?.progress <= 100
-                    ) ||
-                    (
-                      checkIfUserisApprovedUser(data?.workflowStatus) == true &&
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
-                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
-                      data?.summaryData?.progress <= 100
-                    ) ||
-                    (
-                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&
-                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
-                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
-                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
-                      data?.summaryData?.progress == 100 &&
-                      userRoleCheckAdmin == true
-                    )
-                    "
-                    class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                    *ngIf="checkViewButtonCondition(data) == true"
+                    class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+                  </a>
+                  <!--Delete-->
+                  <a
+                    title="Delete Submission"
+                    (click)="showDeleteDialog(dialog, 'delete')"
+                    *ngIf="checkViewButtonCondition(data) == true"
+                    class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-red-500 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+                  </a>
+                  <!--Cancel-->
+                  <a
+                    title="Cancel Submission"
+                    (click)="showDeleteDialog(dialog, 'cancel')"
+                    *ngIf="checkViewButtonCondition(data) == true"
+                    class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
                   </a>
                 </div>
                 <!--EDIT SUBMISSION PAGE-->
@@ -260,3 +227,89 @@
 <ng-template #hint>
   <strong class="text-sm">Toggle table columns</strong>
 </ng-template>
+
+<ng-template #dialog let-observer>
+  <p class="mb-5 text-lg font-semibold text-center">
+    {{dialogTitle}} Submission
+  </p>
+  <p class="text-base font-semibold text-center">
+    You are about to <span [ngClass]="dialogTitle == 'Delete' ? 'text-red-500': 'text-[#cf5c27]'">{{dialogTitle}}</span> this submission. Are you sure you want to continue?
+  </p>
+  <div class="flex flex-col justify-center my-5">
+    <label class="block" for="Textarea1">Comments <sup>(optional)</sup></label>
+    <textarea [formControl]="remarks" class="form-control" id="Textarea1" rows="4"></textarea>
+  </div>
+  <div class="flex justify-start gap-2">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      [showLoader]="(sendingDecision | async) == true"
+      (click)="observer.complete()"
+    >
+      Confirm
+    </button>
+    <button
+      tuiButton
+      appearance="secondary-destructive"
+      type="button"
+      size="m"
+      (click)="remarks.reset(); observer.complete()"
+    >
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<!--VIEW
+  (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress <= 100
+                    ) ||
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == true &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress <= 100
+                    ) ||
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      data?.summaryData?.progress == 100 &&
+                      userRoleCheckAdmin == true
+                    )
+-->
+
+<!--EDIT BTN
+   (
+                      checkIfUserisActiveUser(data?.workflowStatus) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == true &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) == false &&
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&
+                      data?.summaryData?.progress < 100 &&
+                      userRoleCheckAdmin == true
+                    )
+-->

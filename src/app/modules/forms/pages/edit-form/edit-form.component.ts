@@ -48,6 +48,9 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
   ]));
+  formCodeControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
+    Validators.required
+  ]));
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   editFormID: string;
@@ -76,18 +79,22 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
           if(response) {
             this.form = response;
             this.formTitleControl.setValue(response?.title);
+            this.formCodeControl.setValue(response?.key);
           }
         })
       }
       else if(data['submoduleID']) {
         this.form = {
-          title: this.formTitleControl?.value, key: null, display: this.formDisplayType.value || null, components: []
+          title: this.formTitleControl?.value,
+          key: this.formCodeControl?.value,
+          display: this.formDisplayType.value || null,
+          components: []
         };
       }
       else {
         this.form = {
           title: this.formTitleControl?.value,
-          key: null,
+          key: this.formCodeControl?.value,
           display: this.formDisplayType.value || null,
           components: []
         };
@@ -97,7 +104,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
 
   ngOnInit(): void {
       this.dashboard.items = [
-        ...this.transportService.editBreadcrumbs.value,
+        ...getItem(StorageItem.editBreadcrumbs),
         {
           caption: this.editFormID ? getItem(StorageItem.formKey) : 'Add Form',
           routerLink: `/forms/edit-form?id=${this.editFormID}`
@@ -219,7 +226,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     removeItem(StorageItem.approvers)
     const formData = {
       title: this.formTitleControl?.value,
-      key: this.formTitleControl?.value?.replace(/\s+/g, '-').toLowerCase(),
+      key: this.formCodeControl?.value,
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }

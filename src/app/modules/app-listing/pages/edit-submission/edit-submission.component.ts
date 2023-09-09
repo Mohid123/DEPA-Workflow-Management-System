@@ -243,6 +243,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
       this.transportService.editBreadcrumbs.next(this.dashboard.items)
+      setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
       setItem(StorageItem.formKey, key)
       setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});

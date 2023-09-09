@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Inject, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject, Subscription, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -6,11 +6,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDialogContext, TuiDialogService, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'app-submission-table',
@@ -66,6 +67,9 @@ export class SubmissionTableComponent implements OnDestroy {
   userRoleCheckAdmin: any;
   showUpIcon = true;
   showDownIcon = false;
+  isDeleting: string;
+  saveDialogSubscription: Subscription[] = [];
+  sendingDecision = new Subject<boolean>();
   tableHeaders: any[] = [
     {
       key: 'Code',
@@ -120,7 +124,8 @@ export class SubmissionTableComponent implements OnDestroy {
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin');
@@ -275,6 +280,20 @@ export class SubmissionTableComponent implements OnDestroy {
     setItem(StorageItem.editSubmissionId, submissionID)
   }
 
+  checkViewButtonCondition(data: any) {
+    if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.workFlowUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+
+  checkEditDisableDeleteButton(data: any) {
+    if (!this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.activeStepUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+
   fetchDataAndPopulate() {
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
     .subscribe((val: any) => {
@@ -332,6 +351,23 @@ export class SubmissionTableComponent implements OnDestroy {
         }
       });
     }))
+  }
+
+  showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string): void {
+    this.isDeleting = checkDecision;
+    if(checkDecision == 'delete') {
+      this.dialogTitle = 'Delete'
+    }
+    if(checkDecision == 'cancel') {
+      this.dialogTitle = 'Cancel'
+    }
+    if(checkDecision == 'enable') {
+      this.dialogTitle = 'Enable'
+    }
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe());
   }
 
   sendSearchCallForFilters(payload: any) {
