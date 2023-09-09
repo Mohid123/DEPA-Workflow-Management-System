@@ -151,7 +151,7 @@
                   <a
                     title="Delete Submission"
                     (click)="showDeleteDialog(dialog, 'delete')"
-                    *ngIf="checkViewButtonCondition(data) == true"
+                    *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "
                     class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-red-500 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
                   </a>
@@ -159,7 +159,7 @@
                   <a
                     title="Cancel Submission"
                     (click)="showDeleteDialog(dialog, 'cancel')"
-                    *ngIf="checkViewButtonCondition(data) == true"
+                    *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"
                     class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
                   </a>
