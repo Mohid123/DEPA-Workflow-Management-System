@@ -6,7 +6,7 @@
         <input
           appTrim
           class="form-control"
-          placeholder="Search users"
+          placeholder="Search users by Full name"
           [formControl]="searchValue"
         />
       </div>
@@ -26,7 +26,7 @@
               *tuiHead="'fullName'"
               tuiTh
               [resizable]="true"
-              class="text-base"
+              class="text-base w-[29%]"
             >
               Full Name
             </th>
@@ -34,7 +34,7 @@
               *tuiHead="'email'"
               tuiTh
               [resizable]="true"
-              class="text-base"
+              class="text-base w-[29%]"
             >
               Email
             </th>
@@ -42,11 +42,11 @@
               *tuiHead="'role'"
               tuiTh
               [resizable]="true"
-              class="text-base"
+              class="text-base w-[29%]"
             >
               Role/s
             </th>
-            <th class="text-base w-1/12" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
+            <th class="w-[12.5%] text-base" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
           </tr>
         </thead>
         <tbody
@@ -87,16 +87,14 @@
                 *tuiCell="'actions'"
                 tuiTd
               >
-                <ng-container *ngIf="checkRoles(item?.roles) == false">
-                  <div class="flex justify-start">
-                    <a (click)="showDialog(template, item)" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md cursor-pointer hover:text-white">
-                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                    </a>
-                    <button (click)="showDeleteDialog(item, deltemplate)" class="px-2 py-1 text-white bg-red-500 rounded-md">
-                      <i class="fa fa-trash" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </ng-container>
+                <div [ngClass]="checkRoles(item?.roles) == false ? 'block': 'hidden'" class="flex justify-start">
+                  <a (click)="showDialog(template, item)" class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </a>
+                  <button (click)="showDeleteDialog(item, deltemplate)" class="px-2 py-1 text-white bg-red-500 rounded-md">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </ng-template>
@@ -133,22 +131,22 @@
   <div class="flex flex-col justify-center my-5" [formGroup]="userEditFormCustom">
     <div class="mb-2">
       <label class="block">Full Name<sup class="text-red-500">*</sup></label>
-      <input formControlName="fullName" class="form-control mb-1">
-      <span *ngIf="fE['fullName']?.hasError('required') && fE['fullName']?.dirty" class="text-red-500 text-xs">
+      <input formControlName="fullName" class="mb-1 form-control">
+      <span *ngIf="fE['fullName']?.hasError('required') && fE['fullName']?.dirty" class="text-xs text-red-500">
         Full name is required
       </span>
     </div>
 
     <div class="my-2">
       <label class="block">Email<sup class="text-red-500">*</sup></label>
-      <input formControlName="email" class="form-control mb-1">
-      <span *ngIf="fE['email']?.hasError('required') && fE['email']?.dirty" class="text-red-500 text-xs">
+      <input formControlName="email" class="mb-1 form-control">
+      <span *ngIf="fE['email']?.hasError('required') && fE['email']?.dirty" class="text-xs text-red-500">
         Email is required
       </span>
-      <span *ngIf="fE['email']?.hasError('pattern') && fE['email']?.dirty" class="text-red-500 text-xs">
+      <span *ngIf="fE['email']?.hasError('pattern') && fE['email']?.dirty" class="text-xs text-red-500">
         Please provide a valid email address
       </span>
-      <span *ngIf="fE['email']?.hasError('codeExists')" class="text-red-500 text-xs">
+      <span *ngIf="fE['email']?.hasError('codeExists')" class="text-xs text-red-500">
         A user with this email already exists. Please provide a different email.
       </span>
     </div>
@@ -159,20 +157,20 @@
         <option value="admin">Admin</option>
         <option value="user">User</option>
       </select>
-      <span *ngIf="fE['role']?.hasError('required') && f['role']?.dirty" class="text-red-500 text-xs">
+      <span *ngIf="fE['role']?.hasError('required') && f['role']?.dirty" class="text-xs text-red-500">
         Please specify user role
       </span>
     </div>
     <div class="my-2">
       <label class="block">Password</label>
-      <input type="password" formControlName="password" class="form-control mb-1">
-      <span *ngIf="fE['password']?.hasError('required') && fE['password']?.dirty" class="text-red-500 text-xs">
+      <input type="password" formControlName="password" class="mb-1 form-control">
+      <span *ngIf="fE['password']?.hasError('required') && fE['password']?.dirty" class="text-xs text-red-500">
         Password is required
       </span>
-      <span *ngIf="fE['password']?.hasError('minlength') && fE['password']?.dirty" class="text-red-500 text-xs">
+      <span *ngIf="fE['password']?.hasError('minlength') && fE['password']?.dirty" class="text-xs text-red-500">
         Password should be at least 8 characters long
       </span>
-      <p *ngIf="fE['password']?.hasError('pattern') && fE['password']?.dirty" class="text-red-500 text-xs">
+      <p *ngIf="fE['password']?.hasError('pattern') && fE['password']?.dirty" class="text-xs text-red-500">
         Password should have at least one number and one character
       </p>
     </div>
@@ -235,22 +233,22 @@
   <div class="flex flex-col justify-center my-5" [formGroup]="userAddFormCustom">
     <div class="mb-2">
       <label class="block">Full Name<sup class="text-red-500">*</sup></label>
-      <input autocomplete="new-password" formControlName="fullName" class="form-control mb-1">
-      <span *ngIf="f['fullName']?.hasError('required') && f['fullName']?.dirty" class="text-red-500 text-xs">
+      <input autocomplete="new-password" formControlName="fullName" class="mb-1 form-control">
+      <span *ngIf="f['fullName']?.hasError('required') && f['fullName']?.dirty" class="text-xs text-red-500">
         Full name is required
       </span>
     </div>
 
     <div class="my-2">
       <label class="block">Email<sup class="text-red-500">*</sup></label>
-      <input autocomplete="new-password" formControlName="email" class="form-control mb-1">
-      <span *ngIf="f['email']?.hasError('required') && f['email']?.dirty" class="text-red-500 text-xs">
+      <input autocomplete="new-password" formControlName="email" class="mb-1 form-control">
+      <span *ngIf="f['email']?.hasError('required') && f['email']?.dirty" class="text-xs text-red-500">
         Email is required
       </span>
-      <span *ngIf="f['email']?.hasError('pattern') && f['email']?.dirty" class="text-red-500 text-xs">
+      <span *ngIf="f['email']?.hasError('pattern') && f['email']?.dirty" class="text-xs text-red-500">
         Please provide a valid email address
       </span>
-      <span *ngIf="f['email']?.hasError('codeExists')" class="text-red-500 text-xs">
+      <span *ngIf="f['email']?.hasError('codeExists')" class="text-xs text-red-500">
         A user with this email already exists. Please provide a different email.
       </span>
     </div>
@@ -261,20 +259,20 @@
         <option value="admin">Admin</option>
         <option value="user">User</option>
       </select>
-      <span *ngIf="f['role']?.hasError('required') && f['role']?.dirty" class="text-red-500 text-xs">
+      <span *ngIf="f['role']?.hasError('required') && f['role']?.dirty" class="text-xs text-red-500">
         Please specify user role
       </span>
     </div>
     <div class="my-2">
       <label class="block">Password</label>
-      <input autocomplete="new-password" type="password" formControlName="password" class="form-control mb-1">
-      <span *ngIf="f['password']?.hasError('required') && f['password']?.dirty" class="text-red-500 text-xs">
+      <input autocomplete="new-password" type="password" formControlName="password" class="mb-1 form-control">
+      <span *ngIf="f['password']?.hasError('required') && f['password']?.dirty" class="text-xs text-red-500">
         Password is required
       </span>
-      <span *ngIf="f['password']?.hasError('minlength') && f['password']?.dirty" class="text-red-500 text-xs">
+      <span *ngIf="f['password']?.hasError('minlength') && f['password']?.dirty" class="text-xs text-red-500">
         Password should be at least 8 characters long
       </span>
-      <p *ngIf="f['password']?.hasError('pattern') && f['password']?.dirty" class="text-red-500 text-xs">
+      <p *ngIf="f['password']?.hasError('pattern') && f['password']?.dirty" class="text-xs text-red-500">
         Password should have at least one number and one character
       </p>
     </div>
