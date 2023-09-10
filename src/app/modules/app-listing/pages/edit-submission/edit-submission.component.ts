@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
@@ -10,7 +10,8 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { Location } from '@angular/common';
-import { FormioComponent } from '@formio/angular';
+import { FormioUtils } from '@formio/angular';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -47,7 +48,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   workFlowId: string;
   userRoleCheck: any;
   approvalLogs = [];
-  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
+  @ViewChildren('formioForm') formioForms: QueryList<any>;
 
   constructor(
     private auth: AuthService,
@@ -58,7 +59,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private workflowService: WorkflowsService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private transportService: DataTransportService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
@@ -84,11 +86,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const hierarchy = getItem(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
     })
     this.dashboard.items = [...hierarchy, {
       caption: getItem(StorageItem.formKey) || 'Edit Submission',
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Submission'}`
+      routerLink: `/modules/edit-submission/${getItem(StorageItem.editSubmissionId)}`
     }];
   }
 
@@ -100,26 +102,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.workFlowId = res?.workFlowId?._id;
         this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(comp => {
-          comp.components?.map(data => {
-            if(data?.permissions?.length > 0) {
-              data?.permissions?.map(permit => {
-                if(this.currentUser?.id == permit?.id) {
-                  if(permit.canEdit == true) {
-                    data.disabled = false
-                  }
-                  else {
-                    data.disabled = true
-                  }
-                  if(permit.canView == false) {
-                    data.hidden = true
-                  }
-                  else {
-                    data.hidden = false
-                  }
-                }
-              })
+          FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.wysiwyg && component?.wysiwyg == true) {
+              comp.sanitize = true
             }
-          })
+          }, true)
           return {
             ...comp,
             components: comp?.components?.map(data => {
@@ -141,6 +128,27 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             }).filter(val => val)[0]
           }
         });
+        console.log(this.forms)
+        FormioUtils.eachComponent(this.forms, (comp) => {
+          if(comp?.permissions && comp?.permissions?.length > 0) {
+            return comp?.permissions?.map(permit => {
+              if(this.currentUser?.id == permit?.id) {
+                if(permit.canEdit == true) {
+                  comp.disabled = false
+                }
+                else {
+                  comp.disabled = true
+                }
+                if(permit.canView == false) {
+                  comp.hidden = true
+                }
+                else {
+                  comp.hidden = false
+                }
+              }
+            })
+          }
+        }, true);
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -240,6 +248,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       if(approvers.length == 0) {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
+      this.transportService.editBreadcrumbs.next(this.dashboard.items)
+      setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
       setItem(StorageItem.formKey, key)
       setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
@@ -334,26 +344,30 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-    }
-    if(event?.data && event?.changed && event?.isModified) {
-      const id = this.subModuleData?.formDataIds[this.activeIndex]?._id;
-      this.formValues[this.activeIndex] = {...event, id};
-      const finalData = this.formValues?.map(value => {
-        return {
-          _id: value?.id,
-          data: value?.data
-        }
-      })
-      this.formSubmission.next(finalData)
+      const formId = this.subModuleData?.formDataIds[index]?._id;
+      const id = this.subModuleData?.formDataIds[index]?.formId;
+      this.formValues[index] = {...event, formId, id};
     }
   }
 
   editSubmission(status?: number) {
-    if(!this.formioComponent.submission) {
-      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
-    }
-    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
-      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
+    let formComps = JSON.parse(JSON.stringify(this.forms))
+    let formioInstance: any[] = [];
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        if(comp?._disabled === true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        let instance = this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
+    if(formioInstance.includes(false)) {
+      return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
@@ -361,10 +375,27 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
-    // if(this.formSubmission?.value?.length !== this.forms?.length) {
-    //   return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
-    // }
     this.creatingSubmission.next(true);
+    let finalData = [];
+    formComps?.forEach((form: any, i: number) => {
+      if(this.formValues[i]) {
+        finalData = this.formValues?.map(value => {
+          return {
+            formId: value?._id || value?.id,
+            data: value?.data || value?.defaultData?.data || {},
+            id: value?.formDataId || value?.formId
+          }
+        })
+      }
+      else {
+        finalData = [...finalData, {
+          formId: form._id,
+          id: form?.formDataId,
+          data: form?.defaultData?.data || {}
+        }]
+      }
+      this.formSubmission.next(finalData)
+    })
     const payload: any = {
       workFlowId: this.workFlowId,
       formDataIds: this.formSubmission?.value,

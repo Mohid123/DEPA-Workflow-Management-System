@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { resetPasswordForm, userAddFormProfile } from 'src/app/forms-schema/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -73,7 +73,15 @@ export class ProfileComponent implements OnDestroy {
         return this.notif.displayNotification('Passwords do not match', 'Update password', TuiNotification.Warning)
       }
       else {
-        console.log(this.passValue?.value)
+        const payload = {
+          password: this.passValue?.value?.password
+        }
+        this.dashboard.updateUser(this.currentUser?.id, payload)
+        .pipe(takeUntil(this.destroy$)).subscribe(val => {
+          if(val) {
+            
+          }
+        })
       }
     }
     else {

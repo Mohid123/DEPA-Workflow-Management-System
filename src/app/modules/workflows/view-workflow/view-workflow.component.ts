@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
@@ -11,8 +11,8 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
 import { saveAs } from 'file-saver';
-import { FormioComponent } from '@formio/angular';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
+import { FormioUtils } from '@formio/angular';
 @Component({
   templateUrl: './view-workflow.component.html',
   styleUrls: ['./view-workflow.component.scss']
@@ -68,7 +68,10 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   conditionAddUser = new FormControl('none');
   showConditionError = new Subject<boolean>();
   deleteUserID: string;
-  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
+  @ViewChildren('formioForm') formioForms: QueryList<any>;
+  formValues: any[] = [];
+  formSubmission = new BehaviorSubject<Array<any>>([]);
+
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -89,7 +92,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     const hierarchy = getItem(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
     })
     this.dashboard.items = [...hierarchy, {
       caption: getItem(StorageItem.formKey),
@@ -161,14 +164,17 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     this.search$.next(search);
   }
 
-  onChange(event: any) {
+  onChange(event: any, index) {
     if(event?.data && event?.changed) {
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-      this.formData.next(event)
+      // this.formData.next(event)
+      const formId = this.workflowData?.formDataIds[index]?._id;
+      const id = this.workflowData?.formDataIds[index]?.formId;
+      this.formValues[index] = {...event, formId, id};
     }
   }
 
@@ -181,6 +187,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     ).subscribe(async (data) => {
       if(data) {
         this.workflowData = data;
+        this.workflowData?.formIds?.forEach(val => {
+          FormioUtils.eachComponent(val?.components, (comp) => {
+            if(comp?.wysiwyg && comp?.wysiwyg == true) {
+              val.sanitize = true
+            }
+          }, true)
+        })
         this.currentStepId = await this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null
         })[0]?.stepId;
@@ -202,26 +215,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         };
         this.formTabs = await this.workflowData?.formIds?.map(val => val.title);
         this.formWithWorkflow = await this.workflowData?.formIds?.map(data => {
-          data.components?.map(innerData => {
-            if(innerData?.permissions?.length > 0) {
-              innerData?.permissions?.map(permit => {
-                if(this.currentUser?.id == permit?.id) {
-                  if(permit.canEdit == true) {
-                    innerData.disabled = false
-                  }
-                  else {
-                    innerData.disabled = true
-                  }
-                  if(permit.canView == false) {
-                    innerData.hidden = true
-                  }
-                  else {
-                    innerData.hidden = false
-                  }
-                }
-              })
-            }
-          })
           return {
             ...data,
             components: data.components?.map(data => {
@@ -243,6 +236,26 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
+        FormioUtils.eachComponent(this.formWithWorkflow, (comp) => {
+          if(comp?.permissions && comp?.permissions?.length > 0) {
+            return comp?.permissions?.map(permit => {
+              if(this.currentUser?.id == permit?.id) {
+                if(permit.canEdit == true) {
+                  comp.disabled = false
+                }
+                else {
+                  comp.disabled = true
+                }
+                if(permit.canView == false) {
+                  comp.hidden = true
+                }
+                else {
+                  comp.hidden = false
+                }
+              }
+            })
+          }
+        }, true);
         this.activeUsers = await this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
         this.workflowUsers = await this.workflowData?.workflowStatus?.map(userData => {
           return {
@@ -258,7 +271,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             stepId: userData?.stepId,
             _id: userData?._id,
             allUsers: userData?.allUsers,
-            activeUsers: userData?.activeUsers?.map(value => value?.fullName)
+            activeUsers: userData?.activeUsers?.map(value => value?.fullName),
+            activeStepUsers: this.workflowData?.activeStepUsers
           }
         });
         this.workflowProgress.next(this.workflowData?.summaryData?.progress);
@@ -268,6 +282,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.loadingData.next(false)
       }
     });
+  }
+
+  checkApproveOrRejectButtons(data: any, id: string) {
+    if (!this.currentUser.roles.includes('sysAdmin') && id != this.currentUser?.id) {
+      return false;
+    }
+    return true;
   }
 
   showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
@@ -552,7 +573,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   checkIfUserisStillActive(value: any): boolean {
-    return this.activeUsers.includes(value)
+    return (this.currentUser.roles.includes('sysAdmin') || this.activeUsers.includes(value))
   }
 
   checkIfUserRejected(approvers: any[]) {
@@ -572,21 +593,45 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   updateFormData() {
-    if(!this.formioComponent.submission) {
-      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
+    let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
+    let formioInstance: any[] = [];
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        if(comp?._disabled === true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        let instance = this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
+    if(formioInstance.includes(false)) {
+      return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
-    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
-      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
-    }
-    let formUpdated = JSON.parse(JSON.stringify(this.formWithWorkflow));
-    const formDataIds = formUpdated?.map(data => {
-      return {
-        formId: data?.formDataId,
-        data: data?.data,
-        id: data?._id
+    let finalData = [];
+    formComps?.forEach((form: any, i: number) => {
+      if(this.formValues[i]) {
+        finalData = this.formValues?.map(value => {
+          return {
+            formId: value?._id || value?.id,
+            data: value?.data || value?.defaultData?.data || {},
+            id: value?.formDataId || value?.formId
+          }
+        })
       }
+      else {
+        finalData = [...finalData, {
+          formId: form._id,
+          id: form?.formDataId,
+          data: form?.defaultData?.data || {}
+        }]
+      }
+      this.formSubmission.next(finalData)
     })
-    this.workflowService.updateMultipleFormsData({formDataIds}).pipe(takeUntil(this.destroy$)).subscribe(val => {
+    this.workflowService.updateMultipleFormsData({formDataIds: this.formSubmission.value}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
         this.fetchData()
       }

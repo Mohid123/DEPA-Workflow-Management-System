@@ -1,6 +1,6 @@
 <app-header></app-header>
 <section class="pb-5 pt-44">
-  <tui-tabs tuiMobileTabs class="mx-2 lg:mx-20 md:mx-10 flex justify-center" [activeItemIndex]="activeIndex">
+  <tui-tabs tuiMobileTabs class="flex justify-center mx-2 lg:mx-20 md:mx-10" [activeItemIndex]="activeIndex">
     <ng-container *ngFor="let item of items; let i = index">
       <button
         tuiTab
@@ -14,13 +14,21 @@
 </section>
 
 <section *ngIf="activeIndex == 0" class="px-5">
-  <div class="grid grid-cols-12 gap-3 w-8/12 mx-auto px-1 my-4">
+  <div class="grid w-8/12 grid-cols-12 gap-3 px-1 mx-auto my-4">
     <div class="col-span-6">
       <label for="titleField">Title</label>
       <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">
-      <p class="text-red-500 text-xs mt-1"
+      <p class="mt-1 text-xs text-red-500"
         *ngIf="formTitleControl?.hasError('codeExists')">
         A form by this title already exists. Please select another name
+      </p>
+    </div>
+    <div class="col-span-6">
+      <label for="titleField">Code</label>
+      <input [formControl]="formCodeControl" type="text" class="form-control" placeholder="Form code" id="codField">
+      <p class="mt-1 text-xs text-red-500"
+        *ngIf="formCodeControl?.hasError('codeExists')">
+        A code by this name already exists. Please select another code
       </p>
     </div>
     <!-- <div class="col-span-6">
@@ -31,7 +39,7 @@
       </select>
     </div> -->
   </div>
-  <form-builder [form]="form" (change)="onChange($event)"></form-builder>
+  <form-builder [form]="form" (change)="onChange($event)" [options]="options"></form-builder>
   <div class="flex justify-center py-3">
     <button
       (click)="submitFormData()"
@@ -42,7 +50,7 @@
       appearance="accent"
       class="tui-space_right-3 tui-space_bottom-3"
       >
-      Submit Form
+      {{editFormID ? 'Update': 'Submit'}} Form
     </button>
     <button
       (click)="cancelFormData()"

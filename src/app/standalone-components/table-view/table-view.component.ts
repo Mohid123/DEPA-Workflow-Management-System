@@ -140,6 +140,13 @@ export class TableViewComponent implements OnDestroy {
     .subscribe();
   }
 
+  checkAccessMain(data: any) {
+    if (this.userRoleCheck == false && data?.accessType == "disabled" && !data.authorizedUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+
   showStatus(value: number) {
     if(value == 1) {
       return 'Published'
@@ -217,6 +224,15 @@ export class TableViewComponent implements OnDestroy {
     }
   }
 
+  checkAccess(data: any) {
+    if(data?.accessType == 'disabled') {
+      if(!data?.allUsers?.includes(this.currentUser?.id)) {
+        return false
+      }
+    }
+    return true
+  }
+
   sendSearchValue(value: any) {
     this.fetchingTableData.next(true);
     const queryParams = {
@@ -259,8 +275,9 @@ export class TableViewComponent implements OnDestroy {
     this.router.navigate(['/modules', code], {queryParams: {moduleID: id || ''}})
   }
 
-  setEditSlug(code: string, id: string) {
+  setEditSlug(code: string, id: string, title: string) {
     setItem(StorageItem.editmoduleSlug, code);
+    setItem(StorageItem.editmoduleTitle, title);
     setItem(StorageItem.editmoduleId, id);
   }
 

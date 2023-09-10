@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
-import { BehaviorSubject, Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, shareReplay, takeUntil } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { categoryForm } from 'src/app/forms-schema/forms';
+import { CodeValidator } from 'src/core/utils/utility-functions';
 
 @Component({
   templateUrl: './categories-list.component.html',
@@ -20,11 +21,16 @@ export class CategoriesListComponent implements OnDestroy {
   limit: number = 10;
   page: number = 0;
   currentUser: any;
-  formSubmission: any;
-  categoryFormField = categoryForm;
   formData = new BehaviorSubject<any>({isValid: false});
   userRoleCheckAdmin: any;
   subscription: Subscription[] = [];
+  categoryControl = new FormControl('', Validators.compose([
+    Validators.required
+  ]), [CodeValidator.createValidator(this.dashboard, 'category')]);
+
+  categoryControlEdit = new FormControl('', Validators.compose([
+    Validators.required
+  ]), [CodeValidator.createValidator(this.dashboard, 'category', undefined, undefined)])
 
   constructor(
     private dashboard: DashboardService,
@@ -42,32 +48,36 @@ export class CategoriesListComponent implements OnDestroy {
     this.categories = this.dashboard.getAllCategories(this.limit);
   }
 
+  changeSize(page: number) {
+    this.limit = page;
+    this.categories = this.dashboard.getAllCategories(this.limit);
+  }
+
   showAddOrEditDialog(content: PolymorpheusContent<TuiDialogContext>, data: any) {
+    this.categoryControl.reset();
     this.subscription.push(this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe());
     if(data?.id) {
       this.categoryId = data?.id;
-      this.formSubmission = {
-        data: {
-          categoryName: data?.name
-        }
-      }
+      this.dashboard.excludeIdEmitter.emit(data?.id)
+      this.categoryControlEdit.setValue(data?.name)
     }
     else {
       this.categoryId = null;
-      this.formSubmission = {
-        data: {}
-      }
     }
   }
 
   editOrAddCategory() {
-    const payload: {name: string} = {
-      name: this.formData.value?.data?.categoryName
-    }
     if(this.categoryId) {
+      if(this.categoryControlEdit.invalid) {
+        this.categoryControlEdit.markAsDirty();
+        return
+      }
+      const payload: {name: string} = {
+        name: this.categoryControlEdit.value
+      }
       this.dashboard.editCategory(payload, this.categoryId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
@@ -76,25 +86,28 @@ export class CategoriesListComponent implements OnDestroy {
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
           this.subscription.forEach(val => val.unsubscribe())
+          this.categoryControlEdit.reset();
+          this.categoryControl.reset();
         }
       })
     }
     else {
-      this.dashboard.addCategory(payload)
+      if(this.categoryControl.invalid) {
+        this.categoryControl.markAsDirty();
+        return
+      }
+      const payload2 = {name: this.categoryControl.value}
+      this.dashboard.addCategory(payload2)
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
         if(res) {
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
           this.subscription.forEach(val => val.unsubscribe())
+          this.categoryControlEdit.reset();
+          this.categoryControl.reset();
         }
       })
-    }
-  }
-
-  getFormValues(value: any) {
-    if(value?.data) {
-      this.formData.next(value)
     }
   }
 
@@ -112,14 +125,15 @@ export class CategoriesListComponent implements OnDestroy {
    this.dashboard.deleteCategory(this.categoryId).pipe(takeUntil(this.destroy$))
    .subscribe(() => {
      this.categories = this.dashboard.getAllCategories(this.limit);
+     this.categoryId = null
      this.cf.detectChanges();
    })
   }
 
   showDeleteDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
     this.dialogs.open(content, {
-      dismissible: true,
-      closeable: true
+      dismissible: false,
+      closeable: false
     }).subscribe();
     this.categoryId = data?.id;
   }

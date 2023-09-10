@@ -13,15 +13,15 @@
         </ng-container>
       </nav>
       <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
-        <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-          <div class="absolute -top-1 right-1 z-10">
+        <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer">
+          <div class="absolute z-10 -top-7 right-1">
             <a (click)="sendFormForEdit(i, form?.id)" class="rounded-md cursor-pointer" title="Edit Form">
-              <i class="fa fa-pencil-square fa-2x text-blue-500 hover:text-blue-600" aria-hidden="true"></i>
+              <i class="text-blue-500 fa fa-pencil-square fa-2x hover:text-blue-600" aria-hidden="true"></i>
             </a>
           </div>
           <formio
-            #formioComponent
-            [submission]="formValues[activeIndex]"
+            #formioForm
+            [submission]="formValues[i] || form?.defaultData"
             [options]="options"
             [form]="form"
             (change)="onChange($event, i)"
@@ -77,11 +77,11 @@
               <option value="none">NONE</option>
             </select>
           </div>
-          <div class="col-span-1 mt-8 inline-flex">
+          <div class="inline-flex col-span-1 mt-8">
             <tui-tooltip
               [content]="hint"
               direction="right"
-              class="mr-4 mt-1 -ml-2"
+              class="mt-1 mr-4 -ml-2"
             ></tui-tooltip>
             <tui-badged-content
               [contentTop]="

@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormioOptions } from '@formio/angular';
+import { FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, forkJoin, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { CodeValidator, calculateFileSize } from 'src/core/utils/utility-functions';
+import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
 
@@ -21,7 +21,7 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
-  formKeys: any;
+  formKeys: any[] = [];
   formComponents: any[] = [];
   activeIndex: number = 0;
   public options: FormioOptions;
@@ -65,7 +65,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   categoryId: string;
   categoryIdForMatch: string;
   items = [{name: 'anyCreate'}, {name: 'anyCreateAndModify'}, {name: 'disabled'}];
-  selectItems = ['Text', 'Number'];
+  selectItems = ['Text', 'Number', 'Date'];
   accessTypeValue: FormControl;
   paramID: string
   formKeysForViewSchema: any[] = [];
@@ -74,14 +74,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     summarySchema: new FormControl([]),
     viewSchema: new FormArray([
       new FormGroup({
-        fieldKey: new FormControl([]),
+        fieldKey: new FormControl(''),
         displayAs: new FormControl(''),
-        type: new FormControl(this.selectItems[0]),
-        formKey: new FormControl(''),
+        type: new FormControl(this.selectItems[0])
       })
     ])
   });
-  delIndex: number
+  delIndex: number;
+  formForDefaultData: FormioForm;
+  deafultFormSubmission: any[] = [];
+  defaultFormIndex: number;
+  defaultFormSubscription: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -110,36 +113,27 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         this.getDefaultWorkflowBySubModule();
       }
     })
+
+    this.getAllCompanies();
     this.formComponents = this.transportService.formBuilderData.value;
     this.formTabs = this.formComponents.map(val => val.title);
     let formComps = JSON.parse(JSON.stringify(this.formComponents));
-    this.formKeys = formComps?.map(comp => {
-      return {
-        key: comp.key,
-        fields: comp.components?.flatMap(value => {
-          if(value?.label == 'Data Grid') {
-            return value?.components?.map(data => {
-              return  {
-                fieldKey: data.key = data?.key.includes(comp.key) ? data.key : comp?.key + '.' + value.key + '.' + data.key,
-                displayAs: data.label,
-                type: data.type
-              }
-            })
-          }
-          return  {
-            fieldKey: value.key = value?.key.includes(comp.key) ? value.key : comp.key + '.' + value.key,
-            displayAs: value.label,
-            type: value.type
-          }
-        })
-      }
+    formComps?.map(form => {
+      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
     })
-    this.summarySchemaFields = this.formKeys?.flatMap(val => val.fields.map(data => data.fieldKey))
-    this.formKeysForViewSchema = this.formKeys?.map(val => val.key);
-
-    this.getAllCompanies();
+    this.summarySchemaFields = this.formKeys.flatMap(val => {
+      let res = generateKeyCombinations(val)
+      return res
+    })
+    this.formKeysForViewSchema = this.summarySchemaFields;
+    formComps?.forEach(val => {
+      FormioUtils.eachComponent(val?.components, (comp) => {
+        if(comp?.wysiwyg && comp?.wysiwyg == true) {
+          val.sanitize = true
+        }
+      }, true)
+    })
     // get users for email
-
     this.search$.pipe(
       switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search)),
       takeUntil(this.destroy$))
@@ -163,16 +157,19 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         const hierarchy = getItem(StorageItem.navHierarchy);
         if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('isParent')) {
           hierarchy.forEach(val => {
-            val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
           })
           this.dashboard.items = [...hierarchy, {
-            caption: 'Add App',
+            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
         }
         else {
-          this.dashboard.items = [{
-            caption: 'Add App',
+          hierarchy.forEach(val => {
+            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+          })
+          this.dashboard.items = [...hierarchy, {
+            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
             routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
           }];
         }
@@ -180,29 +177,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
-  handleChangeOnSummarySchema(value: any) {
-    if(value.length == 0) {
-      this.schemaForm.controls['viewSchema'].at(0).get('fieldKey').setValue([])
-    }
-    else {
-      if(value.length !== this.schemaForm.controls['viewSchema']?.length) {
-        value?.map((field, index) => {
-          this.schemaForm.controls['viewSchema'].removeAt(index)
-        })
-      }
-      value?.map((field, index) => {
-        if(this.schemaForm.controls['viewSchema'].at(index)) {
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
-        }
-        else {
-          this.addViewSchema();
-          this.schemaForm.controls['viewSchema'].at(index).get('fieldKey').setValue([field])
+  applySummarySchemaValuesToViewSchema(data: any) {
+    data?.forEach((val, index) => {
+      this.schemaForm?.controls['viewSchema']?.value?.forEach((data, i) => {
+        if(data?.fieldKey !== val) {
+          this.schemaForm?.controls['viewSchema']?.removeAt(i)
         }
       })
+    })
+    if(data?.length == 0) {
+      this.schemaForm?.controls['viewSchema']?.removeAt(0)
     }
-    this.formKeys?.flatMap(val => val.fields.map((data, index) => {
-      this.schemaForm.controls['viewSchema']?.at(index)?.get('formKey')?.setValue(data?.fieldKey?.split('.')[0]?.trim())
-    }))
   }
 
   checkIfLabelIsUnique() {
@@ -221,18 +206,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
       displayAs: new FormControl(''),
-      type: new FormControl(this.selectItems[0]),
-      formKey: new FormControl('')
+      type: new FormControl(this.selectItems[0])
     });
     this.viewSchema.push(schemaForm)
   }
 
   deleteViewSchema(index: number) {
     this.viewSchema.removeAt(index);
-    let val = this.schemaForm.controls['summarySchema'].value;
-    val.splice(index, 1);
-    this.schemaForm.controls['summarySchema'].setValue(val)
-    this.viewSchema.removeAt(index)
   }
 
   getDefaultWorkflowByModule() {
@@ -319,7 +299,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   getAllCompanies() {
-    this.dashboard.getAllCompanies(10, 0)
+    this.dashboard.getAllCompanies(20, 0)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       this.companyList = res.results?.map(data => {
         return {
@@ -331,7 +311,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   getAllCategories() {
-    this.dashboard.getAllCategories(10)
+    this.dashboard.getAllCategories(20)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       this.categoryList = res.results?.map(data => {
         return {
@@ -352,15 +332,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm = this.fb.group({
       companies: this.fb.array([]),
       categories: this.fb.array([]),
-      code: [item?.code || null, Validators.compose([
+      code: [item?.code || null,
+      Validators.compose([
         Validators.required,
         Validators.maxLength(7)
-      ])],
+      ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyName: [item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
-      title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard)]],
+      title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'submodule', 'title')]],
       image: [item?.image || null, Validators.required],
       description: [item?.description || null, Validators.required],
       workflows: this.fb.array(
@@ -430,17 +411,46 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCompany() {
     const companyForm = this.fb.group({
-      title: ['', Validators.compose([Validators.required, Validators.maxLength(50)])]
+      title: ['', Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]],
+      groupCode: ['',
+      Validators.compose([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(4)
+      ]), [CodeValidator.createValidator(this.dashboard, 'company')]]
     });
     this.companies.push(companyForm)
   }
 
   getValidityForCompany(i) {
-    return (<FormArray>this.companies).controls[i].invalid;
+    return (<FormArray>this.companies).controls[i]?.get('title').hasError('required') && (<FormArray>this.companies).controls[i]?.get('title').dirty ;
+  }
+
+  getValidityForCompanyCode(i) {
+    return ((<FormArray>this.companies).controls[i]?.get('groupCode').hasError('required') ||
+    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('maxlength') ||
+    (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('minlength')) &&
+    (<FormArray>this.companies).controls[i]?.get('groupCode').dirty
+  }
+
+  getValidityForWorkflowStep() {
+    return (<FormArray>this.workflows).controls[0]?.get('approverIds')?.hasError('required') && (<FormArray>this.workflows).controls[0]?.get('approverIds')?.touched
+  }
+
+  getValidityForCompanyCodeExists(i) {
+    return (<FormArray>this.companies).controls[i]?.get('title')?.hasError('codeExists');
+  }
+
+  getValidityForCompanyCodeExistsGroup(i) {
+    return (<FormArray>this.companies).controls[i]?.get('groupCode')?.hasError('codeExists');
   }
 
   getValidityForCategory(i) {
-    return (<FormArray>this.categories).controls[i].invalid;
+    return (<FormArray>this.categories).controls[i].hasError('required') && (<FormArray>this.categories).controls[i].touched;
+  }
+
+  getValidityForCategoryCode(i) {
+    return (<FormArray>this.categories).controls[i]?.get('name').hasError('codeExists');
   }
 
   removeCompany(index: number) {
@@ -453,7 +463,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   addCategory() {
     const categoryForm = this.fb.group({
-      name: ['', Validators.compose([Validators.required, Validators.maxLength(40)])]
+      name: ['', Validators.compose([Validators.required, Validators.maxLength(40)]),
+      [CodeValidator.createValidator(this.dashboard, 'category')]]
     });
     this.categories.push(categoryForm)
   }
@@ -484,17 +495,28 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   submitNewCompany() {
-    const payload: any = {
-      title: this.f["companies"]?.value[0]?.title,
-      groupCode: this.f["companies"]?.value[0]?.title.replace(/\s/g, '-')
-    }
-    this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if(res) {
-        this.companies.reset();
-        this.companies.removeAt(0);
-        this.getAllCompanies();
+    let companySubmit: Array<Observable<any>> = [];
+    for (let i = 0; i < this.f['companies']?.value?.length; i++) {
+      const payload: any = {
+        title: this.f["companies"]?.value[i]?.title,
+        groupCode: this.f["companies"]?.value[i]?.groupCode
       }
-    })
+      companySubmit.push(
+        this.dashboard.addCompany(payload).pipe(takeUntil(this.destroy$))
+      );
+    }
+    if(companySubmit.length > 0) {
+      forkJoin(companySubmit).subscribe((values: any[]) => {
+        if(values && !values.includes(undefined)) {
+          for (let i = values?.length; i > 0; i--) {
+            this.companies.removeAt(0);
+            this.companies.removeAt(i);
+            this.companies.reset();
+          }
+          this.getAllCompanies();
+        }
+      })
+    }
   }
 
   submitNewCategory() {
@@ -524,6 +546,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     if(approvers.length == 0) {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     setItem(StorageItem.approvers, approvers)
     if(this.categoryIdForMatch) {
       this.router.navigate(['/forms/form-builder'], {queryParams: {isParent: true}});
@@ -533,9 +556,36 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  addDefaultData(i: number, content: PolymorpheusContent<TuiDialogContext>) {
+    this.formForDefaultData = this.formComponents[i]
+    this.defaultFormIndex = i;
+    this.defaultFormSubscription.push(this.dialogs.open(content, {
+      dismissible: false,
+      closeable: false,
+      size: 'page'
+    }).subscribe())
+  }
+
+  onChangeForm(event: any) {
+    if(event?.data && event?.changed) {
+      if(event?.data?.file) {
+        event?.data?.file?.forEach(value => {
+          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      this.deafultFormSubmission[this.defaultFormIndex] = {data: event?.data}
+    }
+  }
+
+  confirmDefaultSubmission() {
+    this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex]
+    this.defaultFormSubscription.forEach(val => val.unsubscribe())
+  }
+
   sendFormForEdit(index: number) {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.router.navigate(['/forms/form-builder']);
   }
@@ -550,6 +600,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   deleteForm() {
     this.formComponents.splice(this.delIndex, 1)
+    this.formTabs.splice(this.delIndex, 1)
   }
 
   changeLanguage(lang: string) {
@@ -584,10 +635,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create module', TuiNotification.Warning)
       }
     }
-    let newViewSchema = this.schemaForm?.value?.viewSchema?.map(value => {
-      value.fieldKey = value.fieldKey[0];
-      return value
-    })
     let payload: any = {
       title: this.subModuleForm.get('title')?.value,
       description: this.subModuleForm.get('description')?.value,
@@ -606,9 +653,15 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
-      summarySchema: this.schemaForm.value?.summarySchema,
-      viewSchema: newViewSchema[0]?.displayAs ? newViewSchema : [],
-      accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined
+      summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
+      viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
+      accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined,
+      // allUsers: [
+      //   ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
+      //   ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+      //   ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
+      //   this.auth.currentUserValue?.id
+      // ]
     }
     if(statusStr) {
       this.isSavingAsDraft.next(true)
@@ -726,7 +779,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'l'
+      size: 'page'
     })
     .subscribe());
   }

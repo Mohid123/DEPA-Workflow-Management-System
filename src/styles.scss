@@ -26,6 +26,23 @@ a:hover {
   color: inherit!important;
 }
 
+// tui-table-pagination {
+//   span[automation-id="tui-table-pagination__lines-per-page-wrapper"].ng-star-inserted {
+//     position: relative!important;
+//     visibility: hidden!important;
+//   }
+// }
+
+// tui-table-pagination {
+//   span[automation-id="tui-table-pagination__lines-per-page-wrapper"].ng-star-inserted:after {
+//     content: "Items per Page"!important;
+//     position: absolute!important;
+//     visibility: visible!important;
+//     left: 0!important;
+//     top: 0!important;
+//   }
+// }
+
 svg {
   overflow: auto!important
 }

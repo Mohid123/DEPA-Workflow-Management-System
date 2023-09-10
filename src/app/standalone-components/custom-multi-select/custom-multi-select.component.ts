@@ -80,7 +80,7 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
    */
   @Input() users: BehaviorSubject<any> = new BehaviorSubject([]);
 
-  limit: number = 7;
+  limit: number = 50;
   page: number = 0;
 
   /**

@@ -80,13 +80,24 @@
     <input [ngClass]="formData?.invalid && formData?.touched ? 'is-invalid': ''" type="text" class="my-2 form-control" [formControl]="formData">
     <span class="text-xs text-red-500" *ngIf="formData?.invalid && formData?.touched">Category name is required</span>
   </div>
-  <button
-    tuiButton
-    type="button"
-    size="m"
-    [disabled]="formData?.invalid"
-    (click)="addCategory(); observer.complete()"
-    >
-    Submit
+  <div class="flex justify-center gap-2">
+    <button
+      tuiButton
+      type="button"
+      size="m"
+      [disabled]="formData?.invalid"
+      (click)="addCategory(); observer.complete()"
+      >
+      Add
     </button>
+    <button
+      tuiButton
+      type="button"
+      appearance="accent"
+      size="m"
+      (click)="observer.complete(); formData.reset()"
+      >
+      Cancel
+    </button>
+  </div>
 </ng-template>

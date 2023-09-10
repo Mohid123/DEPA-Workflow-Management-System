@@ -1,16 +1,16 @@
-import { Component, ViewChild, EventEmitter, ElementRef, OnInit, Inject, TemplateRef, Injector } from '@angular/core';
+import { Component, ViewChild, EventEmitter, ElementRef, OnInit, Inject, Injector, AfterViewInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormioRefreshValue } from '@formio/angular';
+import { FormioRefreshValue, FormioUtils } from '@formio/angular';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
 import { environment } from 'src/environments/environment';import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import {  FormKeyValidator } from 'src/core/utils/utility-functions';
+import {  CodeValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { DialogTemplate } from '../../templates/permission-template.component';
 
@@ -18,7 +18,7 @@ import { DialogTemplate } from '../../templates/permission-template.component';
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
-export class FormBuilderComponent implements OnInit {
+export class FormBuilderComponent implements OnInit, AfterViewInit {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
   public form: {title: string, key: string, display: string, components: any};
@@ -42,11 +42,19 @@ export class FormBuilderComponent implements OnInit {
   ];
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
-  ]), [FormKeyValidator.createValidator(this.dashboard)]);
+  ]));
+  formCodeControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
+    Validators.required
+  ]),[CodeValidator.createValidator(this.dashboard, 'form')]);
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
   viewUsers = new FormControl<any>([]);
+  appKey: string;
+  options: any = {
+    "disableAlerts": true,
+    "noDefaultSubmitButton": true
+  }
 
   constructor(
     private transportService: DataTransportService,
@@ -67,83 +75,76 @@ export class FormBuilderComponent implements OnInit {
           if(response) {
             this.form = response;
             this.formTitleControl.setValue(response?.title);
+            this.formCodeControl.setValue(response?.key);
+            this.formValue = this.form
           }
         })
       }
       if(this.editMode === true) {
         this.form = this.transportService.sendFormDataForEdit.value;
         this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
-        this.formTitleControl.disable();
+        this.formCodeControl.setValue(this.transportService.sendFormDataForEdit.value?.key);
+        // this.formTitleControl.disable();
+        this.formValue = this.form
       }
       else {
         this.form = {
           title: this.formTitleControl?.value,
-          key: '',
+          key: this.formCodeControl?.value,
           display: this.formDisplayType.value,
           components: []
         };
       }
+      this.formValue = this.form
     })
   }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(Object.keys(val).length == 0) {
-        const hierarchy = getItem(StorageItem.navHierarchy);
-        if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('?')) {
-          hierarchy.forEach(val => {
-            val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
-          })
-          this.dashboard.items = [...hierarchy,
-            {
-              caption: 'Add App',
-              routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
-            },
-            {
-              caption: 'Add Form',
-              routerLink: `/forms/form-builder`
-            }
-          ];
+      this.dashboard.items = [
+        ...getItem(StorageItem.editBreadcrumbs),
+        {
+          caption: 'Add Form',
+          routerLink: `/forms/form-builder`
         }
-        else {
-          this.dashboard.items = [
-            {
-              caption: 'Add App',
-              routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
-            },
-            {
-              caption: 'Add Form',
-              routerLink: `/forms/form-builder`
-            }
-          ];
-        }
-      }
-      else {
-        this.dashboard.items = [
-          {
-            caption: 'Add App',
-            routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
-          },
-          {
-            caption: 'Add Form',
-            routerLink: `/forms/form-builder`
-          }
-        ];
-      }
+      ];
     });
 
     this.transportService.updatedComponent
     .pipe(takeUntil(this.destroy$)).subscribe(value => {
       if(value) {
-        this.form.components = this.form?.components?.map(comp => {
-          if(comp.key === value.key) {
-            comp = value;
-            return comp
+        FormioUtils.eachComponent(this.form.components, (comp, path) => {
+          if (comp.key === value.key) {
+            Object.assign(comp, value);
+            const pathArr = path.split('.');
+            let currObj = this.form.components;
+            for (let i = 0; i < pathArr.length - 1; i++) {
+              const key = pathArr[i];
+              currObj = currObj.find((obj) => obj.key === key);
+              if (!currObj) {
+                break;
+              }
+              currObj = currObj.components;
+            }
+            if (currObj) {
+              const componentIndex = currObj.findIndex((obj) => obj.key === value.key);
+              if (componentIndex !== -1) {
+                currObj[componentIndex] = comp;
+              }
+            }
           }
-          return comp
-        })
+        }, true);
       }
     })
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.addCustomEventTrigger(), 2000)
+    this.onJsonView()
+  }
+
+  goback() {
+    this.location.back()
   }
 
   onChange(event: any) {
@@ -165,35 +166,36 @@ export class FormBuilderComponent implements OnInit {
   }
 
   addCustomEventTrigger() {
-    // debugger
-    let checkIfExists = document.getElementById('custom-div');
-    if(!checkIfExists) {
-      // debugger
-      let componentMenu = document.getElementsByClassName('component-btn-group');
-      Array.from(componentMenu).forEach((value, index) => {
-        let tooltip = document.createElement('div');
-        let div = document.createElement('div');
-        div.id = 'custom-div'
-        div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
-        div.tabIndex = -1;
-        div.role = 'button';
-        div.ariaLabel = 'Permissions Button';
-        div.innerHTML = `<i class="fa fa-key"></i>`;
-        div.addEventListener('click', () => {
-          let comp = this.form?.components[index];
-          this.openPermissionDialog(comp)
-        })
-        div.addEventListener('mouseover', () => {
-          tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
-          tooltip.innerText = 'Permissions'
-          div.append(tooltip)
-        })
-        div.addEventListener('mouseleave', () => {
-          tooltip.remove()
-        })
-        value.append(div);
-      })
-    }
+    let componentMenu = document.getElementsByClassName('component-btn-group');
+    Array.from(componentMenu).forEach((value, index) => {
+      let existingCustomDiv = value.querySelector('#custom-div');
+      if (existingCustomDiv) {
+        // If the custom icon already exists for this component, skip adding it again
+        return;
+      }
+
+      let tooltip = document.createElement('div');
+      let div = document.createElement('div');
+      div.id = 'custom-div';
+      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
+      div.tabIndex = -1;
+      div.role = 'button';
+      div.ariaLabel = 'Permissions Button';
+      div.innerHTML = `<i class="fa fa-key"></i>`;
+      div.addEventListener('click', () => {
+        let comp = FormioUtils.flattenComponents(this.form.components, true)
+        this.openPermissionDialog(Object.values(comp)[index]);
+      });
+      div.addEventListener('mouseover', () => {
+        tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
+        tooltip.innerText = 'Permissions';
+        div.append(tooltip);
+      });
+      div.addEventListener('mouseleave', () => {
+        tooltip.remove();
+      });
+      value.append(div);
+    });
   }
 
   openPermissionDialog(
@@ -219,8 +221,8 @@ export class FormBuilderComponent implements OnInit {
   }
 
   submitFormData() {
-    if(!this.formTitleControl?.value || this.formTitleControl?.value == '') {
-      return this.notif.displayNotification('Please provide a title for your form', 'Create Form', TuiNotification.Warning)
+    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '' || this.formCodeControl?.invalid) {
+      return this.notif.displayNotification('Please provide a valid title and code for your form', 'Create Form', TuiNotification.Warning)
     }
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
@@ -228,7 +230,7 @@ export class FormBuilderComponent implements OnInit {
     removeItem(StorageItem.approvers)
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
-    this.form.key = this.formTitleControl?.value?.replace(/\s+/g, '-').trim().toLowerCase()
+    this.form.key = this.formCodeControl?.value
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];

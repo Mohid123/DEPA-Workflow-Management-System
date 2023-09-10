@@ -19,7 +19,13 @@
     </div>
   </div>
   <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5">
-    <a *ngIf="appData?.status !== 3" title="Apps and Submissions" (click)="storeModuleID(appData?._id, appData?.code)" [routerLink]="['/modules', appData?.code]" [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white">
+    <a
+      *ngIf="appData?.status !== 3 && checkAccess(appData) == true"
+      title="Apps and Submissions"
+      (click)="storeModuleID(appData?._id, appData?.code)"
+      [routerLink]="['/modules', appData?.code]"
+      [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white"
+    >
       <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
     </a>
     <a
@@ -29,7 +35,7 @@
       userRoleCheck == true ||
       checkIfUserisAdmin(appData?.adminUsers)"
       [routerLink]="['/modules/edit-module', appData?._id]" [queryParams]="{moduleCode: appData?.code}"
-      (click)="editModuleEvent(appData?._id, appData?.code)"
+      (click)="editModuleEvent(appData?._id, appData?.code, appData?.title)"
       class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer"
     >
       <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
@@ -9,7 +9,8 @@ import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
-import { FormioComponent } from '@formio/angular';
+import { FormioUtils } from '@formio/angular';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -18,7 +19,7 @@ import { FormioComponent } from '@formio/angular';
 export class AddSubmissionComponent implements OnDestroy, OnInit {
   formTabs: any[] = [];
   activeIndex: number = 0;
-  public formWithWorkflow: any;
+  public formWithWorkflow: any = [];
   workflowForm: FormGroup;
   subModuleData: any;
   subModuleId: string;
@@ -49,7 +50,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   userRoleCheckAdmin: any;
   userRoleCheckUser: any;
   adminUsers: any[] = [];
-  @ViewChild(FormioComponent, { static: false }) formioComponent: FormioComponent;
+  @ViewChildren('formioForm') formioForms: QueryList<any>;
 
   constructor(
     private fb: FormBuilder,
@@ -59,6 +60,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     private submissionService: WorkflowsService,
     private router: Router,
     private auth: AuthService,
+    private transportService: DataTransportService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private dashboard: DashboardService
   ) {
@@ -86,7 +88,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     const hierarchy = getItem(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
+      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
     })
 
     this.dashboard.items = [...hierarchy, {
@@ -94,7 +96,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
     }];
   }
-   // email notify functions
 
   openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
@@ -136,6 +137,27 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
+  // comp.components?.map(data => {
+  //   if(data?.permissions?.length > 0) {
+  //     data?.permissions?.map(permit => {
+  //       if(this.currentUser?.id == permit?.id) {
+  //         if(permit.canEdit == true) {
+  //           data.disabled = false
+  //         }
+  //         else {
+  //           data.disabled = true
+  //         }
+  //         if(permit.canView == false) {
+  //           data.hidden = true
+  //         }
+  //         else {
+  //           data.hidden = false
+  //         }
+  //       }
+  //     })
+  //   }
+  // })
+
   populateData() {
     this.activatedRoute.params.pipe(
       pluck('id'),
@@ -146,26 +168,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.subModuleData = res;
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
-          comp.components?.map(data => {
-            if(data?.permissions?.length > 0) {
-              data?.permissions?.map(permit => {
-                if(this.currentUser?.id == permit?.id) {
-                  if(permit.canEdit == true) {
-                    data.disabled = false
-                  }
-                  else {
-                    data.disabled = true
-                  }
-                  if(permit.canView == false) {
-                    data.hidden = true
-                  }
-                  else {
-                    data.hidden = false
-                  }
-                }
-              })
+          FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.wysiwyg && component?.wysiwyg == true) {
+              comp.sanitize = true
             }
-          })
+          }, true)
           return {
             ...comp,
             components: comp.components?.map(data => {
@@ -177,6 +184,26 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             })
           }
         });
+        FormioUtils.eachComponent(this.formWithWorkflow, (comp) => {
+          if(comp?.permissions && comp?.permissions?.length > 0) {
+            return comp?.permissions?.map(permit => {
+              if(this.currentUser?.id == permit?.id) {
+                if(permit.canEdit == true) {
+                  comp.disabled = false
+                }
+                else {
+                  comp.disabled = true
+                }
+                if(permit.canView == false) {
+                  comp.hidden = true
+                }
+                else {
+                  comp.hidden = false
+                }
+              }
+            })
+          }
+        }, true);
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -273,17 +300,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-    }
-    if(event?.data && event?.changed && event?.isModified) {
-      const formId = this.subModuleData?.formIds[this.activeIndex]?.id;
-      this.formValues[this.activeIndex] = {...event, formId};
-      const finalData = this.formValues?.map(value => {
-        return {
-          formId: value?.formId,
-          data: value?.data
-        }
-      })
-      this.formSubmission.next(finalData)
+      const formId = this.subModuleData?.formIds[index]?.id;
+      this.formValues[index] = {...event, formId};
     }
   }
 
@@ -299,16 +317,23 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   createSubmission(status?: any) {
-    // if(!status) {
-    //   if(this.formSubmission?.value?.length !== this.formWithWorkflow?.length) {
-    //     return this.notif.displayNotification('Please provide data for all form fields', 'Create Submission', TuiNotification.Warning)
-    //   }
-    // }
-    if(!this.formioComponent.submission) {
-      return this.notif.displayNotification('Please provide valid submission data', 'Create Submission', TuiNotification.Warning)
-    }
-    if(this.formioComponent.submission && this.formioComponent.submission?.isValid == false) {
-      return this.notif.displayNotification('Form submission is invalid', 'Create Submission', TuiNotification.Warning)
+    let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
+    let formioInstance: any[] = [];
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        if(comp?._disabled === true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        let instance = this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
+    if(formioInstance.includes(false)) {
+      return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
     if(this.dataSubmitValidation() == false) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
@@ -322,6 +347,24 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     else {
       this.draftingSubmission.next(true)
     }
+    let finalData = [];
+    this.formWithWorkflow.forEach((form: any, i: number) => {
+      if(this.formValues[i]) {
+        finalData = this.formValues?.map(value => {
+          return {
+            formId: value?.formId,
+            data: value?.data
+          }
+        })
+      }
+      else {
+        finalData = [...finalData, {
+          formId: form.id,
+          data: {}
+        }]
+      }
+      this.formSubmission.next(finalData)
+    })
     const payload: any = {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
@@ -393,6 +436,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
       setItem(StorageItem.approvers, approvers)
+      this.transportService.editBreadcrumbs.next(this.dashboard.items)
+      setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
   }

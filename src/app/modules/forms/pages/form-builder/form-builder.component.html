@@ -1,5 +1,6 @@
 <app-header></app-header>
-<section class="pt-40 pb-5">
+<section class="relative pt-40 pb-5">
+  <!-- <button tuiIconButton appearance="primary" size="s" icon="tuiIconArrowLeft" class="absolute left-4 top-40" (click)="goback()"></button> -->
   <tui-tabs tuiMobileTabs class="flex justify-center mx-2 lg:mx-20 md:mx-10" [activeItemIndex]="activeIndex">
     <ng-container *ngFor="let item of items; let i = index">
       <button
@@ -18,13 +19,21 @@
     <div class="col-span-6">
       <label for="titleField">Title</label>
       <input [formControl]="formTitleControl" type="text" class="form-control" placeholder="Form title" id="titleField">
-      <p class="text-red-500 text-xs mt-1"
+      <p class="mt-1 text-xs text-red-500"
         *ngIf="formTitleControl?.hasError('codeExists')">
         A form by this title already exists. Please select another name
       </p>
     </div>
+    <div class="col-span-6">
+      <label for="titleField">Code</label>
+      <input [formControl]="formCodeControl" type="text" class="form-control" placeholder="Form code" id="codField">
+      <p class="mt-1 text-xs text-red-500"
+        *ngIf="formCodeControl?.hasError('codeExists')">
+        A code by this name already exists. Please select another code
+      </p>
+    </div>
   </div>
-  <form-builder [form]="form" (change)="onChange($event)"></form-builder>
+  <form-builder [form]="form" (change)="onChange($event)" [options]="options"></form-builder>
   <div class="flex justify-center py-3">
     <button
       (click)="submitFormData()"
@@ -35,7 +44,7 @@
       appearance="accent"
       class="tui-space_right-3 tui-space_bottom-3"
       >
-      Submit Form
+      {{editMode == true ? 'Update': 'Submit'}} Form
     </button>
     <button
       (click)="cancelFormData()"

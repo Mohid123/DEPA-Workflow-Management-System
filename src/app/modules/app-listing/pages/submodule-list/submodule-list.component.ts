@@ -56,6 +56,13 @@ export class SubmodulesListComponent implements OnDestroy {
     })
   }
 
+  checkAccess(data: any) {
+    if (this.userRoleCheckSys == false && data?.accessType == "disabled" && !data?.submissionCreators.includes(this.currentUser?.id)) {
+      return false;
+    }
+    return true;
+  }
+
   disableModify(data: any, adminUsers: any) {
     if(data == 'disabled') {
       return true

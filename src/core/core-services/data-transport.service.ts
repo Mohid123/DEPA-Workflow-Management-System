@@ -39,6 +39,8 @@ export class DataTransportService {
 
   formEditId = new BehaviorSubject<string>('');
 
+  editBreadcrumbs = new BehaviorSubject<any>([]);
+
   updatedComponent = new EventEmitter<any>()
 
   /**

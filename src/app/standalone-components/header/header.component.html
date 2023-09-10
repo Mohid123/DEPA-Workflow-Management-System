@@ -62,7 +62,7 @@
             </a>
           </ng-container>
           <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
-            <a *tuiItem tuiLink [routerLink]="['/modules', item.caption]" [queryParams]="{moduleID: item.routerLink}" class="hover:text-[#76777f] capitalize">
+            <a *tuiItem tuiLink [routerLink]="['/modules', item.code]" [queryParams]="{moduleID: item.routerLink}" class="hover:text-[#76777f] capitalize">
               {{ setString(item.caption) }}
             </a>
           </ng-container>

@@ -25,6 +25,13 @@ export class GridTopAppComponent {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
   }
+
+  checkAccess(data: any) {
+    if (this.userRoleCheck == false && data?.accessType == "disabled" && !data.authorizedUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
     /**
    * Used to display the relevant data inside the card view
    */
@@ -42,8 +49,9 @@ export class GridTopAppComponent {
     this.deleteModule.emit(id)
    }
 
-   editModuleEvent(id: string, code: string) {
+   editModuleEvent(id: string, code: string, title: string) {
     setItem(StorageItem.moduleSlug, code);
+    setItem(StorageItem.editmoduleTitle, title);
     setItem(StorageItem.moduleID, id);
     this.editModule.emit(id)
     this.transport.moduleID.next(id)

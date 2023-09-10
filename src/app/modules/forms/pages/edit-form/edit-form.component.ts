@@ -1,7 +1,7 @@
 import { Component, ViewChild, EventEmitter, ElementRef, OnDestroy, OnInit, Injector, Inject, AfterViewInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormioRefreshValue } from '@formio/angular';
+import { FormioRefreshValue, FormioUtils } from '@formio/angular';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -9,7 +9,7 @@ import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
 import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { FormKeyValidator } from 'src/core/utils/utility-functions';
+import { CodeValidator, FormKeyValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { DialogTemplate } from '../../templates/permission-template.component';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -22,11 +22,15 @@ import { environment } from 'src/environments/environment';
 export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('json', {static: true}) jsonElement?: ElementRef;
   @ViewChild('code', {static: true}) codeElement?: ElementRef;
-  public form: {title: string, key: string, display: string, components: any};
+  public form: any;
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   activeIndex: number = 0;
   formValue: any;
   editMode: boolean = false;
+  options: any = {
+    "disableAlerts": true,
+    "noDefaultSubmitButton": true
+  }
   readonly items = [
     {
       text: 'Form Builder',
@@ -43,7 +47,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   ];
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
-  ]), [FormKeyValidator.createValidator(this.dashboard)]);
+  ]));
+  formCodeControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
+    Validators.required
+  ]), [CodeValidator.createValidator(this.dashboard, 'form')]);
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   editFormID: string;
@@ -72,112 +79,62 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
           if(response) {
             this.form = response;
             this.formTitleControl.setValue(response?.title);
+            this.formCodeControl.setValue(response?.key);
           }
         })
       }
       else if(data['submoduleID']) {
         this.form = {
-          title: this.formTitleControl?.value, key: null, display: this.formDisplayType.value || null, components: []
+          title: this.formTitleControl?.value,
+          key: this.formCodeControl?.value,
+          display: this.formDisplayType.value || null,
+          components: []
         };
       }
       else {
         this.form = {
-          title: this.formTitleControl?.value, key: null, display: this.formDisplayType.value || null, components: []
+          title: this.formTitleControl?.value,
+          key: this.formCodeControl?.value,
+          display: this.formDisplayType.value || null,
+          components: []
         };
       }
     })
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      const hierarchy = getItem(StorageItem.navHierarchy) || [];
-      if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('edit-module')) {
-        hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.caption}?moduleID=${getItem(StorageItem.moduleID)}`
-        })
-        if(this.dashboard.previousRoute.includes('moduleCode')) {
-          if(Object.keys(val).length == 0) {
-            this.dashboard.items = [...hierarchy,
-              {
-                caption: getItem(StorageItem.formKey) || 'Add Form',
-                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
-              }
-            ];
-          }
-          else {
-            this.dashboard.items = [
-              ...hierarchy,
-              {
-                caption: getItem(StorageItem.formKey) || 'Edit Form',
-                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
-              }
-            ];
-          }
+      this.dashboard.items = [
+        ...getItem(StorageItem.editBreadcrumbs),
+        {
+          caption: this.editFormID ? getItem(StorageItem.formKey) : 'Add Form',
+          routerLink: `/forms/edit-form?id=${this.editFormID}`
         }
-        else {
-          if(Object.keys(val).length == 0) {
-            this.dashboard.items = [...hierarchy,
-              {
-                caption: getItem(StorageItem.editmoduleSlug),
-                routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
-              },
-              {
-                caption: getItem(StorageItem.formKey) || 'Add Form',
-                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Add Form'}`
-              }
-            ];
-          }
-          else {
-            this.dashboard.items = [
-              ...hierarchy,
-              {
-                caption: getItem(StorageItem.editmoduleSlug),
-                routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
-              },
-              {
-                caption: getItem(StorageItem.formKey) || 'Edit Form',
-                routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
-              }
-            ];
-          }
-        }
-      }
-      else if(hierarchy && this.dashboard.previousRoute && this.dashboard.previousRoute.includes('add-submission')) {
+      ];
 
-        this.dashboard.items = [
-          ...hierarchy,
-          {
-            caption: 'Add Submission',
-            routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
-          },
-          {
-            caption: getItem(StorageItem.formKey) || 'Edit Form',
-            routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Form'}`
-          }
-        ];
-      }
-      else {
-
-        this.dashboard.items = [
-          ...hierarchy,
-          {
-            caption: getItem(StorageItem.formKey) || 'Edit Form',
-            routerLink: `/forms/edit-form?id=${this.editFormID}`
-          }
-        ];
-      }
-    });
-
-    this.transportService.updatedComponent
-    .pipe(takeUntil(this.destroy$)).subscribe(value => {
+    this.transportService.updatedComponent.pipe(takeUntil(this.destroy$)).subscribe(value => {
       if(value) {
-        this.form.components = this.form?.components?.map(comp => {
-          if(comp.key === value.key) {
-            comp = value;
-            return comp
+        FormioUtils.eachComponent(this.form.components, (comp, path) => {
+          if (comp.key === value.key) {
+            Object.assign(comp, value);
+            const pathArr = path.split('.');
+            let currObj = this.form.components;
+            for (let i = 0; i < pathArr.length - 1; i++) {
+              const key = pathArr[i];
+              currObj = currObj.find((obj) => obj.key === key);
+              if (!currObj) {
+                break;
+              }
+              currObj = currObj.components;
+            }
+            if (currObj) {
+              const componentIndex = currObj.findIndex((obj) => obj.key === value.key);
+              if (componentIndex !== -1) {
+                currObj[componentIndex] = comp;
+              }
+            }
           }
-          return comp
-        })
+        }, true);
+        console.log(this.form.components)
       }
     })
   }
@@ -205,33 +162,36 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   addCustomEventTrigger() {
-    let checkIfExists = document.getElementById('custom-div');
-    if(!checkIfExists) {
-      let componentMenu = document.getElementsByClassName('component-btn-group');
-      Array.from(componentMenu).forEach((value, index) => {
-        let tooltip = document.createElement('div');
-        let div = document.createElement('div');
-        div.id = 'custom-div'
-        div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
-        div.tabIndex = -1;
-        div.role = 'button';
-        div.ariaLabel = 'Permissions Button';
-        div.innerHTML = `<i class="fa fa-key"></i>`;
-        div.addEventListener('click', () => {
-          let comp = this.form?.components[index];
-          this.openPermissionDialog(comp)
-        })
-        div.addEventListener('mouseover', () => {
-          tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
-          tooltip.innerText = 'Permissions'
-          div.append(tooltip)
-        })
-        div.addEventListener('mouseleave', () => {
-          tooltip.remove()
-        })
-        value.append(div);
-      })
-    }
+    let componentMenu = document.getElementsByClassName('component-btn-group');
+    Array.from(componentMenu).forEach((value, index) => {
+      let existingCustomDiv = value.querySelector('#custom-div');
+      if (existingCustomDiv) {
+        // If the custom icon already exists for this component, skip adding it again
+        return;
+      }
+
+      let tooltip = document.createElement('div');
+      let div = document.createElement('div');
+      div.id = 'custom-div';
+      div.setAttribute('class', 'btn btn-xxs btn-primary component-settings-button component-settings-button-depa relative');
+      div.tabIndex = -1;
+      div.role = 'button';
+      div.ariaLabel = 'Permissions Button';
+      div.innerHTML = `<i class="fa fa-key"></i>`;
+      div.addEventListener('click', () => {
+        let comp = FormioUtils.flattenComponents(this.form.components, true)
+        this.openPermissionDialog(Object.values(comp)[index]);
+      });
+      div.addEventListener('mouseover', () => {
+        tooltip.setAttribute('class', 'absolute z-30 -top-8 -left-10 bg-black bg-opacity-80 text-white text-[13px] font-medium rounded-md p-2');
+        tooltip.innerText = 'Permissions';
+        div.append(tooltip);
+      });
+      div.addEventListener('mouseleave', () => {
+        tooltip.remove();
+      });
+      value.append(div);
+    });
   }
 
   openPermissionDialog(
@@ -257,8 +217,8 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   submitFormData() {
-    if(!this.formTitleControl?.value || this.formTitleControl?.value == '') {
-      return this.notif.displayNotification('Please provide a title for your form', 'Edit Form', TuiNotification.Warning)
+    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '' || this.formCodeControl?.invalid) {
+      return this.notif.displayNotification('Please provide a valid title and code for your form', 'Edit Form', TuiNotification.Warning)
     }
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('Your form cannot be empty!', 'Edit Form', TuiNotification.Warning)
@@ -266,7 +226,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     removeItem(StorageItem.approvers)
     const formData = {
       title: this.formTitleControl?.value,
-      key: this.formTitleControl?.value?.replace(/\s+/g, '-').toLowerCase(),
+      key: this.formCodeControl?.value,
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
