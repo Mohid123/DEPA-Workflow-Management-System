@@ -667,7 +667,7 @@
               View schema field
               <tui-data-list-wrapper
                 *tuiDataList
-                [items]="formKeysForViewSchema"
+                [items]="schemaForm?.controls['summarySchema']?.value"
               ></tui-data-list-wrapper>
             </tui-select>
 
