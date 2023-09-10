@@ -60,7 +60,7 @@ export class SubmissionTableComponent implements OnDestroy {
   ];
   page = 1;
   tableDataValue: any;
-  limit: number = 7;
+  limit: number = 10;
   submoduleData: any;
   remarks = new FormControl('');
   showSchema: FormControl = new FormControl('Display default');
@@ -117,7 +117,9 @@ export class SubmissionTableComponent implements OnDestroy {
       search: new FormControl(null)
     }
   ];
-  summaryData: any
+  summaryData: any;
+  workflowID: string;
+  currentStepId: string;
 
   constructor(
     private workflowService: WorkflowsService,
@@ -280,6 +282,11 @@ export class SubmissionTableComponent implements OnDestroy {
     setItem(StorageItem.editSubmissionId, submissionID)
   }
 
+  updatePagination(event: any) {
+    this.limit = Number(event?.target?.value);
+    this.fetchDataAndPopulate()
+  }
+
   checkViewButtonCondition(data: any) {
     if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.workFlowUsers.includes(this.currentUser.id)) {
       return false;
@@ -353,8 +360,14 @@ export class SubmissionTableComponent implements OnDestroy {
     }))
   }
 
-  showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string): void {
+  showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string, workflowId: string, workflowStatus: any): void {
+    workflowStatus?.map(value => {
+      if(value?.status == 'inProgress') {
+        this.currentStepId = value?.stepId
+      }
+    })
     this.isDeleting = checkDecision;
+    this.workflowID = workflowId;
     if(checkDecision == 'delete') {
       this.dialogTitle = 'Delete'
     }
@@ -368,6 +381,52 @@ export class SubmissionTableComponent implements OnDestroy {
       dismissible: true,
       closeable: true
     }).subscribe());
+  }
+
+  sendDeleteOrCancelDecision() {
+    this.sendingDecision.next(true)
+    let payload: any = {
+      stepId: this.currentStepId,
+      userId: this.currentUser?.id,
+      remarks: this.remarks?.value || undefined,
+      type: 'submittal'
+    }
+    if(this.isDeleting == 'delete') {
+      Object.assign(payload, {status: 2})
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe());
+          this.fetchDataAndPopulate();
+        }
+      })
+    }
+    if(this.isDeleting == 'cancel') {
+      Object.assign(payload, {submissionStatus: 5});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.remarks.reset();
+          this.fetchDataAndPopulate();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
+    if(this.isDeleting == 'enable') {
+      Object.assign(payload, {submissionStatus: 2});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.fetchDataAndPopulate();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
   }
 
   sendSearchCallForFilters(payload: any) {

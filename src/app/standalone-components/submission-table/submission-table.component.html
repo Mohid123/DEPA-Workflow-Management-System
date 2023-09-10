@@ -150,7 +150,7 @@
                   <!--Delete-->
                   <a
                     title="Delete Submission"
-                    (click)="showDeleteDialog(dialog, 'delete')"
+                    (click)="showDeleteDialog(dialog, 'delete', data?.id, data?.workflowStatus)"
                     *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "
                     class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-red-500 rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
@@ -158,7 +158,7 @@
                   <!--Cancel-->
                   <a
                     title="Cancel Submission"
-                    (click)="showDeleteDialog(dialog, 'cancel')"
+                    (click)="showDeleteDialog(dialog, 'cancel', data?.id, data?.workflowStatus)"
                     *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"
                     class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white">
                     <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
@@ -193,12 +193,21 @@
         </ng-template>
       </tbody>
     </table>
-    <div class="pt-10 pb-6">
+    <div class="flex justify-between pt-10 pb-6">
       <tui-pagination
+        class="mx-5 mt-1"
         [length]="tableData?.totalPages || 1"
         [index]="tableData?.page - 1 || 0"
         (indexChange)="goToPage($event)"
       ></tui-pagination>
+      <div class="flex mx-5 gap-x-2">
+        <p class="w-full mt-2">Items per page</p>
+        <select (change)="updatePagination($event)" class="form-select form-control w-[68%]" aria-label="Default select example 2">
+          <option [selected]="limit == 10" [value]="limit == 10 ? limit: '10'">{{limit == 10 ? limit: '10'}}</option>
+          <option [selected]="limit == 50" [value]="limit == 50 ? limit: '50'">{{limit == 50 ? limit: '50'}}</option>
+          <option [selected]="limit == 100" [value]="limit == 100 ? limit: '100'">{{limit == 100 ? limit: '100'}}</option>
+        </select>
+      </div>
     </div>
   </div>
 </ng-container>
@@ -245,7 +254,7 @@
       type="button"
       size="m"
       [showLoader]="(sendingDecision | async) == true"
-      (click)="observer.complete()"
+      (click)="sendDeleteOrCancelDecision(); observer.complete()"
     >
       Confirm
     </button>

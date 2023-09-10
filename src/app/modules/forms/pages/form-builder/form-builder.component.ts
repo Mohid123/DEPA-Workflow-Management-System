@@ -43,6 +43,9 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
   ]), [CodeValidator.createValidator(this.dashboard, 'form')]);
+  formCodeControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
+    Validators.required
+  ]));
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
@@ -72,6 +75,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
           if(response) {
             this.form = response;
             this.formTitleControl.setValue(response?.title);
+            this.formCodeControl.setValue(response?.key);
             this.formValue = this.form
           }
         })
@@ -79,13 +83,14 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
       if(this.editMode === true) {
         this.form = this.transportService.sendFormDataForEdit.value;
         this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
+        this.formCodeControl.setValue(this.transportService.sendFormDataForEdit.value?.key);
         // this.formTitleControl.disable();
         this.formValue = this.form
       }
       else {
         this.form = {
           title: this.formTitleControl?.value,
-          key: '',
+          key: this.formCodeControl?.value,
           display: this.formDisplayType.value,
           components: []
         };
@@ -96,48 +101,13 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(Object.keys(val).length == 0) {
-        const hierarchy = getItem(StorageItem.navHierarchy);
-        if(hierarchy && this.dashboard.previousRoute && !this.dashboard.previousRoute.includes('?')) {
-          hierarchy.forEach(val => {
-            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
-          })
-          this.dashboard.items = [...hierarchy,
-            {
-              caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
-              routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
-            },
-            {
-              caption: 'Add Form',
-              routerLink: `/forms/form-builder`
-            }
-          ];
+      this.dashboard.items = [
+        ...getItem(StorageItem.editBreadcrumbs),
+        {
+          caption: 'Add Form',
+          routerLink: `/forms/form-builder`
         }
-        else {
-          this.dashboard.items = [
-            {
-              caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
-              routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
-            },
-            {
-              caption: 'Add Form',
-              routerLink: `/forms/form-builder`
-            }
-          ];
-        }
-      }
-      else {
-        this.dashboard.items = [
-          {
-            caption: this.transportService?.subModuleDraft?.value?.title || 'Add App',
-            routerLink: `/modules/add-module/${getItem(StorageItem.moduleID)}`
-          },
-          {
-            caption: 'Add Form',
-            routerLink: `/forms/form-builder`
-          }
-        ];
-      }
+      ];
     });
 
     this.transportService.updatedComponent
@@ -169,6 +139,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    setTimeout(() => this.addCustomEventTrigger(), 2000)
     this.onJsonView()
   }
 
@@ -250,8 +221,8 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   }
 
   submitFormData() {
-    if(!this.formTitleControl?.value || this.formTitleControl?.value == '') {
-      return this.notif.displayNotification('Please provide a title for your form', 'Create Form', TuiNotification.Warning)
+    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '') {
+      return this.notif.displayNotification('Please provide a title and code for your form', 'Create Form', TuiNotification.Warning)
     }
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)
@@ -259,7 +230,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     removeItem(StorageItem.approvers)
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
-    this.form.key = this.formTitleControl?.value?.replace(/\s+/g, '-').trim().toLowerCase()
+    this.form.key = this.formCodeControl?.value
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];

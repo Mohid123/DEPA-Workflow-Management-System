@@ -523,6 +523,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     if(approvers.length == 0) {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     setItem(StorageItem.approvers, approvers)
     if(this.categoryIdForMatch) {
       this.router.navigate(['/forms/form-builder'], {queryParams: {isParent: true}});
@@ -561,6 +562,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   sendFormForEdit(index: number) {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.router.navigate(['/forms/form-builder']);
   }

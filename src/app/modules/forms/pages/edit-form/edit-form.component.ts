@@ -217,8 +217,8 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   submitFormData() {
-    if(!this.formTitleControl?.value || this.formTitleControl?.value == '') {
-      return this.notif.displayNotification('Please provide a title for your form', 'Edit Form', TuiNotification.Warning)
+    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '') {
+      return this.notif.displayNotification('Please provide a title and code for your form', 'Edit Form', TuiNotification.Warning)
     }
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('Your form cannot be empty!', 'Edit Form', TuiNotification.Warning)

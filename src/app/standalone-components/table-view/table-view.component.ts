@@ -140,6 +140,13 @@ export class TableViewComponent implements OnDestroy {
     .subscribe();
   }
 
+  checkAccessMain(data: any) {
+    if (this.userRoleCheck == false && data?.accessType == "disabled" && !data.authorizedUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+
   showStatus(value: number) {
     if(value == 1) {
       return 'Published'
