@@ -27,7 +27,9 @@ export enum StorageItem {
   editmoduleSlug = 'App/editmoduleSlug',
   editmoduleTitle = 'App/editmoduleTitle',
   editmoduleId = 'App/editmoduleId',
-  formID = 'App/formID'
+  formID = 'App/formID',
+  editSubmissionId = 'App/editSubmissionId',
+  editBreadcrumbs = 'App/editBreadcrumbs',
 }
 
 /**

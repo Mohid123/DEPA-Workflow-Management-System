@@ -95,6 +95,7 @@
             <formio
               #formioForm
               [readOnly]="
+                workflowData?.submissionStatus == 3 ||
                 (checkIfAllApproved() == true ||
                 checkIfLoggedInUserIsPartOfActiveUsers() == false ||
                 checkIfUserIsInEditUsers() == false ||
@@ -103,7 +104,7 @@
                 this.userRoleSysAdmin == false
               "
               [options]="{'disableAlerts': true}"
-              [submission]="form"
+              [submission]="formValues[i] || form"
               [form]="form"
               (change)="onChange($event, i)"
             ></formio>
@@ -117,6 +118,13 @@
         type="button"
         [showLoader]="(savingDecision | async)"
         size="m"
+        [disabled]=" workflowData?.submissionStatus == 3 ||
+        (checkIfAllApproved() == true ||
+        checkIfLoggedInUserIsPartOfActiveUsers() == false ||
+        checkIfUserIsInEditUsers() == false ||
+        workflowData?.submissionStatus == 5 ||
+        workflowData?.status == 2) &&
+        this.userRoleSysAdmin == false"
         (click)="updateFormData()"
       >
         Update Forms Data
@@ -175,7 +183,7 @@
           </div>
         </div>
         <div class="flex flex-wrap justify-start gap-2">
-          <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last">
+          <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last; let firstItem = first">
             <tui-island
               size="l"
               class="my-4 shadow-lg w-[398px]"
@@ -190,11 +198,11 @@
                 >
                   <tui-svg src="tuiIconClock"></tui-svg>
                 </tui-badge>
-                <ng-container *ngIf="(userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
-                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right mx-2">
+                <ng-container *ngIf="(userRoleSysAdmin == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
+                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="rounded-md bg-red-500 text-white px-2 float-right">
+                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-500 rounded-md">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                 </ng-container>
@@ -208,11 +216,11 @@
                 >
                   <tui-svg src="tuiIconRadio"></tui-svg>
                 </tui-badge>
-                <ng-container *ngIf="(userRoleSysAdmin == true || checkIfUserIsInAdminUsers() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
-                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="rounded-md bg-blue-400 text-white px-2 float-right mx-2">
+                <ng-container *ngIf="(userRoleSysAdmin == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
+                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="rounded-md bg-red-500 text-white px-2 float-right">
+                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-500 rounded-md">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                 </ng-container>
@@ -233,7 +241,7 @@
               <ng-container *ngIf="user?.status == 'approved'">
                 <tui-badge
                   class="px-2 font-semibold text-white bg-green-600 tui-space_right-2 tui-space_bottom-4"
-                  [value]="'Approved'"
+                  [value]="!firstItem ? 'Approved': 'Created'"
                   status="custom"
                 >
                   <tui-svg src="tuiIconCheckCircle"></tui-svg>
@@ -252,29 +260,11 @@
                       </span>
                       <div
                         *ngIf="
-                          (
-                            currentUser?.fullName === approvers?.name &&
-                            checkIfUserisStillActive(currentUser?.fullName) == true &&
-                            checkIfUserRejected(user?.approverIds) == false &&
-                            userApprovedCheckResult(approvers?.name) == false &&
-                            user?.status == 'inProgress' &&
-                            workflowData?.submissionStatus !== 5 &&
-                            workflowData?.status !== 2
-                          ) ||
-                          (
-                            userApprovedCheckResult(approvers?.name) == false &&
-                            user?.status == 'inProgress' &&
-                            workflowData?.submissionStatus !== 5 &&
-                            workflowData?.status !== 2 &&
-                            currentUser?.roles.includes('sysAdmin')
-                          ) ||
-                          (
-                            userApprovedCheckResult(approvers?.name) == false &&
-                            user?.status == 'inProgress' &&
-                            workflowData?.submissionStatus !== 5 &&
-                            workflowData?.status !== 2 &&
-                            checkIfUserIsInAdminUsers() == true
-                          )"
+                          (user?.status == 'inProgress' &&
+                          checkApproveOrRejectButtons(user, approvers?.id) == true &&
+                          checkIfUserisStillActive(currentUser?.fullName) == true &&
+                          userApprovedCheckResult(approvers?.name) == false
+                        )"
                         class="flex justify-end gap-5 decision-buttons"
                       >
                         <span>Approve
@@ -307,9 +297,8 @@
               <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
             </div>
             <div *ngIf="
-              lastItem &&
+              lastItem && (userRoleSysAdmin == true) &&
               (workflowData?.submissionStatus !== 5 &&
-                workflowData?.submissionStatus !== 2 &&
                 workflowData?.submissionStatus !== 3
               )"
               class="flex items-center"
@@ -424,7 +413,7 @@
     Edit Step Users
   </p>
   <p class="text-xs text-center font-extralight">Users that have not performed an action can be changed</p>
-  <div class="flex justify-between mt-5 gap-2">
+  <div class="flex justify-between gap-2 mt-5">
     <div class="w-full">
       <label class="block pb-1">Users <span class="text-xs text-red-400">*</span></label>
       <tui-multi-select
@@ -462,12 +451,12 @@
     </div>
   </div>
   <ng-container *ngIf="control?.hasError('required')">
-    <span class="text-xs text-red-500 text-left">Please provide at least one user</span>
+    <span class="text-xs text-left text-red-500">Please provide at least one user</span>
   </ng-container>
   <ng-container *ngIf="(showConditionError | async) == true">
-    <span class="text-xs text-red-500 text-left">Please select either AND/OR as condition</span>
+    <span class="text-xs text-left text-red-500">Please select either AND/OR as condition</span>
   </ng-container>
-  <div class="flex justify-start gap-x-3 mt-5">
+  <div class="flex justify-start mt-5 gap-x-3">
     <button
       tuiButton
       type="button"
@@ -523,7 +512,7 @@
   <p class="text-lg font-semibold text-center">
     Add New Step
   </p>
-  <div class="flex justify-between mt-5 gap-2">
+  <div class="flex justify-between gap-2 mt-5">
     <div class="w-full">
       <label class="block pb-1">Users <span class="text-xs text-red-400">*</span></label>
       <tui-multi-select
@@ -561,12 +550,12 @@
     </div>
   </div>
   <ng-container *ngIf="addControl?.hasError('required')">
-    <span class="text-xs text-red-500 text-left">Please provide at least one user</span>
+    <span class="text-xs text-left text-red-500">Please provide at least one user</span>
   </ng-container>
   <ng-container *ngIf="(showConditionError | async) == true">
-    <span class="text-xs text-red-500 text-left">Please select either AND/OR as condition</span>
+    <span class="text-xs text-left text-red-500">Please select either AND/OR as condition</span>
   </ng-container>
-  <div class="flex justify-start gap-x-3 mt-5">
+  <div class="flex justify-start mt-5 gap-x-3">
     <button
       tuiButton
       type="button"
@@ -589,3 +578,28 @@
   </div>
 </ng-template>
 
+<!--APPROVE/REJECt CONDITION
+  (
+                            currentUser?.fullName === approvers?.name &&
+                            checkIfUserisStillActive(currentUser?.fullName) == true &&
+                            checkIfUserRejected(user?.approverIds) == false &&
+                            userApprovedCheckResult(approvers?.name) == false &&
+                            user?.status == 'inProgress' &&
+                            workflowData?.submissionStatus !== 5 &&
+                            workflowData?.status !== 2
+                          ) ||
+                          (
+                            userApprovedCheckResult(approvers?.name) == false &&
+                            user?.status == 'inProgress' &&
+                            workflowData?.submissionStatus !== 5 &&
+                            workflowData?.status !== 2 &&
+                            currentUser?.roles.includes('sysAdmin')
+                          ) ||
+                          (
+                            userApprovedCheckResult(approvers?.name) == false &&
+                            user?.status == 'inProgress' &&
+                            workflowData?.submissionStatus !== 5 &&
+                            workflowData?.status !== 2 &&
+                            checkIfUserIsInAdminUsers() == true
+                          )
+-->

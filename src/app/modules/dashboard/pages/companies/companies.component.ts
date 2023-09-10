@@ -12,9 +12,11 @@ import { CodeValidator } from 'src/core/utils/utility-functions';
 })
 export class CompaniesComponent {
   companies: Observable<any>;
+
   categoryEditControl: FormControl = new FormControl('', Validators.compose([
     Validators.required
   ]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]);
+
   groupCodeControl: FormControl = new FormControl('', Validators.compose([
     Validators.required,
     Validators.minLength(3),
@@ -26,6 +28,7 @@ export class CompaniesComponent {
   categoryEditControlEdit: FormControl = new FormControl('', Validators.compose([
     Validators.required
   ]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]);
+
   groupCodeControlEdit: FormControl = new FormControl('', Validators.compose([
     Validators.required,
     Validators.minLength(3),
@@ -57,7 +60,7 @@ export class CompaniesComponent {
 
   editOrAddCompany() {
     if(this.categoryId) {
-      if(this.categoryEditControlEdit.invalid || this.groupCodeControlEdit.value) {
+      if(this.categoryEditControlEdit.invalid || this.groupCodeControlEdit.invalid) {
         this.categoryEditControlEdit.markAsDirty();
         this.groupCodeControlEdit.markAsDirty();
         return;
@@ -72,12 +75,15 @@ export class CompaniesComponent {
           this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
           this.subscription.forEach(val => val.unsubscribe())
           this.categoryEditControl.reset()
+          this.categoryEditControlEdit.reset()
           this.groupCodeControl.reset()
+          this.groupCodeControlEdit.reset()
+          this.categoryId = null
         }
       });
     }
     else {
-      if(this.categoryEditControl.invalid || this.groupCodeControl.value) {
+      if(this.categoryEditControl.invalid || this.groupCodeControl.invalid) {
         this.categoryEditControl.markAsDirty();
         this.groupCodeControl.markAsDirty();
         return;
@@ -92,7 +98,10 @@ export class CompaniesComponent {
           this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
           this.subscription.forEach(val => val.unsubscribe());
           this.categoryEditControl.reset()
+          this.categoryEditControlEdit.reset()
           this.groupCodeControl.reset()
+          this.groupCodeControlEdit.reset()
+          this.categoryId = null
         }
       });
     }
@@ -100,7 +109,10 @@ export class CompaniesComponent {
 
   deleteCompanyData() {
     this.dashboard.deleteCompany(this.categoryId).pipe(takeUntil(this.destroy$))
-    .subscribe(() => this.companies = this.dashboard.getAllCompanies(this.limit, this.page))
+    .subscribe(() => {
+      this.companies = this.dashboard.getAllCompanies(this.limit, this.page);
+      this.categoryId = null;
+    })
   }
 
   showDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
@@ -108,7 +120,12 @@ export class CompaniesComponent {
       dismissible: false,
       closeable: false
     }).subscribe());
-    this.dashboard.excludeIdEmitter.emit(data?.id)
+    if(data?.id) {
+      this.dashboard.excludeIdEmitter.emit(data?.id)
+    }
+    else {
+      this.dashboard.excludeIdEmitter.emit(null)
+    }
     this.categoryEditControlEdit.setValue(data?.title ? data?.title : '');
     this.groupCodeControlEdit.setValue(data?.groupCode ? data?.groupCode : '');
     this.categoryId = data?.id || null;

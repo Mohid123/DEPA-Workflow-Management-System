@@ -21,8 +21,6 @@ export class CategoriesListComponent implements OnDestroy {
   limit: number = 10;
   page: number = 0;
   currentUser: any;
-  formSubmission: any;
-  categoryFormField = categoryForm;
   formData = new BehaviorSubject<any>({isValid: false});
   userRoleCheckAdmin: any;
   subscription: Subscription[] = [];
@@ -50,6 +48,11 @@ export class CategoriesListComponent implements OnDestroy {
     this.categories = this.dashboard.getAllCategories(this.limit);
   }
 
+  changeSize(page: number) {
+    this.limit = page;
+    this.categories = this.dashboard.getAllCategories(this.limit);
+  }
+
   showAddOrEditDialog(content: PolymorpheusContent<TuiDialogContext>, data: any) {
     this.categoryControl.reset();
     this.subscription.push(this.dialogs.open(content, {
@@ -60,17 +63,9 @@ export class CategoriesListComponent implements OnDestroy {
       this.categoryId = data?.id;
       this.dashboard.excludeIdEmitter.emit(data?.id)
       this.categoryControlEdit.setValue(data?.name)
-      this.formSubmission = {
-        data: {
-          categoryName: data?.name
-        }
-      }
     }
     else {
       this.categoryId = null;
-      this.formSubmission = {
-        data: {}
-      }
     }
   }
 
@@ -91,6 +86,8 @@ export class CategoriesListComponent implements OnDestroy {
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
           this.subscription.forEach(val => val.unsubscribe())
+          this.categoryControlEdit.reset();
+          this.categoryControl.reset();
         }
       })
     }
@@ -107,15 +104,10 @@ export class CategoriesListComponent implements OnDestroy {
           this.categories = this.dashboard.getAllCategories(this.limit);
           this.cf.detectChanges();
           this.subscription.forEach(val => val.unsubscribe())
+          this.categoryControlEdit.reset();
+          this.categoryControl.reset();
         }
       })
-    }
-  }
-
-  getFormValues(value: any) {
-    if(value?.data) {
-      console.log(value)
-      this.formData.next(value)
     }
   }
 
@@ -133,6 +125,7 @@ export class CategoriesListComponent implements OnDestroy {
    this.dashboard.deleteCategory(this.categoryId).pipe(takeUntil(this.destroy$))
    .subscribe(() => {
      this.categories = this.dashboard.getAllCategories(this.limit);
+     this.categoryId = null
      this.cf.detectChanges();
    })
   }

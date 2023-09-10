@@ -130,14 +130,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         })
         this.dashboard.items = getUniqueListBy([...hierarchy, {
           caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
+          routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID) || getItem(StorageItem.editmoduleId)}`
         }], 'caption')
       }
       else {
         if(this.router.url.includes('moduleCode')) {
           this.dashboard.items = getUniqueListBy([{
             caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+            routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID) || getItem(StorageItem.editmoduleId)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
           }], 'caption')
         }
         else {
@@ -147,7 +147,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           })
           this.dashboard.items = getUniqueListBy([{
             caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+            routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID) || getItem(StorageItem.editmoduleId)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
           }], 'caption')
         }
       }
@@ -259,6 +259,13 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 this.accessTypeValue?.setValue(this.items[index])
               }
             })
+            response?.formIds?.forEach(val => {
+              FormioUtils.eachComponent(val?.components, (comp) => {
+                if(comp?.wysiwyg && comp?.wysiwyg == true) {
+                  val.sanitize = true
+                }
+              }, true)
+            })
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;
@@ -359,6 +366,23 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         })
       }
     });
+  }
+
+  getValidityForWorkflowStep() {
+    return (<FormArray>this.workflows).controls[0]?.get('approverIds')?.hasError('required') && (<FormArray>this.workflows).controls[0]?.get('approverIds')?.touched
+  }
+
+  applySummarySchemaValuesToViewSchema(data: any) {
+    data?.forEach((val, index) => {
+      this.schemaForm?.controls['viewSchema']?.value?.forEach((data, i) => {
+        if(data?.fieldKey !== val) {
+          this.schemaForm?.controls['viewSchema']?.removeAt(i)
+        }
+      })
+    })
+    if(data?.length == 0) {
+      this.schemaForm?.controls['viewSchema']?.removeAt(0)
+    }
   }
 
   getAllCompanies() {
@@ -507,6 +531,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     if(approvers.length == 0) {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
+    this.transportService.editBreadcrumbs.next(this.dashboard.items)
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     setItem(StorageItem.approvers, approvers)
     setItem(StorageItem.formKey, key)
     if(formID) {
@@ -553,6 +579,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     setItem(StorageItem.approvers, approvers)
     this.transportService.sendFormBuilderData(this.formComponents)
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
+    this.transportService.editBreadcrumbs.next(this.dashboard.items)
+    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
     this.router.navigate(['/forms/edit-form']);
   }
 
@@ -692,12 +720,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name,
-      allUsers: [
-        ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
-        ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-        ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
-        this.auth.currentUserValue?.id
-      ]
+      // allUsers: [
+      //   ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
+      //   ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+      //   ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
+      //   this.auth.currentUserValue?.id
+      // ]
     }
     if(statusStr) {
       const status = statusStr;

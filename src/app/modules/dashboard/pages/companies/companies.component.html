@@ -12,13 +12,13 @@
         class="w-full rounded-lg"
         [columns]="['groupCode', 'title', 'actions']"
       >
-        <thead>
+        <thead class="border border-gray-300">
           <tr tuiThGroup>
             <th
               *tuiHead="'groupCode'"
               tuiTh
               [resizable]="true"
-              class="text-base"
+              class="text-base w-[15%]"
             >
               Group Code
             </th>
@@ -30,7 +30,7 @@
             >
               Company Name
             </th>
-            <th class="text-base w-1/12" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
+            <th class="w-[12.5%] text-base" *tuiHead="'actions'" [sorter]="null" tuiTh>Actions</th>
           </tr>
         </thead>
         <tbody
@@ -102,12 +102,13 @@
 
 <ng-template #template let-observer>
   <p class="text-lg font-semibold text-center">
-    {{categoryId ? 'Update': 'Add'}} Company
+    Add Company
   </p>
+
   <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea1">Company Name <sup class="text-red-500">*</sup></label>
-    <input [formControl]="categoryEditControl" class="form-control mb-1">
-    <span *ngIf="categoryEditControl?.hasError('required') && categoryEditControl?.dirty" class="text-red-500 text-xs">
+    <label class="block">Company Name <sup class="text-red-500">*</sup></label>
+    <input [formControl]="categoryEditControl" class="mb-1 form-control">
+    <span *ngIf="categoryEditControl?.hasError('required') && categoryEditControl?.dirty" class="text-xs text-red-500">
       Company name is required
     </span>
     <span class="text-xs text-red-500"
@@ -116,18 +117,18 @@
     </span>
   </div>
   <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea2">Group Code<sup class="text-red-500">*</sup></label>
-    <input [formControl]="groupCodeControl" class="form-control mb-1">
-    <span *ngIf="groupCodeControl?.hasError('required') && groupCodeControl?.dirty" class="text-red-500 text-xs">
+    <label class="block">Group Code<sup class="text-red-500">*</sup></label>
+    <input [formControl]="groupCodeControl" class="mb-1 form-control">
+    <span *ngIf="groupCodeControl?.hasError('required') && groupCodeControl?.dirty" class="text-xs text-red-500">
       Group Code is required
     </span>
-    <span *ngIf="groupCodeControl?.hasError('minlength') && groupCodeControl?.dirty" class="text-red-500 text-xs">
+    <span *ngIf="groupCodeControl?.hasError('minlength') && groupCodeControl?.dirty" class="text-xs text-red-500">
       Group Code should be at least 3 characters
     </span>
-    <span *ngIf="groupCodeControl?.hasError('maxlength') && groupCodeControl?.dirty" class="text-red-500 text-xs">
+    <span *ngIf="groupCodeControl?.hasError('maxlength') && groupCodeControl?.dirty" class="text-xs text-red-500">
       Group Code should not exceed 4 characters
     </span>
-    <span *ngIf="groupCodeControl?.hasError('codeExists')" class="text-red-500 text-xs">
+    <span *ngIf="groupCodeControl?.hasError('codeExists')" class="text-xs text-red-500">
       A company with this code already exists. Please provide a different code.
     </span>
   </div>
@@ -138,14 +139,14 @@
     size="m"
     (click)="editOrAddCompany();"
     >
-    {{categoryId ? 'Update': 'Add'}}
+    Add
   </button>
   <button
     tuiButton
     type="button"
     size="m"
     appearance="accent"
-    (click)="observer.complete(); categoryEditControl.reset(); groupCodeControl.reset()"
+    (click)="observer.complete(); categoryEditControl.reset(); groupCodeControl.reset(); categoryId = null"
     >
     Cancel
   </button>
@@ -158,8 +159,8 @@
   </p>
   <div class="flex flex-col justify-center my-5">
     <label class="block" for="Textarea1">Company Name <sup class="text-red-500">*</sup></label>
-    <input [formControl]="categoryEditControlEdit" class="form-control mb-1">
-    <span *ngIf="categoryEditControlEdit?.hasError('required') && categoryEditControlEdit?.dirty" class="text-red-500 text-xs">
+    <input [formControl]="categoryEditControlEdit" class="mb-1 form-control">
+    <span *ngIf="categoryEditControlEdit?.hasError('required') && categoryEditControlEdit?.dirty" class="text-xs text-red-500">
       Company name is required
     </span>
     <span class="text-xs text-red-500"
@@ -169,17 +170,17 @@
   </div>
   <div class="flex flex-col justify-center my-5">
     <label class="block" for="Textarea2">Group Code<sup class="text-red-500">*</sup></label>
-    <input [formControl]="groupCodeControlEdit" class="form-control mb-1">
-    <span *ngIf="groupCodeControlEdit?.hasError('required') && groupCodeControlEdit?.dirty" class="text-red-500 text-xs">
+    <input [formControl]="groupCodeControlEdit" class="mb-1 form-control">
+    <span *ngIf="groupCodeControlEdit?.hasError('required') && groupCodeControlEdit?.dirty" class="text-xs text-red-500">
       Group Code is required
     </span>
-    <span *ngIf="groupCodeControlEdit?.hasError('minlength') && groupCodeControlEdit?.dirty" class="text-red-500 text-xs">
+    <span *ngIf="groupCodeControlEdit?.hasError('minlength') && groupCodeControlEdit?.dirty" class="text-xs text-red-500">
       Group Code should be at least 3 characters
     </span>
-    <span *ngIf="groupCodeControlEdit?.hasError('maxlength') && groupCodeControlEdit?.dirty" class="text-red-500 text-xs">
+    <span *ngIf="groupCodeControlEdit?.hasError('maxlength') && groupCodeControlEdit?.dirty" class="text-xs text-red-500">
       Group Code should not exceed 4 characters
     </span>
-    <span *ngIf="groupCodeControlEdit?.hasError('codeExists')" class="text-red-500 text-xs">
+    <span *ngIf="groupCodeControlEdit?.hasError('codeExists')" class="text-xs text-red-500">
       A company with this code already exists. Please provide a different code.
     </span>
   </div>
@@ -197,7 +198,7 @@
     type="button"
     size="m"
     appearance="accent"
-    (click)="observer.complete()"
+    (click)="observer.complete(); categoryId = null"
     >
     Cancel
   </button>

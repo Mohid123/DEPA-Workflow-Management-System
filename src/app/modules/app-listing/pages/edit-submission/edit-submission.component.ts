@@ -10,6 +10,8 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { Location } from '@angular/common';
+import { FormioUtils } from '@formio/angular';
+import { DataTransportService } from 'src/core/core-services/data-transport.service';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -57,7 +59,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private workflowService: WorkflowsService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private transportService: DataTransportService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
@@ -87,7 +90,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     })
     this.dashboard.items = [...hierarchy, {
       caption: getItem(StorageItem.formKey) || 'Edit Submission',
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey) || 'Edit Submission'}`
+      routerLink: `/modules/edit-submission/${getItem(StorageItem.editSubmissionId)}`
     }];
   }
 
@@ -99,26 +102,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.workFlowId = res?.workFlowId?._id;
         this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(comp => {
-          comp.components?.map(data => {
-            if(data?.permissions?.length > 0) {
-              data?.permissions?.map(permit => {
-                if(this.currentUser?.id == permit?.id) {
-                  if(permit.canEdit == true) {
-                    data.disabled = false
-                  }
-                  else {
-                    data.disabled = true
-                  }
-                  if(permit.canView == false) {
-                    data.hidden = true
-                  }
-                  else {
-                    data.hidden = false
-                  }
-                }
-              })
+          FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.wysiwyg && component?.wysiwyg == true) {
+              comp.sanitize = true
             }
-          })
+          }, true)
           return {
             ...comp,
             components: comp?.components?.map(data => {
@@ -140,6 +128,27 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             }).filter(val => val)[0]
           }
         });
+        console.log(this.forms)
+        FormioUtils.eachComponent(this.forms, (comp) => {
+          if(comp?.permissions && comp?.permissions?.length > 0) {
+            return comp?.permissions?.map(permit => {
+              if(this.currentUser?.id == permit?.id) {
+                if(permit.canEdit == true) {
+                  comp.disabled = false
+                }
+                else {
+                  comp.disabled = true
+                }
+                if(permit.canView == false) {
+                  comp.hidden = true
+                }
+                else {
+                  comp.hidden = false
+                }
+              }
+            })
+          }
+        }, true);
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -239,6 +248,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       if(approvers.length == 0) {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
+      this.transportService.editBreadcrumbs.next(this.dashboard.items)
+      setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
       setItem(StorageItem.formKey, key)
       setItem(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
@@ -335,7 +346,6 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       }
       const formId = this.subModuleData?.formDataIds[index]?._id;
       const id = this.subModuleData?.formDataIds[index]?.formId;
-      debugger
       this.formValues[index] = {...event, formId, id};
     }
   }
@@ -344,9 +354,18 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     let formComps = JSON.parse(JSON.stringify(this.forms))
     let formioInstance: any[] = [];
     formComps?.forEach((form, index) => {
-      let instance = this.formioForms.toArray()[index].formio.checkValidity(null, true, null, false)
-      formioInstance.push(instance)
-    })
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        if(comp?._disabled === true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) => {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) => {
+        let instance = this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
     if(formioInstance.includes(false)) {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Inject, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject, Subscription, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -6,11 +6,13 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDialogContext, TuiDialogService, TuiDropdownModule, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
+import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-submission-table',
@@ -31,7 +33,9 @@ import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/tabl
     TuiDataListWrapperModule,
     TuiSelectModule,
     TuiHostedDropdownModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiDropdownModule,
+    TuiActiveZoneModule
   ],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
@@ -49,6 +53,7 @@ export class SubmissionTableComponent implements OnDestroy {
   searchValue: FormControl = new FormControl();
   items = ['Display default', 'Display via View Schema'];
   open = false;
+  openDrop = false;
   statusMenu = [
     {name: 'Created', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
@@ -59,16 +64,19 @@ export class SubmissionTableComponent implements OnDestroy {
   ];
   page = 1;
   tableDataValue: any;
-  limit: number = 7;
+  limit: number = 10;
   submoduleData: any;
   remarks = new FormControl('');
   showSchema: FormControl = new FormControl('Display default');
   userRoleCheckAdmin: any;
   showUpIcon = true;
   showDownIcon = false;
+  isDeleting: string;
+  saveDialogSubscription: Subscription[] = [];
+  sendingDecision = new Subject<boolean>();
   tableHeaders: any[] = [
     {
-      key: 'Submission Code',
+      key: 'Code',
       searchKey: 'code',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
@@ -77,7 +85,7 @@ export class SubmissionTableComponent implements OnDestroy {
       search: new FormControl(null)
     },
     {
-      key: 'Submission Status',
+      key: 'Status',
       searchKey: 'submissionStatus',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
@@ -104,7 +112,7 @@ export class SubmissionTableComponent implements OnDestroy {
       search: new FormControl(null)
     },
     {
-      key: 'Workflow progress',
+      key: 'Progress',
       searchKey: 'progress',
       isVisible: new FormControl<boolean>(true),
       showUpIcon: true,
@@ -113,14 +121,17 @@ export class SubmissionTableComponent implements OnDestroy {
       search: new FormControl(null)
     }
   ];
-  summaryData: any
+  summaryData: any;
+  workflowID: string;
+  currentStepId: string;
 
   constructor(
     private workflowService: WorkflowsService,
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin');
@@ -142,7 +153,7 @@ export class SubmissionTableComponent implements OnDestroy {
       if(val == 'Display default') {
         this.tableHeaders = [
           {
-            key: 'Submission Code',
+            key: 'Code',
             searchKey: 'code',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
@@ -151,7 +162,7 @@ export class SubmissionTableComponent implements OnDestroy {
             search: new FormControl(null)
           },
           {
-            key: 'Submission Status',
+            key: 'Status',
             searchKey: 'submissionStatus',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
@@ -178,7 +189,7 @@ export class SubmissionTableComponent implements OnDestroy {
             search: new FormControl(null)
           },
           {
-            key: 'Workflow progress',
+            key: 'Progress',
             searchKey: 'progress',
             isVisible: new FormControl<boolean>(true),
             showUpIcon: true,
@@ -216,7 +227,7 @@ export class SubmissionTableComponent implements OnDestroy {
                 let payload: any
                 if(value) {
                   if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
-                    payload = { 
+                    payload = {
                       summaryData: {
                         [header?.searchKey]: {
                           fullName: value
@@ -269,9 +280,43 @@ export class SubmissionTableComponent implements OnDestroy {
       }
     })
   }
-  
-  setWorkflowID(key: string) {
+
+  setWorkflowID(key: string, submissionID: string) {
     setItem(StorageItem.formKey, key)
+    setItem(StorageItem.editSubmissionId, submissionID)
+  }
+
+  onClick(data: any): void {
+    data.menuOpen = !data.menuOpen;
+  }
+
+  onObscured(obscured: any, data: any): void {
+    if (obscured) {
+      data.menuOpen = false;
+    }
+  }
+
+  onActiveZone(active: any, data: any): void {
+    data.menuOpen = active && data.menuOpen;
+  }
+
+  updatePagination(event: any) {
+    this.limit = Number(event?.target?.value);
+    this.fetchDataAndPopulate()
+  }
+
+  checkViewButtonCondition(data: any) {
+    if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.workFlowUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+
+  checkEditDisableDeleteButton(data: any) {
+    if (!this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.activeStepUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
   }
 
   fetchDataAndPopulate() {
@@ -281,7 +326,8 @@ export class SubmissionTableComponent implements OnDestroy {
       this.tableDataValue = val?.results?.map(data => {
         return {
           ...data,
-          isVisible: true
+          isVisible: true,
+          menuOpen: false
         }
       });
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
@@ -294,7 +340,7 @@ export class SubmissionTableComponent implements OnDestroy {
             let payload: any
             if(value) {
               if(["lastActivityPerformedBy", "pendingOnUsers"].includes(header?.searchKey)) {
-                payload = { 
+                payload = {
                   summaryData: {
                     [header?.searchKey]: {
                       fullName: value
@@ -310,7 +356,6 @@ export class SubmissionTableComponent implements OnDestroy {
                 }
               }
               if(header?.searchKey == "code") {
-                debugger
                 payload = {
                   [header?.searchKey]: value
                 }
@@ -331,6 +376,75 @@ export class SubmissionTableComponent implements OnDestroy {
         }
       });
     }))
+  }
+
+  showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string, workflowId: string, workflowStatus: any): void {
+    workflowStatus?.map(value => {
+      if(value?.status == 'inProgress') {
+        this.currentStepId = value?.stepId
+      }
+    })
+    this.isDeleting = checkDecision;
+    this.workflowID = workflowId;
+    if(checkDecision == 'delete') {
+      this.dialogTitle = 'Delete'
+    }
+    if(checkDecision == 'cancel') {
+      this.dialogTitle = 'Cancel'
+    }
+    if(checkDecision == 'enable') {
+      this.dialogTitle = 'Enable'
+    }
+    this.saveDialogSubscription.push(this.dialogs.open(content, {
+      dismissible: true,
+      closeable: true
+    }).subscribe());
+  }
+
+  sendDeleteOrCancelDecision() {
+    this.sendingDecision.next(true)
+    let payload: any = {
+      stepId: this.currentStepId,
+      userId: this.currentUser?.id,
+      remarks: this.remarks?.value || undefined,
+      type: 'submittal'
+    }
+    if(this.isDeleting == 'delete') {
+      Object.assign(payload, {status: 2})
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe());
+          this.fetchDataAndPopulate();
+        }
+      })
+    }
+    if(this.isDeleting == 'cancel') {
+      Object.assign(payload, {submissionStatus: 5});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.remarks.reset();
+          this.fetchDataAndPopulate();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
+    if(this.isDeleting == 'enable') {
+      Object.assign(payload, {submissionStatus: 2});
+      this.workflowService.updateSubmissionWorkflow(this.workflowID, payload).pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if(res) {
+          this.sendingDecision.next(false)
+          this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.fetchDataAndPopulate();
+          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        }
+      })
+    }
   }
 
   sendSearchCallForFilters(payload: any) {
@@ -423,7 +537,7 @@ export class SubmissionTableComponent implements OnDestroy {
   getPendingOnUsers(value: any[]) {
     return value?.map(data => data?.fullName)
   }
-  
+
   bindValueFromSummaryData(obj: any, headerKey: string) {
     const matchingField = this.tableHeaders.find(data => data.field === headerKey);
     if (matchingField) {
@@ -433,9 +547,17 @@ export class SubmissionTableComponent implements OnDestroy {
     return "";
   }
 
-  sendFilterValue(value: any) {
-    switch (value?.sortType) {
-      case 'Created':
+  sendFilterValue(event: any) {
+    switch (Number(event?.target?.value)) {
+      case 0:
+        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((val: any) => {
+            this.submissionData = val;
+            this.tableDataValue = val?.results;
+          })
+        break
+      case 1:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 1)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -443,7 +565,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Completed':
+      case 3:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 3)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -451,7 +573,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'In Progress':
+      case 2:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 2)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -459,7 +581,7 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Draft':
+      case 4:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 4)
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -467,7 +589,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.tableDataValue = val?.results;
         })
         break
-      case 'Cancelled':
+      case 5:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 5)
         .pipe(takeUntil(this.destroy$))
         .subscribe((val: any) => {
@@ -475,7 +597,7 @@ export class SubmissionTableComponent implements OnDestroy {
           this.tableDataValue = val?.results;
         })
         break
-      case 'Deleted':
+      case 6:
         this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, 6)
           .pipe(takeUntil(this.destroy$))
           .subscribe((val: any) => {
@@ -483,22 +605,6 @@ export class SubmissionTableComponent implements OnDestroy {
             this.tableDataValue = val?.results;
           })
         break
-      case 'Sort by Ascending':
-        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'latest')
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((val: any) => {
-          this.submissionData = val;
-          this.tableDataValue = val?.results;
-        })
-        break
-      case 'Sort by Descending':
-        this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page, undefined, 'oldest')
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((val: any) => {
-          this.submissionData = val;
-          this.tableDataValue = val?.results;
-        })
-      break
     }
   }
 

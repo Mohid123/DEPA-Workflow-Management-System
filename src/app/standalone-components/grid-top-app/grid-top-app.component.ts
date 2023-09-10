@@ -27,12 +27,10 @@ export class GridTopAppComponent {
   }
 
   checkAccess(data: any) {
-    if(data?.accessType == 'disabled' && this.userRoleCheck == false) {
-      if(!data?.allUsers?.includes(this.currentUser?.id)) {
-        return false
-      }
+    if (this.userRoleCheck == false && data?.accessType == "disabled" && !data.authorizedUsers.includes(this.currentUser.id)) {
+      return false;
     }
-    return true
+    return true;
   }
     /**
    * Used to display the relevant data inside the card view
