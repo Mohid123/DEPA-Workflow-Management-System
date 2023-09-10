@@ -177,6 +177,19 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  applySummarySchemaValuesToViewSchema(data: any) {
+    data?.forEach((val, index) => {
+      this.schemaForm?.controls['viewSchema']?.value?.forEach((data, i) => {
+        if(data?.fieldKey !== val) {
+          this.schemaForm?.controls['viewSchema']?.removeAt(i)
+        }
+      })
+    })
+    if(data?.length == 0) {
+      this.schemaForm?.controls['viewSchema']?.removeAt(0)
+    }
+  }
+
   checkIfLabelIsUnique() {
     let unique = new Set(this.schemaForm.controls['viewSchema'].value?.map(data => data?.displayAs));
     if(unique.size !== this.schemaForm.controls['viewSchema'].value?.length) {
@@ -418,6 +431,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('maxlength') ||
     (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('minlength')) &&
     (<FormArray>this.companies).controls[i]?.get('groupCode').dirty
+  }
+
+  getValidityForWorkflowStep() {
+    return (<FormArray>this.workflows).controls[0]?.get('approverIds')?.hasError('required') && (<FormArray>this.workflows).controls[0]?.get('approverIds')?.touched
   }
 
   getValidityForCompanyCodeExists(i) {

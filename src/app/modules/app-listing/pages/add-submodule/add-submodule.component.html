@@ -329,6 +329,9 @@
                 <label class="block pb-1">{{first ? 'Creators': 'Approvers'}} <span class="text-xs text-red-400">*</span></label>
                 <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
                 <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
+                <span *ngIf="getValidityForWorkflowStep() == true" class="text-xs text-red-500">
+                  Please specify submission creator/s
+                </span>
               </div>
               <div class="col-span-3">
                 <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
@@ -643,6 +646,7 @@
     <tui-multi-select
       formControlName="summarySchema"
       [tuiTextfieldLabelOutside]="true"
+      (ngModelChange)="applySummarySchemaValuesToViewSchema($event)"
     >
       Summary schema fields
       <tui-data-list-wrapper

@@ -368,6 +368,23 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  getValidityForWorkflowStep() {
+    return (<FormArray>this.workflows).controls[0]?.get('approverIds')?.hasError('required') && (<FormArray>this.workflows).controls[0]?.get('approverIds')?.touched
+  }
+
+  applySummarySchemaValuesToViewSchema(data: any) {
+    data?.forEach((val, index) => {
+      this.schemaForm?.controls['viewSchema']?.value?.forEach((data, i) => {
+        if(data?.fieldKey !== val) {
+          this.schemaForm?.controls['viewSchema']?.removeAt(i)
+        }
+      })
+    })
+    if(data?.length == 0) {
+      this.schemaForm?.controls['viewSchema']?.removeAt(0)
+    }
+  }
+
   getAllCompanies() {
     this.dashboard.getAllCompanies(10, 0)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
