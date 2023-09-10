@@ -6,12 +6,13 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { TuiButtonModule, TuiDialogContext, TuiDialogService, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDialogContext, TuiDialogService, TuiDropdownModule, TuiHintModule, TuiHostedDropdownModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import {  TuiCheckboxModule, TuiDataListWrapperModule, TuiInputModule, TuiPaginationModule, TuiProgressModule, TuiSelectModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-submission-table',
@@ -32,7 +33,9 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
     TuiDataListWrapperModule,
     TuiSelectModule,
     TuiHostedDropdownModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiDropdownModule,
+    TuiActiveZoneModule
   ],
   templateUrl: './submission-table.component.html',
   styleUrls: ['./submission-table.component.scss']
@@ -50,6 +53,7 @@ export class SubmissionTableComponent implements OnDestroy {
   searchValue: FormControl = new FormControl();
   items = ['Display default', 'Display via View Schema'];
   open = false;
+  openDrop = false;
   statusMenu = [
     {name: 'Created', status: 'idle', icon: ''},
     {name: 'Completed', status: 'idle', icon: ''},
@@ -282,6 +286,20 @@ export class SubmissionTableComponent implements OnDestroy {
     setItem(StorageItem.editSubmissionId, submissionID)
   }
 
+  onClick(data: any): void {
+    data.menuOpen = !data.menuOpen;
+  }
+
+  onObscured(obscured: any, data: any): void {
+    if (obscured) {
+      data.menuOpen = false;
+    }
+  }
+
+  onActiveZone(active: any, data: any): void {
+    data.menuOpen = active && data.menuOpen;
+  }
+
   updatePagination(event: any) {
     this.limit = Number(event?.target?.value);
     this.fetchDataAndPopulate()
@@ -308,7 +326,8 @@ export class SubmissionTableComponent implements OnDestroy {
       this.tableDataValue = val?.results?.map(data => {
         return {
           ...data,
-          isVisible: true
+          isVisible: true,
+          menuOpen: false
         }
       });
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
@@ -337,7 +356,6 @@ export class SubmissionTableComponent implements OnDestroy {
                 }
               }
               if(header?.searchKey == "code") {
-                debugger
                 payload = {
                   [header?.searchKey]: value
                 }

@@ -168,6 +168,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.subModuleData = res;
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
+          FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.wysiwyg && component?.wysiwyg == true) {
+              comp.sanitize = true
+            }
+          }, true)
           return {
             ...comp,
             components: comp.components?.map(data => {

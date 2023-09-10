@@ -102,6 +102,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.workFlowId = res?.workFlowId?._id;
         this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(comp => {
+          FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.wysiwyg && component?.wysiwyg == true) {
+              comp.sanitize = true
+            }
+          }, true)
           return {
             ...comp,
             components: comp?.components?.map(data => {
@@ -123,6 +128,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             }).filter(val => val)[0]
           }
         });
+        console.log(this.forms)
         FormioUtils.eachComponent(this.forms, (comp) => {
           if(comp?.permissions && comp?.permissions?.length > 0) {
             return comp?.permissions?.map(permit => {

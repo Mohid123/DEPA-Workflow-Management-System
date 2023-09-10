@@ -113,6 +113,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         this.getDefaultWorkflowBySubModule();
       }
     })
+
+    this.getAllCompanies();
     this.formComponents = this.transportService.formBuilderData.value;
     this.formTabs = this.formComponents.map(val => val.title);
     let formComps = JSON.parse(JSON.stringify(this.formComponents));
@@ -124,10 +126,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       return res
     })
     this.formKeysForViewSchema = this.summarySchemaFields;
-
-    this.getAllCompanies();
+    formComps?.forEach(val => {
+      FormioUtils.eachComponent(val?.components, (comp) => {
+        if(comp?.wysiwyg && comp?.wysiwyg == true) {
+          val.sanitize = true
+        }
+      }, true)
+    })
     // get users for email
-
     this.search$.pipe(
       switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search)),
       takeUntil(this.destroy$))

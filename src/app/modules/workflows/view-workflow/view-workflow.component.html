@@ -104,7 +104,7 @@
                 this.userRoleSysAdmin == false
               "
               [options]="{'disableAlerts': true}"
-              [submission]="form"
+              [submission]="formValues[i] || form"
               [form]="form"
               (change)="onChange($event, i)"
             ></formio>

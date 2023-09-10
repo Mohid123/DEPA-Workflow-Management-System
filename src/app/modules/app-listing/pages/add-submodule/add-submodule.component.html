@@ -2,7 +2,7 @@
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
     <h3 class="text-xl font-semibold text-center">Create a new app</h3>
-    <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">App Details</h4>
+    <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">Basic Info</h4>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
     <!--Title-->
@@ -165,7 +165,7 @@
                 </span>
 
                 <input
-                  class="form-control mt-3"
+                  class="mt-3 form-control"
                   formControlName="groupCode"
                   type="text"
                   [ngClass]="getValidityForCompanyCode(i) ? 'is-invalid': ''"
@@ -243,7 +243,7 @@
                   <span *ngIf="getValidityForCategory(i)" class="text-xs text-red-500">
                     Please provide a category name with upto 40 characters
                   </span>
-                  <span *ngIf="getValidityForCategoryCode(i)" class="text-red-500 text-xs">
+                  <span *ngIf="getValidityForCategoryCode(i)" class="text-xs text-red-500">
                     A category with this name already exists. Please provide a different name.
                   </span>
               </div>
@@ -282,10 +282,20 @@
       ></button>
     </ng-container>
 
+    <section class="mt-10">
+      <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">User Access & Control</h4>
+    </section>
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">Admin users <sup>(optional)</sup> </label>
+        <label class="block pb-1 text-sm">Admin users
+          <tui-tooltip
+            [content]="hintAdmin"
+            direction="right"
+            class=""
+          ></tui-tooltip>
+          <sup>(optional)</sup>
+        </label>
         <custom-multi-select
           formControlName="adminUsers"
           (approverList)="setAdminUsers($event)"
@@ -293,7 +303,13 @@
       </div>
 
       <div class="col-span-6">
-        <label class="block pb-1 text-sm">View Only users <sup>(optional)</sup></label>
+        <label class="block pb-1 text-sm">View Only users
+          <tui-tooltip
+            [content]="hintViewOnly"
+            direction="right"
+            class=""
+          ></tui-tooltip>
+          <sup>(optional)</sup></label>
         <custom-multi-select
           formControlName="viewOnlyUsers"
           (approverList)="setViewUsers($event)"
@@ -302,8 +318,8 @@
     </div>
 
     <!--Edit Workflow-->
-    <div class="mt-12">
-      <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">Create Workflow</h4>
+    <div class="mt-12 mb-16">
+      <h4 class="py-2 mb-3 text-lg font-semibold">Create Workflow</h4>
       <ng-container formArrayName="workflows">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
@@ -450,8 +466,8 @@
     <!--Form preview-->
     <div class="mb-5 mt-7">
       <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">
-        <h4 class="text-lg font-semibold mt-1.5">Create Form/s</h4>
-        <a 
+        <h4 class="text-lg font-semibold">Dynamic Forms</h4>
+        <a
           *ngIf="formComponents[0]?.components?.length > 0"
           (click)="openSummarySchemaDialog(summarySchemaTemplate)"
           class="px-2.5 py-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white"
@@ -555,7 +571,7 @@
 <ng-template #formError let-control="control" let-message="message" let-validation="validation">
   <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
     <div class="w-full mt-1 text-left fv-plugins-message-container text-xxs 2xl:text-xs">
-      <span class="text-red-400 fv-help-block text-xs 2xl:text-xs 2xl:mb-2" role="alert">
+      <span class="text-xs text-red-400 fv-help-block 2xl:text-xs 2xl:mb-2" role="alert">
         {{ message }}
       </span>
     </div>
@@ -602,6 +618,22 @@
     <li class="my-2"><strong>OR</strong> implies that any one of the users may provide approval</li>
     <li><strong>NONE</strong> implies that there is only one user per step and hence no conditon is necessary</li>
   </ul>
+</ng-template>
+
+<ng-template #hintAdmin>
+  <strong class="text-base text-center">Admin Users</strong>
+  <hr>
+  <p class="mt-2 leading-5">
+    Admin Users have access to create, delete and modify submissions as well as child apps within a specified application
+  </p>
+</ng-template>
+
+<ng-template #hintViewOnly>
+  <strong class="text-base text-center">View Only Users</strong>
+  <hr>
+  <p class="mt-2 leading-5">
+    View Only Users have read-only access. They may view submissions and child apps but may not modify or delete them
+  </p>
 </ng-template>
 
 <ng-template #summarySchemaTemplate let-observer>

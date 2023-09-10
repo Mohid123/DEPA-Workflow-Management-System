@@ -131,62 +131,82 @@
               </ng-container>
               <!-- Actions -->
               <td class="px-5 py-4">
-                <div style="all: unset;" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">
-                  <a
-                    title="Perform Workflow Action"
-                    (click)="editWorkflowRoute(data?.id, data?.code)"
-                    *ngIf="checkEditDisableDeleteButton(data) == true && data?.submissionStatus == 2"
-                    class="px-1.5 py-0.5 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                  </a>
-                  <!--VIEW-->
-                  <a
-                    title="View Submission"
-                    (click)="editWorkflowRoute(data?.id, data?.code)"
-                    *ngIf="checkViewButtonCondition(data) == true"
-                    class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
-                  </a>
-                  <!--Delete-->
-                  <a
-                    title="Delete Submission"
-                    (click)="showDeleteDialog(dialog, 'delete', data?.id, data?.workflowStatus)"
-                    *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "
-                    class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-red-500 rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
-                  </a>
-                  <!--Cancel-->
-                  <a
-                    title="Cancel Submission"
-                    (click)="showDeleteDialog(dialog, 'cancel', data?.id, data?.workflowStatus)"
-                    *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"
-                    class="px-1.5 py-0.5 ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white">
-                    <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
-                  </a>
-                </div>
-                <!--EDIT SUBMISSION PAGE-->
-                <a
-                  title="Edit Submission"
-                  [routerLink]="['/modules/edit-submission', data?.id]"
-                  (click)="setWorkflowID(data?.code, data?.id)"
-                  *ngIf="(
-                    currentUser?.id == data?.createdBy?.id &&
-                    data?.submissionStatus == 4 &&
-                    data?.submissionStatus !== 5
-                  ) ||
-                  (
-                    checkIfUserIsFirstUser(data?.workflowStatus) &&
-                    data?.submissionStatus == 4 &&
-                    data?.submissionStatus !== 5
-                  ) ||
-                  (
-                    checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
-                    data?.submissionStatus == 4 &&
-                    data?.submissionStatus !== 5
-                  )"
-                  class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
-                  <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
-                </a>
+                <button
+                  *ngIf="data?.status !== 2"
+                  icon="tuiIconMoreVerticalLarge"
+                  tuiIconButton
+                  type="button"
+                  size="s"
+                  [tuiDropdown]="dropdownContent"
+                  appearance="secondary"
+                  class="ml-3"
+                  [tuiDropdownManual]="data?.menuOpen"
+                  [tuiDropdownAlign]="'right'"
+                  (click)="onClick(data)"
+                  (tuiActiveZoneChange)="onActiveZone($event, data)"
+                  (tuiObscured)="onObscured($event, data)"
+                >
+                  <ng-template #dropdownContent>
+                    <div class="px-2 py-5 bg-white">
+                      <div class="flex flex-col items-center gap-3" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">
+                        <a
+                          title="Perform Workflow Action"
+                          (click)="editWorkflowRoute(data?.id, data?.code)"
+                          *ngIf="checkEditDisableDeleteButton(data) == true && data?.submissionStatus == 2"
+                          class="w-20 h-6 px-1 py-1 text-xs font-medium text-center text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                          Edit &nbsp; <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                        <!--VIEW-->
+                        <a
+                          title="View Submission"
+                          (click)="editWorkflowRoute(data?.id, data?.code)"
+                          *ngIf="checkViewButtonCondition(data) == true"
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                          View &nbsp; <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+                        </a>
+                        <!--Delete-->
+                        <a
+                          title="Delete Submission"
+                          (click)="showDeleteDialog(dialog, 'delete', data?.id, data?.workflowStatus)"
+                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-500 rounded-md cursor-pointer hover:text-white">
+                          Delete &nbsp; <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+                        </a>
+                        <!--Cancel-->
+                        <a
+                          title="Cancel Submission"
+                          (click)="showDeleteDialog(dialog, 'cancel', data?.id, data?.workflowStatus)"
+                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white">
+                          Cancel &nbsp; <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
+                        </a>
+                      </div>
+                      <!--EDIT SUBMISSION PAGE-->
+                      <a
+                        title="Edit Submission"
+                        [routerLink]="['/modules/edit-submission', data?.id]"
+                        (click)="setWorkflowID(data?.code, data?.id)"
+                        *ngIf="(
+                          currentUser?.id == data?.createdBy?.id &&
+                          data?.submissionStatus == 4 &&
+                          data?.submissionStatus !== 5
+                        ) ||
+                        (
+                          checkIfUserIsFirstUser(data?.workflowStatus) &&
+                          data?.submissionStatus == 4 &&
+                          data?.submissionStatus !== 5
+                        ) ||
+                        (
+                          checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
+                          data?.submissionStatus == 4 &&
+                          data?.submissionStatus !== 5
+                        )"
+                        class="px-3 py-2 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                        Update Status &nbsp; <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
+                      </a>
+                    </div>
+                  </ng-template>
+                </button>
               </td>
             </tr>
           </ng-container>
@@ -211,6 +231,7 @@
     </div>
   </div>
 </ng-container>
+
 
 <ng-template #noData>
   <app-table-loader></app-table-loader>

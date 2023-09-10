@@ -259,6 +259,13 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 this.accessTypeValue?.setValue(this.items[index])
               }
             })
+            response?.formIds?.forEach(val => {
+              FormioUtils.eachComponent(val?.components, (comp) => {
+                if(comp?.wysiwyg && comp?.wysiwyg == true) {
+                  val.sanitize = true
+                }
+              }, true)
+            })
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;

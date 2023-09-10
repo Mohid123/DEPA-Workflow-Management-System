@@ -9,7 +9,7 @@ import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
 import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { FormKeyValidator } from 'src/core/utils/utility-functions';
+import { CodeValidator, FormKeyValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { DialogTemplate } from '../../templates/permission-template.component';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
@@ -50,7 +50,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   ]));
   formCodeControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
-  ]));
+  ]), [CodeValidator.createValidator(this.dashboard, 'form')]);
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   editFormID: string;
@@ -217,8 +217,8 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   submitFormData() {
-    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '') {
-      return this.notif.displayNotification('Please provide a title and code for your form', 'Edit Form', TuiNotification.Warning)
+    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '' || this.formCodeControl?.invalid) {
+      return this.notif.displayNotification('Please provide a valid title and code for your form', 'Edit Form', TuiNotification.Warning)
     }
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('Your form cannot be empty!', 'Edit Form', TuiNotification.Warning)

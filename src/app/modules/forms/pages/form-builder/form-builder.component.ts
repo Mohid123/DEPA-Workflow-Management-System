@@ -42,10 +42,10 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   ];
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
-  ]), [CodeValidator.createValidator(this.dashboard, 'form')]);
+  ]));
   formCodeControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
-  ]));
+  ]),[CodeValidator.createValidator(this.dashboard, 'form')]);
   formDisplayType = new FormControl('form');
   destroy$ = new Subject();
   crudUsers = new FormControl<any>([]);
@@ -221,8 +221,8 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   }
 
   submitFormData() {
-    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '') {
-      return this.notif.displayNotification('Please provide a title and code for your form', 'Create Form', TuiNotification.Warning)
+    if(!this.formTitleControl?.value || this.formTitleControl?.value == '' || !this.formCodeControl?.value || this.formCodeControl?.value == '' || this.formCodeControl?.invalid) {
+      return this.notif.displayNotification('Please provide a valid title and code for your form', 'Create Form', TuiNotification.Warning)
     }
     if(this.form?.components?.length == 0) {
       return this.notif.displayNotification('You have not created a form!', 'Create Form', TuiNotification.Warning)

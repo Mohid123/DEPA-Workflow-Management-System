@@ -29,7 +29,7 @@
       <input [formControl]="formCodeControl" type="text" class="form-control" placeholder="Form code" id="codField">
       <p class="mt-1 text-xs text-red-500"
         *ngIf="formCodeControl?.hasError('codeExists')">
-        A code by this title already exists. Please select another code
+        A code by this name already exists. Please select another code
       </p>
     </div>
   </div>

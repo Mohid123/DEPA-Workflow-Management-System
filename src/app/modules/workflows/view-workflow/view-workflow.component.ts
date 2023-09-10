@@ -187,6 +187,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     ).subscribe(async (data) => {
       if(data) {
         this.workflowData = data;
+        this.workflowData?.formIds?.forEach(val => {
+          FormioUtils.eachComponent(val?.components, (comp) => {
+            if(comp?.wysiwyg && comp?.wysiwyg == true) {
+              val.sanitize = true
+            }
+          }, true)
+        })
         this.currentStepId = await this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null
         })[0]?.stepId;
