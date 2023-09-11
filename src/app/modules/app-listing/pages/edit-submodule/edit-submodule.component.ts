@@ -259,13 +259,13 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 this.accessTypeValue?.setValue(this.items[index])
               }
             })
-            response?.formIds?.forEach(val => {
-              FormioUtils.eachComponent(val?.components, (comp) => {
-                if(comp?.wysiwyg && comp?.wysiwyg == true) {
-                  val.sanitize = true
-                }
-              }, true)
-            })
+            // response?.formIds?.forEach(val => {
+            //   FormioUtils.eachComponent(val?.components, (comp) => {
+            //     if(comp?.wysiwyg && comp?.wysiwyg == true) {
+            //       val.sanitize = true
+            //     }
+            //   }, true)
+            // })
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;
@@ -495,7 +495,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   onChangeForm(event: any) {
-    if(event?.data && event?.changed) {
+    if(event?.data && event?.changed && event.isModified == true) {
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl

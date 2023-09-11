@@ -137,27 +137,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
-  // comp.components?.map(data => {
-  //   if(data?.permissions?.length > 0) {
-  //     data?.permissions?.map(permit => {
-  //       if(this.currentUser?.id == permit?.id) {
-  //         if(permit.canEdit == true) {
-  //           data.disabled = false
-  //         }
-  //         else {
-  //           data.disabled = true
-  //         }
-  //         if(permit.canView == false) {
-  //           data.hidden = true
-  //         }
-  //         else {
-  //           data.hidden = false
-  //         }
-  //       }
-  //     })
-  //   }
-  // })
-
   populateData() {
     this.activatedRoute.params.pipe(
       pluck('id'),
@@ -168,11 +147,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.subModuleData = res;
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
-          FormioUtils.eachComponent(comp?.components, (component) => {
-            if(component?.wysiwyg && component?.wysiwyg == true) {
-              comp.sanitize = true
-            }
-          }, true)
+          // FormioUtils.eachComponent(comp?.components, (component) => {
+          //   if(component?.wysiwyg && component?.wysiwyg == true) {
+          //     comp.sanitize = true
+          //   }
+          // }, true)
           return {
             ...comp,
             components: comp.components?.map(data => {
@@ -294,10 +273,19 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   onChange(event: any, index: number) {
-    if(event?.data && event?.changed) {
+    if(event?.data && event?.changed && event.isModified == true) {
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      if(event?.data?.dataGrid) {
+        event?.data?.dataGrid?.forEach(comp => {
+          if(comp?.file) {
+            comp.file?.forEach(value => {
+              value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+            })
+          }
         })
       }
       const formId = this.subModuleData?.formIds[index]?.id;
