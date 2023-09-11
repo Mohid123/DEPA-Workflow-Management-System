@@ -96,7 +96,7 @@
                       </ng-container>
                       <!-- Last Activity By -->
                       <ng-container *ngSwitchCase="'Last Activity By'">
-                        {{ (data?.submissionStatus === 1 || data?.submissionStatus === 4 || data?.submissionStatus === 2) ? data?.createdBy?.fullName : data?.summaryData?.lastActivityPerformedBy?.fullName || '' }}
+                        {{ data?.summaryData?.lastActivityPerformedBy?.fullName }}
                       </ng-container>
                       <!-- Now Pending With -->
                       <ng-container *ngSwitchCase="'Now Pending With'">
