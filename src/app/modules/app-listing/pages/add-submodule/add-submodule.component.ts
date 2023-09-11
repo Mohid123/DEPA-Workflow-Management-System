@@ -126,13 +126,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       return res
     })
     this.formKeysForViewSchema = this.summarySchemaFields;
-    formComps?.forEach(val => {
-      FormioUtils.eachComponent(val?.components, (comp) => {
-        if(comp?.wysiwyg && comp?.wysiwyg == true) {
-          val.sanitize = true
-        }
-      }, true)
-    })
+    // formComps?.forEach(val => {
+    //   FormioUtils.eachComponent(val?.components, (comp) => {
+    //     if(comp?.wysiwyg && comp?.wysiwyg == true) {
+    //       val.sanitize = true
+    //     }
+    //   }, true)
+    // })
     // get users for email
     this.search$.pipe(
       switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search)),
@@ -567,7 +567,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   onChangeForm(event: any) {
-    if(event?.data && event?.changed) {
+    if(event?.data && event?.changed && event.isModified == true) {
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl

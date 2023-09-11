@@ -16,7 +16,7 @@ export class UsersListComponent implements OnDestroy {
   users: Observable<any>;
   userId: string = null;
   destroy$ = new Subject();
-  limit: number = 6;
+  limit: number = 10;
   page: number = 0;
   formSubmission: any;
   searchValue = new FormControl();

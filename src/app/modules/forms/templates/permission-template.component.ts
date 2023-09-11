@@ -62,26 +62,37 @@ export class DialogTemplate {
   private transport: DataTransportService
 ) {
   this.workflowApprovers = getItem(StorageItem.approvers) || [];
-  if(this.workflowApprovers.length > 0) {
+  if (this.workflowApprovers.length > 0) {
     this.workflowApprovers.forEach(user => {
-      if(this.data && this.data?.permissions?.length > 0) {
-        this.data?.permissions?.map(value => {
-          if(user?.id == value?.id) {
+      let userMatchFound = false; // Initialize the flag
+
+      if (this.data && this.data?.permissions?.length > 0) {
+        this.data?.permissions?.forEach(value => {
+          if (user?.id == value?.id) {
             this.userFormControls[user.id] = {
               canEdit: new FormControl(value?.canEdit),
               canView: new FormControl(value?.canView)
             };
+            userMatchFound = true;
           }
-        })
+        });
       }
-      else {
+      if (!userMatchFound) {
         this.userFormControls[user.id] = {
           canEdit: new FormControl(false),
           canView: new FormControl(false)
         };
       }
     });
+  } else {
+    this.workflowApprovers.forEach(user => {
+      this.userFormControls[user.id] = {
+        canEdit: new FormControl(false),
+        canView: new FormControl(false)
+      };
+    });
   }
+
 }
 
 setCanView(value, id) {

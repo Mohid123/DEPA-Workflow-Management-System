@@ -102,11 +102,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.workFlowId = res?.workFlowId?._id;
         this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(comp => {
-          FormioUtils.eachComponent(comp?.components, (component) => {
-            if(component?.wysiwyg && component?.wysiwyg == true) {
-              comp.sanitize = true
-            }
-          }, true)
+          // FormioUtils.eachComponent(comp?.components, (component) => {
+          //   if(component?.wysiwyg && component?.wysiwyg == true) {
+          //     comp.sanitize = true
+          //   }
+          // }, true)
           return {
             ...comp,
             components: comp?.components?.map(data => {
@@ -128,7 +128,6 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             }).filter(val => val)[0]
           }
         });
-        console.log(this.forms)
         FormioUtils.eachComponent(this.forms, (comp) => {
           if(comp?.permissions && comp?.permissions?.length > 0) {
             return comp?.permissions?.map(permit => {
@@ -342,6 +341,15 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+        })
+      }
+      if(event?.data?.dataGrid) {
+        event?.data?.dataGrid?.forEach(comp => {
+          if(comp?.file) {
+            comp.file?.forEach(value => {
+              value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+            })
+          }
         })
       }
       const formId = this.subModuleData?.formDataIds[index]?._id;

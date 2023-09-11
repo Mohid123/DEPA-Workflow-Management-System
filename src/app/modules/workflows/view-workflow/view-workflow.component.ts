@@ -171,6 +171,15 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
+      if(event?.data?.dataGrid) {
+        event?.data?.dataGrid?.forEach(comp => {
+          if(comp?.file) {
+            comp.file?.forEach(value => {
+              value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+            })
+          }
+        })
+      }
       // this.formData.next(event)
       const formId = this.workflowData?.formDataIds[index]?._id;
       const id = this.workflowData?.formDataIds[index]?.formId;
@@ -188,11 +197,11 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       if(data) {
         this.workflowData = data;
         this.workflowData?.formIds?.forEach(val => {
-          FormioUtils.eachComponent(val?.components, (comp) => {
-            if(comp?.wysiwyg && comp?.wysiwyg == true) {
-              val.sanitize = true
-            }
-          }, true)
+          // FormioUtils.eachComponent(val?.components, (comp) => {
+          //   if(comp?.wysiwyg && comp?.wysiwyg == true) {
+          //     val.sanitize = true
+          //   }
+          // }, true)
         })
         this.currentStepId = await this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null

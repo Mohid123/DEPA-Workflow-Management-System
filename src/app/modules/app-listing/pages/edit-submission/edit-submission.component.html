@@ -22,7 +22,7 @@
           </div>
           <formio
             #formioForm
-            [submission]="formValues[i] || form?.defaultData"
+            [submission]="formValues[i] || form"
             [options]="options"
             [form]="form"
             (change)="onChange($event, i)"
