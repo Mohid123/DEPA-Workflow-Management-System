@@ -52,8 +52,9 @@
                 <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
               </a>
               <a title="Edit"
-                *ngIf="currentUser?.id == data?.createdBy ||
-                (userRoleCheck == true && checkIfUserisViewOnly(data?.viewOnlyUsers) == false) ||
+                *ngIf="
+                currentUser?.id == data?.createdBy ||
+                userRoleCheck == true ||
                 checkIfUserisAdmin(data?.adminUsers)"
                 [routerLink]="['/modules/edit-module', data?.id]"
                 (click)="setEditSlug(data?.code, data?.id, data?.title)"
