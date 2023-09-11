@@ -15,7 +15,7 @@ import { StorageItem, getItem } from "src/core/utils/local-storage.utils";
       <ng-container *ngFor="let user of workflowApprovers; let i = index;">
         <div class="border-b border-gray-300 py-4 flex justify-start gap-x-3">
           <p class="font-semibold text-base mb-3 mr-4">{{user?.name}}</p>
-          <tui-checkbox-labeled [formControl]="userFormControls[user.id].canEdit" class="tui-space_top-1">
+          <tui-checkbox-labeled [formControl]="userFormControls[user.id].canEdit" (ngModelChange)="setCanView($event, user.id)" class="tui-space_top-1">
             Can Edit?
             <div class="text-gray-400">User will have the right to edit this component</div>
           </tui-checkbox-labeled>
@@ -68,25 +68,25 @@ export class DialogTemplate {
         this.data?.permissions?.map(value => {
           if(user?.id == value?.id) {
             this.userFormControls[user.id] = {
-              canEdit: new FormControl(value?.canEdit ),
+              canEdit: new FormControl(value?.canEdit),
               canView: new FormControl(value?.canView)
-            };
-          }
-          else {
-            this.userFormControls[user.id] = {
-              canEdit: new FormControl(true),
-              canView: new FormControl(true)
             };
           }
         })
       }
       else {
         this.userFormControls[user.id] = {
-          canEdit: new FormControl(true),
-          canView: new FormControl(true)
+          canEdit: new FormControl(false),
+          canView: new FormControl(false)
         };
       }
     });
+  }
+}
+
+setCanView(value, id) {
+  if(value == true) {
+    this.userFormControls[id]?.canView?.setValue(true)
   }
 }
 
