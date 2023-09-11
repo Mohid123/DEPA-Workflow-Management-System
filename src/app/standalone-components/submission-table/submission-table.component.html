@@ -96,7 +96,7 @@
                       </ng-container>
                       <!-- Last Activity By -->
                       <ng-container *ngSwitchCase="'Last Activity By'">
-                        {{ (data?.submissionStatus === 1 || data?.submissionStatus === 4 || data?.submissionStatus === 2) ? data?.createdBy?.fullName : data?.summaryData?.lastActivityPerformedBy?.fullName || '' }}
+                        {{ data?.summaryData?.lastActivityPerformedBy?.fullName }}
                       </ng-container>
                       <!-- Now Pending With -->
                       <ng-container *ngSwitchCase="'Now Pending With'">
@@ -153,7 +153,7 @@
                           title="Perform Workflow Action"
                           (click)="editWorkflowRoute(data?.id, data?.code)"
                           *ngIf="checkEditDisableDeleteButton(data) == true && data?.submissionStatus == 2"
-                          class="w-20 h-6 px-1 py-1 text-xs font-medium text-center text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                          class="w-20 h-6 px-1 py-1 text-xs font-medium text-center text-black no-underline bg-white cursor-pointer hover:text-black">
                           Edit &nbsp; <i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>
                         <!--VIEW-->
@@ -161,7 +161,7 @@
                           title="View Submission"
                           (click)="editWorkflowRoute(data?.id, data?.code)"
                           *ngIf="checkViewButtonCondition(data) == true"
-                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-white no-underline bg-green-400 rounded-md cursor-pointer hover:text-white">
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">
                           View &nbsp; <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
                         </a>
                         <!--Delete-->
@@ -169,7 +169,7 @@
                           title="Delete Submission"
                           (click)="showDeleteDialog(dialog, 'delete', data?.id, data?.workflowStatus)"
                           *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "
-                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-500 rounded-md cursor-pointer hover:text-white">
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
                           Delete &nbsp; <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
                         </a>
                         <!--Cancel-->
@@ -177,7 +177,7 @@
                           title="Cancel Submission"
                           (click)="showDeleteDialog(dialog, 'cancel', data?.id, data?.workflowStatus)"
                           *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"
-                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white">
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
                           Cancel &nbsp; <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
                         </a>
                       </div>
@@ -201,7 +201,7 @@
                           data?.submissionStatus == 4 &&
                           data?.submissionStatus !== 5
                         )"
-                        class="px-3 py-2 ml-2 text-xs font-medium text-white no-underline bg-blue-400 rounded-md cursor-pointer hover:text-white">
+                        class="px-3 py-2 ml-2 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">
                         Update Status &nbsp; <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
                       </a>
                     </div>
