@@ -37,7 +37,7 @@ export class CompaniesComponent {
 
   categoryId: string;
   destroy$ = new Subject();
-  limit: number = 6;
+  limit: number = 10;
   page: number = 0;
   subscription: Subscription[] = [];
 
