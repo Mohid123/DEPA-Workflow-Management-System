@@ -1,4 +1,6 @@
+import { environment } from "src/environments/environment";
+
 export const AppConfig = {
-  appUrl: 'http://localhost:3000/v1',
-  apiUrl: 'http://localhost:3000/v1'
+  appUrl: environment.apiUrl,
+  apiUrl: environment.apiUrl
 };

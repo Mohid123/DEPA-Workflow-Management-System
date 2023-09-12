@@ -168,19 +168,21 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   onChange(event: any, index) {
     if(event?.data && event?.changed) {
-      if(event?.data?.file) {
-        event?.data?.file?.forEach(value => {
+      if(event?.changed && event?.changed?.component?.type == 'file') {
+        let key = event?.changed?.component?.key
+        event?.data[key]?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
-      }
-      if(event?.data?.dataGrid) {
-        event?.data?.dataGrid?.forEach(comp => {
-          if(comp?.file) {
-            comp.file?.forEach(value => {
-              value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
-            })
-          }
-        })
+        // console.log(event)
+        // if(event?.data?.type == 'datagrid') {
+          // event?.data?.dataGrid?.forEach(comp => {
+          //   if(comp?.file) {
+          //     comp.file?.forEach(value => {
+          //       value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+          //     })
+          //   }
+          // })
+        // }
       }
       // this.formData.next(event)
       const formId = this.workflowData?.formDataIds[index]?._id;
