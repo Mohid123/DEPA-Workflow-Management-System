@@ -141,7 +141,10 @@ export class TableViewComponent implements OnDestroy {
   }
 
   checkAccessMain(data: any) {
-    if (this.userRoleCheck == false && data?.accessType == "disabled" && !data.authorizedUsers.includes(this.currentUser.id)) {
+    if (this.userRoleCheck == false &&
+      data?.accessType == "disabled" &&
+      !data.authorizedUsers.includes(this.currentUser.id)
+    ) {
       return false;
     }
     return true;
@@ -166,7 +169,7 @@ export class TableViewComponent implements OnDestroy {
   }
 
   checkIfUserisAdmin(value: any[]): boolean {
-    return value?.map(data => data?.id).includes(this.currentUser?.id)
+    return value?.includes(this.currentUser?.id)
   }
 
   /**

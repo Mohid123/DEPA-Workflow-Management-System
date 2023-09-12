@@ -100,10 +100,11 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     }];
 
     this.search$.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(value => {
-      this.dashboard.getAdminUsers(this.limit, this.page, value)
+      this.dashboard.getAllUsersForListing(this.limit, this.page, value)
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.userItems = [...new Set(res.results?.map(value => value?.fullName))];
+        this.userItems = this.userItems?.filter(val => val !== 'System Admin')
       });
     });
 
@@ -147,7 +148,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   getUserData(limit: number, page: number) {
-    this.dashboard.getAdminUsers(limit, page)
+    this.dashboard.getAllUsersForListing(limit, page)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
       this.nonListuserItems = res.results?.map(value => {
@@ -157,6 +158,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         }
       });
       this.userItems = res.results?.map(value => value?.fullName);
+      this.userItems = this.userItems?.filter(val => val !== 'System Admin')
     });
   }
 
@@ -197,11 +199,14 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       if(data) {
         this.workflowData = data;
         this.workflowData?.formIds?.forEach(val => {
-          // FormioUtils.eachComponent(val?.components, (comp) => {
-          //   if(comp?.wysiwyg && comp?.wysiwyg == true) {
-          //     val.sanitize = true
-          //   }
-          // }, true)
+          FormioUtils.eachComponent(val?.components, (comp) => {
+            if(comp?.type == 'select') {
+              comp.template = comp.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            }
+            if(comp?.wysiwyg && comp?.wysiwyg == true) {
+              val.sanitize = true
+            }
+          }, true)
         })
         this.currentStepId = await this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null
@@ -311,8 +316,11 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   openEditUserDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
+    debugger
     this.control.setValue(data?.activeUsers);
+    debugger
     this.condition.setValue(data?.condition);
+    debugger
     this.editStepUserData.next(data);
     this.saveDialogSubscription.push(this.dialogs.open(content, {
       dismissible: false,
@@ -370,6 +378,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         condition: this.conditionAddUser?.value
       }
     }
+    debugger
     this.workflowService.updateWorkflowStep(payload, this.workflowID)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
@@ -391,11 +400,11 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         return value?.id
       }
     }).filter(val => val);
-
     let allnewUsers = activeNewUsers?.map((value, index) => {
       return {assignedTo: value}
     }).filter(val => val);
     delete finalData?.approverIds;
+    delete finalData?.activeStepUsers;
     const payload = {
       action: 'edit',
       stepStatus: Object.assign(

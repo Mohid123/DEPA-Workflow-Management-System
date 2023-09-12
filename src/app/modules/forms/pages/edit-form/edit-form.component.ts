@@ -158,6 +158,9 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       event.component.input = true;
       event.component.multiple = true;
     }
+    if(event.component?.type == 'select') {
+      event.component.template = event.component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    }
     this.addCustomEventTrigger()
   }
 
