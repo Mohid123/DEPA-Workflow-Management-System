@@ -186,21 +186,7 @@
                         title="Edit Submission"
                         [routerLink]="['/modules/edit-submission', data?.id]"
                         (click)="setWorkflowID(data?.code, data?.id)"
-                        *ngIf="(
-                          currentUser?.id == data?.createdBy?.id &&
-                          data?.submissionStatus == 4 &&
-                          data?.submissionStatus !== 5
-                        ) ||
-                        (
-                          checkIfUserIsFirstUser(data?.workflowStatus) &&
-                          data?.submissionStatus == 4 &&
-                          data?.submissionStatus !== 5
-                        ) ||
-                        (
-                          checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&
-                          data?.submissionStatus == 4 &&
-                          data?.submissionStatus !== 5
-                        )"
+                        *ngIf="data?.submissionStatus == 4"
                         class="px-3 py-2 ml-2 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">
                         Update Status &nbsp; <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
                       </a>
