@@ -316,11 +316,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   openEditUserDialog(content: PolymorpheusContent<TuiDialogContext>, data: any): void {
-    debugger
     this.control.setValue(data?.activeUsers);
-    debugger
     this.condition.setValue(data?.condition);
-    debugger
     this.editStepUserData.next(data);
     this.saveDialogSubscription.push(this.dialogs.open(content, {
       dismissible: false,
@@ -378,7 +375,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         condition: this.conditionAddUser?.value
       }
     }
-    debugger
     this.workflowService.updateWorkflowStep(payload, this.workflowID)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
