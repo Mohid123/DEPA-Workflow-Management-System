@@ -273,21 +273,21 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   onChange(event: any, index: number) {
+    if(event?.data && event?.data?.file) {
+      event?.data?.file?.forEach(value => {
+        value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+      })
+    }
+    if(event?.data && event?.data?.dataGrid) {
+      event?.data?.dataGrid?.forEach(comp => {
+        if(comp?.file) {
+          comp.file?.forEach(value => {
+            value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
+          })
+        }
+      })
+    }
     if(event?.data && event?.changed && event.isModified == true) {
-      if(event?.data?.file) {
-        event?.data?.file?.forEach(value => {
-          value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
-        })
-      }
-      if(event?.data?.dataGrid) {
-        event?.data?.dataGrid?.forEach(comp => {
-          if(comp?.file) {
-            comp.file?.forEach(value => {
-              value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
-            })
-          }
-        })
-      }
       const formId = this.subModuleData?.formIds[index]?.id;
       this.formValues[index] = {...event, formId};
     }
