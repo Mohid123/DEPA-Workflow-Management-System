@@ -22,7 +22,7 @@
           </div>
           <formio
             #formioForm
-            [submission]="formValues[i] || form"
+            [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)"
             [options]="options"
             [form]="form"
             (change)="onChange($event, i)"

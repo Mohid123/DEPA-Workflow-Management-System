@@ -11,6 +11,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { FormioUtils } from '@formio/angular';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -62,7 +63,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     private auth: AuthService,
     private transportService: DataTransportService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private dashboard: DashboardService
+    private dashboard: DashboardService,
+    private sanitizer: DomSanitizer
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin')
@@ -148,11 +150,34 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
           FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.type == 'editgrid') {
+              for (const key in component.templates) {
+                component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+              }
+            }
             if(component?.type == 'select') {
               component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
             if(component?.wysiwyg && component?.wysiwyg == true) {
               comp.sanitize = true
+            }
+            if(component?.permissions && component?.permissions?.length > 0) {
+              return component?.permissions?.map(permit => {
+                if(this.currentUser?.id == permit?.id) {
+                  if(permit.canEdit == true) {
+                    component.disabled = false
+                  }
+                  else {
+                    component.disabled = true
+                  }
+                  if(permit.canView == false) {
+                    component.hidden = true
+                  }
+                  else {
+                    component.hidden = false
+                  }
+                }
+              })
             }
           }, true)
           return {
@@ -166,26 +191,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             })
           }
         });
-        FormioUtils.eachComponent(this.formWithWorkflow, (comp) => {
-          if(comp?.permissions && comp?.permissions?.length > 0) {
-            return comp?.permissions?.map(permit => {
-              if(this.currentUser?.id == permit?.id) {
-                if(permit.canEdit == true) {
-                  comp.disabled = false
-                }
-                else {
-                  comp.disabled = true
-                }
-                if(permit.canView == false) {
-                  comp.hidden = true
-                }
-                else {
-                  comp.hidden = false
-                }
-              }
-            })
-          }
-        }, true);
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
@@ -213,6 +218,16 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.initWorkflowForm(workFlowId);
       }
     })
+  }
+
+  sanitizeSubmission(value: any) {
+    let data = value?.data;
+    if(data) {
+      for (const key in data) {
+        data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+      }
+    }
+    return value
   }
 
   disableModify() {

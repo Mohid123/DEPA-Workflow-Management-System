@@ -104,7 +104,7 @@
                 this.userRoleSysAdmin == false
               "
               [options]="{'disableAlerts': true}"
-              [submission]="formValues[i] || form"
+              [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)"
               [form]="form"
               (change)="onChange($event, i)"
             ></formio>

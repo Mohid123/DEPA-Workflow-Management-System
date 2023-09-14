@@ -202,11 +202,34 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.workflowData = data;
         this.workflowData?.formIds?.forEach(val => {
           FormioUtils.eachComponent(val?.components, (comp) => {
+            if(comp?.type == 'editgrid') {
+              for (const key in comp.templates) {
+                comp.templates[key] = comp.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+              }
+            }
             if(comp?.type == 'select') {
               comp.template = comp.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
             if(comp?.wysiwyg && comp?.wysiwyg == true) {
               val.sanitize = true
+            }
+            if(comp?.permissions && comp?.permissions?.length > 0) {
+              return comp?.permissions?.map(permit => {
+                if(this.currentUser?.id == permit?.id) {
+                  if(permit.canEdit == true) {
+                    comp.disabled = false
+                  }
+                  else {
+                    comp.disabled = true
+                  }
+                  if(permit.canView == false) {
+                    comp.hidden = true
+                  }
+                  else {
+                    comp.hidden = false
+                  }
+                }
+              })
             }
           }, true)
         })
@@ -252,26 +275,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
-        FormioUtils.eachComponent(this.formWithWorkflow, (comp) => {
-          if(comp?.permissions && comp?.permissions?.length > 0) {
-            return comp?.permissions?.map(permit => {
-              if(this.currentUser?.id == permit?.id) {
-                if(permit.canEdit == true) {
-                  comp.disabled = false
-                }
-                else {
-                  comp.disabled = true
-                }
-                if(permit.canView == false) {
-                  comp.hidden = true
-                }
-                else {
-                  comp.hidden = false
-                }
-              }
-            })
-          }
-        }, true);
         this.activeUsers = await this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
         this.workflowUsers = await this.workflowData?.workflowStatus?.map(userData => {
           return {
@@ -298,6 +301,16 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.loadingData.next(false)
       }
     });
+  }
+
+  sanitizeSubmission(value: any) {
+    let data = value?.data;
+    if(data) {
+      for (const key in data) {
+        data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+      }
+    }
+    return value
   }
 
   checkApproveOrRejectButtons(data: any, id: string) {
