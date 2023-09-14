@@ -157,7 +157,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           fullName: value?.fullName
         }
       });
-      this.userItems = res.results?.map(value => value?.fullName);
+      this.userItems = res?.results?.map(value => value?.fullName);
       this.userItems = this.userItems?.filter(val => val !== 'System Admin')
     });
   }
@@ -307,20 +307,24 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     let data = value?.data;
     if(data) {
       for (const key in data) {
-        if(key != 'dataGrid' && !Array.isArray(data[key])) {
+        if(key == 'textArea') {
           data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
         }
         if(key == 'dataGrid') {
           data[key]?.forEach(value => {
             for (const key2 in value) {
-              value[key2] = value[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              if(key2 == 'textArea') {
+                value[key2] = value[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              }
             }
           })
         }
         if(key == 'editGrid') {
           data[key]?.forEach(value => {
             for (const key3 in value) {
-              value[key3] = value[key3]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              if(key3 == 'textArea') {
+                value[key3] = value[key3]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              }
             }
           })
         }
