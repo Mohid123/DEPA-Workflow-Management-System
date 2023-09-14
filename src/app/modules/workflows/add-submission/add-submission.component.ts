@@ -226,23 +226,14 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     let data = value?.data;
     if(data) {
       for (const key in data) {
-        if(key == 'textArea') {
+        if(typeof(data[key]) == 'string') {
           data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
         }
-        if(key == 'dataGrid') {
-          data[key]?.forEach(value => {
-            for (const key2 in value) {
-              if(key2 == 'textArea') {
-                value[key2] = value[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
-              }
-            }
-          })
-        }
-        if(key == 'editGrid') {
-          data[key]?.forEach(value => {
-            for (const key3 in value) {
-              if(key3 == 'textArea') {
-                value[key3] = value[key3]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+        if(key == 'dataGrid' || key == 'editGrid') {
+          data[key]?.forEach(newVal => {
+            for (const key2 in newVal) {
+              if(typeof(newVal[key2]) == 'string') {
+                newVal[key2] = newVal[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               }
             }
           })

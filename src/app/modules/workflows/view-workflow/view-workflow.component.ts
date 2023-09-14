@@ -197,46 +197,46 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       pluck('id'),
       map(id => this.workflowID = id),
       switchMap((subId => this.workflowService.getWorkflowSubmission(subId)))
-    ).subscribe(async (data) => {
+    ).subscribe((data: any) => {
       if(data) {
-        this.workflowData = data;
-        this.workflowData?.formIds?.forEach(val => {
-          FormioUtils.eachComponent(val?.components, (comp) => {
-            if(comp?.type == 'editgrid') {
-              for (const key in comp.templates) {
-                comp.templates[key] = comp.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+        data?.formIds?.forEach(comp => {
+          FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.type == 'editgrid') {
+              for (const key in component.templates) {
+                component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
               }
             }
-            if(comp?.type == 'select') {
-              comp.template = comp.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            if(component?.type == 'select') {
+              component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
-            if(comp?.wysiwyg && comp?.wysiwyg == true) {
-              val.sanitize = true
+            if(component?.wysiwyg && component?.wysiwyg == true) {
+              console.log(component)
             }
-            if(comp?.permissions && comp?.permissions?.length > 0) {
-              return comp?.permissions?.map(permit => {
+            if(component?.permissions && component?.permissions?.length > 0) {
+              return component?.permissions?.map(permit => {
                 if(this.currentUser?.id == permit?.id) {
                   if(permit.canEdit == true) {
-                    comp.disabled = false
+                    component.disabled = false
                   }
                   else {
-                    comp.disabled = true
+                    component.disabled = true
                   }
                   if(permit.canView == false) {
-                    comp.hidden = true
+                    component.hidden = true
                   }
                   else {
-                    comp.hidden = false
+                    component.hidden = false
                   }
                 }
               })
             }
-          }, true)
+          })
         })
-        this.currentStepId = await this.workflowData?.workflowStatus?.filter(data => {
+        this.workflowData = data;
+        this.currentStepId = this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null
         })[0]?.stepId;
-        this.formAllowedForEditUsers = await this.workflowData?.workflowStatus?.map(data => {
+        this.formAllowedForEditUsers = this.workflowData?.workflowStatus?.map(data => {
           return {
             users: data?.activeUsers?.map(val => val?.fullName),
             status: data?.status
@@ -252,8 +252,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           status: this.workflowData?.approvalLog.at(-1)?.approvalStatus,
           user: this.workflowData?.approvalLog.at(-1)?.performedById?.fullName
         };
-        this.formTabs = await this.workflowData?.formIds?.map(val => val.title);
-        this.formWithWorkflow = await this.workflowData?.formIds?.map(data => {
+        this.formTabs = data?.formIds?.map(val => val.title);
+        this.formWithWorkflow = this.workflowData?.formIds?.map(data => {
           return {
             ...data,
             components: data.components?.map(data => {
@@ -275,8 +275,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             }).filter(val => val)[0]
           }
         });
-        this.activeUsers = await this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
-        this.workflowUsers = await this.workflowData?.workflowStatus?.map(userData => {
+        this.activeUsers = this.workflowData?.workflowStatus?.flatMap(data => data?.activeUsers)?.map(user => user?.fullName);
+        this.workflowUsers = this.workflowData?.workflowStatus?.map(userData => {
           return {
             approverIds: userData?.allUsers?.map(val => {
               return {
@@ -307,23 +307,14 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     let data = value?.data;
     if(data) {
       for (const key in data) {
-        if(key == 'textArea') {
+        if(typeof(data[key]) == 'string') {
           data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
         }
-        if(key == 'dataGrid') {
-          data[key]?.forEach(value => {
-            for (const key2 in value) {
-              if(key2 == 'textArea') {
-                value[key2] = value[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
-              }
-            }
-          })
-        }
-        if(key == 'editGrid') {
-          data[key]?.forEach(value => {
-            for (const key3 in value) {
-              if(key3 == 'textArea') {
-                value[key3] = value[key3]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+        if(key == 'dataGrid' || key == 'editGrid') {
+          data[key]?.forEach(newVal => {
+            for (const key2 in newVal) {
+              if(typeof(newVal[key2]) == 'string') {
+                newVal[key2] = newVal[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               }
             }
           })
