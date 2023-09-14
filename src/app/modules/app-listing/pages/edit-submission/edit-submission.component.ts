@@ -103,11 +103,34 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(comp => {
           FormioUtils.eachComponent(comp?.components, (component) => {
+            if(component?.type == 'editgrid') {
+              for (const key in component.templates) {
+                component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+              }
+            }
             if(component?.type == 'select') {
               component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
             if(component?.wysiwyg && component?.wysiwyg == true) {
               comp.sanitize = true
+            }
+            if(component?.permissions && component?.permissions?.length > 0) {
+              return component?.permissions?.map(permit => {
+                if(this.currentUser?.id == permit?.id) {
+                  if(permit.canEdit == true) {
+                    component.disabled = false
+                  }
+                  else {
+                    component.disabled = true
+                  }
+                  if(permit.canView == false) {
+                    component.hidden = true
+                  }
+                  else {
+                    component.hidden = false
+                  }
+                }
+              })
             }
           }, true)
           return {
@@ -131,26 +154,6 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             }).filter(val => val)[0]
           }
         });
-        FormioUtils.eachComponent(this.forms, (comp) => {
-          if(comp?.permissions && comp?.permissions?.length > 0) {
-            return comp?.permissions?.map(permit => {
-              if(this.currentUser?.id == permit?.id) {
-                if(permit.canEdit == true) {
-                  comp.disabled = false
-                }
-                else {
-                  comp.disabled = true
-                }
-                if(permit.canView == false) {
-                  comp.hidden = true
-                }
-                else {
-                  comp.hidden = false
-                }
-              }
-            })
-          }
-        }, true);
         this.formTabs = res?.formIds?.map(forms => forms.title);
         this.items = res?.workFlowId?.stepIds?.map(data => {
           return {
