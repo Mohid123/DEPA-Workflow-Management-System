@@ -146,9 +146,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       takeUntil(this.destroy$)
     ).subscribe((res: any) => {
       if(res) {
-        this.subModuleData = res;
-        this.adminUsers = res?.adminUsers?.map(val => val?.id);
-        this.formWithWorkflow = res?.formIds?.map(comp => {
+        res?.formIds?.forEach(comp => {
           FormioUtils.eachComponent(comp?.components, (component) => {
             if(component?.type == 'editgrid') {
               for (const key in component.templates) {
@@ -179,7 +177,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
                 }
               })
             }
-          }, true)
+          })
+        })
+        this.subModuleData = res;
+        this.adminUsers = res?.adminUsers?.map(val => val?.id);
+        this.formWithWorkflow = res?.formIds?.map(comp => {
           return {
             ...comp,
             components: comp.components?.map(data => {
@@ -224,20 +226,24 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     let data = value?.data;
     if(data) {
       for (const key in data) {
-        if(key != 'dataGrid' && !Array.isArray(data[key])) {
+        if(key == 'textArea') {
           data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
         }
         if(key == 'dataGrid') {
           data[key]?.forEach(value => {
             for (const key2 in value) {
-              value[key2] = value[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              if(key2 == 'textArea') {
+                value[key2] = value[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              }
             }
           })
         }
         if(key == 'editGrid') {
           data[key]?.forEach(value => {
             for (const key3 in value) {
-              value[key3] = value[key3]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              if(key3 == 'textArea') {
+                value[key3] = value[key3]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              }
             }
           })
         }
