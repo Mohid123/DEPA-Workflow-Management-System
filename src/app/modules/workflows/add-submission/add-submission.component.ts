@@ -220,6 +220,16 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     })
   }
 
+  sanitizeSubmission(value: any) {
+    let data = value?.data;
+    if(data) {
+      for (const key in data) {
+        data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+      }
+    }
+    return value
+  }
+
   disableModify() {
     if(this.subModuleData?.accessType && this.subModuleData?.accessType == 'anyCreateAndModify') {
       return false

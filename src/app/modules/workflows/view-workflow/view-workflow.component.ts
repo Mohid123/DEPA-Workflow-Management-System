@@ -303,6 +303,16 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     });
   }
 
+  sanitizeSubmission(value: any) {
+    let data = value?.data;
+    if(data) {
+      for (const key in data) {
+        data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+      }
+    }
+    return value
+  }
+
   checkApproveOrRejectButtons(data: any, id: string) {
     if (!this.currentUser.roles.includes('sysAdmin') && id != this.currentUser?.id) {
       return false;

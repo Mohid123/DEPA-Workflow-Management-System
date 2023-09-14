@@ -21,7 +21,7 @@
           </div>
           <formio
             #formioForm
-            [submission]="formValues[i] || form?.defaultData"
+            [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form?.defaultData)"
             [options]="options"
             [form]="form"
             (change)="onChange($event, i)"

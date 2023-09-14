@@ -94,6 +94,16 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     }];
   }
 
+  sanitizeSubmission(value: any) {
+    let data = value?.data;
+    if(data) {
+      for (const key in data) {
+        data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+      }
+    }
+    return value
+  }
+
   fetchAndPopulateData(id: string) {
     this.workflowService.getWorkflowSubmission(id).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
