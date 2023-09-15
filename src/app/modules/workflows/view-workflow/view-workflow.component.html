@@ -198,7 +198,7 @@
                 >
                   <tui-svg src="tuiIconClock"></tui-svg>
                 </tui-badge>
-                <ng-container *ngIf="(userRoleSysAdmin == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
+                <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
                   <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
@@ -216,7 +216,7 @@
                 >
                   <tui-svg src="tuiIconRadio"></tui-svg>
                 </tui-badge>
-                <ng-container *ngIf="(userRoleSysAdmin == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
+                <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
                   <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
@@ -297,7 +297,7 @@
               <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
             </div>
             <div *ngIf="
-              lastItem && (userRoleSysAdmin == true) &&
+              lastItem && (userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) &&
               (workflowData?.submissionStatus !== 5 &&
                 workflowData?.submissionStatus !== 3
               )"
