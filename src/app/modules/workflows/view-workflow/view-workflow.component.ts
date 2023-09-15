@@ -209,9 +209,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             if(component?.type == 'select') {
               component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
-            if(component?.wysiwyg && component?.wysiwyg == true) {
-              console.log(component)
-            }
             if(component?.permissions && component?.permissions?.length > 0) {
               return component?.permissions?.map(permit => {
                 if(this.currentUser?.id == permit?.id) {
@@ -329,6 +326,10 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       return false;
     }
     return true;
+  }
+
+  checkAdminUsersForWorkflow() {
+    return this.adminUsers?.includes(this.currentUser?.id)
   }
 
   showDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
