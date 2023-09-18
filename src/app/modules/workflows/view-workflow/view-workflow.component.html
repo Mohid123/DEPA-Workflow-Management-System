@@ -264,6 +264,10 @@
                           checkApproveOrRejectButtons(user, approvers?.id) == true &&
                           checkIfUserisStillActive(currentUser?.fullName) == true &&
                           userApprovedCheckResult(approvers?.name) == false
+                        ) || (
+                          user?.status == 'inProgress' &&
+                          userApprovedCheckResult(approvers?.name) == false &&
+                          checkAdminUsersForWorkflow() == true
                         )"
                         class="flex justify-end gap-5 decision-buttons"
                       >
