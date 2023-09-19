@@ -130,14 +130,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         })
         this.dashboard.items = getUniqueListBy([...hierarchy, {
           caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-          routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID) || getItem(StorageItem.editmoduleId)}`
+          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
         }], 'caption')
       }
       else {
         if(this.router.url.includes('moduleCode')) {
           this.dashboard.items = getUniqueListBy([{
             caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-            routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID) || getItem(StorageItem.editmoduleId)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
           }], 'caption')
         }
         else {
@@ -147,7 +147,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           })
           this.dashboard.items = getUniqueListBy([{
             caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-            routerLink: `/modules/edit-module/${getItem(StorageItem.moduleID) || getItem(StorageItem.editmoduleId)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
           }], 'caption')
         }
       }
@@ -517,7 +517,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'page'
+      size: 'l'
     })
     .subscribe());
   }
@@ -528,7 +528,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.defaultFormSubscription.push(this.dialogs.open(content, {
       dismissible: false,
       closeable: false,
-      size: 'page'
+      size: 'l'
     }).subscribe())
   }
 

@@ -116,7 +116,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     this.dashboard.items = [
       ...getItem(StorageItem.editBreadcrumbs),
       {
-        caption: this.editFormID ? getItem(StorageItem.formKey) : 'Add Form',
+        caption: this.editFormID ? getItem(StorageItem.formKey) : 'Edit Form',
         routerLink: `/forms/edit-form?id=${this.editFormID}`
       }
     ];

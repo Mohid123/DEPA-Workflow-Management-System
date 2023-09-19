@@ -576,7 +576,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.defaultFormSubscription.push(this.dialogs.open(content, {
       dismissible: false,
       closeable: false,
-      size: 'page'
+      size: 'l'
     }).subscribe())
   }
 
@@ -793,7 +793,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'page'
+      size: 'l'
     })
     .subscribe());
   }
