@@ -154,6 +154,27 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  sanitizeSubmission(value: any) {
+    let data = value?.data;
+    if(data) {
+      for (const key in data) {
+        if(typeof(data[key]) == 'string') {
+          data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+        }
+        if(key == 'dataGrid' || key == 'editGrid') {
+          data[key]?.forEach(newVal => {
+            for (const key2 in newVal) {
+              if(typeof(newVal[key2]) == 'string') {
+                newVal[key2] = newVal[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              }
+            }
+          })
+        }
+      }
+    }
+    return value
+  }
+
   get viewSchema() {
     return this.schemaForm.controls['viewSchema'] as FormArray;
   }
@@ -259,17 +280,22 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 this.accessTypeValue?.setValue(this.items[index])
               }
             })
-            // response?.formIds?.forEach(val => {
-            //   FormioUtils.eachComponent(val?.components, (comp) => {
-            //     if(comp?.wysiwyg && comp?.wysiwyg == true) {
-            //       val.sanitize = true
-            //     }
-            //   }, true)
-            // })
             if(Object.keys(this.submoduleFromLS)?.length > 0) {
               this.initSubModuleForm(this.submoduleFromLS);
               this.base64File = this.submoduleFromLS?.image;
               this.file = this.submoduleFromLS?.file;
+              response?.formIds?.forEach(value => {
+                FormioUtils.eachComponent(value?.components, (component) => {
+                  if(component.type == 'select') {
+                    component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+                  }
+                  if(component.type == 'editgrid') {
+                    for (const key in component.templates) {
+                      component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+                    }
+                  }
+                })
+              })
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));
@@ -289,6 +315,18 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               })
             }
             else {
+              response?.formIds?.forEach(value => {
+                FormioUtils.eachComponent(value?.components, (component) => {
+                  if(component.type == 'select') {
+                    component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+                  }
+                  if(component.type == 'editgrid') {
+                    for (const key in component.templates) {
+                      component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+                    }
+                  }
+                })
+              })
               this.formComponents = response?.formIds;
               this.formTabs = response?.formIds?.map(forms => forms.title);
               let formComps = JSON.parse(JSON.stringify(this.formComponents));

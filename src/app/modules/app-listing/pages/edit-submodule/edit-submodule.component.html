@@ -386,8 +386,8 @@
                 <formio
                   [language]="language"
                   [options]="options"
-                  [form]="form"
-                  [submission]="deafultFormSubmission[i] || form?.defaultData"
+                  [form]="sanitizeSubmission(form)"
+                  [submission]="sanitizeSubmission(deafultFormSubmission[i]) || sanitizeSubmission(form?.defaultData)"
                 ></formio>
               </div>
             </ng-container>
@@ -670,7 +670,7 @@
       [options]="options"
       [form]="formForDefaultData"
       (change)="onChangeForm($event)"
-      [submission]="deafultFormSubmission[defaultFormIndex]"
+      [submission]="sanitizeSubmission(deafultFormSubmission[defaultFormIndex])"
     ></formio>
   </div>
   <div class="flex justify-center gap-2 mb-5">

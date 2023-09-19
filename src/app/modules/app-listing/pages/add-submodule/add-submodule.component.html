@@ -506,7 +506,7 @@
                     </a>
                   </div>
                 </div>
-                <formio [language]="language" [options]="options" [form]="form" [submission]="deafultFormSubmission[i]"></formio>
+                <formio [language]="language" [options]="options" [form]="form" [submission]="sanitizeSubmission(deafultFormSubmission[i])"></formio>
               </div>
             </ng-container>
 
@@ -788,7 +788,7 @@
       [options]="options"
       [form]="formForDefaultData"
       (change)="onChangeForm($event)"
-      [submission]="deafultFormSubmission[defaultFormIndex]"
+      [submission]="sanitizeSubmission(deafultFormSubmission[defaultFormIndex])"
     ></formio>
   </div>
   <div class="flex justify-center gap-2 mb-5">
