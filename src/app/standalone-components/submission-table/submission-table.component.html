@@ -1,280 +1,17 @@
 <ng-container *ngIf="submissionData as tableData; else noData">
-  <div *ngIf="(moduleData | async)?.formIds?.length > 0" class="relative overflow-x-auto rounded-lg shadow-lg border border-[#a58f81]">
-    <div class="text-sm text-white bg-[#a58f81] px-4 py-5 w-full flex justify-between">
-      <div class="w-1/3">
-        <tui-hosted-dropdown
-          tuiDropdownAlign="left"
-          [content]="dropdown"
-          [(open)]="open"
-        >
-        <button
-          tuiIconButton
-          type="button"
-          size="m"
-          class="tui-space_left-3 tui-space_top-2 border border-[#a58f81] bg-white"
-          appearance="custom"
-          icon="tuiIconMenuLarge"
-          [tuiHint]="hint"
-          tuiHintDirection="right"
-        ></button>
-      </tui-hosted-dropdown>
-      </div>
-      <div class="w-1/3">
-        <label class="mb-1 text-base font-medium">Data to display</label>
-        <tui-select [formControl]="showSchema" [tuiTextfieldLabelOutside]="true">
-          <input
-            tuiTextfield
-            placeholder="Choose data to display"
-          />
-          <tui-data-list-wrapper
-            *tuiDataList
-            [items]="items"
-          ></tui-data-list-wrapper>
-      </tui-select>
-      </div>
-    </div>
-    <table class="w-full text-sm text-left text-gray-500">
-      <thead class="text-xs text-white uppercase bg-[#a58f81]">
-        <tr>
-          <ng-container *ngFor="let data of tableHeaders; let j = index let first = first; let last = last;">
-            <th
-              *ngIf="data?.isVisible?.value == true"
-              [ngClass]="first ? 'px-4 py-3 text-sm': 'px-2 py-3 text-sm'"
-            >
-              {{data?.key}}&nbsp;
-              <ng-container *ngIf="data?.key == 'Status'; else otherFilters">
-                <select (change)="sendFilterValue($event)" class="form-select form-control" aria-label="Default select example">
-                  <option selected disabled>Select Status</option>
-                  <option value="0">Default</option>
-                  <option value="1">Created</option>
-                  <option value="3">Completed</option>
-                  <option value="2">In Progress</option>
-                  <option value="4">Draft</option>
-                  <option value="5">Cancelled</option>
-                  <option value="6">Deleted</option>
-                </select>
-              </ng-container>
-              <ng-template #otherFilters>
-                <ng-container *ngIf="data?.key != 'Now Pending With'">
-                  <tui-svg *ngIf="data?.showUpIcon" new src="tuiIconArrowUp" (click)="sortFields(data?.searchKey, 'asc', j)" class="-mt-1 -ml-2 cursor-pointer"></tui-svg>
-                  <tui-svg *ngIf="data?.showDownIcon" new src="tuiIconArrowDown" (click)="sortFields(data?.searchKey, 'desc', j)" class="-mt-1 -ml-2 cursor-pointer"></tui-svg>
-                </ng-container>
-                <br>
-                <input type="text" class="form-control" [formControl]="data?.search">
-              </ng-template>
-            </th>
-          </ng-container>
-          <th scope="col" class="px-6 py-3 mb-1 text-sm">
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngIf="tableDataValue?.length == 0; else showSubmissions">
-          <th colspan="12" role="row" class="px-5 py-10 text-lg text-center">
-            No submissions available!
-          </th>
-        </ng-container>
-        <ng-template #showSubmissions>
-          <ng-container *ngFor="let data of tableDataValue; let i = index; let first = first; let last = last; trackBy: trackByFn">
-            <tr class="bg-white border-b border-gray-300">
-              <ng-container *ngFor="let header of tableHeaders; let j = index; let headerFirst = first">
-                <ng-container *ngIf="header?.isVisible?.value">
-                  <td
-                    [ngClass]="{'text-red-500': data?.submissionStatus == 6, 'pl-6': headerFirst, 'px-3': !headerFirst}"
-                    class="py-4"
-                  >
-                    <!-- Handle different header keys individually -->
-                    <ng-container [ngSwitch]="header.key">
-                      <!--Code-->
-                      <ng-container *ngSwitchCase="'Code'">
-                        {{ data?.code }}
-                      </ng-container>
-                      <!-- Status -->
-                      <ng-container *ngSwitchCase="'Status'">
-                        {{ showStatus(data?.submissionStatus) }}
-                      </ng-container>
-                      <!-- Last Activity By -->
-                      <ng-container *ngSwitchCase="'Last Activity By'">
-                        {{ data?.summaryData?.lastActivityPerformedBy?.fullName }}
-                      </ng-container>
-                      <!-- Now Pending With -->
-                      <ng-container *ngSwitchCase="'Now Pending With'">
-                        <ng-container *ngFor="let pending of getPendingOnUsers(data?.summaryData?.pendingOnUsers || []); let lastUser = last">
-                          <span>{{ pending }}<span *ngIf="!lastUser">,</span> &nbsp;</span>
-                        </ng-container>
-                      </ng-container>
-                      <!-- progress -->
-                      <ng-container *ngSwitchCase="'Progress'">
-                        <td
-                          class="flex justify-between px-2 py-4"
-                          [ngClass]="data?.submissionStatus == 6 ? 'text-red-500': ''"
-                        >
-                          <progress
-                            tuiProgressBar
-                            [color]="changeProgressColor(data?.summaryData?.progress)"
-                            max="100"
-                            size="s"
-                            class="w-9/12 mt-1.5"
-                            [value]="data?.summaryData?.progress"
-                          ></progress>
-                          <span>{{ data?.summaryData?.progress | number : '1.1-2' }} %</span>
-                        </td>
-                      </ng-container>
-                      <!-- Other cases ... -->
-                      <ng-container *ngSwitchDefault>
-                        {{ bindValueFromSummaryData(data?.summaryData, header.field) }}
-                      </ng-container>
-                    </ng-container>
-                  </td>
-                </ng-container>
-              </ng-container>
-              <!-- Actions -->
-              <td class="px-5 py-4">
-                <button
-                  *ngIf="data?.status !== 2"
-                  icon="tuiIconMoreVerticalLarge"
-                  tuiIconButton
-                  type="button"
-                  size="s"
-                  [tuiDropdown]="dropdownContent"
-                  appearance="secondary"
-                  class="ml-3"
-                  [tuiDropdownManual]="data?.menuOpen"
-                  [tuiDropdownAlign]="'right'"
-                  (click)="onClick(data)"
-                  (tuiActiveZoneChange)="onActiveZone($event, data)"
-                  (tuiObscured)="onObscured($event, data)"
-                >
-                  <ng-template #dropdownContent>
-                    <div class="px-2 py-5 bg-white">
-                      <div class="flex flex-col items-center gap-3" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">
-                        <a
-                          title="Perform Workflow Action"
-                          (click)="editWorkflowRoute(data?.id, data?.code)"
-                          *ngIf="checkEditDisableDeleteButton(data) == true && data?.submissionStatus == 2"
-                          class="w-20 h-6 px-1 py-1 text-xs font-medium text-center text-black no-underline bg-white cursor-pointer hover:text-black">
-                          Edit &nbsp; <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </a>
-                        <!--VIEW-->
-                        <a
-                          title="View Submission"
-                          (click)="editWorkflowRoute(data?.id, data?.code)"
-                          *ngIf="checkViewButtonCondition(data) == true"
-                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">
-                          View &nbsp; <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
-                        </a>
-                        <!--Delete-->
-                        <a
-                          title="Delete Submission"
-                          (click)="showDeleteDialog(dialog, 'delete', data?.id, data?.workflowStatus)"
-                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "
-                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
-                          Delete &nbsp; <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
-                        </a>
-                        <!--Cancel-->
-                        <a
-                          title="Cancel Submission"
-                          (click)="showDeleteDialog(dialog, 'cancel', data?.id, data?.workflowStatus)"
-                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"
-                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
-                          Cancel &nbsp; <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
-                        </a>
-                      </div>
-                      <!--EDIT SUBMISSION PAGE-->
-                      <a
-                        title="Edit Submission"
-                        [routerLink]="['/modules/edit-submission', data?.id]"
-                        (click)="setWorkflowID(data?.code, data?.id)"
-                        *ngIf="data?.submissionStatus == 4"
-                        class="px-3 py-2 ml-2 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">
-                        Update Status &nbsp; <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
-                      </a>
-                    </div>
-                  </ng-template>
-                </button>
-              </td>
-            </tr>
-          </ng-container>
-        </ng-template>
-      </tbody>
-    </table>
-    <div class="flex justify-between pt-10 pb-6">
-      <tui-pagination
-        class="mx-5 mt-1"
-        [length]="tableData?.totalPages || 1"
-        [index]="tableData?.page - 1 || 0"
-        (indexChange)="goToPage($event)"
-      ></tui-pagination>
-      <div class="flex mx-5 gap-x-2">
-        <p class="w-full mt-2">Items per page</p>
-        <select (change)="updatePagination($event)" class="form-select form-control w-[68%]" aria-label="Default select example 2">
-          <option [selected]="limit == 10" [value]="limit == 10 ? limit: '10'">{{limit == 10 ? limit: '10'}}</option>
-          <option [selected]="limit == 50" [value]="limit == 50 ? limit: '50'">{{limit == 50 ? limit: '50'}}</option>
-          <option [selected]="limit == 100" [value]="limit == 100 ? limit: '100'">{{limit == 100 ? limit: '100'}}</option>
-        </select>
-      </div>
-    </div>
-  </div>
+  <ng-container *ngIf="(moduleData | async)?.formIds?.length > 0">
+    <ag-grid-angular
+      class="w-full h-96 ag-theme-alpine"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      (gridReady)="onGridReady($event)"
+    >
+    </ag-grid-angular>
+  </ng-container>
 </ng-container>
-
 
 <ng-template #noData>
   <app-table-loader></app-table-loader>
-</ng-template>
-
-<ng-template
-  #dropdown
-  let-close="close"
->
-<div class="flex flex-col items-start justify-center px-3 py-3 rounded-lg shadow-lg gap-y-4">
-  <p class="text-base font-semibold">Toggle table columns:</p>
-  <div class="flex mt-4 gap-x-2" *ngFor="let topData of tableHeaders; let i = index; let firstItem = first">
-    <tui-checkbox
-      [formControl]="topData?.isVisible"
-      class="mt-0.5"
-    ></tui-checkbox>
-    <p class="capitalize">{{topData?.key}}</p>
-  </div>
-  <p class="invisible mt-2 text-xxs"><span class="underline">Note</span>: Select upto 4 keys to be displayed simultaneously for a better </p>
-</div>
-</ng-template>
-
-<ng-template #hint>
-  <strong class="text-sm">Toggle table columns</strong>
-</ng-template>
-
-<ng-template #dialog let-observer>
-  <p class="mb-5 text-lg font-semibold text-center">
-    {{dialogTitle}} Submission
-  </p>
-  <p class="text-base font-semibold text-center">
-    You are about to <span [ngClass]="dialogTitle == 'Delete' ? 'text-red-500': 'text-[#cf5c27]'">{{dialogTitle}}</span> this submission. Are you sure you want to continue?
-  </p>
-  <div class="flex flex-col justify-center my-5">
-    <label class="block" for="Textarea1">Comments <sup>(optional)</sup></label>
-    <textarea [formControl]="remarks" class="form-control" id="Textarea1" rows="4"></textarea>
-  </div>
-  <div class="flex justify-start gap-2">
-    <button
-      tuiButton
-      type="button"
-      size="m"
-      [showLoader]="(sendingDecision | async) == true"
-      (click)="sendDeleteOrCancelDecision(); observer.complete()"
-    >
-      Confirm
-    </button>
-    <button
-      tuiButton
-      appearance="secondary-destructive"
-      type="button"
-      size="m"
-      (click)="remarks.reset(); observer.complete()"
-    >
-      Cancel
-    </button>
-  </div>
 </ng-template>
 
 <!--VIEW
@@ -328,4 +65,71 @@
                       data?.summaryData?.progress < 100 &&
                       userRoleCheckAdmin == true
                     )
+-->
+
+<!--
+  <td class="px-5 py-4">
+                <button
+                  *ngIf="data?.status !== 2"
+                  icon="tuiIconMoreVerticalLarge"
+                  tuiIconButton
+                  type="button"
+                  size="s"
+                  [tuiDropdown]="dropdownContent"
+                  appearance="secondary"
+                  class="ml-3"
+                  [tuiDropdownManual]="data?.menuOpen"
+                  [tuiDropdownAlign]="'right'"
+                  (click)="onClick(data)"
+                  (tuiActiveZoneChange)="onActiveZone($event, data)"
+                  (tuiObscured)="onObscured($event, data)"
+                >
+                  <ng-template #dropdownContent>
+                    <div class="px-2 py-5 bg-white">
+                      <div class="flex flex-col items-center gap-3" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">
+                        <a
+                          title="Perform Workflow Action"
+                          (click)="editWorkflowRoute(data?.id, data?.code)"
+                          *ngIf="checkEditDisableDeleteButton(data) == true && data?.submissionStatus == 2"
+                          class="w-20 h-6 px-1 py-1 text-xs font-medium text-center text-black no-underline bg-white cursor-pointer hover:text-black">
+                          Edit &nbsp; <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                        <!--VIEW-
+                        <a
+                          title="View Submission"
+                          (click)="editWorkflowRoute(data?.id, data?.code)"
+                          *ngIf="checkViewButtonCondition(data) == true"
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">
+                          View &nbsp; <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+                        </a>
+                        <!--Delete
+                        <a
+                          title="Delete Submission"
+                          (click)="showDeleteDialog(dialog, 'delete', data?.id, data?.workflowStatus)"
+                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
+                          Delete &nbsp; <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+                        </a>
+                        <!--Cancel
+                        <a
+                          title="Cancel Submission"
+                          (click)="showDeleteDialog(dialog, 'cancel', data?.id, data?.workflowStatus)"
+                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"
+                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
+                          Cancel &nbsp; <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
+                        </a>
+                      </div>
+                      <!--EDIT SUBMISSION PAGE-
+                      <a
+                        title="Edit Submission"
+                        [routerLink]="['/modules/edit-submission', data?.id]"
+                        (click)="setWorkflowID(data?.code, data?.id)"
+                        *ngIf="data?.submissionStatus == 4"
+                        class="px-3 py-2 ml-2 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">
+                        Update Status &nbsp; <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
+                      </a>
+                    </div>
+                  </ng-template>
+                </button>
+              </td>
 -->

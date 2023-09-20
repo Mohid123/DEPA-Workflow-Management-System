@@ -509,6 +509,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         if(res) {
           this.sendingDecision.next(false)
           this.saveDialogSubscription.forEach(val => val.unsubscribe());
+          this.remarks.reset();
           this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
       })
@@ -533,6 +534,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         if(res) {
           this.sendingDecision.next(false)
           this.saveDialogSubscription.forEach(val => val.unsubscribe);
+          this.remarks.reset();
           this.fetchData();
           // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }

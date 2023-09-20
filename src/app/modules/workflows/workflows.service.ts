@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { TuiNotification } from '@taiga-ui/core';
 import { Observable, map, shareReplay } from 'rxjs';
 import { ApiService } from 'src/core/core-services/api.service';
@@ -10,6 +10,8 @@ import { ApiResponse } from 'src/core/models/api-response.model';
   providedIn: 'root'
 })
 export class WorkflowsService extends ApiService<any> {
+
+  actionComplete = new EventEmitter()
 
   constructor(protected override http: HttpClient, private notif: NotificationsService) {
     super(http)
