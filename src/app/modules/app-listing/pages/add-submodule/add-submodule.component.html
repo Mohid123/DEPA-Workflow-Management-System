@@ -64,27 +64,27 @@
       <!--Description-->
       <div class="col-span-6 mt-3 mb-3">
         <label class="block pb-1">App Description<span class="text-xs text-red-400">*</span></label>
-          <textarea
-            required
-            [ngClass]="
-              f['description']?.invalid &&
-              f['description']?.dirty
-                ? 'is-invalid'
-                : ''
-            "
-            formControlName="description"
-            class="form-control"
-            type="text"
-            rows="6"
-          ></textarea>
-          <ng-container
-            [ngTemplateOutlet]="formError"
-            [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'A Description is required',
-              control: f['description']
-            }"
-          ></ng-container>
+        <textarea
+          required
+          [ngClass]="
+            f['description']?.invalid &&
+            f['description']?.dirty
+              ? 'is-invalid'
+              : ''
+          "
+          formControlName="description"
+          class="form-control h-full"
+          type="text"
+          rows="6"
+        ></textarea>
+        <ng-container
+          [ngTemplateOutlet]="formError"
+          [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'A Description is required',
+            control: f['description']
+          }"
+        ></ng-container>
       </div>
     <!--Image-->
       <div class="col-span-6 mt-3 mb-3">
@@ -92,7 +92,7 @@
         <label
           (change)="onFileSelect($event)"
           for="dropzone-file"
-          class="flex flex-col items-center justify-center w-full h-[9.85rem] border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100"
+          class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100"
           >
             <tui-loader
               [inheritColor]="true"
