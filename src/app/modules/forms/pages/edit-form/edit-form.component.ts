@@ -152,6 +152,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     setTimeout(() => this.addCustomEventTrigger(), 2000)
   }
 
+  triggerPermissionBtnOnTabChange() {
+    setTimeout(() => this.addCustomEventTrigger(), 2000)
+  }
+
   onChange(event: any) {
     this.refreshForm.emit({
       property: 'form',

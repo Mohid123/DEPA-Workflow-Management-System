@@ -143,6 +143,10 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     this.onJsonView()
   }
 
+  triggerPermissionBtnOnTabChange() {
+    setTimeout(() => this.addCustomEventTrigger(), 2000)
+  }
+
   goback() {
     this.location.back()
   }
