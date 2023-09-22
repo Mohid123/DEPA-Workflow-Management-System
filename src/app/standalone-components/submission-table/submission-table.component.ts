@@ -47,7 +47,7 @@ export class SubmissionTableComponent implements OnDestroy {
   createdByUsers: any[] = [];
   page = 1;
   tableDataValue: any;
-  limit: number = 10;
+  limit: number = 10000;
   submoduleData: any;
   userRoleCheckAdmin: any;
   sendingDecision = new Subject<boolean>();

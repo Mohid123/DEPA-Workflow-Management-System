@@ -4,6 +4,8 @@
       class="w-full h-96 ag-theme-alpine"
       [rowData]="rowData"
       [columnDefs]="columnDefs"
+      [pagination]="true"
+      [paginationPageSize]="10"
       (gridReady)="onGridReady($event)"
     >
     </ag-grid-angular>
