@@ -1,14 +1,16 @@
 <ng-container *ngIf="submissionData as tableData; else noData">
   <ng-container *ngIf="(moduleData | async)?.formIds?.length > 0">
-    <ag-grid-angular
-      class="w-full h-96 ag-theme-alpine"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      [pagination]="true"
-      [paginationPageSize]="10"
-      (gridReady)="onGridReady($event)"
-    >
-    </ag-grid-angular>
+    <div class="flex flex-col">
+      <ag-grid-angular
+        class="w-full h-full overflow-hidden ag-theme-alpine"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [pagination]="true"
+        [paginationPageSize]="10"
+        (gridReady)="onGridReady($event)"
+      >
+      </ag-grid-angular>
+    </div>
   </ng-container>
 </ng-container>
 
