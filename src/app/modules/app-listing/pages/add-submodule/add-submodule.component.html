@@ -64,27 +64,27 @@
       <!--Description-->
       <div class="col-span-6 mt-3 mb-3">
         <label class="block pb-1">App Description<span class="text-xs text-red-400">*</span></label>
-          <textarea
-            required
-            [ngClass]="
-              f['description']?.invalid &&
-              f['description']?.dirty
-                ? 'is-invalid'
-                : ''
-            "
-            formControlName="description"
-            class="form-control"
-            type="text"
-            rows="6"
-          ></textarea>
-          <ng-container
-            [ngTemplateOutlet]="formError"
-            [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'A Description is required',
-              control: f['description']
-            }"
-          ></ng-container>
+        <textarea
+          required
+          [ngClass]="
+            f['description']?.invalid &&
+            f['description']?.dirty
+              ? 'is-invalid'
+              : ''
+          "
+          formControlName="description"
+          class="form-control h-full"
+          type="text"
+          rows="6"
+        ></textarea>
+        <ng-container
+          [ngTemplateOutlet]="formError"
+          [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'A Description is required',
+            control: f['description']
+          }"
+        ></ng-container>
       </div>
     <!--Image-->
       <div class="col-span-6 mt-3 mb-3">
@@ -92,7 +92,7 @@
         <label
           (change)="onFileSelect($event)"
           for="dropzone-file"
-          class="flex flex-col items-center justify-center w-full h-[9.85rem] border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100"
+          class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100"
           >
             <tui-loader
               [inheritColor]="true"
@@ -506,7 +506,7 @@
                     </a>
                   </div>
                 </div>
-                <formio [language]="language" [options]="options" [form]="form" [submission]="deafultFormSubmission[i]"></formio>
+                <formio [language]="language" [options]="options" [form]="form" [submission]="sanitizeSubmission(deafultFormSubmission[i])"></formio>
               </div>
             </ng-container>
 
@@ -640,8 +640,8 @@
 </ng-template>
 
 <ng-template #summarySchemaTemplate let-observer>
-  <h2 class="mt-8 text-lg font-semibold text-center">Modify Summary & View Schema</h2>
-  <div [formGroup]="schemaForm" class="w-[80%] mx-auto my-8">
+  <h2 class="mt-4 text-lg font-semibold text-center">Modify Summary & View Schema</h2>
+  <div [formGroup]="schemaForm" class="w-[98%] mx-auto my-8">
     <label class="mb-2 font-medium">Summary Schema <sup>(Optional)</sup></label>
     <tui-multi-select
       formControlName="summarySchema"
@@ -782,13 +782,13 @@
 </ng-template>
 
 <ng-template #defaultForm let-observer>
-  <h2 class="mt-8 text-lg font-semibold text-center">Add default data</h2>
-  <div class="w-[90%] mx-auto">
+  <h2 class="mt-4 text-lg font-semibold text-center">Add default data</h2>
+  <div class="w-[98%] mx-auto">
     <formio
       [options]="options"
       [form]="formForDefaultData"
       (change)="onChangeForm($event)"
-      [submission]="deafultFormSubmission[defaultFormIndex]"
+      [submission]="sanitizeSubmission(deafultFormSubmission[defaultFormIndex])"
     ></formio>
   </div>
   <div class="flex justify-center gap-2 mb-5">

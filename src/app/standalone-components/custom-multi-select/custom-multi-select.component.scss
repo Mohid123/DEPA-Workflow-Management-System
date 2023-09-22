@@ -1,10 +1,15 @@
-.scrollable-elem::-webkit-scrollbar {
-  width: 8px;
+.scrollable-elem {
+  scrollbar-width: thin;
+  scrollbar-color: #d6dde2 #d6dde2;
+  white-space: normal!important;
+  text-decoration: transparent!important;
+  max-width: 100%;
+  overflow: auto;
 }
 
 .scrollable-elem {
-  scrollbar-color: #d6dde2;
   scrollbar-width: thin;
+  scrollbar-color: #d6dde2 #d6dde2;
 }
 
 .scrollable-elem::-webkit-scrollbar-track {
@@ -15,4 +20,9 @@
   background-color: #d6dde2;
   border-radius: 6px;
   border: 1px solid #CFD8DC;
+}
+
+.scrollable-elem::-webkit-scrollbar,
+.scrollable-elem::-webkit-scrollbar-thumb {
+  width: 8px;
 }

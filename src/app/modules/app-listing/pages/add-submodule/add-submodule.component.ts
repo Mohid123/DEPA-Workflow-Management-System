@@ -126,13 +126,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       return res
     })
     this.formKeysForViewSchema = this.summarySchemaFields;
-    // formComps?.forEach(val => {
-    //   FormioUtils.eachComponent(val?.components, (comp) => {
-    //     if(comp?.wysiwyg && comp?.wysiwyg == true) {
-    //       val.sanitize = true
-    //     }
-    //   }, true)
-    // })
     // get users for email
     this.search$.pipe(
       switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search)),
@@ -175,6 +168,27 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }
     });
+  }
+
+  sanitizeSubmission(value: any) {
+    let data = value?.data;
+    if(data) {
+      for (const key in data) {
+        if(typeof(data[key]) == 'string') {
+          data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+        }
+        if(key == 'dataGrid' || key == 'editGrid') {
+          data[key]?.forEach(newVal => {
+            for (const key2 in newVal) {
+              if(typeof(newVal[key2]) == 'string') {
+                newVal[key2] = newVal[key2]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              }
+            }
+          })
+        }
+      }
+    }
+    return value
   }
 
   applySummarySchemaValuesToViewSchema(data: any) {
@@ -562,7 +576,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.defaultFormSubscription.push(this.dialogs.open(content, {
       dismissible: false,
       closeable: false,
-      size: 'page'
+      size: 'l'
     }).subscribe())
   }
 
@@ -779,7 +793,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     .open(content, {
       dismissible: false,
       closeable: false,
-      size: 'page'
+      size: 'l'
     })
     .subscribe());
   }

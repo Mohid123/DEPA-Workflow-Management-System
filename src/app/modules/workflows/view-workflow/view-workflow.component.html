@@ -101,7 +101,7 @@
                 checkIfUserIsInEditUsers() == false ||
                 workflowData?.submissionStatus == 5 ||
                 workflowData?.status == 2) &&
-                this.userRoleSysAdmin == false
+                (this.userRoleSysAdmin == false || workflowData?.submissionStatus == 5)
               "
               [options]="{'disableAlerts': true}"
               [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)"
@@ -118,13 +118,14 @@
         type="button"
         [showLoader]="(savingDecision | async)"
         size="m"
-        [disabled]=" workflowData?.submissionStatus == 3 ||
-        (checkIfAllApproved() == true ||
-        checkIfLoggedInUserIsPartOfActiveUsers() == false ||
-        checkIfUserIsInEditUsers() == false ||
-        workflowData?.submissionStatus == 5 ||
-        workflowData?.status == 2) &&
-        this.userRoleSysAdmin == false"
+        [disabled]="
+          workflowData?.submissionStatus == 3 ||
+          (checkIfAllApproved() == true ||
+          checkIfLoggedInUserIsPartOfActiveUsers() == false ||
+          checkIfUserIsInEditUsers() == false ||
+          workflowData?.submissionStatus == 5 ||
+          workflowData?.status == 2) &&
+          (this.userRoleSysAdmin == false || workflowData?.submissionStatus == 5)"
         (click)="updateFormData()"
       >
         Update Forms Data
@@ -198,7 +199,10 @@
                 >
                   <tui-svg src="tuiIconClock"></tui-svg>
                 </tui-badge>
-                <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
+                <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) &&
+                (workflowData?.submissionStatus !== 5 &&
+                  workflowData?.submissionStatus !== 3
+                )">
                   <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
@@ -216,7 +220,10 @@
                 >
                   <tui-svg src="tuiIconRadio"></tui-svg>
                 </tui-badge>
-                <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) && (workflowData?.submissionStatus != 5 || workflowData?.submissionStatus != 2 || workflowData?.submissionStatus != 3)">
+                <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) &&
+                (workflowData?.submissionStatus !== 5 &&
+                  workflowData?.submissionStatus !== 3
+                )">
                   <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
@@ -263,11 +270,13 @@
                           (user?.status == 'inProgress' &&
                           checkApproveOrRejectButtons(user, approvers?.id) == true &&
                           checkIfUserisStillActive(currentUser?.fullName) == true &&
-                          userApprovedCheckResult(approvers?.name) == false
+                          userApprovedCheckResult(approvers?.name) == false &&
+                          workflowData?.submissionStatus !== 5
                         ) || (
                           user?.status == 'inProgress' &&
                           userApprovedCheckResult(approvers?.name) == false &&
-                          checkAdminUsersForWorkflow() == true
+                          checkAdminUsersForWorkflow() == true &&
+                          workflowData?.submissionStatus !== 5
                         )"
                         class="flex justify-end gap-5 decision-buttons"
                       >

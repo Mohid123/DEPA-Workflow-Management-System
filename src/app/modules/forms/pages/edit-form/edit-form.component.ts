@@ -77,6 +77,16 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
         this.formService.getFormById(data['id'])
         .pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
           if(response) {
+            FormioUtils.eachComponent(response?.components, (component) => {
+              if(component.type == 'select') {
+                component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+              }
+              if(component.type == 'editgrid') {
+                for (const key in component.templates) {
+                  component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+                }
+              }
+            })
             this.form = response;
             this.formTitleControl.setValue(response?.title);
             this.formCodeControl.setValue(response?.key);
@@ -103,13 +113,13 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-      this.dashboard.items = [
-        ...getItem(StorageItem.editBreadcrumbs),
-        {
-          caption: this.editFormID ? getItem(StorageItem.formKey) : 'Add Form',
-          routerLink: `/forms/edit-form?id=${this.editFormID}`
-        }
-      ];
+    this.dashboard.items = [
+      ...getItem(StorageItem.editBreadcrumbs),
+      {
+        caption: this.editFormID ? getItem(StorageItem.formKey) : 'Edit Form',
+        routerLink: `/forms/edit-form?id=${this.editFormID}`
+      }
+    ];
 
     this.transportService.updatedComponent.pipe(takeUntil(this.destroy$)).subscribe(value => {
       if(value) {
@@ -134,12 +144,15 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
             }
           }
         }, true);
-        console.log(this.form.components)
       }
     })
   }
 
   ngAfterViewInit(): void {
+    setTimeout(() => this.addCustomEventTrigger(), 2000)
+  }
+
+  triggerPermissionBtnOnTabChange() {
     setTimeout(() => this.addCustomEventTrigger(), 2000)
   }
 
@@ -227,6 +240,16 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       return this.notif.displayNotification('Your form cannot be empty!', 'Edit Form', TuiNotification.Warning)
     }
     removeItem(StorageItem.approvers)
+    FormioUtils.eachComponent(this.form?.components, (component) => {
+      if(component.type == 'select') {
+        component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+      }
+      if(component.type == 'editgrid') {
+        for (const key in component.templates) {
+          component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+        }
+      }
+    })
     const formData = {
       title: this.formTitleControl?.value,
       key: this.formCodeControl?.value,
