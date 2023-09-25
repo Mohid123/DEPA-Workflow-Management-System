@@ -262,6 +262,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.initSubModuleForm(finalObject);
     this.transportService.saveDraftLocally(finalObject);
     this.transportService.sendFormBuilderData({});
+    this.dashboard.validateModuleCode(this.f['title']?.value, 'submodule', 'title')
+    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+      if(val?.data == false) {
+        this.f['title'].setErrors({codeExists: true});
+      }
+    })
+    this.dashboard.validateModuleCode(this.f['code']?.value, 'submodule')
+    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+      if(val?.data == false) {
+        this.f['code'].setErrors({codeExists: true});
+      }
+    })
     this.inheritLoader.next(false);
   }
 
