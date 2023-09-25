@@ -653,11 +653,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none');
-
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Submodule', TuiNotification.Info)
+      return
     }
     if(this.workflows.at(index)?.get('approverIds')?.value?.length >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
-
       return this.showError.next(true)
     }
     this.showError.next(false)
@@ -667,8 +665,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.errorIndex = index;
     if(value < 2) {
       this.workflows.at(index)?.get('condition')?.setValue('none');
-
-      return this.notif.displayNotification('Default condition of "None" will be used if the number of approvers is less than 2', 'Create Module', TuiNotification.Info)
+      return
     }
     if(value >= 2 && this.workflows.at(index)?.get('condition')?.value == 'none') {
 

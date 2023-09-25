@@ -1,7 +1,7 @@
 .scrollable-elem {
   scrollbar-width: thin;
   scrollbar-color: #d6dde2 #d6dde2;
-  white-space: normal!important;
+  white-space: nowrap;
   text-decoration: transparent!important;
   max-width: 100%;
   overflow: auto;
@@ -25,4 +25,5 @@
 .scrollable-elem::-webkit-scrollbar,
 .scrollable-elem::-webkit-scrollbar-thumb {
   width: 8px;
+  height: 3px!important;
 }
