@@ -30,7 +30,7 @@ export class UsersListComponent implements OnDestroy {
       Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     ]), [CodeValidator.createValidator(this.dashboard, 'user')]),
     role: new FormControl(null, Validators.compose([Validators.required])),
-    password: new FormControl(null, Validators.compose([
+    password: new FormControl('Welcome1!', Validators.compose([
       Validators.minLength(8),
       Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z]).*$')
     ]))
