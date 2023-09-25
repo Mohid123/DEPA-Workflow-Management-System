@@ -3,7 +3,7 @@
     (keypress)="$event.preventDefault()"
     (click)="toggleDropDown()"
     multiple
-    [ngClass]="inputFieldArr?.length > 2 ? 'h-auto overflow-y-auto scrollable-elem': 'h-10 overflow-y-hidden scrollable-elem'"
+    [ngClass]="inputFieldArr?.length > 2 ? 'h-10 overflow-y-hidden scrollable-elem': 'h-10 overflow-y-hidden scrollable-elem'"
     class="form-control"
   >
     <ng-container *ngIf="inputFieldArr.length > 0">
