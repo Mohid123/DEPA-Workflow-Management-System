@@ -280,7 +280,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
       setItem(StorageItem.formKey, key)
       setItem(StorageItem.approvers, approvers)
-      this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
+      this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID, fromSubmission: true}});
     }
   }
 

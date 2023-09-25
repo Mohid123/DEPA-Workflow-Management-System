@@ -92,7 +92,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     hierarchy.forEach(val => {
       val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
     })
-
     this.dashboard.items = [...hierarchy, {
       caption: 'Add Submission',
       routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
@@ -443,7 +442,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
   }
 
-  sendFormForEdit(i: number, formID: string) {
+  sendFormForEdit(i: number, formID: string, key: string) {
     if(formID) {
       let approvers = this.workflows?.value?.flatMap(data => {
         return data?.approverIds?.map(approver => {
@@ -457,9 +456,10 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
       setItem(StorageItem.approvers, approvers)
+      setItem(StorageItem.formKey, key)
       this.transportService.editBreadcrumbs.next(this.dashboard.items)
       setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
-      this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
+      this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID, fromSubmission: true}});
     }
   }
 
