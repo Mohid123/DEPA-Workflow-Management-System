@@ -85,6 +85,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   deafultFormSubmission: any[] = [];
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
+  inheritLoader = new Subject<boolean>()
 
   constructor(
     private fb: FormBuilder,
@@ -100,7 +101,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.initSubModuleForm();
     this.accessTypeValue = new FormControl(this.items[2])
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
-
+    console.log(this.submoduleFromLS)
     //get default workflow
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length > 0) {
@@ -168,6 +169,96 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }
     });
+  }
+
+  inheritParentForm() {
+    this.inheritLoader.next(true);
+    let data = JSON.parse(JSON.stringify(this.dashboard.inheritSubmoduleData.value));
+    data?.formIds?.forEach(value => {
+      FormioUtils.eachComponent(value?.components, (component) => {
+        if(component.type == 'select') {
+          component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+        }
+        if(component.type == 'editgrid') {
+          for (const key in component.templates) {
+            component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+          }
+        }
+      })
+    })
+    this.formComponents = data?.formIds;
+    this.formTabs = data?.formIds?.map(forms => forms.title);
+    let formComps = JSON.parse(JSON.stringify(this.formComponents));
+    formComps?.map(form => {
+      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+    })
+    this.summarySchemaFields = this.formKeys.flatMap(val => {
+      let res = generateKeyCombinations(val)
+      return res
+    })
+    this.formKeysForViewSchema = this.summarySchemaFields;
+
+    formComps?.map((data, index) => {
+      if(data?.defaultData) {
+        this.defaultFormIndex = index
+        this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
+      }
+    })
+    const companyId = {
+      value: data?.companyId?.id,
+      label: data?.companyId?.title
+    }
+    const categoryId = {
+      value: data?.categoryId?.id,
+      label: data?.categoryId?.name
+    }
+    this.file = data?.image
+    this.base64File = data?.image
+    const workflows = data?.workFlowId?.stepIds?.map(data => {
+      return {
+        id: data?.id,
+        approverIds: data?.approverIds?.map(ids => {
+          return {
+            name: ids?.fullName,
+            id: ids?.id,
+            control: new FormControl<boolean>(true)
+          }
+        }),
+        condition: data?.condition,
+        emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
+        emailNotifyToId: data?.emailNotifyToId?.id
+      }
+    });
+    const adminUsers = data?.adminUsers?.map(val => {
+      return {
+        name: val?.fullName,
+        id: val?.id,
+        control: new FormControl<boolean>(true)
+      }
+    });
+    const viewOnlyUsers = data?.viewOnlyUsers?.map(val => {
+      return {
+        name: val?.fullName,
+        id: val?.id,
+        control: new FormControl<boolean>(true)
+      }
+    })
+    delete data?.workFlowId;
+    delete data?.url;
+    delete data?.companyId;
+    delete data?.categoryId;
+    const finalObject = Object.assign(
+      data,
+      {workflows: workflows},
+      {categoryName: categoryId},
+      {companyName: companyId},
+      {viewOnlyUsers: viewOnlyUsers},
+      {adminUsers: adminUsers}
+    )
+    this.initSubModuleForm(finalObject);
+    this.transportService.saveDraftLocally(finalObject);
+    this.transportService.sendFormBuilderData({})
+    this.inheritLoader.next(false);
   }
 
   sanitizeSubmission(value: any) {
@@ -351,8 +442,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         Validators.required,
         Validators.maxLength(7)
       ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
-      companyName: [item?.companyName || null, Validators.required],
-      categoryName: [item?.categoryName || null, Validators.required],
+      companyName: [item?.companyName?.value ? item?.companyName?.value : item?.companyName || null, Validators.required],
+      categoryName: [item?.categoryName?.value ? item?.categoryName?.value : item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'submodule', 'title')]],

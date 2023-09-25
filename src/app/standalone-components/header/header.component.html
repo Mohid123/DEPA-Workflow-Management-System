@@ -1,5 +1,5 @@
 <nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md">
-  <div class="flex flex-wrap items-center justify-between max-w-screen p-4 mx-20">
+  <div class="flex flex-wrap items-center justify-between max-w-screen p-4 mx-3 lg:mx-20">
     <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="40" height="36">
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
       <ul class="flex flex-col px-4 py-2 font-medium rounded-lg md:flex-row md:space-x-6">
@@ -36,7 +36,7 @@
 </nav>
 
 <!--breadcrumbs-->
-<div class="fixed z-30 flex justify-between w-full px-5 pt-2 mt-8 bg-white border-b-2 shadow-md border-b-gray-300 top-16">
+<div class="fixed z-30 flex justify-between w-full px-5 pt-2 mt-8 border-b-2 shadow-md border-b-gray-300 top-9 md:top-16 bg-white">
   <tui-breadcrumbs size="l"
     class="text-[#9a9ba3] tui-space_bottom-3 flex flex-wrap">
     <ng-container *ngIf="checkCurrentRouteIncludes() === false">

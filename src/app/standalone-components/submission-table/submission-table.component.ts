@@ -88,6 +88,8 @@ export class SubmissionTableComponent implements OnDestroy {
     {
       field: 'progress',
       headerName: 'Progress',
+      filter: true,
+      floatingFilter: true,
       sortable: true,
       resizable: true
     },
@@ -95,7 +97,7 @@ export class SubmissionTableComponent implements OnDestroy {
       field: 'actions',
       headerName: 'Actions',
       cellRenderer: ActionButtonRenderer,
-      width: 130
+      width: 150
     },
   ];
 
@@ -140,12 +142,7 @@ export class SubmissionTableComponent implements OnDestroy {
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
     .subscribe((val: any) => {
       this.submissionData = val;
-      this.tableDataValue = val?.results?.map(data => {
-        return {
-          ...data,
-          menuOpen: false
-        }
-      });
+      this.tableDataValue = val?.results;
       this.rowData = this.tableDataValue?.map(data => {
         return {
           id: data?.id,

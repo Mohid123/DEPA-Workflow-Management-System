@@ -50,7 +50,8 @@ export class DashboardService extends ApiService<any> {
   items: BreadCrumbs[] = [];
   tempItems = new EventEmitter<BreadCrumbs[]>();
   previousRoute: string;
-  id: string
+  id: string;
+  inheritSubmoduleData: BehaviorSubject<any> = new BehaviorSubject({})
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
@@ -477,7 +478,7 @@ export class DashboardService extends ApiService<any> {
   getWorkflowFromSubModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/subModules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        // this.moduleEditData.next(res.data);
+        this.inheritSubmoduleData.next(res.data);
         const response = res.data?.workFlowId?.stepIds?.map(data => {
           return {
             approverIds: data?.approverIds?.map(ids => {
