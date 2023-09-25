@@ -40,6 +40,10 @@ export class HomeComponent implements OnDestroy {
     }).subscribe();
   }
 
+  toString(value: any) {
+    return String(value)
+  }
+
   addCategory() {
     const payload: {name: string} = {
       name: this.formData.value

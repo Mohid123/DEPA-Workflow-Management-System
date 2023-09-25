@@ -84,7 +84,6 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
         this.form = this.transportService.sendFormDataForEdit.value;
         this.formTitleControl.setValue(this.transportService.sendFormDataForEdit.value.title);
         this.formCodeControl.setValue(this.transportService.sendFormDataForEdit.value?.key);
-        // this.formTitleControl.disable();
         this.formValue = this.form
       }
       else {
@@ -96,6 +95,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
         };
       }
       this.formValue = this.form
+      console.log(this.transportService.formBuilderData.value)
     })
   }
 
@@ -237,7 +237,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     removeItem(StorageItem.approvers)
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
-    this.form.key = this.formCodeControl?.value
+    this.form.key = this.formCodeControl?.value;
     if(this.editMode == false) {
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
         const data = [...this.transportService.formBuilderData.value, this.form];
@@ -250,6 +250,9 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
       }
     }
     else {
+      if(this.transportService.formBuilderData.value?.components?.length == 0 || Object.keys(this.transportService.formBuilderData.value)?.length == 0) {
+        this.transportService.formBuilderData.next([this.form])
+      }
       const data = this.transportService.formBuilderData.value?.map(val => {
         if(val.title == this.form?.title) {
           val = this.form
@@ -272,6 +275,9 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
       this.location.back()
     }
     else {
+      if(this.transportService.formBuilderData.value?.components?.length == 0 || Object.keys(this.transportService.formBuilderData.value)?.length == 0) {
+        this.transportService.formBuilderData.next([this.form])
+      }
       const data = this.transportService.formBuilderData.value?.map(val => {
         if(val.title == this.form?.title) {
           val = this.form

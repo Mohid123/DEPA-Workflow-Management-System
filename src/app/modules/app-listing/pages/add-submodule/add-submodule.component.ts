@@ -43,6 +43,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   isSavingAsDraft = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  cols: any[] = [
+    "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
+  ]
   categoryList: any[];
   domainURL = window.location.origin;
   currentFieldArray: any;
@@ -85,6 +88,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   deafultFormSubmission: any[] = [];
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
+  inheritLoader = new Subject<boolean>()
 
   constructor(
     private fb: FormBuilder,
@@ -100,7 +104,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.initSubModuleForm();
     this.accessTypeValue = new FormControl(this.items[2])
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
-
     //get default workflow
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length > 0) {
@@ -168,6 +171,110 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       }
     });
+  }
+
+  inheritParentForm() {
+    this.inheritLoader.next(true);
+    let data = JSON.parse(JSON.stringify(this.dashboard.inheritSubmoduleData.value));
+    data?.formIds?.forEach(value => {
+      FormioUtils.eachComponent(value?.components, (component) => {
+        if(component.type == 'select') {
+          component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+        }
+        if(component.type == 'editgrid') {
+          for (const key in component.templates) {
+            component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+          }
+        }
+      })
+    })
+    this.formComponents = data?.formIds;
+    this.formTabs = data?.formIds?.map(forms => forms.title);
+    let formComps = JSON.parse(JSON.stringify(this.formComponents));
+    formComps?.map(form => {
+      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+    })
+    this.summarySchemaFields = this.formKeys.flatMap(val => {
+      let res = generateKeyCombinations(val)
+      return res
+    })
+    this.formKeysForViewSchema = this.summarySchemaFields;
+
+    formComps?.map((data, index) => {
+      if(data?.defaultData) {
+        this.defaultFormIndex = index
+        this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
+      }
+    })
+    const companyId = {
+      value: data?.companyId?.id,
+      label: data?.companyId?.title
+    }
+    const categoryId = {
+      value: data?.categoryId?.id,
+      label: data?.categoryId?.name
+    }
+    this.file = data?.image
+    this.base64File = data?.image
+    const workflows = data?.workFlowId?.stepIds?.map(data => {
+      return {
+        id: data?.id,
+        approverIds: data?.approverIds?.map(ids => {
+          return {
+            name: ids?.fullName,
+            id: ids?.id,
+            control: new FormControl<boolean>(true)
+          }
+        }),
+        condition: data?.condition,
+        emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
+        emailNotifyToId: data?.emailNotifyToId?.id
+      }
+    });
+    const adminUsers = data?.adminUsers?.map(val => {
+      return {
+        name: val?.fullName,
+        id: val?.id,
+        control: new FormControl<boolean>(true)
+      }
+    });
+    const viewOnlyUsers = data?.viewOnlyUsers?.map(val => {
+      return {
+        name: val?.fullName,
+        id: val?.id,
+        control: new FormControl<boolean>(true)
+      }
+    })
+    const colWidth = data?.layout?.colWidth || "4"
+    delete data?.workFlowId;
+    delete data?.url;
+    delete data?.companyId;
+    delete data?.categoryId;
+    const finalObject = Object.assign(
+      data,
+      {workflows: workflows},
+      {categoryName: categoryId},
+      {companyName: companyId},
+      {viewOnlyUsers: viewOnlyUsers},
+      {adminUsers: adminUsers},
+      {colWidth: colWidth}
+    )
+    this.initSubModuleForm(finalObject);
+    this.transportService.saveDraftLocally(finalObject);
+    this.transportService.sendFormBuilderData({});
+    this.dashboard.validateModuleCode(this.f['title']?.value, 'submodule', 'title')
+    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+      if(val?.data == false) {
+        this.f['title'].setErrors({codeExists: true});
+      }
+    })
+    this.dashboard.validateModuleCode(this.f['code']?.value, 'submodule')
+    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
+      if(val?.data == false) {
+        this.f['code'].setErrors({codeExists: true});
+      }
+    })
+    this.inheritLoader.next(false);
   }
 
   sanitizeSubmission(value: any) {
@@ -351,13 +458,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         Validators.required,
         Validators.maxLength(7)
       ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
-      companyName: [item?.companyName || null, Validators.required],
-      categoryName: [item?.categoryName || null, Validators.required],
+      companyName: [item?.companyName?.value ? item?.companyName?.value : item?.companyName || null, Validators.required],
+      categoryName: [item?.categoryName?.value ? item?.categoryName?.value : item?.categoryName || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
       title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'submodule', 'title')]],
       image: [item?.image || null, Validators.required],
       description: [item?.description || null, Validators.required],
+      colWidth: [item?.colWidth || "4"],
       workflows: this.fb.array(
         item?.workflows ?
         item?.workflows?.map((val: { condition: any; emailNotifyTo: any; approverIds: any; }) => {
@@ -667,6 +775,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
+      colWidth: this.f['colWidth']?.value || "4",
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined,
@@ -683,32 +792,51 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       this.isCreatingSubModule.next(true)
     }
     if(this.file) {
-      this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
-        if(!res.hasErrors()) {
-          payload = {...payload, image: res?.data?.fileUrl };
-          if(statusStr) {
-            const status = statusStr;
-            Object.assign(payload, {status})
+      if(typeof this.file == 'string') {
+        const url = 'uploads' + this.file.split('uploads')[1];
+        payload = {...payload, image: url };
+        this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+          if(res) {
+            this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
+            this.transportService.saveDraftLocally({});
+            this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+            this.routeToBasedOnPreviousPage()
           }
-          this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-            if(res) {
-              this.isCreatingSubModule.next(false);
-              this.isSavingAsDraft.next(false)
-              this.transportService.saveDraftLocally({});
-              this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-              this.routeToBasedOnPreviousPage()
+          else {
+            this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
+          }
+        })
+      }
+      else {
+        this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+          if(!res.hasErrors()) {
+            payload = {...payload, image: res?.data?.fileUrl };
+            if(statusStr) {
+              const status = statusStr;
+              Object.assign(payload, {status})
             }
-            else {
-              this.isCreatingSubModule.next(false);
-              this.isSavingAsDraft.next(false)
-            }
-          })
-        }
-        else {
-          this.isCreatingSubModule.next(false);
-          this.isSavingAsDraft.next(false)
-        }
-      })
+            this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+              if(res) {
+                this.isCreatingSubModule.next(false);
+                this.isSavingAsDraft.next(false)
+                this.transportService.saveDraftLocally({});
+                this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+                this.routeToBasedOnPreviousPage()
+              }
+              else {
+                this.isCreatingSubModule.next(false);
+                this.isSavingAsDraft.next(false)
+              }
+            })
+          }
+          else {
+            this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
+          }
+        })
+      }
     }
     else {
       this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {

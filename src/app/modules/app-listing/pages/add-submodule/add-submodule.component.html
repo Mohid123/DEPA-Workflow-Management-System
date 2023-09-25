@@ -2,7 +2,20 @@
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
   <section>
     <h3 class="text-xl font-semibold text-center">Create a new app</h3>
-    <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">Basic Info</h4>
+    <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">
+      <h4 class="text-lg font-semibold mt-0.5">Basic Info</h4>
+      <button
+        tuiButton
+        appearance="custom"
+        size="s"
+        *ngIf="parentIDUnAssigned == false"
+        class="bg-[#a58f81] text-white"
+        (click)="inheritParentForm()"
+        [showLoader]="(inheritLoader | async) == true"
+      >
+        Inherit Parent Data
+      </button>
+    </div>
   </section>
   <form class="block pt-5" [formGroup]="subModuleForm">
     <!--Title-->
@@ -73,7 +86,7 @@
               : ''
           "
           formControlName="description"
-          class="form-control h-full"
+          class="form-control h-[80%]"
           type="text"
           rows="6"
         ></textarea>
@@ -92,7 +105,7 @@
         <label
           (change)="onFileSelect($event)"
           for="dropzone-file"
-          class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100"
+          class="flex flex-col items-center justify-center w-full h-[80%] border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100"
           >
             <tui-loader
               [inheritColor]="true"
@@ -129,158 +142,173 @@
     </div>
 
     <!--Companies-->
-    <div class="my-7">
-      <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
-      <select required [ngClass]="f['companyName']?.invalid && f['companyName']?.dirty ? 'is-invalid' : ''" formControlName="companyName" class="form-control" type="text">
-        <ng-container *ngFor="let company of companyList;">
-          <option [value]="company?.value">{{company?.label}}</option>
+    <div class="grid grid-cols-12 gap-3">
+      <div class="col-span-6">
+        <div class="mb-7 mt-5">
+          <label class="block pb-1">Company Name <span class="text-xs text-red-400">*</span></label>
+          <select required [ngClass]="f['companyName']?.invalid && f['companyName']?.dirty ? 'is-invalid' : ''" formControlName="companyName" class="form-control" type="text">
+            <ng-container *ngFor="let company of companyList;">
+              <option [value]="company?.value">{{company?.label}}</option>
+            </ng-container>
+          </select>
+          <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+            validation: 'required',
+            message: 'Company is required',
+            control: f['companyName']
+          }"></ng-container>
+        </div>
+        <div class="my-2">
+          <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
+        </div>
+        <ng-container formArrayName="companies">
+          <ng-container *ngFor="let company of companies.controls; let i = index; let first = first; let last = last">
+            <div class="w-10/12 px-8" [formGroupName]="i">
+              <div class="flex items-center justify-between w-full gap-2 mb-3">
+                <div class="w-full">
+                  <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new companies</label>
+                    <input
+                      class="form-control"
+                      formControlName="title"
+                      type="text"
+                      [ngClass]="getValidityForCompany(i) ? 'is-invalid': ''"
+                    />
+                    <span *ngIf="getValidityForCompany(i)" class="text-xs text-red-500">
+                      Please provide a company name
+                    </span>
+                    <span *ngIf="getValidityForCompanyCodeExists(i)" class="text-xs text-red-500">
+                      A company with this name already exists. Please provide another name.
+                    </span>
+    
+                    <input
+                      class="mt-3 form-control"
+                      formControlName="groupCode"
+                      type="text"
+                      [ngClass]="getValidityForCompanyCode(i) ? 'is-invalid': ''"
+                    />
+                    <span *ngIf="getValidityForCompanyCode(i)" class="text-xs text-red-500">
+                      Please provide a group code with upto 4 characters
+                    </span>
+                    <span *ngIf="getValidityForCompanyCodeExistsGroup(i)" class="text-xs text-red-500">
+                      A company with this code already exists. Please provide a different code.
+                    </span>
+                  </div>
+                <div [ngClass]="first ? 'mt-7': 'mt-0'">
+                  <button
+                    tuiIconButton
+                    type="button"
+                    size="s"
+                    appearance="secondary-destructive"
+                    icon="tuiIconTrash2Large"
+                    (click)="removeCompany(i)"
+                  ></button>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button
+                  *ngIf="last"
+                  tuiButton
+                  type="button"
+                  class="mb-3"
+                  size="m"
+                  (click)="submitNewCompany()"
+                >Submit</button>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+        <button
+          tuiIconButton
+          type="button"
+          size="m"
+          appearance="secondary"
+          icon="tuiIconPlusLarge"
+          (click)="addCompany()"
+        ></button>
+      </div>
+      <!--Categories-->
+      <div class="col-span-6">
+        <ng-container *ngIf="parentIDUnAssigned == true">
+          <div class="mb-7 mt-5">
+            <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
+            <select required [ngClass]="f['categoryName']?.invalid && f['categoryName']?.dirty ? 'is-invalid' : ''" formControlName="categoryName" class="form-control" type="text">
+              <ng-container *ngFor="let category of categoryList;">
+                <option [value]="category?.value">{{category?.label}}</option>
+              </ng-container>
+            </select>
+            <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'Category is required',
+              control: f['categoryName']
+            }"></ng-container>
+          </div>
+          <div class="my-2">
+            <p class="text-xs text-gray-500">If your desired category isn't listed, you can add it below</p>
+          </div>
+          <ng-container formArrayName="categories">
+            <ng-container *ngFor="let category of categories.controls; let i = index; let first = first; let last = last">
+              <div class="w-10/12 px-8" [formGroupName]="i">
+                <div class="flex items-center justify-between w-full gap-2 mb-3">
+                  <div class="w-full">
+                    <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
+                      <input
+                        class="form-control"
+                        formControlName="name"
+                        type="text"
+                        [ngClass]="getValidityForCategory(i) ? 'is-invalid': ''"
+                      />
+                      <span *ngIf="getValidityForCategory(i)" class="text-xs text-red-500">
+                        Please provide a category name with upto 40 characters
+                      </span>
+                      <span *ngIf="getValidityForCategoryCode(i)" class="text-xs text-red-500">
+                        A category with this name already exists. Please provide a different name.
+                      </span>
+                  </div>
+                  <div [ngClass]="first ? 'mt-7': 'mt-0'">
+                    <button
+                      tuiIconButton
+                      type="button"
+                      size="s"
+                      appearance="secondary-destructive"
+                      icon="tuiIconTrash2Large"
+                      (click)="removeCategory(i)"
+                    ></button>
+                  </div>
+                </div>
+                <div class="flex justify-end">
+                  <button
+                    *ngIf="last"
+                    tuiButton
+                    type="button"
+                    class="mb-3"
+                    size="m"
+                    [disabled]="getValidityForCategory(i) || getValidityForCategoryCode(i)"
+                    (click)="submitNewCategory()"
+                  >Submit</button>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <button
+            tuiIconButton
+            type="button"
+            size="m"
+            appearance="secondary"
+            icon="tuiIconPlusLarge"
+            (click)="addCategory()"
+          ></button>
+        </ng-container>
+      </div>
+    </div>
+
+    <!--Col Width-->
+    <div class="w-1/2 mt-4">
+      <label class="block pb-1">Column Width <sup>(Optional)</sup></label>
+      <select required formControlName="colWidth" class="form-control" type="text">
+        <ng-container *ngFor="let col of cols;">
+          <option [value]="col">{{col}}</option>
         </ng-container>
       </select>
-      <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-        validation: 'required',
-        message: 'Company is required',
-        control: f['companyName']
-      }"></ng-container>
     </div>
-    <div class="my-2">
-      <p class="text-xs text-gray-500">If your company isn't listed, you can add it below</p>
-    </div>
-    <ng-container formArrayName="companies">
-      <ng-container *ngFor="let company of companies.controls; let i = index; let first = first; let last = last">
-        <div class="w-7/12 px-8" [formGroupName]="i">
-          <div class="flex items-center justify-between w-full gap-2 mb-3">
-            <div class="w-full">
-              <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new companies</label>
-                <input
-                  class="form-control"
-                  formControlName="title"
-                  type="text"
-                  [ngClass]="getValidityForCompany(i) ? 'is-invalid': ''"
-                />
-                <span *ngIf="getValidityForCompany(i)" class="text-xs text-red-500">
-                  Please provide a company name
-                </span>
-                <span *ngIf="getValidityForCompanyCodeExists(i)" class="text-xs text-red-500">
-                  A company with this name already exists. Please provide another name.
-                </span>
-
-                <input
-                  class="mt-3 form-control"
-                  formControlName="groupCode"
-                  type="text"
-                  [ngClass]="getValidityForCompanyCode(i) ? 'is-invalid': ''"
-                />
-                <span *ngIf="getValidityForCompanyCode(i)" class="text-xs text-red-500">
-                  Please provide a group code with upto 4 characters
-                </span>
-                <span *ngIf="getValidityForCompanyCodeExistsGroup(i)" class="text-xs text-red-500">
-                  A company with this code already exists. Please provide a different code.
-                </span>
-              </div>
-            <div [ngClass]="first ? 'mt-7': 'mt-0'">
-              <button
-                tuiIconButton
-                type="button"
-                size="s"
-                appearance="secondary-destructive"
-                icon="tuiIconTrash2Large"
-                (click)="removeCompany(i)"
-              ></button>
-            </div>
-          </div>
-          <div class="flex justify-end">
-            <button
-              *ngIf="last"
-              tuiButton
-              type="button"
-              class="mb-3"
-              size="m"
-              (click)="submitNewCompany()"
-            >Submit</button>
-          </div>
-        </div>
-      </ng-container>
-    </ng-container>
-    <button
-      tuiIconButton
-      type="button"
-      size="m"
-      appearance="secondary"
-      icon="tuiIconPlusLarge"
-      (click)="addCompany()"
-    ></button>
-
-    <!--Categories-->
-    <ng-container *ngIf="parentIDUnAssigned == true">
-      <div class="my-7">
-        <label class="block pb-1">Category Name <span class="text-xs text-red-400">*</span></label>
-        <select required [ngClass]="f['categoryName']?.invalid && f['categoryName']?.dirty ? 'is-invalid' : ''" formControlName="categoryName" class="form-control" type="text">
-          <ng-container *ngFor="let category of categoryList;">
-            <option [value]="category?.value">{{category?.label}}</option>
-          </ng-container>
-        </select>
-        <ng-container [ngTemplateOutlet]="formError" [ngTemplateOutletContext]="{
-          validation: 'required',
-          message: 'Category is required',
-          control: f['categoryName']
-        }"></ng-container>
-      </div>
-      <div class="my-2">
-        <p class="text-xs text-gray-500">If your desired category isn't listed, you can add it below</p>
-      </div>
-      <ng-container formArrayName="categories">
-        <ng-container *ngFor="let category of categories.controls; let i = index; let first = first; let last = last">
-          <div class="w-7/12 px-8" [formGroupName]="i">
-            <div class="flex items-center justify-between w-full gap-2 mb-3">
-              <div class="w-full">
-                <label *ngIf="i == 0" class="block pb-2 text-xs font-semibold">Add new categories</label>
-                  <input
-                    class="form-control"
-                    formControlName="name"
-                    type="text"
-                    [ngClass]="getValidityForCategory(i) ? 'is-invalid': ''"
-                  />
-                  <span *ngIf="getValidityForCategory(i)" class="text-xs text-red-500">
-                    Please provide a category name with upto 40 characters
-                  </span>
-                  <span *ngIf="getValidityForCategoryCode(i)" class="text-xs text-red-500">
-                    A category with this name already exists. Please provide a different name.
-                  </span>
-              </div>
-              <div [ngClass]="first ? 'mt-7': 'mt-0'">
-                <button
-                  tuiIconButton
-                  type="button"
-                  size="s"
-                  appearance="secondary-destructive"
-                  icon="tuiIconTrash2Large"
-                  (click)="removeCategory(i)"
-                ></button>
-              </div>
-            </div>
-            <div class="flex justify-end">
-              <button
-                *ngIf="last"
-                tuiButton
-                type="button"
-                class="mb-3"
-                size="m"
-                [disabled]="getValidityForCategory(i) || getValidityForCategoryCode(i)"
-                (click)="submitNewCategory()"
-              >Submit</button>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-      <button
-        tuiIconButton
-        type="button"
-        size="m"
-        appearance="secondary"
-        icon="tuiIconPlusLarge"
-        (click)="addCategory()"
-      ></button>
-    </ng-container>
 
     <section class="mt-10">
       <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">User Access & Control</h4>
