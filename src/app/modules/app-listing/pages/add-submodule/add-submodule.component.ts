@@ -104,7 +104,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.initSubModuleForm();
     this.accessTypeValue = new FormControl(this.items[2])
     this.submoduleFromLS = this.transportService.subModuleDraft.value;
-    console.log(this.submoduleFromLS)
     //get default workflow
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length > 0) {
@@ -262,7 +261,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     )
     this.initSubModuleForm(finalObject);
     this.transportService.saveDraftLocally(finalObject);
-    this.transportService.sendFormBuilderData({})
+    this.transportService.sendFormBuilderData({});
     this.inheritLoader.next(false);
   }
 
@@ -781,32 +780,51 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       this.isCreatingSubModule.next(true)
     }
     if(this.file) {
-      this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
-        if(!res.hasErrors()) {
-          payload = {...payload, image: res?.data?.fileUrl };
-          if(statusStr) {
-            const status = statusStr;
-            Object.assign(payload, {status})
+      if(typeof this.file == 'string') {
+        const url = 'uploads' + this.file.split('uploads')[1];
+        payload = {...payload, image: url };
+        this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+          if(res) {
+            this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
+            this.transportService.saveDraftLocally({});
+            this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+            this.routeToBasedOnPreviousPage()
           }
-          this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-            if(res) {
-              this.isCreatingSubModule.next(false);
-              this.isSavingAsDraft.next(false)
-              this.transportService.saveDraftLocally({});
-              this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
-              this.routeToBasedOnPreviousPage()
+          else {
+            this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
+          }
+        })
+      }
+      else {
+        this.media.uploadMedia(this.file).pipe(takeUntil(this.destroy$)).subscribe((res: ApiResponse<any>) => {
+          if(!res.hasErrors()) {
+            payload = {...payload, image: res?.data?.fileUrl };
+            if(statusStr) {
+              const status = statusStr;
+              Object.assign(payload, {status})
             }
-            else {
-              this.isCreatingSubModule.next(false);
-              this.isSavingAsDraft.next(false)
-            }
-          })
-        }
-        else {
-          this.isCreatingSubModule.next(false);
-          this.isSavingAsDraft.next(false)
-        }
-      })
+            this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+              if(res) {
+                this.isCreatingSubModule.next(false);
+                this.isSavingAsDraft.next(false)
+                this.transportService.saveDraftLocally({});
+                this.transportService.sendFormBuilderData([{title: '', key: '', display: '', components: []}]);
+                this.routeToBasedOnPreviousPage()
+              }
+              else {
+                this.isCreatingSubModule.next(false);
+                this.isSavingAsDraft.next(false)
+              }
+            })
+          }
+          else {
+            this.isCreatingSubModule.next(false);
+            this.isSavingAsDraft.next(false)
+          }
+        })
+      }
     }
     else {
       this.dashboard.createSubModule(payload).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
