@@ -25,7 +25,7 @@
               <grid-top-app
                 (deleteModule)="showDialog($event, template)"
                 [appData]="appdata"
-                class="md:col-span-4 col-span-full"
+                [ngClass]="toString(appdata?.layout?.colWidth) ? 'col-span-' + toString(appdata?.layout?.colWidth) : 'col-span-4'"
               ></grid-top-app>
             </ng-container>
             <ng-container *ngIf="appdata?.status == 3">
@@ -33,7 +33,7 @@
               <grid-top-app
                 (deleteModule)="showDialog($event, template)"
                 [appData]="appdata"
-                class="md:col-span-4 col-span-full"
+                [ngClass]="toString(appdata?.layout?.colWidth) ? 'col-span-' + toString(appdata?.layout?.colWidth) : 'col-span-4'"
               ></grid-top-app>
              </ng-container>
             </ng-container>

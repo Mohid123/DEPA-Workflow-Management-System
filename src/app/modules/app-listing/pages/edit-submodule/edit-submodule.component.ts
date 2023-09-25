@@ -41,6 +41,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   isSavingAsDraft = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  cols: any[] = [
+    "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
+  ]
   domainUrl = window.location.origin;
   currentFieldArray: any;
   activeEmailIndex: number;
@@ -384,7 +387,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                   id: val?.id,
                   control: new FormControl<boolean>(true)
                 }
-              })
+              });
+              const colWidth = response?.layout?.colWidth || "4"
               delete response?.workFlowId;
               delete response?.url;
               delete response?.companyId;
@@ -395,7 +399,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 {categoryId: categoryId},
                 {companyId: companyId},
                 {viewOnlyUsers: viewOnlyUsers},
-                {adminUsers: adminUsers}
+                {adminUsers: adminUsers},
+                {colWidth: colWidth}
               )
               this.transportService.saveDraftLocally(finalObject);
               this.initSubModuleForm(finalObject)
@@ -477,6 +482,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       description: [item?.description || null, Validators.required],
       adminUsers: [item?.adminUsers || [], Validators.required],
       viewOnlyUsers: [item?.viewOnlyUsers || [], Validators.required],
+      colWidth: [item?.colWidth || "4"],
       workFlowId: item?.workFlowId ?
       this.fb.array(
         item?.workFlowId?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId: any; id: any }) => {
@@ -746,6 +752,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       code: this.subModuleForm.get('code')?.value,
       adminUsers: this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
       viewOnlyUsers: this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
+      colWidth: this.f['colWidth']?.value || "4",
       steps: this.workflows?.value?.map(data => {
         return {
           id: data?.id ? data?.id : undefined,

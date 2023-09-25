@@ -43,6 +43,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   isSavingAsDraft = new Subject<boolean>();
   redirectToModuleID: string;
   companyList: any[];
+  cols: any[] = [
+    "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
+  ]
   categoryList: any[];
   domainURL = window.location.origin;
   currentFieldArray: any;
@@ -243,6 +246,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         control: new FormControl<boolean>(true)
       }
     })
+    const colWidth = data?.layout?.colWidth || "4"
     delete data?.workFlowId;
     delete data?.url;
     delete data?.companyId;
@@ -253,7 +257,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       {categoryName: categoryId},
       {companyName: companyId},
       {viewOnlyUsers: viewOnlyUsers},
-      {adminUsers: adminUsers}
+      {adminUsers: adminUsers},
+      {colWidth: colWidth}
     )
     this.initSubModuleForm(finalObject);
     this.transportService.saveDraftLocally(finalObject);
@@ -449,6 +454,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       title: [item?.title || null, Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'submodule', 'title')]],
       image: [item?.image || null, Validators.required],
       description: [item?.description || null, Validators.required],
+      colWidth: [item?.colWidth || "4"],
       workflows: this.fb.array(
         item?.workflows ?
         item?.workflows?.map((val: { condition: any; emailNotifyTo: any; approverIds: any; }) => {
@@ -758,6 +764,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
+      colWidth: this.f['colWidth']?.value || "4",
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined,

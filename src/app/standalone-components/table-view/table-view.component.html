@@ -35,7 +35,7 @@
     <section class="grid grid-cols-12 md:grid-cols-8 lg:grid-cols-12 gap-4">
       <ng-container *ngFor="let data of tableData?.results; let i = index; let first = first; let last = last">
         <ng-container *ngIf="data?.status !== 3">
-          <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col md:col-span-4 col-span-full border-t-8 border-t-[#F15B41]">
+          <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41]" [ngClass]="data?.layout?.colWidth.toString() ? 'col-span-' + data?.layout?.colWidth.toString() : 'col-span-4'">
             <div class="flex px-4 pt-5 pb-3 space-x-8 mb-10">
               <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
                 <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
@@ -73,7 +73,7 @@
         </ng-container>
         <ng-container *ngIf="data?.status == 3">
           <ng-container *ngIf="currentUser?.id == data?.createdBy">
-            <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col md:col-span-4 col-span-full border-t-8 border-t-[#F15B41]">
+            <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41]" [ngClass]="data?.layout?.colWidth.toString() ? 'col-span-' + data?.layout?.colWidth.toString() : 'col-span-4'">
               <div class="flex px-4 pt-5 pb-3 space-x-8 mb-10">
                 <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
                   <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
