@@ -11,7 +11,6 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { FormioUtils } from '@formio/angular';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -35,6 +34,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     "noDefaultSubmitButton": true
   }
   formValues: any[] = [];
+  formValuesTemp: any[] = [];
+  formEventVal: any;
   carouselIndex = 0;
   items: any[] = [];
   currentFieldArray: any;
@@ -63,8 +64,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     private auth: AuthService,
     private transportService: DataTransportService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private dashboard: DashboardService,
-    private sanitizer: DomSanitizer
+    private dashboard: DashboardService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin')
@@ -228,7 +228,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         if(typeof(data[key]) == 'string') {
           data[key] = data[key]?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
         }
-        if(key == 'dataGrid' || key == 'editGrid') {
+        if(key == 'dataGrid') {
           data[key]?.forEach(newVal => {
             for (const key2 in newVal) {
               if(typeof(newVal[key2]) == 'string') {
@@ -308,20 +308,10 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       event?.data[key]?.forEach(value => {
         value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
       })
-      // console.log(event)
-      // if(event?.data?.type == 'datagrid') {
-        // event?.data?.dataGrid?.forEach(comp => {
-        //   if(comp?.file) {
-        //     comp.file?.forEach(value => {
-        //       value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
-        //     })
-        //   }
-        // })
-      // }
     }
     if(event?.data && event?.changed && event.isModified == true) {
       const formId = this.subModuleData?.formIds[index]?.id;
-      this.formValues[index] = {...event, formId};
+      this.formValuesTemp[index] = {...event, formId};
     }
   }
 
@@ -368,6 +358,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       this.draftingSubmission.next(true)
     }
     let finalData = [];
+    this.formValues = this.formValuesTemp
     this.formWithWorkflow.forEach((form: any, i: number) => {
       if(this.formValues[i]) {
         finalData = this.formValues?.map(value => {

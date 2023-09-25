@@ -297,11 +297,21 @@
             (click)="addCategory()"
           ></button>
         </ng-container>
+        <ng-container *ngIf="parentIDUnAssigned == false">
+          <div class="col-span-6 mt-5">
+            <label class="block pb-1">Column Width <sup>(Optional)</sup></label>
+            <select required formControlName="colWidth" class="form-control" type="text">
+              <ng-container *ngFor="let col of cols;">
+                <option [value]="col">{{col}}</option>
+              </ng-container>
+            </select>
+          </div>
+        </ng-container>
       </div>
     </div>
 
     <!--Col Width-->
-    <div class="w-1/2 mt-4">
+    <div *ngIf="parentIDUnAssigned == true" class="w-1/2 mt-4">
       <label class="block pb-1">Column Width <sup>(Optional)</sup></label>
       <select required formControlName="colWidth" class="form-control" type="text">
         <ng-container *ngFor="let col of cols;">

@@ -70,6 +70,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   deleteUserID: string;
   @ViewChildren('formioForm') formioForms: QueryList<any>;
   formValues: any[] = [];
+  formValuesTemp: any[] = [];
   formSubmission = new BehaviorSubject<Array<any>>([]);
 
 
@@ -187,7 +188,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       // this.formData.next(event)
       const formId = this.workflowData?.formDataIds[index]?._id;
       const id = this.workflowData?.formDataIds[index]?.formId;
-      this.formValues[index] = {...event, formId, id};
+      this.formValuesTemp[index] = {...event, formId, id};
     }
   }
 
@@ -655,6 +656,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Please provide valid data for all required fields', 'Form Validation', TuiNotification.Warning)
     }
     let finalData = [];
+    this.formValues = this.formValuesTemp
     formComps?.forEach((form: any, i: number) => {
       if(this.formValues[i]) {
         finalData = this.formValues?.map(value => {

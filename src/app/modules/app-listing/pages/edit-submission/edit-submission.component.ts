@@ -45,6 +45,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   subModuleId: string;
   subModuleData: any;
   formValues: any[] = [];
+  formValuesTemp: any[] = [];
   workFlowId: string;
   userRoleCheck: any;
   approvalLogs = [];
@@ -372,20 +373,10 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         event?.data[key]?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
-        // console.log(event)
-        // if(event?.data?.type == 'datagrid') {
-          // event?.data?.dataGrid?.forEach(comp => {
-          //   if(comp?.file) {
-          //     comp.file?.forEach(value => {
-          //       value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
-          //     })
-          //   }
-          // })
-        // }
       }
       const formId = this.subModuleData?.formDataIds[index]?._id;
       const id = this.subModuleData?.formDataIds[index]?.formId;
-      this.formValues[index] = {...event, formId, id};
+      this.formValuesTemp[index] = {...event, formId, id};
     }
   }
 
@@ -416,6 +407,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     }
     this.creatingSubmission.next(true);
     let finalData = [];
+    this.formValues = this.formValuesTemp
     formComps?.forEach((form: any, i: number) => {
       if(this.formValues[i]) {
         finalData = this.formValues?.map(value => {
