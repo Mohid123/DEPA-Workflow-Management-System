@@ -53,6 +53,9 @@ export class HeaderComponent implements OnDestroy {
     if(this.router.url.includes('edit-module') && this.router.url.includes('moduleCode')) {
       return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleCode=${getItem(StorageItem.moduleSlug)}`).split('=')])
     }
+    if(this.router.url.includes('fromSubmission')) {
+      return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+    }
     return null
   }
 
