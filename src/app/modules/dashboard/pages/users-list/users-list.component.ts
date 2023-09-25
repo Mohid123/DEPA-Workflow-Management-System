@@ -189,6 +189,8 @@ export class UsersListComponent implements OnDestroy {
           this.subscription.forEach(val => val.unsubscribe())
           this.userEditFormCustom.reset();
           this.userAddFormCustom.reset();
+          this.userAddFormCustom.controls['password'].setValue('Welcome1!')
+          this.userAddFormCustom.controls['role'].setValue('user')
         }
       })
     }
@@ -201,6 +203,12 @@ export class UsersListComponent implements OnDestroy {
       this.cf.detectChanges();
       this.userId = null;
     })
+  }
+
+  cancel() {
+    this.userAddFormCustom.reset()
+    this.userAddFormCustom.controls['password'].setValue('Welcome1!')
+    this.userAddFormCustom.controls['role'].setValue('user')
   }
 
   ngOnDestroy(): void {
