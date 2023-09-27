@@ -538,6 +538,9 @@ export class DashboardService extends ApiService<any> {
     let params: any = {
       extractDefaults: extractDefaults
     }
+    if(!extractDefaults) {
+      delete params.extractDefaults
+    }
     return this.get(`/subModules/${submodID}`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
