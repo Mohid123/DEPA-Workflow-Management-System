@@ -141,7 +141,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   populateData() {
     this.activatedRoute.params.pipe(
       pluck('id'),
-      switchMap((submoduleID => this.dashBoardService.getSubModuleByID(submoduleID))),
+      switchMap((submoduleID => this.dashBoardService.getSubModuleByID(submoduleID, true))),
       takeUntil(this.destroy$)
     ).subscribe((res: any) => {
       if(res) {

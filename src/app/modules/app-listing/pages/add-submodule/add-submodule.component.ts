@@ -119,10 +119,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
     this.getAllCompanies();
     this.formComponents = this.transportService.formBuilderData.value;
+    FormioUtils.eachComponent(this.formComponents, (comp) => {
+      console.log(comp)
+    })
     this.formTabs = this.formComponents.map(val => val.title);
     let formComps = JSON.parse(JSON.stringify(this.formComponents));
     formComps?.map(form => {
-      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, false)})
     })
     this.summarySchemaFields = this.formKeys.flatMap(val => {
       let res = generateKeyCombinations(val)
