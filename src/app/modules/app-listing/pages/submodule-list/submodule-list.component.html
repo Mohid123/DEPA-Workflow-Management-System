@@ -3,7 +3,6 @@
   <ng-container *ngIf="(subModuleData | async) as data; else noData">
     <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data" (emitPageChange)="fetchFreshData($event)"></app-table-view>
     <div class="mt-8">
-      <hr>
     </div>
     <div class="my-8">
       <div class="flex justify-end mb-5">
@@ -33,7 +32,10 @@
     </div>
   </ng-container>
   <ng-template #noData>
-    <app-table-loader></app-table-loader>
+    <div class="pt-28">
+      <tui-loader size="xl" [showLoader]="true" [overlay]="true"></tui-loader>
+      <p class="font-semibold text-center">Loading...</p>
+    </div>
   </ng-template>
 </section>
 <app-footer></app-footer>
