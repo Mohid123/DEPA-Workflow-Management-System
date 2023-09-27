@@ -75,11 +75,25 @@ export const generateKeyCombinations = (inputObject) => {
   const keys = Object.keys(inputObject);
   const firstKey = keys[0];
   const restKeys = Object.keys(inputObject[firstKey]);
-  const combinations = [];
+  let combinations = [];
   restKeys.forEach(key => {
     combinations.push(`${firstKey}.${key}`);
   });
-
+  combinations = combinations.filter(val => (
+    val !== `${firstKey}.panel` &&
+    val !== `${firstKey}.html` &&
+    val !== `${firstKey}.content` &&
+    val !== `${firstKey}.fieldSet` &&
+    val !== `${firstKey}.columns` &&
+    val !== `${firstKey}.panel` &&
+    val !== `${firstKey}.table` &&
+    val !== `${firstKey}.tabs` &&
+    val !== `${firstKey}.container` &&
+    val !== `${firstKey}.dataMap` &&
+    val !== `${firstKey}.dataGrid` &&
+    val !== `${firstKey}.editGrid` &&
+    val !== `${firstKey}.tree`
+  ))
   return combinations;
 }
 

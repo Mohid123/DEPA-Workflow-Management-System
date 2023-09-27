@@ -534,8 +534,11 @@ export class DashboardService extends ApiService<any> {
   }
 
   // needed for edit Submodule page
-  getSubModuleByID(submodID: string): Observable<ApiResponse<any>> {
-    return this.get(`/subModules/${submodID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+  getSubModuleByID(submodID: string, extractDefaults?: boolean): Observable<ApiResponse<any>> {
+    let params: any = {
+      extractDefaults: extractDefaults
+    }
+    return this.get(`/subModules/${submodID}`, params).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         return res.data
       }

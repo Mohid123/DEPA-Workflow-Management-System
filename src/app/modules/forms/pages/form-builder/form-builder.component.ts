@@ -95,7 +95,6 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
         };
       }
       this.formValue = this.form
-      console.log(this.transportService.formBuilderData.value)
     })
   }
 

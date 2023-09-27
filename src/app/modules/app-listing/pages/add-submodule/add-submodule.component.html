@@ -299,7 +299,7 @@
         </ng-container>
         <ng-container *ngIf="parentIDUnAssigned == false">
           <div class="col-span-6 mt-5">
-            <label class="block pb-1">Column Width <sup>(Optional)</sup></label>
+            <label class="block pb-1">Column Width</label>
             <select required formControlName="colWidth" class="form-control" type="text">
               <ng-container *ngFor="let col of cols;">
                 <option [value]="col">{{col}}</option>
@@ -312,7 +312,7 @@
 
     <!--Col Width-->
     <div *ngIf="parentIDUnAssigned == true" class="w-1/2 mt-4">
-      <label class="block pb-1">Column Width <sup>(Optional)</sup></label>
+      <label class="block pb-1">Column Width</label>
       <select required formControlName="colWidth" class="form-control" type="text">
         <ng-container *ngFor="let col of cols;">
           <option [value]="col">{{col}}</option>
@@ -544,7 +544,12 @@
                     </a>
                   </div>
                 </div>
-                <formio [language]="language" [options]="options" [form]="form" [submission]="sanitizeSubmission(deafultFormSubmission[i])"></formio>
+                <formio
+                  [language]="language"
+                  [options]="options"
+                  [form]="form"
+                  [submission]="sanitizeSubmission(deafultFormSubmissionDialog[i])"
+                ></formio>
               </div>
             </ng-container>
 

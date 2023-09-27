@@ -13,6 +13,7 @@ import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.servi
 import { saveAs } from 'file-saver';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { FormioUtils } from '@formio/angular';
+import FormioExport from 'formio-export';
 @Component({
   templateUrl: './view-workflow.component.html',
   styleUrls: ['./view-workflow.component.scss']
@@ -72,7 +73,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   formValues: any[] = [];
   formValuesTemp: any[] = [];
   formSubmission = new BehaviorSubject<Array<any>>([]);
-
+  exporter: FormioExport
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -706,28 +707,19 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   downloadAsPDF() {
     this.downloadingPDF.next(true);
+    console.log(this.formValuesTemp[0]?.data)
     this.formWithWorkflow?.forEach(formData => {
-      const width = this.formPdf.nativeElement.clientWidth;
-      const height = this.formPdf.nativeElement.clientHeight + 300;
-      const domElements = this.formPdf?.nativeElement;
-      domToImage.toPng(domElements, {
-        width: width * 2,
-        height: height  * 2,
-        style: {
-          transform: "scale(" + 2 + ")",
-          transformOrigin: "top left"
-        }
-      })
-      .then(async (value: any) => {
-        const pdfBytes = await this.pdfGeneratorService.generatePdf(formData?.data, value, width);
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        saveAs(blob, 'form_data.pdf');
-        this.downloadingPDF.next(false);
-      })
-      .catch(error => {
-        throw error
+      let exporter = new FormioExport(formData, this.formValuesTemp[0]?.data);
+      let config = {
+        download: false,
+        filename: 'example.pdf'
+      };
+      exporter.toPdf(config).then((pdf) => {
+        pdf.save();
+        let datauri = pdf.output('datauristring');
       })
     })
+    this.downloadingPDF.next(false);
   }
 
   ngOnDestroy(): void {

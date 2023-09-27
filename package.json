@@ -48,6 +48,7 @@
     "dompurify": "2.2.9",
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
+    "formio-export": "^0.3.0",
     "formiojs": "^4.14.12",
     "ngx-bootstrap": "^10.2.0",
     "pdf-lib": "^1.17.1",

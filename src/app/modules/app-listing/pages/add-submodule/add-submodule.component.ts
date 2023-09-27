@@ -86,6 +86,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   delIndex: number;
   formForDefaultData: FormioForm;
   deafultFormSubmission: any[] = [];
+  deafultFormSubmissionDialog: any[] = [];
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
   inheritLoader = new Subject<boolean>()
@@ -122,7 +123,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.formTabs = this.formComponents.map(val => val.title);
     let formComps = JSON.parse(JSON.stringify(this.formComponents));
     formComps?.map(form => {
-      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, false)})
     })
     this.summarySchemaFields = this.formKeys.flatMap(val => {
       let res = generateKeyCombinations(val)
@@ -690,16 +691,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   onChangeForm(event: any) {
     if(event?.data && event?.changed && event.isModified == true) {
+      event.changed.component.validate = {}
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-      this.deafultFormSubmission[this.defaultFormIndex] = {data: event?.data}
+      this.deafultFormSubmissionDialog[this.defaultFormIndex] = {data: event?.data}
     }
   }
 
   confirmDefaultSubmission() {
+    this.deafultFormSubmissionDialog = this.deafultFormSubmission;
     this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex]
     this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
