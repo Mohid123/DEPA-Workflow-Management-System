@@ -82,6 +82,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   delFormId: string;
   formForDefaultData: FormioForm;
   deafultFormSubmission: any[] = [];
+  deafultFormSubmissionDialog: any[] = [];
   defaultFormIndex: number
 
   constructor(
@@ -540,16 +541,18 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
 
   onChangeForm(event: any) {
     if(event?.data && event?.changed && event.isModified == true) {
+      event.changed.component.validate = {}
       if(event?.data?.file) {
         event?.data?.file?.forEach(value => {
           value.url = value?.data?.baseUrl.split('v1')[0] + value?.data?.fileUrl
         })
       }
-      this.deafultFormSubmission[this.defaultFormIndex] = {data: event?.data}
+      this.deafultFormSubmissionDialog[this.defaultFormIndex] = {data: event?.data}
     }
   }
 
   confirmDefaultSubmission() {
+    this.deafultFormSubmission = this.deafultFormSubmissionDialog;
     this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex];
     let payload = {
       ...this.formComponents[this.defaultFormIndex],

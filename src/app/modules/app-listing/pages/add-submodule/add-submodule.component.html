@@ -544,7 +544,12 @@
                     </a>
                   </div>
                 </div>
-                <formio [language]="language" [options]="options" [form]="form" [submission]="sanitizeSubmission(deafultFormSubmission[i])"></formio>
+                <formio
+                  [language]="language"
+                  [options]="options"
+                  [form]="form"
+                  [submission]="sanitizeSubmission(deafultFormSubmissionDialog[i])"
+                ></formio>
               </div>
             </ng-container>
 
