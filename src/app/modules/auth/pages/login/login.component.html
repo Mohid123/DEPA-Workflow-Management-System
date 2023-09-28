@@ -5,8 +5,8 @@
         <img ngSrc="../../../../../assets/depa_logo.svg" width="100" height="97"/>
       </div>
       <div class="card">
-        <p class="pt-4 pb-2 text-2xl font-bold">Welcome to Depa App Store</p>
-        <p class="text-lg text-[#B5B5C3]">Enter your {{loginViaActiveDir?.value === false ? 'Login' : 'Windows'}} credentials</p>
+        <p class="pt-3 pb-2 md:text-2xl text-xl font-bold">Welcome to Depa App Store</p>
+        <p class="md:text-lg text-base text-[#B5B5C3]">Enter your {{loginViaActiveDir?.value === false ? 'Login' : 'Windows'}} credentials</p>
         <div class="px-4 pt-2 text-left">
           <!-- <ng-container *ngIf="loginViaActiveDir?.value === false"> -->
             <formio [submission]="submission" (submit)="onSubmit($event)" [form]="emailLoginForm" [options]="options"></formio>
