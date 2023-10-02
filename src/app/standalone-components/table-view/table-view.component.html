@@ -38,7 +38,7 @@
           <div
             *ngIf="data?.status !== 3 && checkAccessMain(data) == true"
             (click)="setSubmoduleSlug(data?.code, data?.id)"
-            class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41]" [ngClass]="data?.layout && data?.layout?.colWidth ? 'col-span-' + data?.layout?.colWidth.toString() : 'col-span-4'">
+            class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41] cursor-pointer" [ngClass]="data?.layout && data?.layout?.colWidth ? 'col-span-' + data?.layout?.colWidth.toString() : 'col-span-4'">
             <div class="flex px-4 pt-5 pb-3 space-x-8 mb-10">
               <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
                 <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
