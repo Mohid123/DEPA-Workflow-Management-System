@@ -648,9 +648,9 @@
   </div>
   <!--Editor-->
   <p class="text-base font-semibold mt-5">Email Template For Action</p>
-  <!-- <div class="my-3">
-    <ckeditor [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
-  </div> -->
+  <div class="my-3">
+    <ckeditor #editor [config]="editorConfig" [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
+  </div>
   <!--Editor Notify-->
   <!-- <div class="mb-4 mt-6">
     <p class="text-base font-semibold mt-3">Email Template For Notification</p>

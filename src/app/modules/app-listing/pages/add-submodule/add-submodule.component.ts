@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
@@ -13,13 +13,16 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
-// import Editor from 'ckeditor5/build/ckeditor';
+import Editor from 'ckeditor5/build/ckeditor';
+import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   templateUrl: './add-submodule.component.html',
   styleUrls: ['./add-submodule.component.scss']
 })
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
+  public Editor: any = Editor;
+  @ViewChild('editor') editorComponent: CKEditorComponent
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
   formKeys: any[] = [];
@@ -91,46 +94,45 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
   inheritLoader = new Subject<boolean>();
-  // public Editor: any = Editor;
-  // public editorConfig = {
-  //   toolbar: {
-  //     items: [
-  //       'heading',
-  //       '|',
-  //       'bold',
-  //       'italic',
-  //       'link',
-  //       'bulletedList',
-  //       'numberedList',
-  //       '|',
-  //       'indent',
-  //       'outdent',
-  //       '|',
-  //       'imageUpload',
-  //       'blockQuote',
-  //       'insertTable',
-  //       'undo',
-  //       'redo',
-  //       '|',
-  //       'alignment',
-  //       'fontBackgroundColor',
-  //       'fontColor',
-  //       'fontSize',
-  //       'highlight',
-  //       'fontFamily',
-  //       'horizontalLine'
-  //     ]
-  //   },
-  //   mention: {
-  //     feeds: [
-  //       {
-  //         marker: '@',
-  //         feed: ['@Barney', '@Lily', '@Marshall', '@Robin', '@Ted'],
-  //         minimumCharacters: 1
-  //       }
-  //     ]
-  //   }
-  // }
+  public editorConfig = {
+    toolbar: {
+      items: [
+        'heading',
+        '|',
+        'bold',
+        'italic',
+        'link',
+        'bulletedList',
+        'numberedList',
+        '|',
+        'indent',
+        'outdent',
+        '|',
+        'imageUpload',
+        'blockQuote',
+        'insertTable',
+        'undo',
+        'redo',
+        '|',
+        'alignment',
+        'fontBackgroundColor',
+        'fontColor',
+        'fontSize',
+        'highlight',
+        'fontFamily',
+        'horizontalLine'
+      ]
+    },
+    mention: {
+      feeds: [
+        {
+          marker: '@',
+          feed: ['@Barney', '@Lily', '@Marshall', '@Robin', '@Ted'],
+          minimumCharacters: 1
+        }
+      ]
+    }
+  }
 
   constructor(
     private fb: FormBuilder,
