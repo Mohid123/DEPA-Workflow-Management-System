@@ -21,8 +21,9 @@ import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
   styleUrls: ['./add-submodule.component.scss']
 })
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
-  public Editor: any = Editor;
-  @ViewChild('editor') editorComponent: CKEditorComponent
+  public Editor = Editor.Editor;
+  @ViewChild('editor') editor: CKEditorComponent
+  @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
   submoduleFromLS: any;
   formKeys: any[] = [];
@@ -49,7 +50,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   companyList: any[];
   cols: any[] = [
     "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
-  ]
+  ];
+
+  firstEditorPreview = false;
+  secondEditorPreview = false;
+  
+  emailContent: any = '';
+  emailContentNotify: any = '';
   categoryList: any[];
   domainURL = window.location.origin;
   currentFieldArray: any;
@@ -96,39 +103,67 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   inheritLoader = new Subject<boolean>();
   public editorConfig = {
     toolbar: {
-      items: [
-        'heading',
-        '|',
-        'bold',
-        'italic',
-        'link',
-        'bulletedList',
-        'numberedList',
-        '|',
-        'indent',
-        'outdent',
-        '|',
-        'imageUpload',
-        'blockQuote',
-        'insertTable',
-        'undo',
-        'redo',
-        '|',
-        'alignment',
-        'fontBackgroundColor',
-        'fontColor',
-        'fontSize',
-        'highlight',
-        'fontFamily',
-        'horizontalLine'
-      ]
-    },
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'blockQuote',
+				'insertTable',
+				'fontColor',
+				'fontFamily',
+				'horizontalLine',
+				'fontSize',
+				'mediaEmbed',
+				'undo',
+				'redo',
+				'codeBlock',
+				'code',
+				'findAndReplace',
+				'htmlEmbed',
+				'selectAll',
+				'strikethrough',
+				'subscript',
+				'superscript',
+				'highlight',
+				'fontBackgroundColor',
+				'imageInsert',
+				'specialCharacters',
+				'todoList'
+			]
+		},
+    isReadOnly: false,
+		language: 'en',
+		image: {
+			toolbar: [
+				'imageTextAlternative',
+				'toggleImageCaption',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'linkImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
     mention: {
       feeds: [
         {
           marker: '@',
-          feed: ['@Barney', '@Lily', '@Marshall', '@Robin', '@Ted'],
-          minimumCharacters: 1
+          feed: [ ],
+          minimumCharacters: 0
         }
       ]
     }
@@ -172,6 +207,15 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       let res = generateKeyCombinations(val)
       return res
     })
+    if(this.summarySchemaFields.length > 0) {
+      let markers = [...this.summarySchemaFields]
+      markers = markers.map(val => {
+        val = '@'+ val
+        return val
+      })
+      this.editorConfig.mention.feeds[0].feed = markers
+      console.log(this.editorConfig.mention.feeds[0])
+    }
     this.formKeysForViewSchema = this.summarySchemaFields;
     // get users for email
     this.search$.pipe(
@@ -189,6 +233,34 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         this.userListForEmail = res?.results?.map((data) => data?.email);
       }
     });
+  }
+
+  switchToReadOnly() {
+    this.firstEditorPreview = true;
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[0].classList.add('hidden');
+    this.editor.disabled = true;
+  }
+
+  switchToReadOnly2() {
+    this.secondEditorPreview = true
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[1].classList.add('hidden');
+    this.editor2.disabled = true;
+  }
+
+  switchToEditor() {
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[0].classList.remove('hidden');
+    this.editor.disabled = false;
+    this.firstEditorPreview = false;
+  }
+
+  switchToEditor2() {
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[1].classList.remove('hidden');
+    this.editor2.disabled = false;
+    this.secondEditorPreview = false;
   }
 
   ngOnInit(): void {
@@ -241,7 +313,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.summarySchemaFields = this.formKeys.flatMap(val => {
       let res = generateKeyCombinations(val)
       return res
-    })
+    });
     this.formKeysForViewSchema = this.summarySchemaFields;
 
     formComps?.map((data, index) => {
@@ -422,7 +494,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   // email notify functions
-
   openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
     fieldArray: FormArray,

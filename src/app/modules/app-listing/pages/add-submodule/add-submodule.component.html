@@ -626,46 +626,57 @@
 
 <!--Email Notify Modal-->
 <ng-template #template>
-  <p class="text-lg font-semibold text-center">Email Notifications</p>
-  <!-- <p class="mt-2 text-base font-medium text-gray-500 text-center">
-    Please specify the users you want to send the notification email to
-  </p> -->
-  <div class="flex flex-col justify-center my-5">
-    <tui-input-tag
-      [formControl]="
-        currentFieldArray?.controls[activeEmailIndex]?.controls['emailNotifyTo']
-      "
-      class="b-form"
-      [tuiTextfieldLabelOutside]="true"
-      (searchChange)="onSearchChange($event)"
-    >
-      Type to search and press Enter to select...
-      <tui-data-list-wrapper
-        *tuiDataList
-        [items]="userListForEmail"
-      ></tui-data-list-wrapper>
-    </tui-input-tag>
-  </div>
-  <!--Editor-->
-  <p class="text-base font-semibold mt-5">Email Template For Action</p>
-  <div class="my-3">
-    <ckeditor #editor [config]="editorConfig" [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
-  </div>
-  <!--Editor Notify-->
-  <!-- <div class="mb-4 mt-6">
-    <p class="text-base font-semibold mt-3">Email Template For Notification</p>
-    <div class="my-3">
-      <ckeditor [config]="editorConfig" [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
+    <p class="text-lg font-semibold text-center">Email Notifications</p>
+    <!-- <p class="mt-2 text-base font-medium text-gray-500 text-center">
+      Please specify the users you want to send the notification email to
+    </p> -->
+    <div class="flex flex-col justify-center my-5">
+      <tui-input-tag
+        [formControl]="
+          currentFieldArray?.controls[activeEmailIndex]?.controls['emailNotifyTo']
+        "
+        class="b-form"
+        [tuiTextfieldLabelOutside]="true"
+        (searchChange)="onSearchChange($event)"
+      >
+        Type to search and press Enter to select...
+        <tui-data-list-wrapper
+          *tuiDataList
+          [items]="userListForEmail"
+        ></tui-data-list-wrapper>
+      </tui-input-tag>
     </div>
-  </div> -->
-  <div class="flex justify-start gap-x-3">
-    <button tuiButton type="button" size="m" (click)="validateEmails()">
-      Confirm
-    </button>
-    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">
-      Cancel
-    </button>
-  </div>
+    <!--Editor-->
+    <div class="flex justify-between">
+      <p class="text-base font-semibold mt-3">Email Template For Action</p>
+      <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="firstEditorPreview == false ? switchToReadOnly() : switchToEditor()">
+        {{firstEditorPreview == false ? 'Preview': 'Editor'}}
+      </button>
+    </div>
+    <div class="my-3">
+      <ckeditor #editor [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContent"></ckeditor>
+    </div>
+    <!--Editor Notify-->
+    <div class="mb-4 mt-6">
+      <div class="flex justify-between">
+        <p class="text-base font-semibold mt-3">Email Template For Notification</p>
+        <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="secondEditorPreview == false ? switchToReadOnly2() : switchToEditor2()">
+          {{secondEditorPreview == false ? 'Preview': 'Editor'}}
+        </button>
+      </div>
+      <div class="my-3">
+        <ckeditor #editor2 [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContentNotify"></ckeditor>
+      </div>
+    </div>
+    <div class="flex justify-start gap-x-3">
+      <button tuiButton type="button" size="m" (click)="validateEmails()">
+        Confirm
+      </button>
+      <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">
+        Cancel
+      </button>
+    </div>
+  <!-- </ng-container> -->
 </ng-template>
 
 <ng-template #hint>
