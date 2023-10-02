@@ -97,7 +97,7 @@ export class ProfileComponent implements OnDestroy {
       const payload = {
         fullName: this.formSubmission?.data?.fullname,
         email: this.formSubmission?.data?.email,
-        roles: this.formSubmission?.data?.roles
+        // roles: this.formSubmission?.data?.roles
       }
       this.dashboard.updateUser(this.currentUser?.id, payload)
       .pipe(takeUntil(this.destroy$)).subscribe((res: User | any) => {

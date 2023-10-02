@@ -3,5 +3,5 @@
 }
 
 .card {
-  @apply w-116 px-5 py-5 bg-white shadow-xl rounded-md border-white max-h-150;
+  @apply md:w-116 w-88 px-5 py-5 bg-white shadow-xl rounded-md border-white max-h-150;
 }
