@@ -19,6 +19,7 @@ import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.c
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { SubmissionTableComponent } from 'src/app/standalone-components/submission-table/submission-table.component';
 import { EditSubmissionComponent } from './pages/edit-submission/edit-submission.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { EditSubmissionComponent } from './pages/edit-submission/edit-submission
     TuiSvgModule,
     TuiInputTagModule,
     TuiDataListModule,
-    TuiCheckboxLabeledModule
+    TuiCheckboxLabeledModule,
+    CKEditorModule
   ]
 })
 export class AppListingModule { }

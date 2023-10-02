@@ -1,7 +1,13 @@
 <app-header></app-header>
 <section class="w-11/12 h-auto min-h-screen mx-auto mt-48 mb-10">
   <ng-container *ngIf="(subModuleData | async) as data; else noData">
-    <app-table-view [moduleData]="moduleData" (emitPagination)="sendPagination($event)" (emitDeleteEvent)="itemDeleted($event)" [tableData]="data" (emitPageChange)="fetchFreshData($event)"></app-table-view>
+    <app-table-view
+      [moduleData]="moduleData"
+      (emitPagination)="sendPagination($event)"
+      (emitDeleteEvent)="itemDeleted($event)"
+      [tableData]="data"
+      (emitPageChange)="fetchFreshData($event)"
+    ></app-table-view>
     <div class="mt-8">
     </div>
     <div class="my-8">

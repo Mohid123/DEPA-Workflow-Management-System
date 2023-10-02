@@ -13,6 +13,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
+// import Editor from 'ckeditor5/build/ckeditor';
 
 @Component({
   templateUrl: './add-submodule.component.html',
@@ -89,7 +90,47 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   deafultFormSubmissionDialog: any[] = [];
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
-  inheritLoader = new Subject<boolean>()
+  inheritLoader = new Subject<boolean>();
+  // public Editor: any = Editor;
+  // public editorConfig = {
+  //   toolbar: {
+  //     items: [
+  //       'heading',
+  //       '|',
+  //       'bold',
+  //       'italic',
+  //       'link',
+  //       'bulletedList',
+  //       'numberedList',
+  //       '|',
+  //       'indent',
+  //       'outdent',
+  //       '|',
+  //       'imageUpload',
+  //       'blockQuote',
+  //       'insertTable',
+  //       'undo',
+  //       'redo',
+  //       '|',
+  //       'alignment',
+  //       'fontBackgroundColor',
+  //       'fontColor',
+  //       'fontSize',
+  //       'highlight',
+  //       'fontFamily',
+  //       'horizontalLine'
+  //     ]
+  //   },
+  //   mention: {
+  //     feeds: [
+  //       {
+  //         marker: '@',
+  //         feed: ['@Barney', '@Lily', '@Marshall', '@Robin', '@Ted'],
+  //         minimumCharacters: 1
+  //       }
+  //     ]
+  //   }
+  // }
 
   constructor(
     private fb: FormBuilder,
@@ -391,6 +432,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       .open(content, {
         dismissible: false,
         closeable: false,
+        size: 'l'
       })
       .subscribe());
   }
