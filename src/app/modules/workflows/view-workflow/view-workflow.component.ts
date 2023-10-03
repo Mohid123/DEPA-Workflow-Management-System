@@ -659,23 +659,20 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     let finalData = [];
     this.formValues = this.formValuesTemp
     formComps?.forEach((form: any, i: number) => {
-      if(this.formValues[i]) {
-        finalData = this.formValues?.map(value => {
-          return {
-            formId: value?._id || value?.id,
-            data: value?.data || value?.defaultData?.data || {},
-            id: value?.formDataId || value?.formId
-          }
-        })
-      }
-      else {
-        finalData = [...finalData, {
+      if (this.formValues[i]) {
+        finalData[i] = {
+          formId: this.formValues[i]?._id || this.formValues[i]?.id,
+          data: this.formValues[i]?.data || this.formValues[i]?.defaultData?.data || {},
+          id: this.formValues[i]?.formDataId || this.formValues[i]?.formId
+        };
+      } else {
+        finalData[i] = {
           formId: form._id,
           id: form?.formDataId,
           data: form?.defaultData?.data || {}
-        }]
+        };
       }
-      this.formSubmission.next(finalData)
+      this.formSubmission.next(finalData);
     })
     this.workflowService.updateMultipleFormsData({formDataIds: this.formSubmission.value}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
