@@ -359,23 +359,22 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     }
     let finalData = [];
     this.formValues = this.formValuesTemp
-    this.formWithWorkflow.forEach((form: any, i: number) => {
-      if(this.formValues[i]) {
-        finalData = this.formValues?.map(value => {
-          return {
-            formId: value?.formId,
-            data: value?.data
-          }
-        })
+    this.formWithWorkflow.forEach((form: any) => {
+      finalData.push({
+        formId: form.id,
+        data: {}
+      });
+    });
+    this.formValues.forEach((value, i) => {
+      if (value) {
+        finalData[i] = {
+          formId: value?.formId,
+          data: value?.data
+        };
       }
-      else {
-        finalData = [...finalData, {
-          formId: form.id,
-          data: {}
-        }]
-      }
-      this.formSubmission.next(finalData)
-    })
+    });
+    console.log(finalData)
+    this.formSubmission.next(finalData)
     const payload: any = {
       subModuleId: this.subModuleId,
       formIds: this.subModuleData?.formIds?.map(val => val.id),
@@ -389,6 +388,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         }
       })
     }
+    debugger
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
