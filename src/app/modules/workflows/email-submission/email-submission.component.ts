@@ -3,11 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { WorkflowsService } from '../workflows.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { TuiNotification } from '@taiga-ui/core';
+import { TuiLoaderModule, TuiNotification } from '@taiga-ui/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   templateUrl: './email-submission.component.html',
-  styleUrls: ['./email-submission.component.scss']
+  styleUrls: ['./email-submission.component.scss'],
+  standalone: true,
+  imports: [CommonModule, TuiLoaderModule]
 })
 export class EmailSubmissionComponent implements OnDestroy {
   destory$ = new Subject();
