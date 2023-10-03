@@ -11,10 +11,11 @@ import { CoreModule } from "src/core/core.module";
 import { FormioAppConfig } from "@formio/angular";
 import { AppConfig } from "./config";
 import { TuiPreviewModule } from "@taiga-ui/addon-preview";
+import { EmailSubmissionComponent } from "./modules/workflows/email-submission/email-submission.component";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -26,13 +27,14 @@ import { TuiPreviewModule } from "@taiga-ui/addon-preview";
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
-      BrowserAnimationsModule,
-      TuiRootModule,
-      TuiDialogModule,
-      TuiAlertModule,
-      TuiDialogModule,
-      TuiPreviewModule,
-      TuiNotificationModule
+    BrowserAnimationsModule,
+    TuiRootModule,
+    TuiDialogModule,
+    TuiAlertModule,
+    TuiDialogModule,
+    TuiPreviewModule,
+    TuiNotificationModule,
+    EmailSubmissionComponent
 ],
   providers: [
     // {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},

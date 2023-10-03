@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { WorkflowsComponent } from './workflows.component';
 import { ViewWorkflowComponent } from './view-workflow/view-workflow.component';
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
-import { EmailSubmissionComponent } from './email-submission/email-submission.component';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { FormKeyResolver } from 'src/core/core-services/form-key-resolver.service';
 
@@ -23,10 +22,6 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         component: ViewWorkflowComponent,
         resolve: { breadcrumb: FormKeyResolver },
-      },
-      {
-        path: 'email-submission',
-        component: EmailSubmissionComponent
       },
       {
         path: '',
