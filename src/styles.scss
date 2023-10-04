@@ -85,3 +85,7 @@ svg {
   font-size: 1rem!important;
   font-weight: 500!important;
 }
+
+tui-dialog[data-size=l] {
+  width: 70rem!important
+}
