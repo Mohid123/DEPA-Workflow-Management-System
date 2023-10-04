@@ -29,7 +29,7 @@ export class EmailSubmissionComponent implements OnDestroy {
         }
         this.userDecision = payload.isApproved
         this.savingDecision.next(true)
-        this.workflowService.updateSubmissionWorkflow(res['submissionId'], payload).pipe(takeUntil(this.destory$))
+        this.workflowService.updateSubmissionByEmail(res['submissionId'], payload).pipe(takeUntil(this.destory$))
         .subscribe((res: any) => {
           console.log(res)
           this.savingDecision.next(false);

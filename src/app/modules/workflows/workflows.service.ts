@@ -60,6 +60,20 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  updateSubmissionByEmail(id: string, payload: any): Observable<ApiResponse<any>> {
+    return this.patch(`/submissions/email/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        this.notif.displayNotification('Action complete. Submission updated', 'Update Submission', TuiNotification.Success)
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Update Submission', TuiNotification.Error)
+        }
+      }
+    })) 
+  }
+
   updateSubmissionWorkflow(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/submissions/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
