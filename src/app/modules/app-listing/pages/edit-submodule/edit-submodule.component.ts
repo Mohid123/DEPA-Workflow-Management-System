@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Formio, FormioForm, FormioOptions, FormioSubmission, FormioUtils } from '@formio/angular';
@@ -14,12 +14,17 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
+import Editor from 'ckeditor5/build/ckeditor';
+import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
   styleUrls: ['./edit-submodule.component.scss']
 })
 export class EditSubmoduleComponent implements OnDestroy, OnInit {
+  public Editor = Editor.Editor;
+  @ViewChild('editor') editor: CKEditorComponent
+  @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
   formComponents: any[] = [];
   activeIndex: number = 0;
@@ -83,7 +88,214 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   formForDefaultData: FormioForm;
   deafultFormSubmission: any[] = [];
   deafultFormSubmissionDialog: any[] = [];
-  defaultFormIndex: number
+  defaultFormIndex: number;
+  firstEditorPreview = false;
+  secondEditorPreview = false;
+  public editorConfig = {
+    toolbar: {
+			items: [
+				'heading',
+        'alignment',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'blockQuote',
+				'insertTable',
+				'fontColor',
+				'fontFamily',
+				'horizontalLine',
+				'fontSize',
+				'mediaEmbed',
+				'undo',
+				'redo',
+				'codeBlock',
+				'code',
+				'findAndReplace',
+				'htmlEmbed',
+				'selectAll',
+				'strikethrough',
+				'subscript',
+				'superscript',
+				'highlight',
+				'fontBackgroundColor',
+				'imageInsert',
+				'specialCharacters',
+				'todoList'
+			]
+		},
+    isReadOnly: false,
+		language: 'en',
+		image: {
+			toolbar: [
+				'imageTextAlternative',
+				'toggleImageCaption',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'linkImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
+    mention: {
+      feeds: [
+        {
+          marker: '{',
+          feed: [],
+          minimumCharacters: 0
+        }
+      ]
+    }
+  };
+  emailContent: any = `
+  <head>
+    <title>{{ emailTitle }}</title>
+  </head>
+  <body>
+    <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+        <td align="center">
+            <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                    <td class="header">
+                        <a href="http://127.0.0.1:8080/">
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="body">
+                        <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                            role="presentation">
+                            <tr class="header">
+                                <td>
+                                  <a href="http://127.0.0.1:8080/">
+                                    <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                      class="logo">
+                                  </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="content-cell">
+                                    <h1>Hello!</h1>
+                                    <div class="form-data">
+                                        {{#each formsData}}
+                                        <ul>
+                                            <li class="form-title">{{formId.title}}</li>
+                                            {{#each data}}
+                                            <li>
+                                                <span class="form-key">{{@key}}: </span><span
+                                                  class="form-value">{{this}}</span>
+                                            </li>
+                                            {{/each}}
+                                        </ul>
+                                        {{/each}}
+                                    </div>
+                                    <p>Now it's your turn to execute the workflow. Please perform the necessary
+                                        action as soon as possible so that the rest of the workflow can be executed.
+                                    </p>
+                                    <table class="action" align="center" width="100%" cellpadding="0"
+                                      cellspacing="0" role="presentation">
+                                      <tr>
+                                        <td>
+                                          <a id="accept-button"
+                                            href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true"
+                                            class="button button-primary" target="_self"
+                                            rel="noopener">Approve</a>
+                                        </td>
+                                        <td>
+                                          <a id="reject-button"
+                                            href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved="
+                                            class="button button-danger" target="_self"
+                                            rel="noopener">Reject</a>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                    <p>Regards,<br> DEPA Groups</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  `;
+  emailContentNotify: any = `
+  <head>
+    <title>{{ emailTitle }}</title>
+  </head>
+  <body>
+    <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+        <td align="center">
+            <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+              <tr>
+                  <td class="header">
+                      <a href="http://127.0.0.1:8080/">
+                      </a>
+                  </td>
+              </tr>
+              <tr>
+                <td class="body">
+                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                        role="presentation">
+                        <tr class="header">
+                            <td>
+                                <a href="http://127.0.0.1:8080/">
+                                    <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                      class="logo">
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="content-cell">
+                                <h1>Hello!</h1>
+                                <div class="form-data">
+                                    {{#each formsData}}
+                                    <ul>
+                                        <li class="form-title">{{formId.title}}</li>
+                                        {{#each data}}
+                                        <li>
+                                            <span class="form-key">{{@key}}: </span><span
+                                                class="form-value">{{this}}</span>
+                                        </li>
+                                        {{/each}}
+                                    </ul>
+                                    {{/each}}
+                                </div>
+                                <p>
+                                    The last action has been performed by the user, and the action is
+                                    "blablabla". Currently, the step is active
+                                    for the following users: User A, User B, and User C.
+                                </p>
+                                <p>Regards,<br> DEPA Groups</p>
+                            </td>
+                        </tr>
+                    </table>
+                  </td>
+                </tr>
+            </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  `;
+
+  defaultEmailTemplateFromEdit: any
 
   constructor(
     private fb: FormBuilder,
@@ -179,6 +391,56 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     return value
   }
 
+  switchToReadOnly() {
+    this.firstEditorPreview = true;
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[0].classList.add('hidden');
+    this.editor.disabled = true
+  }
+
+  switchToReadOnly2() {
+    this.secondEditorPreview = true
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[1].classList.add('hidden');
+    this.editor2.disabled = true;
+  }
+
+  switchToEditor() {
+    this.firstEditorPreview = false;
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[0].classList.remove('hidden');
+    this.editor.disabled = false
+  }
+  
+  switchToEditor2() {
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[1].classList.remove('hidden');
+    this.editor2.disabled = false;
+    this.secondEditorPreview = false;
+  }
+
+  openModifyEditorDialog(
+    content: PolymorpheusContent<TuiDialogContext>
+  ): void {
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+        size: 'l'
+      })
+      .subscribe());
+  }
+
+  confirmEmailTemplate() {
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
+  }
+
+  cancelEmailTemplate() {
+    this.emailContent = this.dashboard.emailContent;
+    this.emailContentNotify = this.dashboard.emailContentNotify;
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
+  }
+
   get viewSchema() {
     return this.schemaForm.controls['viewSchema'] as FormArray;
   }
@@ -267,7 +529,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           if(response) {
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
-            this.schemaForm.controls['summarySchema']?.setValue(response?.summarySchema)
+            response.emailTemplate = {
+              action: response.emailTemplate?.action?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">"),
+              notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
+            }
+            this.defaultEmailTemplateFromEdit = response.emailTemplate;
+            this.emailContent = this.defaultEmailTemplateFromEdit.action;
+            this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify;
+            this.schemaForm.controls['summarySchema']?.setValue(response?.summarySchema);
             if(response.viewSchema?.length > 0) {
               this.schemaForm.controls['viewSchema'].removeAt(0);
             }
@@ -765,12 +1034,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name,
-      // allUsers: [
-      //   ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
-      //   ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-      //   ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
-      //   this.auth.currentUserValue?.id
-      // ]
+      emailTemplate: {
+        action: this.emailContent,
+        notify: this.emailContentNotify
+      }
     }
     if(statusStr) {
       const status = statusStr;
