@@ -683,9 +683,9 @@
   <div class="mb-4 mt-6">
     <div class="flex justify-between">
       <p class="text-base font-semibold mt-3">Email Template For Notification</p>
-      <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="secondEditorPreview == false ? switchToReadOnly2() : switchToEditor2()">
+      <!-- <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="secondEditorPreview == false ? switchToReadOnly2() : switchToEditor2()">
         {{secondEditorPreview == false ? 'Preview': 'Editor'}}
-      </button>
+      </button> -->
     </div>
     <div class="my-3">
       <ckeditor #editor2 [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContentNotify"></ckeditor>

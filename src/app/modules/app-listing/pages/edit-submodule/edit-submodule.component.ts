@@ -152,7 +152,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     mention: {
       feeds: [
         {
-          marker: '{',
+          marker: '@',
           feed: [],
           minimumCharacters: 0
         }
@@ -294,7 +294,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     </table>
   </body>
   `;
-
   defaultEmailTemplateFromEdit: any
 
   constructor(
@@ -582,7 +581,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               if(this.summarySchemaFields.length > 0) {
                 let markers = [...this.summarySchemaFields]
                 markers = markers.map(val => {
-                  val = '{'+ val
+                  val = '@'+ val
                   return val
                 })
                 this.editorConfig.mention.feeds[0].feed = markers
@@ -621,7 +620,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               if(this.summarySchemaFields.length > 0) {
                 let markers = [...this.summarySchemaFields]
                 markers = markers.map(val => {
-                  val = '{'+ val
+                  val = '@'+ val
                   return val
                 })
                 this.editorConfig.mention.feeds[0].feed = markers
