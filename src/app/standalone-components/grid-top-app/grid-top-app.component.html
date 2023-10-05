@@ -1,10 +1,9 @@
 <div
   *ngIf="appData?.status !== 3 && checkAccess(appData) == true"
-  [routerLink]="['/modules', appData?.code]"
-  [queryParams]="{moduleID: appData?._id}"
   class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41] cursor-pointer"
 >
-  <div (click)="storeModuleID(appData?._id, appData?.code)" class="flex pt-5 space-x-8 px-4 pb-3">
+  <div (click)="storeModuleID(appData?._id, appData?.code)" [routerLink]="['/modules', appData?.code]"
+  [queryParams]="{moduleID: appData?._id}" class="flex pt-5 space-x-8 px-4 pb-3">
     <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
       <img [src]="appData?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
     </div>
