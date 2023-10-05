@@ -58,7 +58,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   emailContent: any = `
   <head>
     <title>{{ emailTitle }}</title>
-    {{style}}
   </head>
   <body>
     <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -134,7 +133,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   emailContentNotify: any = `
   <head>
     <title>{{ emailTitle }}</title>
-    {{style}}
   </head>
   <body>
     <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
