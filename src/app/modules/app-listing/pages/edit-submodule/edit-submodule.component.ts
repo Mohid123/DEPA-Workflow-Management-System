@@ -579,6 +579,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               })
+              if(this.summarySchemaFields.length > 0) {
+                let markers = [...this.summarySchemaFields]
+                markers = markers.map(val => {
+                  val = '{'+ val
+                  return val
+                })
+                this.editorConfig.mention.feeds[0].feed = markers
+              }
               this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
@@ -610,6 +618,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               })
+              if(this.summarySchemaFields.length > 0) {
+                let markers = [...this.summarySchemaFields]
+                markers = markers.map(val => {
+                  val = '{'+ val
+                  return val
+                })
+                this.editorConfig.mention.feeds[0].feed = markers
+              }
               this.formKeysForViewSchema = this.summarySchemaFields;
 
               formComps?.map((data, index) => {
