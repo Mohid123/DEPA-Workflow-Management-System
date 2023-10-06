@@ -43,7 +43,7 @@
                 <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
               </div>
               <div class="w-full h-full">
-                <h3 class="mb-2 text-lg font-semibold">
+                <h3 class="mb-2 text-lg font-semibold line-clamp-1">
                   {{data?.title}}
                 </h3>
                 <p class="leading-6 line-clamp-4">{{data?.description}}</p>
@@ -76,12 +76,12 @@
         <ng-container *ngIf="data?.status == 3">
           <ng-container *ngIf="currentUser?.id == data?.createdBy">
             <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41]" [ngClass]="data?.layout && data?.layout?.colWidth ? 'col-span-' + data?.layout?.colWidth.toString() : 'col-span-4'">
-              <div class="flex px-4 pt-5 pb-3 space-x-8 mb-10">
+              <div (click)="setSubmoduleSlug(data?.code, data?.id)" class="flex px-4 pt-5 pb-3 space-x-8 mb-10">
                 <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
                   <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
                 </div>
                 <div class="w-full h-full">
-                  <h3 class="mb-2 text-lg font-semibold">
+                  <h3 class="mb-2 text-lg font-semibold line-clamp-1">
                     {{data?.title}}
                     <ng-container *ngIf="data?.status === 3">
                       <tui-badge

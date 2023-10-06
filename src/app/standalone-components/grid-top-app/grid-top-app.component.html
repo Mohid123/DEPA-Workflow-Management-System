@@ -8,7 +8,7 @@
       <img [src]="appData?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
     </div>
     <div class="w-full h-full">
-      <h3 class="mb-2 text-lg font-semibold">
+      <h3 class="mb-2 text-lg font-semibold line-clamp-1">
         {{appData?.title}}
         <ng-container *ngIf="appData?.status === 3">
           <tui-badge

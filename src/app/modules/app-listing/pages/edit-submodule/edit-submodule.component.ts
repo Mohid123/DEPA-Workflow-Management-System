@@ -159,141 +159,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       ]
     }
   };
-  emailContent: any = `
-  <head>
-    <title>{{ emailTitle }}</title>
-  </head>
-  <body>
-    <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-      <tr>
-        <td align="center">
-            <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                <tr>
-                    <td class="header">
-                        <a href="http://127.0.0.1:8080/">
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="body">
-                        <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
-                            role="presentation">
-                            <tr class="header">
-                                <td>
-                                  <a href="http://127.0.0.1:8080/">
-                                    <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
-                                      class="logo">
-                                  </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="content-cell">
-                                    <h1>Hello!</h1>
-                                    <div class="form-data">
-                                        {{#each formsData}}
-                                        <ul>
-                                            <li class="form-title">{{formId.title}}</li>
-                                            {{#each data}}
-                                            <li>
-                                                <span class="form-key">{{@key}}: </span><span
-                                                  class="form-value">{{this}}</span>
-                                            </li>
-                                            {{/each}}
-                                        </ul>
-                                        {{/each}}
-                                    </div>
-                                    <p>Now it's your turn to execute the workflow. Please perform the necessary
-                                        action as soon as possible so that the rest of the workflow can be executed.
-                                    </p>
-                                    <table class="action" align="center" width="100%" cellpadding="0"
-                                      cellspacing="0" role="presentation">
-                                      <tr>
-                                        <td>
-                                          <a id="accept-button"
-                                            href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true"
-                                            class="button button-primary" target="_self"
-                                            rel="noopener">Approve</a>
-                                        </td>
-                                        <td>
-                                          <a id="reject-button"
-                                            href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved="
-                                            class="button button-danger" target="_self"
-                                            rel="noopener">Reject</a>
-                                        </td>
-                                      </tr>
-                                    </table>
-                                    <p>Regards,<br> DEPA Groups</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-  `;
-  emailContentNotify: any = `
-  <head>
-    <title>{{ emailTitle }}</title>
-  </head>
-  <body>
-    <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-      <tr>
-        <td align="center">
-            <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-              <tr>
-                  <td class="header">
-                      <a href="http://127.0.0.1:8080/">
-                      </a>
-                  </td>
-              </tr>
-              <tr>
-                <td class="body">
-                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
-                        role="presentation">
-                        <tr class="header">
-                            <td>
-                                <a href="http://127.0.0.1:8080/">
-                                    <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
-                                      class="logo">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="content-cell">
-                                <h1>Hello!</h1>
-                                <div class="form-data">
-                                    {{#each formsData}}
-                                    <ul>
-                                        <li class="form-title">{{formId.title}}</li>
-                                        {{#each data}}
-                                        <li>
-                                            <span class="form-key">{{@key}}: </span><span
-                                                class="form-value">{{this}}</span>
-                                        </li>
-                                        {{/each}}
-                                    </ul>
-                                    {{/each}}
-                                </div>
-                                <p>
-                                    The last action has been performed by the user, and the action is
-                                    "blablabla". Currently, the step is active
-                                    for the following users: User A, User B, and User C.
-                                </p>
-                                <p>Regards,<br> DEPA Groups</p>
-                            </td>
-                        </tr>
-                    </table>
-                  </td>
-                </tr>
-            </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-  `;
+  emailContent: any;
+  emailContentNotify: any;
   defaultEmailTemplateFromEdit: any
 
   constructor(
@@ -533,8 +400,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
             }
             this.defaultEmailTemplateFromEdit = response.emailTemplate;
-            this.emailContent = this.defaultEmailTemplateFromEdit.action;
-            this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify;
+            this.emailContent = this.defaultEmailTemplateFromEdit.action || this.dashboard.emailContent;
+            this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify || this.dashboard.emailContentNotify;
             this.schemaForm.controls['summarySchema']?.setValue(response?.summarySchema);
             if(response.viewSchema?.length > 0) {
               this.schemaForm.controls['viewSchema'].removeAt(0);
