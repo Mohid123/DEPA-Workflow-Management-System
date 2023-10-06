@@ -161,7 +161,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   };
   emailContent: any;
   emailContentNotify: any;
-  defaultEmailTemplateFromEdit: any
+  defaultEmailTemplateFromEdit: any;
+  addForms: FormControl<boolean> = new FormControl(false)
 
   constructor(
     private fb: FormBuilder,
@@ -393,6 +394,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
+            this.addForms.setValue(response?.formVisibility || false)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
             response.emailTemplate = {
@@ -912,6 +914,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       }),
+      formVisibility: this.addForms.value,
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name,

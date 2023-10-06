@@ -221,7 +221,7 @@
     </div>
 
     <!--Edit Workflow-->
-    <div class="mt-12 mb-16">
+    <div class="mt-12 mb-14">
       <h4 class="py-2 mb-3 text-lg font-semibold">Workflow</h4>
       <ng-container formArrayName="workFlowId">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
@@ -369,8 +369,20 @@
       ></button>
     </div>
 
+    <div class="px-2 py-2 rounded-md bg-[#EAE4D8] w-[16%]">
+      <tui-checkbox-labeled
+        [formControl]="addForms"
+        size="l"
+        [pseudoActive]="true"
+        [pseudoFocus]="true"
+        class="mt-1"
+      >
+        <span class="font-semibold">{{addForms.value == true ? "Hide": "Show"}} Forms</span>
+      </tui-checkbox-labeled>
+    </div>
+
     <!--Form preview-->
-    <div class="mb-5 mt-7">
+    <div *ngIf="addForms.value == true" class="mb-5 mt-7">
       <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">
         <h4 class="text-lg font-semibold mt-1.5">Dynamic Forms</h4>
         <a *ngIf="formComponents[0]?.components?.length > 0" (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 py-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
@@ -436,7 +448,7 @@
     </div>
 
     <!--Add new Form-->
-    <div class="mt-7">
+    <div *ngIf="addForms.value == true" class="mt-7">
       <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
         {{formComponents[0]?.components?.length == 0 ? 'Add form' : 'Add form'}}
       </a>
