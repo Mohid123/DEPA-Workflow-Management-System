@@ -367,7 +367,7 @@
 
     <!--Edit Workflow-->
     <div class="mt-12 mb-16">
-      <h4 class="py-2 mb-3 text-lg font-semibold">Create Workflow</h4>
+      <h4 class="py-2 mb-3 text-lg font-semibold">Workflow</h4>
       <ng-container formArrayName="workflows">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
@@ -672,8 +672,8 @@
   <!--Editor-->
   <div class="flex justify-between">
     <p class="text-base font-semibold mt-3">Email Template For Action</p>
-    <!-- <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="firstEditorPreview == false ? switchToReadOnly() : switchToEditor()">
-      {{firstEditorPreview == false ? 'Preview': 'Editor'}}
+    <!-- <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="switchToReadOnly()">
+      Get Html
     </button> -->
   </div>
   <div class="my-3">

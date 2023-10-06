@@ -56,180 +56,139 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   secondEditorPreview = false;
   
   emailContent: any = `
-  <div class="ck ck-content ck-editor__editable ck-rounded-corners ck-editor__editable_inline ck-blurred" lang="en" dir="ltr" role="textbox" aria-label="Editor editing area: main" contenteditable="true">
-  <h1 class="ck-placeholder" data-placeholder="Type your title"><br data-cke-filler="true"></h1>
-  <figure class="image ck-widget ck-widget_with-resizer" contenteditable="false" data-placeholder="Type or paste your content here.">
-    <img src="https://depa.com/images/logo.png">
-    <div class="ck ck-reset_all ck-widget__type-around">
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__fake-caret"></div>
-    </div>
-    <div class="ck ck-reset_all ck-widget__resizer ck-hidden">
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-top-left"></div>
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-top-right"></div>
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-left"></div>
-      <div class="ck ck-size-view" style="display: none;"></div>
-    </div>
-  </figure>
-  <figure class="table ck-widget ck-widget_with-selection-handle" contenteditable="false">
-    <div class="ck ck-widget__selection-handle">
-      <svg class="ck ck-icon ck-reset_all-excluded ck-icon_inherit-color" viewBox="0 0 16 16">
-        <path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path>
-        <path fill-opacity=".256" d="M1 1h14v14H1z"></path>
-        <g class="ck-icon__selected-indicator">
-          <path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path>
-          <path fill-opacity=".254" d="M1 1h14v14H1z"></path>
-        </g>
-      </svg>
-    </div>
-    <table>
-      <tbody>
-        <tr>
-          <td class="ck-editor__editable ck-editor__nested-editable" role="textbox" contenteditable="true">
-            <h3 style="margin-left:80px;">Hello!</h3>
-            <p style="margin-left:80px;"><br data-cke-filler="true"></p>
-            <p style="margin-left:80px;">{{#each formsData}}</p>
-            <p style="margin-left:120px;">{{formId.title}}</p>
-            <p style="margin-left:160px;">{{@key}} : {{this}}</p>
-            <p style="margin-left:160px;">{{@key}} : {{this}}</p>
-            <p style="margin-left:80px;">&nbsp;{{/each}}</p>
-            <p style="margin-left:80px;"><br data-cke-filler="true"></p>
-            <p style="margin-left:80px;"><span style="color:hsl(0,0%,30%);font-family:Arial, Helvetica, sans-serif;">Now it's your turn to execute the workflow. Please perform the necessary action as soon as possible so that the rest of the workflow can be executed.</span></p>
-            <figure class="table ck-widget ck-widget_with-selection-handle" contenteditable="false">
-              <div class="ck ck-widget__selection-handle">
-                <svg class="ck ck-icon ck-reset_all-excluded ck-icon_inherit-color" viewBox="0 0 16 16">
-                  <path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path>
-                  <path fill-opacity=".256" d="M1 1h14v14H1z"></path>
-                  <g class="ck-icon__selected-indicator">
-                    <path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path>
-                    <path fill-opacity=".254" d="M1 1h14v14H1z"></path>
-                  </g>
-                </svg>
-              </div>
-              <table>
-                <tbody>
-                  <tr>
-                    <th class="ck-editor__editable ck-editor__nested-editable" role="textbox" contenteditable="true">
-                      <p style="text-align:center;"><a href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&amp;stepId={{stepId}}&amp;userId={{userId}}&amp;isApproved=true"><span style="color:hsl( 120, 100%, 25% );">Approve&nbsp;</span></a><span style="color:hsl( 120, 100%, 25% );"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><a href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&amp;stepId={{stepId}}&amp;userId={{userId}}&amp;isApproved="><span style="color:hsl(0, 75%, 60%);">Reject&nbsp;</span></a></p>
-                    </th>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="ck ck-reset_all ck-widget__type-around">
-                <div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-                    <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-                  </svg>
-                </div>
-                <div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-                    <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-                  </svg>
-                </div>
-                <div class="ck ck-widget__type-around__fake-caret"></div>
-              </div>
-            </figure>
-            <p style="margin-left:80px;"><span style="color:hsl(0,0%,30%);font-family:Arial, Helvetica, sans-serif;">Regards, DEPA Group</span></p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="ck ck-reset_all ck-widget__type-around">
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__fake-caret"></div>
-    </div>
-  </figure>
-</div>
+  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+  <tr>
+     <td align="center">
+        <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+           <tr>
+              <td class="header">
+                 <a href="http://127.0.0.1:8080/">
+                    <!-- <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo" class="logo"> -->
+                    <!-- DEPA -->
+                 </a>
+              </td>
+           </tr>
+           <!-- Email Body -->
+           <tr>
+              <td class="body">
+                 <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                    role="presentation">
+                    <!-- Body content -->
+                    <tr class="header">
+                       <td>
+                          <a href="http://127.0.0.1:8080/">
+                             <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                class="logo">
+                             <!-- DEPA -->
+                          </a>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td class="content-cell">
+                          <h1>Hello!</h1>
+                          <div class="form-data">
+                             {{#each formsData}}
+                             <ul>
+                                <li class="form-title">{{formId.title}}</li>
+                                {{#each data}}
+                                <li>
+                                   <span class="form-key">{{@key}}: </span><span
+                                      class="form-value">{{this}}</span>
+                                </li>
+                                {{/each}}
+                             </ul>
+                             {{/each}}
+                          </div>
+                          <p>Now it's your turn to execute the workflow. Please perform the necessary
+                             action as soon as possible so that the rest of the workflow can be executed.
+                          </p>
+                          <table class="action" align="center" width="100%" cellpadding="0"
+                             cellspacing="0" role="presentation">
+                             <tr>
+                                <td>
+                                   <a id="accept-button"
+                                      href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true"
+                                      class="button button-primary" target="_self"
+                                      rel="noopener">Approve</a>
+                                </td>
+                                <td>
+                                   <a id="reject-button"
+                                      href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved="
+                                      class="button button-danger" target="_self"
+                                      rel="noopener">Reject</a>
+                                </td>
+                             </tr>
+                          </table>
+                          <p>Regards,<br> DEPA Groups</p>
+                       </td>
+                    </tr>
+                 </table>
+              </td>
+           </tr>
+        </table>
+     </td>
+  </tr>
+</table>
   `;
   emailContentNotify: any = `
-  <div class="ck ck-content ck-editor__editable ck-rounded-corners ck-editor__editable_inline ck-blurred" lang="en" dir="ltr" role="textbox" aria-label="Editor editing area: main" contenteditable="true">
-  <h1 class="ck-placeholder" data-placeholder="Type your title"><br data-cke-filler="true"></h1>
-  <figure class="image ck-widget ck-widget_with-resizer" contenteditable="false" data-placeholder="Type or paste your content here.">
-    <img src="https://depa.com/images/logo.png">
-    <div class="ck ck-reset_all ck-widget__type-around">
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__fake-caret"></div>
-    </div>
-    <div class="ck ck-reset_all ck-widget__resizer ck-hidden">
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-top-left"></div>
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-top-right"></div>
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>
-      <div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-left"></div>
-      <div class="ck ck-size-view" style="display: none;"></div>
-    </div>
-  </figure>
-  <figure class="table ck-widget ck-widget_with-selection-handle" contenteditable="false">
-    <div class="ck ck-widget__selection-handle">
-      <svg class="ck ck-icon ck-reset_all-excluded ck-icon_inherit-color" viewBox="0 0 16 16">
-        <path d="M4 0v1H1v3H0V.5A.5.5 0 0 1 .5 0H4zm8 0h3.5a.5.5 0 0 1 .5.5V4h-1V1h-3V0zM4 16H.5a.5.5 0 0 1-.5-.5V12h1v3h3v1zm8 0v-1h3v-3h1v3.5a.5.5 0 0 1-.5.5H12z"></path>
-        <path fill-opacity=".256" d="M1 1h14v14H1z"></path>
-        <g class="ck-icon__selected-indicator">
-          <path d="M7 0h2v1H7V0zM0 7h1v2H0V7zm15 0h1v2h-1V7zm-8 8h2v1H7v-1z"></path>
-          <path fill-opacity=".254" d="M1 1h14v14H1z"></path>
-        </g>
-      </svg>
-    </div>
-    <table>
-      <tbody>
-        <tr>
-          <td class="ck-editor__editable ck-editor__nested-editable" role="textbox" contenteditable="true">
-            <h3 style="margin-left:80px;">Hello!</h3>
-            <p style="margin-left:80px;"><br data-cke-filler="true"></p>
-            <p style="margin-left:80px;">{{#each formsData}}</p>
-            <p style="margin-left:120px;">{{formId.title}}</p>
-            <p style="margin-left:160px;">{{@key}} : {{this}}</p>
-            <p style="margin-left:160px;">{{@key}} : {{this}}</p>
-            <p style="margin-left:80px;">&nbsp;{{/each}}</p>
-            <p style="margin-left:80px;"><br data-cke-filler="true"></p>
-            <p style="margin-left:80px;"><span style="color:hsl(0,0%,30%);font-family:Arial, Helvetica, sans-serif;">Now it's your turn to execute the workflow. Please perform the necessary action as soon as possible so that the rest of the workflow can be executed.</span></p>
-            <p style="margin-left:80px;"><span style="color:hsl(0,0%,30%);font-family:Arial, Helvetica, sans-serif;">Regards, DEPA Group</span></p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="ck ck-reset_all ck-widget__type-around">
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_before" title="Insert paragraph before block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__button ck-widget__type-around__button_after" title="Insert paragraph after block" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 8">
-          <path d="M9.055.263v3.972h-6.77M1 4.216l2-2.038m-2 2 2 2.038"></path>
-        </svg>
-      </div>
-      <div class="ck ck-widget__type-around__fake-caret"></div>
-    </div>
-  </figure>
-</div>
+  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+   <tr>
+      <td align="center">
+         <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+               <td class="header">
+                  <a href="http://127.0.0.1:8080/">
+                     <!-- <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo" class="logo"> -->
+                     <!-- DEPA -->
+                  </a>
+               </td>
+            </tr>
+            <!-- Email Body -->
+            <tr>
+               <td class="body">
+                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                     role="presentation">
+                     <!-- Body content -->
+                     <tr class="header">
+                        <td>
+                           <a href="http://127.0.0.1:8080/">
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                 class="logo">
+                              <!-- DEPA -->
+                           </a>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="content-cell">
+                           <h1>Hello!</h1>
+                           <div class="form-data">
+                              {{#each formsData}}
+                              <ul>
+                                 <li class="form-title">{{formId.title}}</li>
+                                 {{#each data}}
+                                 <li>
+                                    <span class="form-key">{{@key}}: </span><span
+                                       class="form-value">{{this}}</span>
+                                 </li>
+                                 {{/each}}
+                              </ul>
+                              {{/each}}
+                           </div>
+                           <p>
+                              The last action has been performed by the user, and the action is
+                              "blablabla". Currently, the step is active
+                              for the following users: User A, User B, and User C.
+                           </p>
+                           <p>Regards,<br> DEPA Groups</p>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
   `;
   categoryList: any[];
   domainURL = window.location.origin;
@@ -605,10 +564,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   // }
 
   switchToReadOnly() {
-    this.firstEditorPreview = true;
-    let toolbar = document.getElementsByClassName('ck-toolbar');
-    toolbar[0].classList.add('hidden');
-    this.editor.disabled = true
+    console.log(this.editor)
   }
 
   switchToReadOnly2() {
