@@ -89,3 +89,12 @@ svg {
 tui-dialog[data-size=l] {
   width: 75rem!important
 }
+
+.ag-header-cell-label {
+  font-size: 16px!important;
+  cursor: pointer!important;
+}
+
+.ag-cell {
+  border: none!important;
+}

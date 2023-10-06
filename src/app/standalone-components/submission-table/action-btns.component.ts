@@ -19,7 +19,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           title="Edit Submission & Perform Workflow Action"
           (click)="editWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
           *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
-          class="w-10 h-6 px-1.5 py-1 text-xs font-medium text-center text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
+          class="w-10 h-6 px-1.5 py-1 text-xs font-medium text-center text-blue-500 no-underline bg-white rounded-md cursor-pointer hover:text-blue-600">
           <i class="fa fa-pencil" aria-hidden="true"></i>
         </a>
         <!--VIEW-->
@@ -27,7 +27,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           title="View Submission"
           (click)="editWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
           *ngIf="checkViewButtonCondition(cellValue?.data) == true"
-          class="w-10 h-6 px-1.5 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
+          class="w-10 h-6 px-1.5 py-1 text-center ml-1.5 text-xs font-medium text-green-600 no-underline bg-white rounded-md cursor-pointer hover:text-green-600">
           <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
         </a>
         <!--Delete-->
@@ -35,7 +35,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           title="Delete Submission"
           (click)="showDeleteDialog(dialog, 'delete', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
           *ngIf="checkViewButtonCondition(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
-          class="w-10 h-6 px-1.5 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
+          class="w-10 h-6 px-1.5 py-1 text-center ml-1.5 text-xs font-medium text-red-600 no-underline bg-white rounded-md cursor-pointer hover:text-red-600">
           <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
         </a>
         <!--Cancel-->
@@ -43,7 +43,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           title="Cancel Submission"
           (click)="showDeleteDialog(dialog, 'cancel', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
           *ngIf="checkViewButtonCondition(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
-          class="w-10 h-6 px-1.5 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
+          class="w-10 h-6 px-1.5 py-1 text-center ml-1.5 text-xs font-medium text-[#CF5C27] no-underline bg-white rounded-md cursor-pointer hover:text-[#CF5C27]">
           <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
         </a>
       </ng-container>
@@ -53,7 +53,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
         title="Update Submission Status"
         [routerLink]="['/modules/edit-submission', cellValue?.data?.id]"
         (click)="setWorkflowID(cellValue?.data?.code, cellValue?.data?.id)"
-        class="w-10 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">
+        class="w-10 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-blue-500 no-underline bg-white rounded-md cursor-pointer hover:text-blue-600">
         <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
       </a>
 
@@ -117,6 +117,7 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   // gets called once before the renderer is used
   agInit(params: ICellRendererParams): void {
     this.cellValue = params;
+    console.log(params)
   }
 
   // gets called whenever the cell refreshes
@@ -146,6 +147,9 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   checkViewButtonCondition(data: any) {
     if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.workFlowUsers.includes(this.currentUser.id)) {
       return false;
+    }
+    if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data?.progress < '100%') {
+      return false
     }
     return true;
   }
