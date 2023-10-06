@@ -623,8 +623,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm = this.fb.group({
       categoryId: [item?.categoryId?.value ? item?.categoryId?.value : this.categoryList?.filter(val => item?.categoryId === val.value)[0]?.value || null, Validators.required],
       code: [item?.code, Validators.compose([
-        Validators.required,
-        Validators.maxLength(7)
+        Validators.required
       ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyId: [item?.companyId?.value ? item?.companyId?.value : this.companyList?.filter(val => item?.companyId === val.value)[0]?.value || null, Validators.required],
       title: [item?.title || null, Validators.compose([

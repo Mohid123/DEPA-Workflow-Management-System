@@ -662,6 +662,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.inheritLoader.next(true);
     let data = JSON.parse(JSON.stringify(this.dashboard.inheritSubmoduleData.value));
     data?.formIds?.forEach(value => {
+      value.title = value.title + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
+      value.key = value.key + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
       FormioUtils.eachComponent(value?.components, (component) => {
         if(component.type == 'select') {
           component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -730,7 +732,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         control: new FormControl<boolean>(true)
       }
     })
-    const colWidth = data?.layout?.colWidth || "4"
+    const colWidth = data?.layout?.colWidth || "4";
+    const code = data?.code + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
+    const title = data?.title + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
     delete data?.workFlowId;
     delete data?.url;
     delete data?.companyId;
@@ -742,23 +746,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       {companyName: companyId},
       {viewOnlyUsers: viewOnlyUsers},
       {adminUsers: adminUsers},
-      {colWidth: colWidth}
+      {colWidth: colWidth},
+      {code: code},
+      {title: title}
     )
     this.initSubModuleForm(finalObject);
     this.transportService.saveDraftLocally(finalObject);
     this.transportService.sendFormBuilderData({});
-    this.dashboard.validateModuleCode(this.f['title']?.value, 'submodule', 'title')
-    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
-      if(val?.data == false) {
-        this.f['title'].setErrors({codeExists: true});
-      }
-    })
-    this.dashboard.validateModuleCode(this.f['code']?.value, 'submodule')
-    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
-      if(val?.data == false) {
-        this.f['code'].setErrors({codeExists: true});
-      }
-    })
     this.inheritLoader.next(false);
   }
 
@@ -968,8 +962,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       categories: this.fb.array([]),
       code: [item?.code || null,
       Validators.compose([
-        Validators.required,
-        Validators.maxLength(7)
+        Validators.required
       ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyName: [item?.companyName?.value ? item?.companyName?.value : item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName?.value ? item?.categoryName?.value : item?.categoryName || null, Validators.required],
