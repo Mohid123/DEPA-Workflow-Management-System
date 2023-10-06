@@ -117,7 +117,6 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   // gets called once before the renderer is used
   agInit(params: ICellRendererParams): void {
     this.cellValue = params;
-    console.log(params)
   }
 
   // gets called whenever the cell refreshes

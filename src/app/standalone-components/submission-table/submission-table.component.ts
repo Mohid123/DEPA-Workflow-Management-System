@@ -97,7 +97,7 @@ export class SubmissionTableComponent implements OnDestroy {
       field: 'actions',
       headerName: 'Actions',
       cellRenderer: ActionButtonRenderer,
-      width: 150
+      width: 130
     },
   ];
 
