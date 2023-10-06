@@ -72,7 +72,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
                     <tr class="header">
                        <td>
                           <a href="http://127.0.0.1:8080/">
-                             <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo" class="logo">
+                          <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo" class="logo">
                           </a>
                        </td>
                     </tr>
@@ -91,7 +91,25 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
                              </ul>
                              {{/each}}
                           </div>
-                          <table>
+                          <table class="summary-data">
+                             <tr>
+                                <th>Progress</th>
+                                <th>Recent Activity</th>
+                                <th>Pending On</th>
+                             </tr>
+                             {{#each approvalLogs}}
+                             <tr>
+                                <td>{{summaryData.progress}}</td>
+                                <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                <td>
+                                   {{#each summaryData.pendingOnUsers}}
+                                   {{this}},
+                                   {{/each}}
+                                </td>
+                             </tr>
+                             {{/each}}
+                          </table>
+                          <table class="approval-log">
                              <tr>
                                 <th>Performed By</th>
                                 <th>Decision</th>
@@ -135,23 +153,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
             <tr>
                <td class="header">
                   <a href="http://127.0.0.1:8080/">
-                     <!-- <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo" class="logo"> -->
-                     <!-- DEPA -->
                   </a>
                </td>
             </tr>
-            <!-- Email Body -->
             <tr>
                <td class="body">
-                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
-                     role="presentation">
-                     <!-- Body content -->
+                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                      <tr class="header">
                         <td>
                            <a href="http://127.0.0.1:8080/">
-                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
-                                 class="logo">
-                              <!-- DEPA -->
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo" class="logo">
                            </a>
                         </td>
                      </tr>
@@ -163,33 +174,56 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
                               <ul>
                                  <li class="form-title">{{formId.title}}</li>
                                  {{#each data}}
-                                 <li>
-                                    <span class="form-key">{{@key}}: </span><span
-                                       class="form-value">{{this}}</span>
+                                 <li >
+                                    <span class="form-key">{{@key}}: </span><span class="form-value">{{this}}</span>
                                  </li>
                                  {{/each}}
                               </ul>
                               {{/each}}
                            </div>
-                           <table>
-                             <tr>
-                                <th>Performed By</th>
-                                <th>Decision</th>
-                                <th>Comments</th>
-                             </tr>
-                             {{#each approvalLogs}}
-                             <tr>
-                                <td>{{performedById.fullName}}</td>
-                                <td>{{approvalStatus}}</td>
-                                <td>{{remarks}}</td>
-                             </tr>
-                             {{/each}}
-                          </table>
-                           <p>
-                              The last action has been performed by the user, and the action is
-                              "blablabla". Currently, the step is active
-                              for the following users: User A, User B, and User C.
-                           </p>
+                           <table class="summary-data">
+                              <tr>
+                                 <th>Progress</th>
+                                 <th>Recent Activity</th>
+                                 <th>Pending On</th>
+                              </tr>
+                              {{#each approvalLogs}}
+                              <tr>
+                                 <td>{{summaryData.progress}}</td>
+                                 <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                 <td>
+                                    {{#each summaryData.pendingOnUsers}}
+                                    {{this}},
+                                    {{/each}}
+                                 </td>
+                              </tr>
+                              {{/each}}
+                           </table>
+                           <table class="approval-log">
+                              <tr>
+                                 <th>Performed By</th>
+                                 <th>Decision</th>
+                                 <th>Comments</th>
+                              </tr>
+                              {{#each approvalLogs}}
+                              <tr>
+                                 <td>{{performedById.fullName}}</td>
+                                 <td>{{approvalStatus}}</td>
+                                 <td>{{remarks}}</td>
+                              </tr>
+                              {{/each}}
+                           </table>
+                           <p>Now it's your turn to execute the workflow. Please perform the necessary action as soon as possible so that the rest of the workflow can be executed.</p>
+                           <table class="action" align="center" width="100%" cellpadding="0" cellspacing="0"role="presentation">
+                              <tr>
+                                 <td>
+                                    <a id="accept-button" href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true" class="button button-primary" target="_self" rel="noopener">Approve</a>
+                                 </td>
+                                 <td>
+                                    <a id="reject-button" href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=" class="button button-danger" target="_self" rel="noopener">Reject</a>
+                                 </td>
+                              </tr>
+                           </table>
                            <p>Regards,<br> DEPA Groups</p>
                         </td>
                      </tr>
