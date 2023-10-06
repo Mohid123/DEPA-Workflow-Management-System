@@ -409,10 +409,10 @@
                     <a (click)="addDefaultData(i, defaultForm)" class="rounded-md cursor-pointer mt-[0.5px]" title="Add default data">
                       <i class="text-green-500 hover:text-green-600 fa fa-table fa-2x" aria-hidden="true"></i>
                     </a>
-                    <a (click)="sendFormForEdit(i, form?.id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
+                    <a (click)="sendFormForEdit(i, form?.id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form/Permissions">
                       <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
                     </a>
-                    <a (click)="deleteFormDialog(deltemplate, form?.id)" class="rounded-md cursor-pointer">
+                    <a (click)="deleteFormDialog(deltemplate, form?.id)" class="rounded-md cursor-pointer" title="Delete Form">
                       <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
                     </a>
                   </div>
