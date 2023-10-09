@@ -51,7 +51,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   cols: any[] = [
     "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
   ];
-  addForms: FormControl<boolean> = new FormControl(false)
+  addForms: FormControl<boolean> = new FormControl(true)
   firstEditorPreview = false;
   secondEditorPreview = false;
   
@@ -736,7 +736,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     const colWidth = data?.layout?.colWidth || "4";
     const code = data?.code + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
     const title = data?.title + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
-    this.addForms.setValue(data?.formVisibility?.value || false);
+    this.addForms.setValue(data?.formVisibility?.value || true);
     delete data?.workFlowId;
     delete data?.url;
     delete data?.companyId;

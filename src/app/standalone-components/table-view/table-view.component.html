@@ -5,7 +5,7 @@
       <a
         *ngIf="currentUser.id == modData?.createdBy || checkIfUserisAdmin(modData?.adminUsers) || userRoleCheck == true"
         [routerLink]="['/modules/add-module', moduleId]"
-        class="px-6 py-3 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base"
+        class="px-6 py-3 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base hover:bg-opacity-90 hover:transition-colors"
       >+ Add app
       </a>
       <span
@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5 fixed bottom-0 px-4">
-              <a *ngIf="data?.status !== 3 && checkAccessMain(data) == true" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white">
+              <a *ngIf="data?.status !== 3 && checkAccessMain(data) == true" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                 <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
               </a>
               <a title="Edit"
@@ -60,22 +60,31 @@
                 checkIfUserisAdmin(data?.adminUsers)"
                 [routerLink]="['/modules/edit-module', data?.id]"
                 (click)="setEditSlug(data?.code, data?.id, data?.title)"
-                class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
+                class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                 <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
               </a>
               <a title="Delete"
                 *ngIf="currentUser?.id == data?.createdBy ||
                 (userRoleCheck == true && checkIfUserisViewOnly(data?.viewOnlyUsers) == false) ||
                 checkIfUserisAdmin(data?.adminUsers)"
-                (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-500 rounded-md cursor-pointer hover:text-white">
+                (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                 <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
               </a>
-              <a
-                tuiHintDirection="right"
-                [tuiHint]="hint"
-                class="px-2 py-1 text-white bg-gray-500 rounded-md cursor-pointer hover:text-white ml-2">
-                <i class="fa fa-files-o fa-lg" aria-hidden="true"></i>
-              </a>
+              <div class="ml-20">
+                <a
+                  tuiHintDirection="top"
+                  [tuiHintAppearance]="'success'"
+                  [tuiHint]="hint"
+                  class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white mr-2">
+                <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
+                </a>
+                <a
+                  tuiHintDirection="top"
+                  [tuiHint]="hint2"
+                  class="px-2 py-1 text-white bg-gray-500 rounded-md cursor-pointer hover:text-white">
+                  <i class="fa fa-times-circle fa-lg" aria-hidden="true"></i>
+                </a>
+              </div>
             </div>
           </div>
         </ng-container>
@@ -102,13 +111,13 @@
                 </div>
               </div>
               <div class="flex items-center justify-center w-full h-8 py-5 bg-gradient-to-r from-orange-200 to-slate-200 rounded-br-md rounded-bl-md fixed bottom-0">
-                <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white">
+                <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                   <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
                 </a>
-                <a title="Edit" (click)="setEditSlug(data?.code, data?.id, data?.title)" *ngIf="currentUser?.id == data?.createdBy" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white">
+                <a title="Edit" (click)="setEditSlug(data?.code, data?.id, data?.title)" *ngIf="currentUser?.id == data?.createdBy" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                   <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
                 </a>
-                <a title="Delete" *ngIf="currentUser?.id == data?.createdBy" (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-500 rounded-md cursor-pointer hover:text-white">
+                <a title="Delete" *ngIf="currentUser?.id == data?.createdBy" (click)="showDialog(data?.id, template)" class="px-2 py-1 text-white bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                   <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
                 </a>
               </div>
@@ -154,12 +163,10 @@
 </ng-template>
 
 <ng-template #hint>
-  <strong class="text-base">Summary of App Submissions</strong>
-  <hr>
-  <ul class="mt-2">
-    <li><strong>In Progress: &nbsp;</strong> 231</li>
-    <li class="my-2"><strong>Completed: &nbsp;</strong> 123</li>
-    <li class="my-2"><strong>Drafts: &nbsp;</strong> 12</li>
-  </ul>
+  <strong class="text-base">Completed Submissions: &nbsp; 231</strong>
+</ng-template>
+
+<ng-template #hint2>
+  <strong class="text-base">In Progress Submissions: &nbsp; 112</strong>
 </ng-template>
 

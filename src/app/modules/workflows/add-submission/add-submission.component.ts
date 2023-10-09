@@ -373,7 +373,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         };
       }
     });
-    console.log(finalData)
     this.formSubmission.next(finalData)
     const payload: any = {
       subModuleId: this.subModuleId,
@@ -388,7 +387,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         }
       })
     }
-    debugger
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
