@@ -35,7 +35,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           title="Delete Submission"
           (click)="showDeleteDialog(dialog, 'delete', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
           *ngIf="checkViewButtonCondition(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
-          class="w-10 px-1.5 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+          class="w-10 px-2 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
         </a>
         <!--Cancel-->
@@ -53,7 +53,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
         title="Update Submission Status"
         [routerLink]="['/modules/edit-submission', cellValue?.data?.id]"
         (click)="setWorkflowID(cellValue?.data?.code, cellValue?.data?.id)"
-        class="w-10 px-1 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-blue-500 no-underline bg-white rounded-md cursor-pointer hover:text-blue-600">
+        class="w-10 px-1.5 pt-1 pb-1.5 text-center mr-1.5 text-xs font-medium text-white no-underline bg-blue-600 rounded-md cursor-pointer hover:text-white">
         <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
       </a>
 
