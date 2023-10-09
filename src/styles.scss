@@ -98,3 +98,7 @@ tui-dialog[data-size=l] {
 .ag-cell {
   border: none!important;
 }
+
+.ag-theme-alpine .ag-row-hover::before {
+  background-color: white!important;
+}
