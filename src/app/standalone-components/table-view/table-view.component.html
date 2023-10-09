@@ -162,11 +162,11 @@
   </div>
 </ng-template>
 
-<ng-template #hint>
-  <strong class="text-base">Completed Submissions: &nbsp; 231</strong>
+<ng-template #hint let-data="data">
+  <strong class="text-base">Completed Submissions: &nbsp; {{data?.stats?.completedCount}}</strong>
 </ng-template>
 
-<ng-template #hint2>
-  <strong class="text-base">In Progress Submissions: &nbsp; 112</strong>
+<ng-template #hint2 let-data="data">
+  <strong class="text-base">In Progress Submissions: &nbsp; {{data?.stats?.inProgressCount}}</strong>
 </ng-template>
 

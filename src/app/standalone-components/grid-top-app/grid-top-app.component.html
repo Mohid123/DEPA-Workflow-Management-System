@@ -54,5 +54,28 @@
     >
       <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
     </a>
+    <div class="ml-20">
+      <a
+        tuiHintDirection="top"
+        [tuiHintAppearance]="'success'"
+        [tuiHint]="hint"
+        class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white mr-2">
+      <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
+      </a>
+      <a
+        tuiHintDirection="top"
+        [tuiHint]="hint2"
+        class="px-2 py-1 text-white bg-gray-500 rounded-md cursor-pointer hover:text-white">
+        <i class="fa fa-times-circle fa-lg" aria-hidden="true"></i>
+      </a>
+    </div>
   </div>
 </div>
+
+<ng-template #hint>
+  <strong class="text-base">Completed Submissions: &nbsp; {{appData?.stats?.completedCount}}</strong>
+</ng-template>
+
+<ng-template #hint2>
+  <strong class="text-base">In Progress Submissions: &nbsp; {{appData?.stats?.inProgressCount}}</strong>
+</ng-template>
