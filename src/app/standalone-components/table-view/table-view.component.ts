@@ -36,6 +36,7 @@ export class TableViewComponent implements OnDestroy {
    * The category names to show as table column headers
    */
   @Input() tableColumns: string[] = ['Title', 'Company Name', 'Status'];
+  hintData: any;
 
   /**
    * The data to display inside the table
@@ -124,6 +125,10 @@ export class TableViewComponent implements OnDestroy {
       this.transport.moduleCode.next(val['name']);
       this.moduleCode = val['name'];
     });
+  }
+
+  setHintData(data: any) {
+    this.hintData = data;
   }
 
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {

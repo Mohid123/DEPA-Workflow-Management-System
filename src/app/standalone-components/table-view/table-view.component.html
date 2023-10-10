@@ -75,12 +75,14 @@
                   tuiHintDirection="top"
                   [tuiHintAppearance]="'success'"
                   [tuiHint]="hint"
+                  (mouseenter)="setHintData(data)"
                   class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white mr-2">
                 <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
                 </a>
                 <a
                   tuiHintDirection="top"
                   [tuiHint]="hint2"
+                  (mouseenter)="setHintData(data)"
                   class="px-2 py-1 text-white bg-gray-500 rounded-md cursor-pointer hover:text-white">
                   <i class="fa fa-clock-o fa-lg" aria-hidden="true"></i>
                 </a>
@@ -162,11 +164,11 @@
   </div>
 </ng-template>
 
-<ng-template #hint let-data="data">
-  <strong class="text-base">Completed Submissions: &nbsp; {{data?.stats?.completedCount}}</strong>
+<ng-template #hint>
+  <strong class="text-base">Completed Submissions: &nbsp; {{hintData?.stats?.completedCount}}</strong>
 </ng-template>
 
-<ng-template #hint2 let-data="data">
-  <strong class="text-base">In Progress Submissions: &nbsp; {{data?.stats?.inProgressCount}}</strong>
+<ng-template #hint2>
+  <strong class="text-base">In Progress Submissions: &nbsp; {{hintData?.stats?.inProgressCount}}</strong>
 </ng-template>
 
