@@ -64,8 +64,8 @@ export class DashboardService extends ApiService<any> {
                      <tr class="header">
                         <td>
                            <a href="http://127.0.0.1:8080/">
-                           <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
-                              class="logo">
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                 class="logo">
                            </a>
                         </td>
                      </tr>
@@ -74,17 +74,23 @@ export class DashboardService extends ApiService<any> {
                            <h1>Hello!</h1>
                            <div class="form-data">
                               <h3>Forms data</h3>
-                              {{#each formsData}}
-                              <ul>
-                                 <li class="form-title">{{formId.title}}</li>
+                              <table class="approval-log">
+                                 {{#each formsData}}
+                                 <tr>
+                                    <th colspan=2>Form Title: {{formId.title}}</th>
+                                 </tr>
+                                 <tr>
+                                    <th>key</th>
+                                    <th>value</th>
+                                 </tr>
                                  {{#each data}}
-                                 <li>
-                                    <span class="form-key">{{@key}}: </span><span
-                                       class="form-value">{{this}}</span>
-                                 </li>
+                                 <tr>
+                                    <td>{{@key}}</td>
+                                    <td>{{this}}</td>
+                                 </tr>
                                  {{/each}}
-                              </ul>
-                              {{/each}}
+                                 {{/each}}
+                              </table>
                            </div>
                            <h3>Summary</h3>
                            <table class="summary-data">
@@ -94,7 +100,7 @@ export class DashboardService extends ApiService<any> {
                                  <th>Pending On</th>
                               </tr>
                               <tr>
-                                 <td>{{summaryData.progress}}</td>
+                                 <td>{{summaryData.progress}}%</td>
                                  <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
                                  <td>
                                     {{#each summaryData.pendingOnUsers}}
@@ -160,8 +166,8 @@ export class DashboardService extends ApiService<any> {
                      <tr class="header">
                         <td>
                            <a href="http://127.0.0.1:8080/">
-                           <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
-                              class="logo">
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                 class="logo">
                            </a>
                         </td>
                      </tr>
@@ -170,17 +176,23 @@ export class DashboardService extends ApiService<any> {
                            <h1>Hello!</h1>
                            <div class="form-data">
                               <h3>Forms data</h3>
-                              {{#each formsData}}
-                              <ul>
-                                 <li class="form-title">{{formId.title}}</li>
+                              <table class="approval-log">
+                                 {{#each formsData}}
+                                 <tr>
+                                    <th colspan=2>Form Title: {{formId.title}}</th>
+                                 </tr>
+                                 <tr>
+                                    <th>key</th>
+                                    <th>value</th>
+                                 </tr>
                                  {{#each data}}
-                                 <li>
-                                    <span class="form-key">{{@key}}: </span><span
-                                       class="form-value">{{this}}</span>
-                                 </li>
+                                 <tr>
+                                    <td>{{@key}}</td>
+                                    <td>{{this}}</td>
+                                 </tr>
                                  {{/each}}
-                              </ul>
-                              {{/each}}
+                                 {{/each}}
+                              </table>
                            </div>
                            <h3>Summary</h3>
                            <table class="summary-data">
@@ -190,7 +202,7 @@ export class DashboardService extends ApiService<any> {
                                  <th>Pending On</th>
                               </tr>
                               <tr>
-                                 <td>{{summaryData.progress}}</td>
+                                 <td>{{summaryData.progress}}%</td>
                                  <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
                                  <td>
                                     {{#each summaryData.pendingOnUsers}}
@@ -215,8 +227,8 @@ export class DashboardService extends ApiService<any> {
                               {{/each}}
                            </table>
                            <p>The last action has been performed by the user, and the action is
-                              "blablabla". Currently, the step is active
-                              for the following users: User A, User B, and User C.
+                           "blablabla". Currently, the step is active
+                           for the following users: User A, User B, and User C.
                            </p>
                            <p>Regards,<br> DEPA Groups</p>
                         </td>
