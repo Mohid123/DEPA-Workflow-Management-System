@@ -23,6 +23,7 @@ import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 })
 export class EditSubmoduleComponent implements OnDestroy, OnInit {
   public Editor = Editor.Editor;
+  activeItemIndex = 0;
   @ViewChild('editor') editor: CKEditorComponent
   @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;

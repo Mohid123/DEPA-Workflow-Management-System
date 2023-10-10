@@ -678,27 +678,28 @@
 
 <!--CKEDITOR-->
 <ng-template #ckTemplate>
+  <p class="text-xl font-semibold text-center">Email Templates</p>
+  <tui-tabs [(activeItemIndex)]="activeItemIndex">
+    <button
+      tuiTab
+      (click)="activeItemIndex = 0"
+    >
+      Email Template For Action
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 1"
+    >
+      Email Template For Notify
+    </button>
+  </tui-tabs>
   <!--Editor-->
-  <div class="flex justify-between">
-    <p class="text-base font-semibold mt-3">Email Template For Action</p>
-    <!-- <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="switchToReadOnly()">
-      Get Html
-    </button> -->
-  </div>
-  <div class="my-3">
+  <div *ngIf="activeItemIndex == 0" class="my-3">
     <ckeditor #editor [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContent"></ckeditor>
   </div>
   <!--Editor Notify-->
-  <div class="mb-4 mt-6">
-    <div class="flex justify-between">
-      <p class="text-base font-semibold mt-3">Email Template For Notification</p>
-      <!-- <button class="px-2 py-1 bg-black rounded-md text-white text-sm" (click)="secondEditorPreview == false ? switchToReadOnly2() : switchToEditor2()">
-        {{secondEditorPreview == false ? 'Preview': 'Editor'}}
-      </button> -->
-    </div>
-    <div class="my-3">
-      <ckeditor #editor2 [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContentNotify"></ckeditor>
-    </div>
+  <div *ngIf="activeItemIndex == 1" class="my-3">
+    <ckeditor #editor2 [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContentNotify"></ckeditor>
   </div>
   <div class="flex justify-start gap-x-3">
     <button tuiButton type="button" size="m" (click)="confirmEmailTemplate()">

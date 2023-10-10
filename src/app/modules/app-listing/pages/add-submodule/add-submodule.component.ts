@@ -25,6 +25,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   @ViewChild('editor') editor: CKEditorComponent
   @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
+  activeItemIndex = 0;
   submoduleFromLS: any;
   formKeys: any[] = [];
   formComponents: any[] = [];
@@ -213,17 +214,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
                               </tr>
                               {{/each}}
                            </table>
-                           <p>Now it's your turn to execute the workflow. Please perform the necessary action as soon as possible so that the rest of the workflow can be executed.</p>
-                           <table class="action" align="center" width="100%" cellpadding="0" cellspacing="0"role="presentation">
-                              <tr>
-                                 <td>
-                                    <a id="accept-button" href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true" class="button button-primary" target="_self" rel="noopener">Approve</a>
-                                 </td>
-                                 <td>
-                                    <a id="reject-button" href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=" class="button button-danger" target="_self" rel="noopener">Reject</a>
-                                 </td>
-                              </tr>
-                           </table>
+                           <p>The last action has been performed by the user, and the action is
+                           "blablabla". Currently, the step is active
+                           for the following users: User A, User B, and User C.</p>
                            <p>Regards,<br> DEPA Groups</p>
                         </td>
                      </tr>
