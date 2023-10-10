@@ -1,6 +1,11 @@
 <app-header></app-header>
 <div class="bg_img_main">
-  <app-grid-view-loader *ngIf="!(dashboardApps | async); else dashboardapps"></app-grid-view-loader>
+  <ng-container *ngIf="!(dashboardApps | async); else dashboardapps">
+    <div class="mt-72">
+      <tui-loader size="xl" [showLoader]="true" [overlay]="true"></tui-loader>
+      <p class="font-semibold text-center">Loading...</p>
+    </div>
+  </ng-container>
   <ng-template #dashboardapps>
     <section class="grid w-11/12 grid-cols-12 md:grid-cols-8 lg:grid-cols-12 gap-4 pb-20 mx-auto md:mt-52 mt-40">
       <ng-container *ngIf="(dashboardApps | async)?.length == 0">

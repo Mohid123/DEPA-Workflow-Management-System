@@ -352,7 +352,10 @@
   </ng-container>
 
   <ng-template #showSkeleton>
-    <app-workflow-skeleton></app-workflow-skeleton>
+    <div class="mt-72">
+      <tui-loader size="xl" [showLoader]="true" [overlay]="true"></tui-loader>
+      <p class="font-semibold text-center">Loading...</p>
+    </div>
   </ng-template>
 </section>
 
