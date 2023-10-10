@@ -272,6 +272,9 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
           }
           this.creatingForm.next(false)
         }
+        else {
+          this.creatingForm.next(false)
+        }
       });
     }
     else {
@@ -286,6 +289,9 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
           else {
             this._location.back()
           }
+          this.creatingForm.next(false)
+        }
+        else {
           this.creatingForm.next(false)
         }
       });
