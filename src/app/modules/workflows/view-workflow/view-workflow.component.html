@@ -172,7 +172,7 @@
             <div class="flex flex-col justify-start gap-2">
               <div class="flex gap-1">
                 <div class="w-6 h-6 bg-green-600"></div>
-                <p class="mt-0.5">Approved Step</p>
+                <p class="mt-0.5">Approved/Created Step</p>
               </div>
               <div class="flex gap-1">
                 <div class="h-6 w-6 bg-[#2563EB]"></div>
@@ -205,10 +205,10 @@
                 (workflowData?.submissionStatus !== 5 &&
                   workflowData?.submissionStatus !== 3
                 )">
-                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md hover:bg-opacity-80 hover:transition-colors">
+                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
+                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-600 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                 </ng-container>
@@ -226,10 +226,10 @@
                 (workflowData?.submissionStatus !== 5 &&
                   workflowData?.submissionStatus !== 3
                 )">
-                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md hover:bg-opacity-80 hover:transition-colors">
+                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
+                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-600 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                 </ng-container>
