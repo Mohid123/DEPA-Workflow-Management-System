@@ -15,10 +15,10 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
     template: `
       <ng-container>
       <div [ngClass]="checkRoles(cellValue?.data?.roles) == false ? 'block': 'hidden'" class="flex justify-start gap-x-3 mt-2">
-        <a (click)="showDialog(template, cellValue?.data)" class="w-7 px-1 py-1 text-xs font-medium text-center text-white no-underline bg-blue-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+        <a (click)="showDialog(template, cellValue?.data)" class="w-7 px-1 pt-1 pb-1.5 text-xs font-medium text-center text-white no-underline bg-blue-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
         </a>
-        <button (click)="showDeleteDialog(cellValue?.data, deltemplate)" class="w-7 px-1 py-1 text-xs font-medium text-center text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+        <button (click)="showDeleteDialog(cellValue?.data, deltemplate)" class="w-7 px-1 pt-1 pb-1.5 text-xs font-medium text-center text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
         </button>
       </div>

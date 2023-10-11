@@ -16,10 +16,10 @@ import { AuthService } from "src/app/modules/auth/auth.service";
     template: `
       <ng-container>
         <div *ngIf="cellValue?.data?.createdBy === currentUser?.id || userRoleCheckAdmin == true" class="flex justify-start gap-x-2 mt-2">
-          <a (click)="showAddOrEditDialog(addTemplate, cellValue?.data)"  class="w-7 h-6 px-1 py-1 text-xs font-medium text-center text-white no-underline bg-blue-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+          <a (click)="showAddOrEditDialog(addTemplate, cellValue?.data)"  class="w-7 px-1 pt-1 pb-1.5 text-xs font-medium text-center text-white no-underline bg-blue-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
             <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
           </a>
-          <button (click)="showDeleteDialog(cellValue?.data, deltemplate)" class="w-7 h-6 px-1 py-1 text-xs font-medium text-center text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+          <button (click)="showDeleteDialog(cellValue?.data, deltemplate)" class="w-7 px-1 pt-1 pb-1.5 text-xs font-medium text-center text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
             <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
           </button>
         </div>
