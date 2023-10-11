@@ -379,7 +379,7 @@
           [pseudoFocus]="true"
           class="mt-1"
         >
-          <p class="font-semibold text-lg -mb-1">{{addForms.value == true ? "Exclude forms in Submission": "Include forms in Submission"}}</p>
+          <p class="font-semibold text-lg -mb-1">{{addForms.value == true ? "Include forms in Submission": "Exclude forms in Submission"}}</p>
         </tui-checkbox-labeled>
         <a *ngIf="formComponents[0]?.components?.length > 0" (click)="openSummarySchemaDialog(summarySchemaTemplate)" class="px-2.5 py-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           Summary & View Schema
