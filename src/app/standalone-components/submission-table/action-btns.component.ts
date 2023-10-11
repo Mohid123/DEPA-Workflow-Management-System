@@ -53,7 +53,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
         title="Update Submission Status"
         [routerLink]="['/modules/edit-submission', cellValue?.data?.id]"
         (click)="setWorkflowID(cellValue?.data?.code, cellValue?.data?.id)"
-        class="w-10 px-1.5 pt-1 pb-1.5 text-center mr-1.5 text-xs font-medium text-white no-underline bg-blue-600 rounded-md cursor-pointer hover:text-white">
+        class="w-10 px-1.5 pt-1 pb-1.5 text-center mr-1.5 text-xs font-medium text-white no-underline bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
         <i class="fa fa-edit fa-lg" aria-hidden="true"></i>
       </a>
 
