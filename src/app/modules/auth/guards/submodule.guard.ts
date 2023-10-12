@@ -40,8 +40,8 @@ export class SubmoduleGuard implements CanActivate {
     let currentDialogState: DialogState;
     if(Object.keys(this.transportService.subModuleDraft.value)?.length > 0) {
       this.dialog.open(new PolymorpheusComponent(SubmoduleGuardComponent), {
-        dismissible: false,
-        closeable: false
+        dismissible: true,
+        closeable: true
       }).subscribe();
       this.transportService.dialogState.subscribe(val => {
         if(val === DialogState.DISCARD) {

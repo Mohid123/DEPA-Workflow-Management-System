@@ -38,6 +38,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   activeEmailIndex: number;
   saveDialogSubscription: Subscription[] = [];
   creatingSubmission = new Subject<boolean>();
+  draftingSubmission = new Subject<boolean>();
   carouselIndex = 0;
   errorIndex: number = 0;
   showError = new Subject<boolean>();
@@ -404,6 +405,12 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     }
     if(this.workflows.controls.map(val => val.get('approverIds')?.value.length > 1 && val.get('condition')?.value).includes('none')) {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
+    }
+    if(!status) {
+      this.creatingSubmission.next(true)
+    }
+    else {
+      this.draftingSubmission.next(true)
     }
     this.creatingSubmission.next(true);
     let finalData = [];

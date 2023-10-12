@@ -94,16 +94,12 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
     this.searchValue.valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400),
-      switchMap(searchStr => searchStr == '' ?
-        of(null) :
-        this.dashboard.getAllUsers(this.limit, this.page, searchStr)),
+      switchMap(searchStr => this.dashboard.getAllUsers(this.limit, this.page, searchStr)),
       takeUntil(this.destroy$)
     ).subscribe((users: any) => {
       if(users !== null) {
         users = users?.filter(val => !val.roles?.includes('sysAdmin'))
-        const userData = [...users, ...this.users?.value];
-        const result = getUniqueListBy(userData, 'name')
-        this.users.next(result)
+        this.users.next(users)
       }
     })
   }
@@ -196,12 +192,19 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
           return val
         }
       });
-      if(this.inputFieldArr?.length > 0) {
-        this.inputFieldArr = getUniqueListBy([...this.inputFieldArr, ...user], 'name')
-      }
-      else {
-        this.inputFieldArr = user;
-      }
+      user = user.map(val => {
+        if(!approverIds?.includes(val.id)) {
+          val.control.setValue(false);
+          return val
+        }
+      })
+      // if(this.inputFieldArr?.length > 0) {
+      //   // this.inputFieldArr = getUniqueListBy([...this.inputFieldArr, ...user], 'name')
+      //   this.inputFieldArr = 
+      // }
+      // else {
+      //   this.inputFieldArr = user;
+      // }
     });
   }
 

@@ -52,3 +52,80 @@ svg {
   background-color: #6c757d!important;
   border-color: #6c757d!important;
 }
+
+.ck.ck-content ul, ol, menu {
+  padding: 20px!important;
+}
+
+.ck.ck-content h1 {
+  font-size: 2.125rem!important;
+  font-weight: 600!important;
+}
+
+.ck.ck-content h2 {
+  font-size: 1.875rem!important;
+  font-weight: 600!important;
+}
+
+.ck.ck-content h3 {
+  font-size: 1.5rem!important;
+  font-weight: 600!important;
+}
+
+.ck.ck-content h4 {
+  font-size: 1.25rem!important;
+  font-weight: 500!important;
+}
+.ck.ck-content h5 {
+  font-size: 1.125rem!important;
+  font-weight: 500!important;
+}
+
+.ck.ck-content h6 {
+  font-size: 1rem!important;
+  font-weight: 500!important;
+}
+
+tui-dialog[data-size=l] {
+  width: 75rem!important
+}
+
+.ag-header-cell-label {
+  font-size: 16px!important;
+  cursor: pointer!important;
+}
+
+.ag-cell {
+  border: none!important;
+}
+
+.ag-theme-alpine .ag-row-hover::before {
+  background-color: white!important;
+}
+
+.ag-theme-alpine {
+  --ag-header-foreground-color: white;
+  --ag-header-background-color: #AE9A8D;
+  --ag-header-cell-hover-background-color: #AE9A8D;
+  --ag-header-cell-moving-background-color: #AE9A8D;
+}
+
+.ag-theme-alpine .ag-header-cell-menu-button {
+  color: white;
+}
+
+.ag-theme-alpine .ag-header-cell-menu-button:hover {
+  color: white;
+}
+
+.ag-theme-alpine .ag-icon.ag-icon-filter {
+  color: white;
+}
+
+input[class^=ag-] {
+    font-size: inherit;
+    font-weight: 400!important;
+    line-height: inherit;
+    color: black!important;
+    border: var(--ag-borders-input) var(--ag-input-border-color);
+}

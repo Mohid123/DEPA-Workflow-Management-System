@@ -20,6 +20,7 @@ import { UsersListComponent } from './pages/users-list/users-list.component';
 import { CompaniesComponent } from './pages/companies/companies.component';
 import { TrimDirective } from 'src/core/directives/trim.directive';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
     TuiBadgedContentModule,
     TuiAvatarModule,
     TuiHintModule,
-    TuiTooltipModule
+    TuiTooltipModule,
+    AgGridModule
   ]
 })
 export class DashboardModule { }

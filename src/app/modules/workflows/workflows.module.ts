@@ -13,7 +13,6 @@ import { TuiButtonModule, TuiHintModule, TuiLoaderModule, TuiSvgModule, TuiTextf
 import { TableViewComponent } from 'src/app/standalone-components/table-view/table-view.component';
 import { AddSubmissionComponent } from './add-submission/add-submission.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
-import { EmailSubmissionComponent } from './email-submission/email-submission.component';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { FilterComponent } from 'src/app/standalone-components/filter/filter.component';
 import { WorkflowSkeletonComponent } from 'src/app/skeleton-loaders/workflow-skeleton/workflow-skeleton.component';
@@ -23,8 +22,7 @@ import { WorkflowSkeletonComponent } from 'src/app/skeleton-loaders/workflow-ske
   declarations: [
     WorkflowsComponent,
     ViewWorkflowComponent,
-    AddSubmissionComponent,
-    EmailSubmissionComponent
+    AddSubmissionComponent
   ],
   imports: [
     CommonModule,

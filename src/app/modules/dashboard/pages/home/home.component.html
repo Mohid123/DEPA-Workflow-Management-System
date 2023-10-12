@@ -1,6 +1,11 @@
 <app-header></app-header>
 <div class="bg_img_main">
-  <app-grid-view-loader *ngIf="!(dashboardApps | async); else dashboardapps"></app-grid-view-loader>
+  <ng-container *ngIf="!(dashboardApps | async); else dashboardapps">
+    <div class="mt-72">
+      <tui-loader size="xl" [showLoader]="true" [overlay]="true"></tui-loader>
+      <p class="font-semibold text-center">Loading...</p>
+    </div>
+  </ng-container>
   <ng-template #dashboardapps>
     <section class="grid w-11/12 grid-cols-12 md:grid-cols-8 lg:grid-cols-12 gap-4 pb-20 mx-auto md:mt-52 mt-40">
       <ng-container *ngIf="(dashboardApps | async)?.length == 0">
@@ -14,7 +19,7 @@
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
         <div class="flex justify-between py-2 px-2 bg-[#eae4d8] rounded-md col-span-12 relative">
           <p class="mt-2 text-lg font-semibold">{{app.name}}</p>
-          <a *ngIf="userRoleCheck == true" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base">+ Add new app</a>
+          <a *ngIf="userRoleCheck == true" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base hover:bg-opacity-80 hover:transition-colors">+ Add new app</a>
         </div>
         <ng-container *ngIf="!app.submodules || app.subsubmodules?.length == 0; else showApps">
           <div class="h-5"></div>
@@ -52,7 +57,7 @@
   <div class="flex justify-center mt-4">
     <button
       tuiButton
-      appearance="secondary-destructive"
+      appearance="primary"
       type="button"
       size="m"
       class="mx-3"
@@ -64,6 +69,7 @@
     <button
       tuiButton
       type="button"
+      appearance="accent"
       size="m"
       (click)="observer.complete()"
       >

@@ -48,7 +48,7 @@
         </ng-container>
         <ng-container *ngIf="item?.caption !== 'Dashboard' && item?.caption !== 'Home'">
           <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" [queryParams]="(item?.caption != 'Add Submission') ? finalQueryParams() : null" class="hover:text-[#76777f] capitalize">
-            {{ setString(item?.caption) }}
+            {{(item?.caption.length > 15) ? ((item?.caption) | slice:0:15)+'...':(item?.caption)}}
           </a>
         </ng-container>
       </ng-container>
@@ -63,7 +63,7 @@
           </ng-container>
           <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
             <a *tuiItem tuiLink [routerLink]="['/modules', item.code]" [queryParams]="{moduleID: item.routerLink}" class="hover:text-[#76777f] capitalize">
-              {{ setString(item.caption) }}
+              {{(item?.caption.length > 15) ? ((item?.caption) | slice:0:15)+'...':(item?.caption)}}
             </a>
           </ng-container>
         </ng-container>

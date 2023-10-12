@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Formio, FormioForm, FormioOptions, FormioSubmission, FormioUtils } from '@formio/angular';
@@ -14,12 +14,18 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
+import Editor from 'ckeditor5/build/ckeditor';
+import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
   styleUrls: ['./edit-submodule.component.scss']
 })
 export class EditSubmoduleComponent implements OnDestroy, OnInit {
+  public Editor = Editor.Editor;
+  activeItemIndex = 0;
+  @ViewChild('editor') editor: CKEditorComponent
+  @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
   formComponents: any[] = [];
   activeIndex: number = 0;
@@ -83,7 +89,81 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   formForDefaultData: FormioForm;
   deafultFormSubmission: any[] = [];
   deafultFormSubmissionDialog: any[] = [];
-  defaultFormIndex: number
+  defaultFormIndex: number;
+  firstEditorPreview = false;
+  secondEditorPreview = false;
+  public editorConfig = {
+    toolbar: {
+			items: [
+				'heading',
+        'alignment',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'blockQuote',
+				'insertTable',
+				'fontColor',
+				'fontFamily',
+				'horizontalLine',
+				'fontSize',
+				'mediaEmbed',
+				'undo',
+				'redo',
+				'codeBlock',
+				'code',
+				'findAndReplace',
+				'htmlEmbed',
+				'selectAll',
+				'strikethrough',
+				'subscript',
+				'superscript',
+				'highlight',
+				'fontBackgroundColor',
+				'imageInsert',
+				'specialCharacters',
+				'todoList'
+			]
+		},
+    isReadOnly: false,
+		language: 'en',
+		image: {
+			toolbar: [
+				'imageTextAlternative',
+				'toggleImageCaption',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'linkImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
+    mention: {
+      feeds: [
+        {
+          marker: '@',
+          feed: [],
+          minimumCharacters: 0
+        }
+      ]
+    }
+  };
+  emailContent: any;
+  emailContentNotify: any;
+  defaultEmailTemplateFromEdit: any;
+  addForms: FormControl<boolean> = new FormControl(true)
 
   constructor(
     private fb: FormBuilder,
@@ -179,6 +259,56 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     return value
   }
 
+  switchToReadOnly() {
+    this.firstEditorPreview = true;
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[0].classList.add('hidden');
+    this.editor.disabled = true
+  }
+
+  switchToReadOnly2() {
+    this.secondEditorPreview = true
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[1].classList.add('hidden');
+    this.editor2.disabled = true;
+  }
+
+  switchToEditor() {
+    this.firstEditorPreview = false;
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[0].classList.remove('hidden');
+    this.editor.disabled = false
+  }
+  
+  switchToEditor2() {
+    let toolbar = document.getElementsByClassName('ck-toolbar');
+    toolbar[1].classList.remove('hidden');
+    this.editor2.disabled = false;
+    this.secondEditorPreview = false;
+  }
+
+  openModifyEditorDialog(
+    content: PolymorpheusContent<TuiDialogContext>
+  ): void {
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+        size: 'l'
+      })
+      .subscribe());
+  }
+
+  confirmEmailTemplate() {
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
+  }
+
+  cancelEmailTemplate() {
+    this.emailContent = this.dashboard.emailContent;
+    this.emailContentNotify = this.dashboard.emailContentNotify;
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
+  }
+
   get viewSchema() {
     return this.schemaForm.controls['viewSchema'] as FormArray;
   }
@@ -265,9 +395,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
+            this.addForms.setValue(response?.formVisibility || true)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
-            this.schemaForm.controls['summarySchema']?.setValue(response?.summarySchema)
+            response.emailTemplate = {
+              action: response.emailTemplate?.action?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">"),
+              notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
+            }
+            this.defaultEmailTemplateFromEdit = response.emailTemplate;
+            this.emailContent = this.defaultEmailTemplateFromEdit.action || this.dashboard.emailContent;
+            this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify || this.dashboard.emailContentNotify;
+            this.schemaForm.controls['summarySchema']?.setValue(response?.summarySchema);
             if(response.viewSchema?.length > 0) {
               this.schemaForm.controls['viewSchema'].removeAt(0);
             }
@@ -310,6 +448,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               })
+              if(this.summarySchemaFields.length > 0) {
+                let markers = [...this.summarySchemaFields]
+                markers = markers.map(val => {
+                  val = '@'+ val
+                  return val
+                })
+                this.editorConfig.mention.feeds[0].feed = markers
+              }
               this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
@@ -341,6 +487,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               })
+              if(this.summarySchemaFields.length > 0) {
+                let markers = [...this.summarySchemaFields]
+                markers = markers.map(val => {
+                  val = '@'+ val
+                  return val
+                })
+                this.editorConfig.mention.feeds[0].feed = markers
+              }
               this.formKeysForViewSchema = this.summarySchemaFields;
 
               formComps?.map((data, index) => {
@@ -472,8 +626,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm = this.fb.group({
       categoryId: [item?.categoryId?.value ? item?.categoryId?.value : this.categoryList?.filter(val => item?.categoryId === val.value)[0]?.value || null, Validators.required],
       code: [item?.code, Validators.compose([
-        Validators.required,
-        Validators.maxLength(7)
+        Validators.required
       ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyId: [item?.companyId?.value ? item?.companyId?.value : this.companyList?.filter(val => item?.companyId === val.value)[0]?.value || null, Validators.required],
       title: [item?.title || null, Validators.compose([
@@ -762,15 +915,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
         }
       }),
+      formVisibility: this.addForms.value,
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name,
-      // allUsers: [
-      //   ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
-      //   ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-      //   ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
-      //   this.auth.currentUserValue?.id
-      // ]
+      emailTemplate: {
+        action: this.emailContent,
+        notify: this.emailContentNotify
+      }
     }
     if(statusStr) {
       const status = statusStr;

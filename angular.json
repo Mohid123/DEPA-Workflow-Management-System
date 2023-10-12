@@ -20,7 +20,8 @@
             "allowedCommonJsDependencies": [
               "dompurify",
               "formiojs",
-              "lodash"
+              "lodash",
+              "ckeditor5/build/ckeditor"
             ],
             "outputPath": "dist/depa-frontend",
             "index": "src/index.html",

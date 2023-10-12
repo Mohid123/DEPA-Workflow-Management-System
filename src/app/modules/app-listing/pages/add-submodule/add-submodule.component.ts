@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
@@ -13,13 +13,19 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
+import Editor from 'ckeditor5/build/ckeditor';
+import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   templateUrl: './add-submodule.component.html',
   styleUrls: ['./add-submodule.component.scss']
 })
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
+  public Editor = Editor.Editor;
+  @ViewChild('editor') editor: CKEditorComponent
+  @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
+  activeItemIndex = 0;
   submoduleFromLS: any;
   formKeys: any[] = [];
   formComponents: any[] = [];
@@ -45,7 +51,206 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   companyList: any[];
   cols: any[] = [
     "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
-  ]
+  ];
+  addForms: FormControl<boolean> = new FormControl(true)
+  firstEditorPreview = false;
+  secondEditorPreview = false;
+  
+  emailContent: any = `
+  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+   <tr>
+      <td align="center">
+         <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+               <td class="header">
+                  <a href="http://127.0.0.1:8080/">
+                  </a>
+               </td>
+            </tr>
+            <tr>
+               <td class="body">
+                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                     role="presentation">
+                     <tr class="header">
+                        <td>
+                           <a href="http://127.0.0.1:8080/">
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                 class="logo">
+                           </a>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="content-cell">
+                           <h1>Hello!</h1>
+                           <div class="form-data">
+                              <h3>Forms data</h3>
+                              <table class="approval-log">
+                                 {{#each formsData}}
+                                 <tr>
+                                    <th colspan=2>Form Title: {{formId.title}}</th>
+                                 </tr>
+                                 <tr>
+                                    <th>key</th>
+                                    <th>value</th>
+                                 </tr>
+                                 {{#each data}}
+                                 <tr>
+                                    <td>{{@key}}</td>
+                                    <td>{{this}}</td>
+                                 </tr>
+                                 {{/each}}
+                                 {{/each}}
+                              </table>
+                           </div>
+                           <h3>Summary</h3>
+                           <table class="summary-data">
+                              <tr>
+                                 <th>Progress</th>
+                                 <th>Recent Activity</th>
+                                 <th>Pending On</th>
+                              </tr>
+                              <tr>
+                                 <td>{{summaryData.progress}}%</td>
+                                 <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                 <td>
+                                    {{#each summaryData.pendingOnUsers}}
+                                    {{this.fullName}}{{#unless @last}}, {{/unless}}
+                                    {{/each}}
+                                 </td>
+                              </tr>
+                           </table>
+                           <h3>Approval logs</h3>
+                           <table class="approval-log">
+                              <tr>
+                                 <th>Performed By</th>
+                                 <th>Decision</th>
+                                 <th>Comments</th>
+                              </tr>
+                              {{#each approvalLogs}}
+                              <tr>
+                                 <td>{{performedById.fullName}}</td>
+                                 <td>{{approvalStatus}}</td>
+                                 <td>{{remarks}}</td>
+                              </tr>
+                              {{/each}}
+                           </table>
+                           <p>Now it's your turn to execute the workflow. Please perform the necessary
+                              action as soon as possible so that the rest of the workflow can be executed.
+                           </p>
+                           <div class="btn-align" cellpadding="0">
+                              <a id="accept-button"
+                                 href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true"
+                                 class="button button-primary" target="_self"
+                                 rel="noopener">Approve</a>
+                              <a id="reject-button"
+                                 href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved="
+                                 class="button button-danger" target="_self"
+                                 rel="noopener">Reject</a>
+                           </div>
+                           <p>Regards,<br> DEPA Groups</p>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
+  `;
+  emailContentNotify: any = `
+  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+   <tr>
+      <td align="center">
+         <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+               <td class="header">
+                  <a href="http://127.0.0.1:8080/">
+                  </a>
+               </td>
+            </tr>
+            <tr>
+               <td class="body">
+                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                     role="presentation">
+                     <tr class="header">
+                        <td>
+                           <a href="http://127.0.0.1:8080/">
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                 class="logo">
+                           </a>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="content-cell">
+                           <h1>Hello!</h1>
+                           <div class="form-data">
+                              <h3>Forms data</h3>
+                              <table class="approval-log">
+                                 {{#each formsData}}
+                                 <tr>
+                                    <th colspan=2>Form Title: {{formId.title}}</th>
+                                 </tr>
+                                 <tr>
+                                    <th>key</th>
+                                    <th>value</th>
+                                 </tr>
+                                 {{#each data}}
+                                 <tr>
+                                    <td>{{@key}}</td>
+                                    <td>{{this}}</td>
+                                 </tr>
+                                 {{/each}}
+                                 {{/each}}
+                              </table>
+                           </div>
+                           <h3>Summary</h3>
+                           <table class="summary-data">
+                              <tr>
+                                 <th>Progress</th>
+                                 <th>Recent Activity</th>
+                                 <th>Pending On</th>
+                              </tr>
+                              <tr>
+                                 <td>{{summaryData.progress}}%</td>
+                                 <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                 <td>
+                                    {{#each summaryData.pendingOnUsers}}
+                                    {{this.fullName}}{{#unless @last}}, {{/unless}}
+                                    {{/each}}
+                                 </td>
+                              </tr>
+                           </table>
+                           <h3>Approval logs</h3>
+                           <table class="approval-log">
+                              <tr>
+                                 <th>Performed By</th>
+                                 <th>Decision</th>
+                                 <th>Comments</th>
+                              </tr>
+                              {{#each approvalLogs}}
+                              <tr>
+                                 <td>{{performedById.fullName}}</td>
+                                 <td>{{approvalStatus}}</td>
+                                 <td>{{remarks}}</td>
+                              </tr>
+                              {{/each}}
+                           </table>
+                           <p>The last action has been performed by the user, and the action is
+                           "blablabla". Currently, the step is active
+                           for the following users: User A, User B, and User C.
+                           </p>
+                           <p>Regards,<br> DEPA Groups</p>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
+  `;
   categoryList: any[];
   domainURL = window.location.origin;
   currentFieldArray: any;
@@ -89,7 +294,75 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   deafultFormSubmissionDialog: any[] = [];
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
-  inheritLoader = new Subject<boolean>()
+  inheritLoader = new Subject<boolean>();
+  public editorConfig = {
+    toolbar: {
+			items: [
+				'heading',
+        'alignment',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'blockQuote',
+				'insertTable',
+				'fontColor',
+				'fontFamily',
+				'horizontalLine',
+				'fontSize',
+				'mediaEmbed',
+				'undo',
+				'redo',
+				'codeBlock',
+				'code',
+				'findAndReplace',
+				'htmlEmbed',
+				'selectAll',
+				'strikethrough',
+				'subscript',
+				'superscript',
+				'highlight',
+				'fontBackgroundColor',
+				'imageInsert',
+				'specialCharacters',
+				'todoList'
+			]
+		},
+    isReadOnly: false,
+		language: 'en',
+		image: {
+			toolbar: [
+				'imageTextAlternative',
+				'toggleImageCaption',
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'linkImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
+    mention: {
+      feeds: [
+        {
+          marker: '@',
+          feed: [],
+          minimumCharacters: 0
+        }
+      ]
+    }
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -129,6 +402,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       let res = generateKeyCombinations(val)
       return res
     })
+    if(this.summarySchemaFields.length > 0) {
+      let markers = [...this.summarySchemaFields]
+      markers = markers.map(val => {
+        val = '@'+ val
+        return val
+      })
+      this.editorConfig.mention.feeds[0].feed = markers
+    }
     this.formKeysForViewSchema = this.summarySchemaFields;
     // get users for email
     this.search$.pipe(
@@ -178,6 +459,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.inheritLoader.next(true);
     let data = JSON.parse(JSON.stringify(this.dashboard.inheritSubmoduleData.value));
     data?.formIds?.forEach(value => {
+      value.title = value.title + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
+      value.key = value.key + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
       FormioUtils.eachComponent(value?.components, (component) => {
         if(component.type == 'select') {
           component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -198,7 +481,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.summarySchemaFields = this.formKeys.flatMap(val => {
       let res = generateKeyCombinations(val)
       return res
-    })
+    });
     this.formKeysForViewSchema = this.summarySchemaFields;
 
     formComps?.map((data, index) => {
@@ -246,7 +529,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         control: new FormControl<boolean>(true)
       }
     })
-    const colWidth = data?.layout?.colWidth || "4"
+    const colWidth = data?.layout?.colWidth || "4";
+    const code = data?.code + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
+    const title = data?.title + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
+    this.addForms.setValue(data?.formVisibility?.value || true);
     delete data?.workFlowId;
     delete data?.url;
     delete data?.companyId;
@@ -258,23 +544,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       {companyName: companyId},
       {viewOnlyUsers: viewOnlyUsers},
       {adminUsers: adminUsers},
-      {colWidth: colWidth}
+      {colWidth: colWidth},
+      {code: code},
+      {title: title}
     )
     this.initSubModuleForm(finalObject);
     this.transportService.saveDraftLocally(finalObject);
     this.transportService.sendFormBuilderData({});
-    this.dashboard.validateModuleCode(this.f['title']?.value, 'submodule', 'title')
-    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
-      if(val?.data == false) {
-        this.f['title'].setErrors({codeExists: true});
-      }
-    })
-    this.dashboard.validateModuleCode(this.f['code']?.value, 'submodule')
-    .pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
-      if(val?.data == false) {
-        this.f['code'].setErrors({codeExists: true});
-      }
-    })
     this.inheritLoader.next(false);
   }
 
@@ -349,6 +625,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           this.initSubModuleForm(this.submoduleFromLS);
           this.base64File = this.submoduleFromLS?.image;
           this.file = this.submoduleFromLS?.file
+          this.emailContent = this.submoduleFromLS.emailTemplate.action;
+          this.emailContentNotify = this.submoduleFromLS.emailTemplate.notify;
         }
       }
     });
@@ -371,7 +649,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           if(Object.keys(this.submoduleFromLS)?.length > 0) {
             this.initSubModuleForm(this.submoduleFromLS);
             this.base64File = this.submoduleFromLS?.image
-            this.file = this.submoduleFromLS?.file
+            this.file = this.submoduleFromLS?.file;
+            this.emailContent = this.submoduleFromLS.emailTemplate.action;
+            this.emailContentNotify = this.submoduleFromLS.emailTemplate.notify;
           }
         })
       }
@@ -379,7 +659,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   // email notify functions
-
   openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
     fieldArray: FormArray,
@@ -391,6 +670,19 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       .open(content, {
         dismissible: false,
         closeable: false,
+        size: 'l'
+      })
+      .subscribe());
+  }
+
+  openModifyEditorDialog(
+    content: PolymorpheusContent<TuiDialogContext>
+  ): void {
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+        size: 'l'
       })
       .subscribe());
   }
@@ -417,6 +709,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   cancelEmailNotify() {
     this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.setValue([]);
+    // this.emailContent = this.dashboard.emailContent;
+    // this.emailContentNotify = this.dashboard.emailContentNotify;
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
+  }
+
+  confirmEmailTemplate() {
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
+  }
+
+  cancelEmailTemplate() {
+    this.emailContent = this.dashboard.emailContent;
+    this.emailContentNotify = this.dashboard.emailContentNotify;
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
@@ -456,8 +760,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       categories: this.fb.array([]),
       code: [item?.code || null,
       Validators.compose([
-        Validators.required,
-        Validators.maxLength(7)
+        Validators.required
       ]), [CodeValidator.createValidator(this.dashboard, 'submodule')]],
       companyName: [item?.companyName?.value ? item?.companyName?.value : item?.companyName || null, Validators.required],
       categoryName: [item?.categoryName?.value ? item?.categoryName?.value : item?.categoryName || null, Validators.required],
@@ -657,7 +960,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   saveDraft() {
     this.transportService.isFormEdit.next(false);
-    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
+    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file, emailTemplate: {
+      action: this.emailContent,
+      notify: this.emailContentNotify,
+    }});
     let approvers = this.workflows?.value?.flatMap(data => {
       return data?.approverIds?.map(approver => {
         return {
@@ -711,7 +1017,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
     setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
-    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
+    this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file, emailTemplate: {
+      action: this.emailContent,
+      notify: this.emailContentNotify,
+    }});
     this.router.navigate(['/forms/form-builder']);
   }
 
@@ -778,16 +1087,15 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           emailNotifyTo: data?.emailNotifyTo || []
         }
       }),
+      formVisibility: this.addForms.value,
       colWidth: this.f['colWidth']?.value || "4",
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name !== 'disabled' ? this.accessTypeValue?.value?.name : undefined,
-      // allUsers: [
-      //   ...this.subModuleForm.get('adminUsers')?.value?.map(data => data?.id),
-      //   ...this.subModuleForm.get('viewOnlyUsers')?.value?.map(data => data?.id),
-      //   ...this.workflows?.value?.flatMap(val => val?.approverIds?.map(ids => ids.id ? ids.id : ids)),
-      //   this.auth.currentUserValue?.id
-      // ]
+      emailTemplate: {
+        action: this.emailContent,
+        notify: this.emailContentNotify
+      }
     }
     if(statusStr) {
       this.isSavingAsDraft.next(true)

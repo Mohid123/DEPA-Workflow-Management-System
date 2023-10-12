@@ -15,9 +15,9 @@
       </nav>
       <ng-container *ngFor="let form of forms; let i = index;">
         <div class="w-full well jsonviewer" [ngClass]="activeIndex == i ? 'block': 'hidden'">
-          <div class="absolute z-10 -top-8 right-1">
+          <div class="absolute z-10 -top-7 right-1">
             <a (click)="sendFormForEdit(i, form?._id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
-              <i class="text-blue-500 fa fa-pencil-square fa-2x hover:text-blue-600" aria-hidden="true"></i>
+              <i class="text-white bg-blue-600 fa fa-pencil-square-o fa-lg p-1.5 rounded-md hover:text-white hover:bg-opacity-80 hover:transition-colors" aria-hidden="true"></i>
             </a>
           </div>
           <formio
@@ -171,7 +171,7 @@
       type="button"
       size="m"
       appearance="secondary"
-      [showLoader]="(creatingSubmission | async)"
+      [showLoader]="(draftingSubmission | async)"
       (click)="editSubmission(4)"
     >
       Save as Draft

@@ -13,6 +13,7 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import {TuiPreviewDialogService} from '@taiga-ui/addon-preview';
+import { tuiHintOptionsProvider } from '@taiga-ui/core/directives/hint';
 
 /**
  * Reusable Table view component. Uses nested filter and pagination components
@@ -23,13 +24,19 @@ import {TuiPreviewDialogService} from '@taiga-ui/addon-preview';
   imports: [CommonModule, SearchBarComponent, RouterModule, FilterComponent, TuiPaginationModule, TuiLoaderModule, TuiButtonModule, TuiBadgeModule, TuiHintModule, TuiTooltipModule],
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    tuiHintOptionsProvider({
+        icon: 'tuiIconBookOpenLarge',
+    }),
+],
 })
 export class TableViewComponent implements OnDestroy {
   /**
    * The category names to show as table column headers
    */
   @Input() tableColumns: string[] = ['Title', 'Company Name', 'Status'];
+  hintData: any;
 
   /**
    * The data to display inside the table
@@ -118,6 +125,10 @@ export class TableViewComponent implements OnDestroy {
       this.transport.moduleCode.next(val['name']);
       this.moduleCode = val['name'];
     });
+  }
+
+  setHintData(data: any) {
+    this.hintData = data;
   }
 
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {

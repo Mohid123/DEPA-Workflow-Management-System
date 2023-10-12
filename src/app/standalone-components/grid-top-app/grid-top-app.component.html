@@ -1,16 +1,14 @@
 <div
   *ngIf="appData?.status !== 3 && checkAccess(appData) == true"
-  (click)="storeModuleID(appData?._id, appData?.code)"
-  [routerLink]="['/modules', appData?.code]"
-  [queryParams]="{moduleID: appData?._id}"
-  class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41] cursor-pointer"
+  class="bg-white rounded-md shadow-md h-auto drop-shadow-md flex flex-col border-t-4 border-t-[#F15B41] cursor-pointer"
 >
-  <div class="flex pt-5 space-x-8 px-4 pb-3">
+  <div (click)="storeModuleID(appData?._id, appData?.code)" [routerLink]="['/modules', appData?.code]"
+  [queryParams]="{moduleID: appData?._id}" class="flex pt-5 space-x-8 px-4 pb-3">
     <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
       <img [src]="appData?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
     </div>
     <div class="w-full h-full">
-      <h3 class="mb-2 text-lg font-semibold">
+      <h3 class="mb-2 text-lg font-semibold line-clamp-1">
         {{appData?.title}}
         <ng-container *ngIf="appData?.status === 3">
           <tui-badge
@@ -30,7 +28,7 @@
       title="Apps and Submissions"
       (click)="storeModuleID(appData?._id, appData?.code)"
       [routerLink]="['/modules', appData?.code]"
-      [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-500 rounded-md hover:text-white"
+      [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-600 rounded-md hover:text-white hover:bg-opacity-80 hover:transition-colors"
     >
       <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
     </a>
@@ -42,7 +40,7 @@
       checkIfUserisAdmin(appData?.adminUsers)"
       [routerLink]="['/modules/edit-module', appData?._id]" [queryParams]="{moduleCode: appData?.code}"
       (click)="editModuleEvent(appData?._id, appData?.code, appData?.title)"
-      class="px-2 py-1 mx-2 text-white bg-blue-400 rounded-md hover:text-white cursor-pointer"
+      class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md hover:text-white cursor-pointer hover:bg-opacity-80 hover:transition-colors"
     >
       <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
     </a>
@@ -52,9 +50,32 @@
       (userRoleCheck == true && checkIfUserisViewOnly(appData?.viewOnlyUsers) == false) ||
       checkIfUserisAdmin(appData?.adminUsers)"
       (click)="deleteModuleEvent(appData?._id)"
-      class="px-2 py-1 text-white bg-red-500 rounded-md hover:text-white cursor-pointer"
+      class="px-2 py-1 text-white bg-red-600 rounded-md hover:text-white cursor-pointer hover:bg-opacity-80 hover:transition-colors"
     >
       <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
     </a>
+    <div class="ml-20">
+      <a
+        tuiHintDirection="top"
+        [tuiHintAppearance]="'success'"
+        [tuiHint]="hint"
+        class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white mr-2">
+      <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
+      </a>
+      <a
+        tuiHintDirection="top"
+        [tuiHint]="hint2"
+        class="px-2 py-1 text-white bg-gray-500 rounded-md cursor-pointer hover:text-white">
+        <i class="fa fa-clock-o fa-lg" aria-hidden="true"></i>
+      </a>
+    </div>
   </div>
 </div>
+
+<ng-template #hint>
+  <strong class="text-base">Completed Submissions: &nbsp; {{appData?.stats?.completedCount}}</strong>
+</ng-template>
+
+<ng-template #hint2>
+  <strong class="text-base">In Progress Submissions: &nbsp; {{appData?.stats?.inProgressCount}}</strong>
+</ng-template>

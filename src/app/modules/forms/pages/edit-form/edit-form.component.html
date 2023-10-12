@@ -46,6 +46,7 @@
       [disabled]="formTitleControl?.hasError('codeExists')"
       tuiButton
       type="button"
+      [showLoader]="(creatingForm | async)"
       size="m"
       appearance="accent"
       class="tui-space_right-3 tui-space_bottom-3"

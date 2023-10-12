@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
 import { DashboardService } from '../../dashboard.service';
-import { BehaviorSubject, Observable, Subject, Subscription, debounceTime, shareReplay, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { categoryForm } from 'src/app/forms-schema/forms';
 import { CodeValidator } from 'src/core/utils/utility-functions';
+import { ColDef } from 'ag-grid-community';
+import { CategoryActionComponent } from './categories-actions.component';
 
 @Component({
   templateUrl: './categories-list.component.html',
@@ -18,19 +19,33 @@ export class CategoriesListComponent implements OnDestroy {
   categoryEditControl: FormControl = new FormControl('');
   categoryId: string = null;
   destroy$ = new Subject();
-  limit: number = 10;
+  limit: number = 2000;
   page: number = 0;
   currentUser: any;
   formData = new BehaviorSubject<any>({isValid: false});
   userRoleCheckAdmin: any;
   subscription: Subscription[] = [];
+  columnDefs: ColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Category Name',
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      cellRenderer: CategoryActionComponent,
+      width: 30
+    },
+  ];
+  rowData = [];
+
   categoryControl = new FormControl('', Validators.compose([
     Validators.required
   ]), [CodeValidator.createValidator(this.dashboard, 'category')]);
-
-  categoryControlEdit = new FormControl('', Validators.compose([
-    Validators.required
-  ]), [CodeValidator.createValidator(this.dashboard, 'category', undefined, undefined)])
 
   constructor(
     private dashboard: DashboardService,
@@ -40,17 +55,28 @@ export class CategoriesListComponent implements OnDestroy {
   ) {
     this.currentUser = this.auth.currentUserValue
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('admin')
-    this.categories = this.dashboard.getAllCategories(this.limit);
+    this.dashboard.getAllCategories(this.limit)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
+      this.rowData = res.results;
+      this.cf.detectChanges();
+    });
+
+    this.dashboard.actionComplete
+    .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if(res == true) {
+        this.dashboard.getAllCategories(this.limit)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((res: any) => {
+          this.rowData = res.results;
+          this.cf.detectChanges();
+        });
+      }
+    })
   }
 
-  changePage(page: number) {
-    this.page = page;
-    this.categories = this.dashboard.getAllCategories(this.limit);
-  }
-
-  changeSize(page: number) {
-    this.limit = page;
-    this.categories = this.dashboard.getAllCategories(this.limit);
+  onGridReady(params) {
+    params.api.sizeColumnsToFit();
   }
 
   showAddOrEditDialog(content: PolymorpheusContent<TuiDialogContext>, data: any) {
@@ -62,7 +88,6 @@ export class CategoriesListComponent implements OnDestroy {
     if(data?.id) {
       this.categoryId = data?.id;
       this.dashboard.excludeIdEmitter.emit(data?.id)
-      this.categoryControlEdit.setValue(data?.name)
     }
     else {
       this.categoryId = null;
@@ -70,45 +95,26 @@ export class CategoriesListComponent implements OnDestroy {
   }
 
   editOrAddCategory() {
-    if(this.categoryId) {
-      if(this.categoryControlEdit.invalid) {
-        this.categoryControlEdit.markAsDirty();
-        return
-      }
-      const payload: {name: string} = {
-        name: this.categoryControlEdit.value
-      }
-      this.dashboard.editCategory(payload, this.categoryId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(res => {
-        if(res) {
-          this.categoryId = null;
-          this.categories = this.dashboard.getAllCategories(this.limit);
-          this.cf.detectChanges();
-          this.subscription.forEach(val => val.unsubscribe())
-          this.categoryControlEdit.reset();
-          this.categoryControl.reset();
-        }
-      })
+    if(this.categoryControl.invalid) {
+      this.categoryControl.markAsDirty();
+      return
     }
-    else {
-      if(this.categoryControl.invalid) {
-        this.categoryControl.markAsDirty();
-        return
-      }
-      const payload2 = {name: this.categoryControl.value}
-      this.dashboard.addCategory(payload2)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(res => {
-        if(res) {
-          this.categories = this.dashboard.getAllCategories(this.limit);
+    const payload2 = {name: this.categoryControl.value}
+    this.dashboard.addCategory(payload2)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(res => {
+      if(res) {
+        this.dashboard.getAllCategories(this.limit)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((res: any) => {
+          this.rowData = res.results;
           this.cf.detectChanges();
-          this.subscription.forEach(val => val.unsubscribe())
-          this.categoryControlEdit.reset();
-          this.categoryControl.reset();
-        }
-      })
-    }
+        });
+        this.cf.detectChanges();
+        this.subscription.forEach(val => val.unsubscribe())
+        this.categoryControl.reset();
+      }
+    })
   }
 
   showStatus(value: number) {
@@ -119,23 +125,6 @@ export class CategoriesListComponent implements OnDestroy {
       return 'Deleted'
     }
     return 'Draft'
-  }
-
-  deleteCategory() {
-   this.dashboard.deleteCategory(this.categoryId).pipe(takeUntil(this.destroy$))
-   .subscribe(() => {
-     this.categories = this.dashboard.getAllCategories(this.limit);
-     this.categoryId = null
-     this.cf.detectChanges();
-   })
-  }
-
-  showDeleteDialog(data: any, content: PolymorpheusContent<TuiDialogContext>): void {
-    this.dialogs.open(content, {
-      dismissible: false,
-      closeable: false
-    }).subscribe();
-    this.categoryId = data?.id;
   }
 
   ngOnDestroy(): void {

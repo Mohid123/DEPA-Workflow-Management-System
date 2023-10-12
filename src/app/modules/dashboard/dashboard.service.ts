@@ -44,6 +44,204 @@ export class DashboardService extends ApiService<any> {
 
   public excludeIdEmitter = new EventEmitter();
 
+  actionComplete = new EventEmitter();
+
+  emailContent: any = `
+  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+   <tr>
+      <td align="center">
+         <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+               <td class="header">
+                  <a href="http://127.0.0.1:8080/">
+                  </a>
+               </td>
+            </tr>
+            <tr>
+               <td class="body">
+                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                     role="presentation">
+                     <tr class="header">
+                        <td>
+                           <a href="http://127.0.0.1:8080/">
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                 class="logo">
+                           </a>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="content-cell">
+                           <h1>Hello!</h1>
+                           <div class="form-data">
+                              <h3>Forms data</h3>
+                              <table class="approval-log">
+                                 {{#each formsData}}
+                                 <tr>
+                                    <th colspan=2>Form Title: {{formId.title}}</th>
+                                 </tr>
+                                 <tr>
+                                    <th>key</th>
+                                    <th>value</th>
+                                 </tr>
+                                 {{#each data}}
+                                 <tr>
+                                    <td>{{@key}}</td>
+                                    <td>{{this}}</td>
+                                 </tr>
+                                 {{/each}}
+                                 {{/each}}
+                              </table>
+                           </div>
+                           <h3>Summary</h3>
+                           <table class="summary-data">
+                              <tr>
+                                 <th>Progress</th>
+                                 <th>Recent Activity</th>
+                                 <th>Pending On</th>
+                              </tr>
+                              <tr>
+                                 <td>{{summaryData.progress}}%</td>
+                                 <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                 <td>
+                                    {{#each summaryData.pendingOnUsers}}
+                                    {{this.fullName}}{{#unless @last}}, {{/unless}}
+                                    {{/each}}
+                                 </td>
+                              </tr>
+                           </table>
+                           <h3>Approval logs</h3>
+                           <table class="approval-log">
+                              <tr>
+                                 <th>Performed By</th>
+                                 <th>Decision</th>
+                                 <th>Comments</th>
+                              </tr>
+                              {{#each approvalLogs}}
+                              <tr>
+                                 <td>{{performedById.fullName}}</td>
+                                 <td>{{approvalStatus}}</td>
+                                 <td>{{remarks}}</td>
+                              </tr>
+                              {{/each}}
+                           </table>
+                           <p>Now it's your turn to execute the workflow. Please perform the necessary
+                              action as soon as possible so that the rest of the workflow can be executed.
+                           </p>
+                           <div class="btn-align" cellpadding="0">
+                              <a id="accept-button"
+                                 href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true"
+                                 class="button button-primary" target="_self"
+                                 rel="noopener">Approve</a>
+                              <a id="reject-button"
+                                 href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved="
+                                 class="button button-danger" target="_self"
+                                 rel="noopener">Reject</a>
+                           </div>
+                           <p>Regards,<br> DEPA Groups</p>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
+  `;
+  emailContentNotify: any = `
+  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+   <tr>
+      <td align="center">
+         <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+               <td class="header">
+                  <a href="http://127.0.0.1:8080/">
+                  </a>
+               </td>
+            </tr>
+            <tr>
+               <td class="body">
+                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                     role="presentation">
+                     <tr class="header">
+                        <td>
+                           <a href="http://127.0.0.1:8080/">
+                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                 class="logo">
+                           </a>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="content-cell">
+                           <h1>Hello!</h1>
+                           <div class="form-data">
+                              <h3>Forms data</h3>
+                              <table class="approval-log">
+                                 {{#each formsData}}
+                                 <tr>
+                                    <th colspan=2>Form Title: {{formId.title}}</th>
+                                 </tr>
+                                 <tr>
+                                    <th>key</th>
+                                    <th>value</th>
+                                 </tr>
+                                 {{#each data}}
+                                 <tr>
+                                    <td>{{@key}}</td>
+                                    <td>{{this}}</td>
+                                 </tr>
+                                 {{/each}}
+                                 {{/each}}
+                              </table>
+                           </div>
+                           <h3>Summary</h3>
+                           <table class="summary-data">
+                              <tr>
+                                 <th>Progress</th>
+                                 <th>Recent Activity</th>
+                                 <th>Pending On</th>
+                              </tr>
+                              <tr>
+                                 <td>{{summaryData.progress}}%</td>
+                                 <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                 <td>
+                                    {{#each summaryData.pendingOnUsers}}
+                                    {{this.fullName}}{{#unless @last}}, {{/unless}}
+                                    {{/each}}
+                                 </td>
+                              </tr>
+                           </table>
+                           <h3>Approval logs</h3>
+                           <table class="approval-log">
+                              <tr>
+                                 <th>Performed By</th>
+                                 <th>Decision</th>
+                                 <th>Comments</th>
+                              </tr>
+                              {{#each approvalLogs}}
+                              <tr>
+                                 <td>{{performedById.fullName}}</td>
+                                 <td>{{approvalStatus}}</td>
+                                 <td>{{remarks}}</td>
+                              </tr>
+                              {{/each}}
+                           </table>
+                           <p>The last action has been performed by the user, and the action is
+                           "blablabla". Currently, the step is active
+                           for the following users: User A, User B, and User C.
+                           </p>
+                           <p>Regards,<br> DEPA Groups</p>
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
+  `;
+
   /**
    * Breadcrumb array to display
    */
@@ -137,7 +335,7 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         if (![401, 403].includes(res.errors[0].code) || res.errors[0].code !== undefined) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get apps', TuiNotification.Error)
         }
       }
     }))
@@ -507,13 +705,13 @@ export class DashboardService extends ApiService<any> {
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
         this.creatingModule.next(false);
-        this.notif.displayNotification('Module created successfully', 'Create Module', TuiNotification.Success);
+        this.notif.displayNotification('App created successfully', 'Create App', TuiNotification.Success);
         return res.data
       }
       else {
         this.creatingModule.next(false);
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create submodule', 'Create Module', TuiNotification.Error);
+          return this.notif.displayNotification(res.errors[0]?.error?.message ||'Failed to create app', 'Create App', TuiNotification.Error);
         }
       }
     }))
@@ -547,7 +745,7 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Fetch Submodule', TuiNotification.Error);
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Fetch App', TuiNotification.Error);
         }
       }
     }))
@@ -573,7 +771,7 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodule', TuiNotification.Error)
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get App', TuiNotification.Error)
         }
       }
     }))
@@ -605,7 +803,7 @@ export class DashboardService extends ApiService<any> {
       }
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
-          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get submodules', TuiNotification.Error)
+          return this.notif.displayNotification(res.errors[0]?.error?.message, 'Get apps', TuiNotification.Error)
         }
       }
     }))
@@ -614,11 +812,11 @@ export class DashboardService extends ApiService<any> {
   updateSubModule(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/subModules/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
-        this.notif.displayNotification('Submodule updated', 'Update submodule', TuiNotification.Success)
+        this.notif.displayNotification('App updated', 'Update app', TuiNotification.Success)
         return res.data
       }
       else {
-        this.notif.displayNotification(res.errors[0]?.error?.message, 'Update submodule', TuiNotification.Error)
+        this.notif.displayNotification(res.errors[0]?.error?.message, 'Update app', TuiNotification.Error)
       }
     }))
   }

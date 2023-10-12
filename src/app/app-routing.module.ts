@@ -4,6 +4,7 @@ import { CustomPreloadingStrategyService } from 'src/core/core-services/preloadi
 import { AuthGuard } from './modules/auth/guards/auth.guard';
 import { SubmoduleGuard } from './modules/auth/guards/submodule.guard';
 import { NotFoundComponent } from './standalone-components/not-found/not-found.component';
+import { EmailSubmissionComponent } from './modules/workflows/email-submission/email-submission.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
     path: 'forms',
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/forms/forms.module').then(m => m.FormsModule)
+  },
+  {
+    path: 'email-submission',
+    component: EmailSubmissionComponent
   },
   {
     path: '',

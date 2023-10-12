@@ -9,7 +9,7 @@
         appearance="custom"
         size="s"
         *ngIf="parentIDUnAssigned == false"
-        class="bg-[#a58f81] text-white"
+        class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors"
         (click)="inheritParentForm()"
         [showLoader]="(inheritLoader | async) == true"
       >
@@ -321,7 +321,17 @@
     </div>
 
     <section class="mt-10">
-      <h4 class="text-lg font-semibold bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">User Access & Control</h4>
+      <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md">
+        <h4 class="text-lg font-semibold mt-1">User Access & Workflow</h4>
+        <button
+          tuiButton
+          appearance="custom"
+          size="s"
+          class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors"
+          (click)="openModifyEditorDialog(ckTemplate)"
+        >
+        Modify Email Template</button>
+      </div>
     </section>
     <!--Admin and View only users-->
     <div class="grid grid-cols-12 gap-3 my-8">
@@ -356,8 +366,8 @@
     </div>
 
     <!--Edit Workflow-->
-    <div class="mt-12 mb-16">
-      <h4 class="py-2 mb-3 text-lg font-semibold">Create Workflow</h4>
+    <div class="mt-12 mb-14">
+      <h4 class="py-2 mb-3 text-lg font-semibold bg-[#EAE4D8] px-2 rounded-md">Workflow</h4>
       <ng-container formArrayName="workflows">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
@@ -503,80 +513,89 @@
         (click)="addWorkflowStep()"
       ></button>
     </div>
-
     <!--Form preview-->
     <div class="mb-5 mt-7">
       <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md mb-3">
-        <h4 class="text-lg font-semibold">Dynamic Forms</h4>
+        <tui-checkbox-labeled
+          [formControl]="addForms"
+          size="l"
+          [pseudoActive]="true"
+          [pseudoFocus]="true"
+          class="mt-1"
+        >
+          <p class="font-semibold text-lg -mb-1">{{addForms.value == true ? "Include forms in Submission": "Exclude forms in Submission"}}</p>
+        </tui-checkbox-labeled>
         <a
           *ngIf="formComponents[0]?.components?.length > 0"
           (click)="openSummarySchemaDialog(summarySchemaTemplate)"
-          class="px-2.5 py-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white"
+          class="px-2.5 py-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors"
         >
           Summary & View Schema
         </a>
       </div>
-      <h4 class="mt-3 text-base font-semibold text-center">Form/s Preview</h4>
-      <div class="flex flex-col w-full px-5 mx-auto mt-3 border border-gray-400 border-dashed rounded-md bg-gray-50">
-        <ng-container *ngIf="formComponents[0]?.components?.length > 0">
-          <section class="relative flex justify-between my-8">
-            <nav
-              tuiTabs
-              vertical="left"
-              class="w-32 mr-5"
-            >
-              <ng-container *ngFor="let tab of formTabs; let j = index">
-                <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
-              </ng-container>
-            </nav>
-            <ng-container *ngFor="let form of formComponents; let i = index;">
-              <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
-                <div class="flex justify-end">
-                  <div class="absolute z-10 flex justify-end -top-7 right-1 gap-x-2">
-                    <a (click)="addDefaultData(i, defaultForm)" class="rounded-md cursor-pointer mt-[0.5px]" title="Add default data">
-                      <i class="text-green-500 hover:text-green-600 fa fa-table fa-2x" aria-hidden="true"></i>
-                    </a>
-                    <a (click)="sendFormForEdit(i)" class="rounded-md cursor-pointer" title="Edit Form">
-                      <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
-                    </a>
-                    <a (click)="deleteFormDialog(deltemplate, i)" class="rounded-md cursor-pointer">
-                      <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
-                    </a>
+      <ng-container *ngIf="addForms.value == true">
+        <h4 class="mt-3 text-base font-semibold text-center">Form/s Preview</h4>
+        <div class="flex flex-col w-full px-5 mx-auto mt-3 border border-gray-400 border-dashed rounded-md bg-gray-50">
+          <ng-container *ngIf="formComponents[0]?.components?.length > 0">
+            <section class="relative flex justify-between my-8">
+              <nav
+                tuiTabs
+                vertical="left"
+                class="w-32 mr-5"
+              >
+                <ng-container *ngFor="let tab of formTabs; let j = index">
+                  <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
+                </ng-container>
+              </nav>
+              <ng-container *ngFor="let form of formComponents; let i = index;">
+                <div *ngIf="activeIndex == i" class="w-full well jsonviewer">
+                  <div class="flex justify-end">
+                    <div class="absolute z-10 flex justify-end -top-7 right-1 gap-x-2">
+                      <a (click)="addDefaultData(i, defaultForm)" class="rounded-md cursor-pointer mt-[0.5px]" title="Add default data">
+                        <i class="text-green-500 hover:text-green-600 fa fa-table fa-2x" aria-hidden="true"></i>
+                      </a>
+                      <a (click)="sendFormForEdit(i)" class="rounded-md cursor-pointer" title="Edit Form/Permissions">
+                        <i class="text-blue-500 hover:text-blue-600 fa fa-pencil-square fa-2x" aria-hidden="true"></i>
+                      </a>
+                      <a (click)="deleteFormDialog(deltemplate, i)" class="rounded-md cursor-pointer" title="Delete Form">
+                        <i class="text-red-500 fa fa-trash fa-2x hover:text-red-600" aria-hidden="true"></i>
+                      </a>
+                    </div>
                   </div>
+                  <formio
+                    [language]="language"
+                    [options]="options"
+                    [form]="form"
+                    [submission]="sanitizeSubmission(deafultFormSubmissionDialog[i])"
+                  ></formio>
                 </div>
-                <formio
-                  [language]="language"
-                  [options]="options"
-                  [form]="form"
-                  [submission]="sanitizeSubmission(deafultFormSubmissionDialog[i])"
-                ></formio>
-              </div>
-            </ng-container>
+              </ng-container>
 
-          </section>
-        </ng-container>
-        <ng-container *ngIf="formComponents[0]?.components?.length == 0 || formComponents?.length == 0">
-          <div class="grid grid-cols-12 gap-2">
-            <div data-placeholder class="h-8 col-span-12 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
-            <div class="grid grid-cols-12 col-span-12 gap-2">
-              <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
-              <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
+            </section>
+          </ng-container>
+          <ng-container *ngIf="formComponents[0]?.components?.length == 0 || formComponents?.length == 0">
+            <div class="grid grid-cols-12 gap-2">
+              <div data-placeholder class="h-8 col-span-12 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+              <div class="grid grid-cols-12 col-span-12 gap-2">
+                <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
+                <div data-placeholder class="col-span-6 mb-3 overflow-hidden bg-gray-200 rounded-md h-28"></div>
+              </div>
+              <div class="grid grid-cols-12 col-span-12 gap-2">
+                <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+                <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
+              </div>
             </div>
-            <div class="grid grid-cols-12 col-span-12 gap-2">
-              <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
-              <div data-placeholder class="h-8 col-span-6 my-3 overflow-hidden bg-gray-200 rounded-md"></div>
-            </div>
-          </div>
-        </ng-container>
-      </div>
-      <div class="w-full mx-auto my-1">
-        <p class="text-xs text-gray-500">The form/s you add will appear here</p>
-      </div>
+          </ng-container>
+        </div>
+        <div class="w-full mx-auto my-1">
+          <p class="text-xs text-gray-500">The form/s you add will appear here</p>
+        </div>
+      </ng-container>
     </div>
 
     <!--Add new Form-->
-    <div class="mt-7">
-      <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white">
+    <div *ngIf="addForms.value == true" class="mt-7">
+      <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
         {{formComponents[0]?.components?.length == 0 ? 'Add form' : 'Add form'}}
       </a>
     </div>
@@ -626,31 +645,67 @@
 
 <!--Email Notify Modal-->
 <ng-template #template>
-  <p class="text-lg font-semibold text-center">Email Notification Users</p>
-  <p class="mt-3 text-base font-medium text-gray-500">
-    Please specify the users you want to send the notification email to
-  </p>
-  <div class="flex flex-col justify-center my-5">
-    <tui-input-tag
-      [formControl]="
-        currentFieldArray?.controls[activeEmailIndex]?.controls['emailNotifyTo']
-      "
-      class="b-form"
-      [tuiTextfieldLabelOutside]="true"
-      (searchChange)="onSearchChange($event)"
+    <p class="text-lg font-semibold text-center">Email Notifications</p>
+    <p class="mt-2 text-base font-medium text-gray-500 text-center">
+      Please specify the users you want to send the notification email to
+    </p>
+    <div class="flex flex-col justify-center my-5">
+      <tui-input-tag
+        [formControl]="
+          currentFieldArray?.controls[activeEmailIndex]?.controls['emailNotifyTo']
+        "
+        class="b-form"
+        [tuiTextfieldLabelOutside]="true"
+        (searchChange)="onSearchChange($event)"
+      >
+        Type to search and press Enter to select...
+        <tui-data-list-wrapper
+          *tuiDataList
+          [items]="userListForEmail"
+        ></tui-data-list-wrapper>
+      </tui-input-tag>
+    </div>
+    <div class="flex justify-start gap-x-3">
+      <button tuiButton type="button" size="m" (click)="validateEmails()">
+        Confirm
+      </button>
+      <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">
+        Cancel
+      </button>
+    </div>
+  <!-- </ng-container> -->
+</ng-template>
+
+<!--CKEDITOR-->
+<ng-template #ckTemplate>
+  <p class="text-xl font-semibold text-center">Email Templates</p>
+  <tui-tabs [(activeItemIndex)]="activeItemIndex">
+    <button
+      tuiTab
+      (click)="activeItemIndex = 0"
     >
-      Type to search and press Enter to select...
-      <tui-data-list-wrapper
-        *tuiDataList
-        [items]="userListForEmail"
-      ></tui-data-list-wrapper>
-    </tui-input-tag>
+      Email Template For Action
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 1"
+    >
+      Email Template For Notify
+    </button>
+  </tui-tabs>
+  <!--Editor-->
+  <div *ngIf="activeItemIndex == 0" class="my-3">
+    <ckeditor #editor [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContent"></ckeditor>
+  </div>
+  <!--Editor Notify-->
+  <div *ngIf="activeItemIndex == 1" class="my-3">
+    <ckeditor #editor2 [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContentNotify"></ckeditor>
   </div>
   <div class="flex justify-start gap-x-3">
-    <button tuiButton type="button" size="m" (click)="validateEmails()">
+    <button tuiButton type="button" size="m" (click)="confirmEmailTemplate()">
       Confirm
     </button>
-    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">
+    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailTemplate()">
       Cancel
     </button>
   </div>

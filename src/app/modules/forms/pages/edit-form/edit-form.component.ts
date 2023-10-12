@@ -57,6 +57,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   submoduleIDForNewForm: string;
   crudUsers = new FormControl<any>([]);
   viewUsers = new FormControl<any>([]);
+  creatingForm = new Subject<boolean>()
 
   constructor(
     private notif: NotificationsService,
@@ -116,11 +117,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
     this.dashboard.items = [
       ...getItem(StorageItem.editBreadcrumbs),
       {
-        caption: getItem(StorageItem.formKey) || 'Edit Form',
+        caption: getItem(StorageItem.formKey) || 'Add Form',
         routerLink: `/forms/edit-form?id=${this.editFormID}`
       }
     ];
-    console.log(this.dashboard.items)
 
     this.transportService.updatedComponent.pipe(takeUntil(this.destroy$)).subscribe(value => {
       if(value) {
@@ -241,6 +241,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       return this.notif.displayNotification('Your form cannot be empty!', 'Edit Form', TuiNotification.Warning)
     }
     removeItem(StorageItem.approvers)
+    this.creatingForm.next(true)
     FormioUtils.eachComponent(this.form?.components, (component) => {
       if(component.type == 'select') {
         component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -269,6 +270,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
           else {
             this._location.back()
           }
+          this.creatingForm.next(false)
+        }
+        else {
+          this.creatingForm.next(false)
         }
       });
     }
@@ -284,6 +289,10 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
           else {
             this._location.back()
           }
+          this.creatingForm.next(false)
+        }
+        else {
+          this.creatingForm.next(false)
         }
       });
     }

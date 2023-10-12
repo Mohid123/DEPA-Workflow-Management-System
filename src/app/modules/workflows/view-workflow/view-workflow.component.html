@@ -26,7 +26,7 @@
           )
           "
           (click)="showDeleteDialog(dialog, 'delete')"
-          class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+          class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>&nbsp; Delete
         </a>
       <!--Cancel-->
@@ -50,7 +50,7 @@
           )
           "
           (click)="showDeleteDialog(dialog, 'cancel')"
-          class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs">
+          class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-ban fa-lg" aria-hidden="true"></i>&nbsp; Cancel
         </a>
         <!--Enable-->
@@ -74,7 +74,7 @@
           )
           "
           (click)="showDeleteDialog(dialog, 'enable')"
-          class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white">
+          class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Re-Activate
         </a>
         <!--PDF-->
@@ -172,7 +172,7 @@
             <div class="flex flex-col justify-start gap-2">
               <div class="flex gap-1">
                 <div class="w-6 h-6 bg-green-600"></div>
-                <p class="mt-0.5">Approved Step</p>
+                <p class="mt-0.5">Approved/Created Step</p>
               </div>
               <div class="flex gap-1">
                 <div class="h-6 w-6 bg-[#2563EB]"></div>
@@ -205,10 +205,10 @@
                 (workflowData?.submissionStatus !== 5 &&
                   workflowData?.submissionStatus !== 3
                 )">
-                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
+                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-500 rounded-md">
+                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-600 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                 </ng-container>
@@ -226,10 +226,10 @@
                 (workflowData?.submissionStatus !== 5 &&
                   workflowData?.submissionStatus !== 3
                 )">
-                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-400 rounded-md">
+                  <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
-                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-500 rounded-md">
+                  <button (click)="openDeleteUserDialog(deleteTemplate, user)" class="float-right px-2 text-white bg-red-600 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                 </ng-container>
@@ -352,7 +352,10 @@
   </ng-container>
 
   <ng-template #showSkeleton>
-    <app-workflow-skeleton></app-workflow-skeleton>
+    <div class="mt-72">
+      <tui-loader size="xl" [showLoader]="true" [overlay]="true"></tui-loader>
+      <p class="font-semibold text-center">Loading...</p>
+    </div>
   </ng-template>
 </section>
 

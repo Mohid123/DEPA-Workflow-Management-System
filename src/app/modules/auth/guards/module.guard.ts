@@ -41,8 +41,8 @@ export class ModuleGuard implements CanActivate {
     let currentDialogState: DialogState;
     if(this.dashboard.moduleEditData.value !== null || getItem(StorageItem.publishAppValue)) {
       this.dialog.open(new PolymorpheusComponent(ModuleGuardComponent), {
-        dismissible: false,
-        closeable: false
+        dismissible: true,
+        closeable: true
       }).subscribe();
       this.transportService.dialogState.subscribe(val => {
         if(val === DialogState.DISCARD) {

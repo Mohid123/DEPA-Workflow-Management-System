@@ -373,7 +373,6 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         };
       }
     });
-    console.log(finalData)
     this.formSubmission.next(finalData)
     const payload: any = {
       subModuleId: this.subModuleId,
