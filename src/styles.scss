@@ -103,17 +103,29 @@ tui-dialog[data-size=l] {
   background-color: white!important;
 }
 
-// .ag-theme-alpine {
-//   --ag-header-foreground-color: black;
-//   --ag-header-background-color: #AE9A8D;
-//   --ag-header-cell-hover-background-color: #AE9A8D;
-//   --ag-header-cell-moving-background-color: #AE9A8D;
-// }
+.ag-theme-alpine {
+  --ag-header-foreground-color: white;
+  --ag-header-background-color: #AE9A8D;
+  --ag-header-cell-hover-background-color: #AE9A8D;
+  --ag-header-cell-moving-background-color: #AE9A8D;
+}
 
-// .ag-theme-alpine .ag-header-cell-menu-button {
-//   color: black;
-// }
+.ag-theme-alpine .ag-header-cell-menu-button {
+  color: white;
+}
 
-// .ag-theme-alpine .ag-header-cell-menu-button:hover {
-//   color: black;
-// }
+.ag-theme-alpine .ag-header-cell-menu-button:hover {
+  color: white;
+}
+
+.ag-theme-alpine .ag-icon.ag-icon-filter {
+  color: white;
+}
+
+input[class^=ag-] {
+    font-size: inherit;
+    font-weight: 400!important;
+    line-height: inherit;
+    color: black!important;
+    border: var(--ag-borders-input) var(--ag-input-border-color);
+}
