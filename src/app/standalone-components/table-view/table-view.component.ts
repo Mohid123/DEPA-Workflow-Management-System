@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnDestroy, Output, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, Output, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -116,7 +116,8 @@ export class TableViewComponent implements OnDestroy {
     private auth: AuthService,
     private router: Router,
     @Inject(TuiPreviewDialogService)
-    private previewDialogService: TuiPreviewDialogService
+    private previewDialogService: TuiPreviewDialogService,
+    private cf: ChangeDetectorRef
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
@@ -129,6 +130,7 @@ export class TableViewComponent implements OnDestroy {
 
   setHintData(data: any) {
     this.hintData = data;
+    return this.hintData
   }
 
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {
