@@ -136,6 +136,7 @@ export class TableViewComponent implements OnDestroy {
     this.hintData = data;
   }
 
+
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {
     if(subModuleID) {
       this.submoduleID = subModuleID;
