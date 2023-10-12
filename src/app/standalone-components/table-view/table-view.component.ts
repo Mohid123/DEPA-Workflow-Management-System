@@ -129,9 +129,13 @@ export class TableViewComponent implements OnDestroy {
   }
 
   setHintData(data: any) {
-    this.hintData = data;
-    return this.hintData
+    return data
   }
+
+  setHintDataTool(data: any) {
+    this.hintData = data;
+  }
+
 
   showDialog(subModuleID: string, content: PolymorpheusContent<TuiDialogContext>): void {
     if(subModuleID) {
