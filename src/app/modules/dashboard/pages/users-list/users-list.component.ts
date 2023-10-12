@@ -26,6 +26,14 @@ export class UsersListComponent implements OnDestroy {
   subscription: Subscription[] = [];
   columnDefs: ColDef[] = [
     {
+      field: 'gid',
+      headerName: 'GID',
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true
+    },
+    {
       field: 'fullName',
       headerName: 'Full Name',
       filter: true,

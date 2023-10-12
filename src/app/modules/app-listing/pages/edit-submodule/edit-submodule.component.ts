@@ -395,7 +395,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.transportService.subModuleID.next(params['id']); // the id used to fetch the submodule data and to redirect from form builder
         this.dashboard.getSubModuleByID(params['id']).subscribe((response: any) => {
           if(response) {
-            this.addForms.setValue(response?.formVisibility || true)
+            this.addForms.setValue(response?.formVisibility)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
             response.emailTemplate = {

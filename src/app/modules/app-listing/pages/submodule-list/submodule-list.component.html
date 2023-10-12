@@ -14,7 +14,8 @@
       <div class="flex justify-end mb-5">
         <div
           *ngIf="
-          (moduleData | async)?.formIds?.length > 0
+          (moduleData | async)?.formIds?.length > 0 &&
+          (moduleData | async)?.formVisibility == true
           &&
           (
             (checkIfAdminUserIsOnFirstStep((moduleData | async)?.workFlowId?.stepIds[0]?.approverIds) == true)
