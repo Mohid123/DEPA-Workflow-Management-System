@@ -48,7 +48,7 @@
         </ng-container>
         <ng-container *ngIf="item?.caption !== 'Dashboard' && item?.caption !== 'Home'">
           <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" [queryParams]="(item?.caption != 'Add Submission') ? finalQueryParams() : null" class="hover:text-[#76777f] capitalize">
-            {{(item?.caption.length > 15) ? ((item?.caption) | slice:0:15)+'...':(item?.caption)}}
+            {{(item?.caption.length > 35) ? ((item?.caption) | slice:0:35)+'...':(item?.caption)}}
           </a>
         </ng-container>
       </ng-container>
