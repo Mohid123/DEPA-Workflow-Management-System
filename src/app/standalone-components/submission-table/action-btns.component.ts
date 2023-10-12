@@ -80,7 +80,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           </button>
           <button
             tuiButton
-            appearance="secondary-destructive"
+            appearance="accent"
             type="button"
             size="m"
             (click)="remarks.reset(); observer.complete()"
