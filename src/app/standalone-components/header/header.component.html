@@ -42,12 +42,12 @@
     <ng-container *ngIf="checkCurrentRouteIncludes() === false">
       <ng-container *ngFor="let item of dashboardService.items; let i = index; let last = last">
         <ng-container *ngIf="i == 0 || dashboardService.items?.length == 0">
-          <a *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[rgb(118,119,127)]">
+          <a [title]="item?.caption" *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[rgb(118,119,127)]">
             <i class="fa fa-home fa-lg" aria-hidden="true"></i>
           </a>
         </ng-container>
         <ng-container *ngIf="item?.caption !== 'Dashboard' && item?.caption !== 'Home'">
-          <a *tuiItem tuiLink [routerLink]="encode(item.routerLink)" [queryParams]="(item?.caption != 'Add Submission') ? finalQueryParams() : null" class="hover:text-[#76777f] capitalize">
+          <a [title]="item?.caption" *tuiItem tuiLink [routerLink]="encode(item.routerLink)" [queryParams]="(item?.caption != 'Add Submission') ? finalQueryParams() : null" class="hover:text-[#76777f] capitalize">
             {{(item?.caption.length > 15) ? ((item?.caption) | slice:0:15)+'...':(item?.caption)}}
           </a>
         </ng-container>
@@ -57,12 +57,12 @@
       <ng-container *ngIf="dashboardService.tempItems | async as serverCrumbs">
         <ng-container *ngFor="let item of serverCrumbs; let i = index; let last = last">
           <ng-container *ngIf="i == 0 || serverCrumbs?.length == 0">
-            <a *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[rgb(118,119,127)]">
+            <a [title]="item?.caption" *tuiItem tuiLink [routerLink]="['/dashboard/home']" class="hover:text-[rgb(118,119,127)]">
               <i class="fa fa-home fa-lg" aria-hidden="true"></i>
             </a>
           </ng-container>
           <ng-container *ngIf="item.caption !== 'Dashboard' && item.caption !== 'Home'">
-            <a *tuiItem tuiLink [routerLink]="['/modules', item.code]" [queryParams]="{moduleID: item.routerLink}" class="hover:text-[#76777f] capitalize">
+            <a [title]="item?.caption" *tuiItem tuiLink [routerLink]="['/modules', item.code]" [queryParams]="{moduleID: item.routerLink}" class="hover:text-[#76777f] capitalize">
               {{(item?.caption.length > 15) ? ((item?.caption) | slice:0:15)+'...':(item?.caption)}}
             </a>
           </ng-container>

@@ -43,10 +43,10 @@
                 <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
               </div>
               <div class="w-full h-full">
-                <h3 class="mb-2 text-lg font-semibold line-clamp-2">
+                <h3 [title]="data?.title" class="mb-2 text-lg font-semibold line-clamp-2">
                   {{data?.title}}
                 </h3>
-                <p class="leading-6 line-clamp-2">{{data?.description}}</p>
+                <p [title]="data?.description" class="leading-6 line-clamp-2">{{data?.description}}</p>
               </div>
             </div>
             <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5 fixed bottom-0 px-3">
@@ -110,7 +110,7 @@
                   <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
                 </div>
                 <div class="w-full h-full">
-                  <h3 class="mb-2 text-lg font-semibold line-clamp-1">
+                  <h3 [title]="data?.title" class="mb-2 text-lg font-semibold line-clamp-1">
                     {{data?.title}}
                     <ng-container *ngIf="data?.status === 3">
                       <tui-badge
@@ -121,7 +121,7 @@
                       ></tui-badge>
                     </ng-container>
                   </h3>
-                  <p class="leading-6 line-clamp-4">{{data?.description}}</p>
+                  <p [title]="data?.description" class="leading-6 line-clamp-4">{{data?.description}}</p>
                 </div>
               </div>
               <div class="flex items-center justify-center w-full h-8 py-5 bg-gradient-to-r from-orange-200 to-slate-200 rounded-br-md rounded-bl-md fixed bottom-0">
