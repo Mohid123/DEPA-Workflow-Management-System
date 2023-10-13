@@ -157,7 +157,6 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     });
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
-    this.formValue = event.form;
     if(event.component?.type == 'file') {
       event.component.storage = "url";
       event.component.url = `${environment.apiUrl}/upload`;
@@ -168,6 +167,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     if(event.component?.type == 'select') {
       event.component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
     }
+    this.formValue = event.form;
     this.addCustomEventTrigger()
   }
 

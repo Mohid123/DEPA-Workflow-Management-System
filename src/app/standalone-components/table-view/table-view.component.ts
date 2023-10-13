@@ -166,6 +166,10 @@ export class TableViewComponent implements OnDestroy {
     }
     return true;
   }
+  
+  checkAccessPagination() {
+    return this.tableData?.results.some(data => this.checkAccessMain(data))
+  }
 
   showStatus(value: number) {
     if(value == 1) {

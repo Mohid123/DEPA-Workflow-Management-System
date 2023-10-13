@@ -192,12 +192,12 @@ export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestr
           return val
         }
       });
-      user = user.map(val => {
-        if(!approverIds?.includes(val.id)) {
-          val.control.setValue(false);
-          return val
-        }
-      })
+      // user = user.map(val => {
+      //   if(!approverIds?.includes(val.id)) {
+      //     val.control.setValue(false);
+      //     return val
+      //   }
+      // })
       // if(this.inputFieldArr?.length > 0) {
       //   // this.inputFieldArr = getUniqueListBy([...this.inputFieldArr, ...user], 'name')
       //   this.inputFieldArr = 

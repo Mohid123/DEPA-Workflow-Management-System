@@ -8,23 +8,8 @@
         <!--Delete-->
         <a
           title="Delete"
-          *ngIf="
-          (
-            checkIfLoggedInUserIsPartOfActiveUsers() == true &&
-            workflowData?.submissionStatus !== 5 &&
-            (workflowProgress | async) < 100
-          ) ||
-          (
-            currentUser?.roles?.includes('sysAdmin') &&
-            workflowData?.submissionStatus !== 5 &&
-            (workflowProgress | async) < 100
-          ) ||
-          (
-            checkIfUserIsInAdminUsers() == true &&
-            workflowData?.submissionStatus !== 5 &&
-            (workflowProgress | async) < 100
-          )
-          "
+          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus !== 5 &&
+          (workflowProgress | async) < 100"
           (click)="showDeleteDialog(dialog, 'delete')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>&nbsp; Delete
@@ -32,23 +17,8 @@
       <!--Cancel-->
         <a
           title="Cancel Submission"
-          *ngIf="
-          (
-            checkIfLoggedInUserIsPartOfActiveUsers() == true &&
-            workflowData?.submissionStatus !== 5 &&
-            (workflowProgress | async) < 100
-          ) ||
-          (
-            currentUser?.roles?.includes('sysAdmin') &&
-            workflowData?.submissionStatus !== 5 &&
-            (workflowProgress | async) < 100
-          ) ||
-          (
-            checkIfUserIsInAdminUsers() == true &&
-            workflowData?.submissionStatus !== 5 &&
-            (workflowProgress | async) < 100
-          )
-          "
+          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus !== 5 &&
+          (workflowProgress | async) < 100"
           (click)="showDeleteDialog(dialog, 'cancel')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-ban fa-lg" aria-hidden="true"></i>&nbsp; Cancel
@@ -56,23 +26,7 @@
         <!--Enable-->
         <a
           title="Re-Activate"
-          *ngIf="
-          (
-            checkIfLoggedInUserIsPartOfActiveUsers() == true &&
-            workflowData?.submissionStatus === 5 &&
-            (workflowProgress | async) < 100
-          ) ||
-          (
-            currentUser?.roles?.includes('sysAdmin') &&
-            workflowData?.submissionStatus === 5 &&
-            (workflowProgress | async) < 100
-          ) ||
-          (
-            checkIfUserIsInAdminUsers() == true &&
-            workflowData?.submissionStatus === 5 &&
-            (workflowProgress | async) < 100
-          )
-          "
+          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus == 5 && (workflowProgress | async) < 100"
           (click)="showDeleteDialog(dialog, 'enable')"
           class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Re-Activate
@@ -96,15 +50,7 @@
           <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer">
             <formio
               #formioForm
-              [readOnly]="
-                workflowData?.submissionStatus == 3 ||
-                (checkIfAllApproved() == true ||
-                checkIfLoggedInUserIsPartOfActiveUsers() == false ||
-                checkIfUserIsInEditUsers() == false ||
-                workflowData?.submissionStatus == 5 ||
-                workflowData?.status == 2) &&
-                (this.userRoleSysAdmin == false || workflowData?.submissionStatus == 5)
-              "
+              [readOnly]="checkEditDisableDeleteButton(workflowData) == false"
               [options]="{'disableAlerts': true}"
               [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)"
               [form]="form"
@@ -120,14 +66,7 @@
         type="button"
         [showLoader]="(savingDecision | async)"
         size="m"
-        [disabled]="
-          workflowData?.submissionStatus == 3 ||
-          (checkIfAllApproved() == true ||
-          checkIfLoggedInUserIsPartOfActiveUsers() == false ||
-          checkIfUserIsInEditUsers() == false ||
-          workflowData?.submissionStatus == 5 ||
-          workflowData?.status == 2) &&
-          (this.userRoleSysAdmin == false || workflowData?.submissionStatus == 5)"
+        [disabled]="checkEditDisableDeleteButton(workflowData) == false"
         (click)="updateFormData()"
       >
         Update Forms Data
@@ -595,6 +534,15 @@
     </button>
   </div>
 </ng-template>
+
+<!--
+  workflowData?.submissionStatus == 3 ||
+                (checkIfAllApproved() == true ||
+                checkIfLoggedInUserIsPartOfActiveUsers() == false ||
+                checkIfUserIsInEditUsers() == false ||
+                workflowData?.submissionStatus == 5 ||
+                workflowData?.status == 2) &&
+                (this.userRoleSysAdmin == false || workflowData?.submissionStatus == 5)-->
 
 <!--APPROVE/REJECt CONDITION
   (

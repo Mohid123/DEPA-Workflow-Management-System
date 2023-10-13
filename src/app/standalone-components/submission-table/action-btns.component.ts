@@ -34,7 +34,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
         <a
           title="Delete Submission"
           (click)="showDeleteDialog(dialog, 'delete', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-          *ngIf="checkViewButtonCondition(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+          *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
           class="w-10 px-2 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
         </a>
@@ -42,14 +42,14 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
         <a
           title="Cancel Submission"
           (click)="showDeleteDialog(dialog, 'cancel', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-          *ngIf="checkViewButtonCondition(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+          *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
           class="w-10 px-1.5 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
         </a>
       </ng-container>
       <!--EDIT SUBMISSION PAGE-->
       <a
-        *ngIf="cellValue?.data?.submissionStatus == 'Draft'"
+        *ngIf="cellValue?.data?.submissionStatus == 'Draft' && checkEditDisableDeleteButton(cellValue?.data) == true"
         title="Update Submission Status"
         [routerLink]="['/modules/edit-submission', cellValue?.data?.id]"
         (click)="setWorkflowID(cellValue?.data?.code, cellValue?.data?.id)"
@@ -131,7 +131,11 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   }
 
   checkEditDisableDeleteButton(data: any) {
-    if (!this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.activeStepUsers.includes(this.currentUser.id)) {
+    if (!this.currentUser.roles.includes('sysAdmin') &&
+      data.subModuleId.accessType == "disabled" &&
+      !data.activeStepUsers.includes(this.currentUser.id) &&
+      !data.subModuleId.adminUsers.includes(this.currentUser.id)
+    ) {
       return false;
     }
     return true;
@@ -144,11 +148,14 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   }
 
   checkViewButtonCondition(data: any) {
-    if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.workFlowUsers.includes(this.currentUser.id)) {
+    if (this.currentUser &&
+      !this.currentUser.roles.includes('sysAdmin') &&
+      data.subModuleId.accessType == "disabled" &&
+      !data.workFlowUsers.includes(this.currentUser.id) && 
+      !data.subModuleId.adminUsers.includes(this.currentUser.id) &&
+      !data.subModuleId.viewOnlyUsers.includes(this.currentUser.id)
+    ) {
       return false;
-    }
-    if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data?.progress < '100%') {
-      return false
     }
     return true;
   }

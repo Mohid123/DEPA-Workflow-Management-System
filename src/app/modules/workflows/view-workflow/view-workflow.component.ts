@@ -65,6 +65,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   editStepUserData = new BehaviorSubject<any>({})
   editingStep = new Subject<boolean>();
   userRoleSysAdmin: any;
+  userRoleAdmin: any;
   condition = new FormControl('none');
   conditionAddUser = new FormControl('none');
   showConditionError = new Subject<boolean>();
@@ -87,6 +88,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
+    this.userRoleAdmin = this.auth.checkIfRolesExist('admin')
     this.fetchData();
     this.getUserData(this.limit, this.page);
   }
@@ -148,6 +150,18 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       }
     })
   }
+
+  checkEditDisableDeleteButton(data: any) {
+    if (!this.currentUser.roles.includes('sysAdmin') &&
+      data.subModuleId.accessType == "disabled" &&
+      !data.activeStepUsers.includes(this.currentUser.id) &&
+      !data.subModuleId.adminUsers.includes(this.currentUser.id)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
 
   getUserData(limit: number, page: number) {
     this.dashboard.getAllUsersForListing(limit, page)
