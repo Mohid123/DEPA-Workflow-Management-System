@@ -1,16 +1,14 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, debounceTime, distinctUntilChanged, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
-import domToImage from 'dom-to-image';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
-import { saveAs } from 'file-saver';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { FormioUtils } from '@formio/angular';
 import FormioExport from 'formio-export';
@@ -718,30 +716,20 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     )
   }
 
-  downloadAsPDF() {
+  downloadAsPDF(index: number) {
     this.downloadingPDF.next(true);
-    this.formWithWorkflow?.forEach(formData => {
-      const width = this.formPdf.nativeElement.clientWidth;
-      const height = this.formPdf.nativeElement.clientHeight + 300;
-      const domElements = this.formPdf?.nativeElement;
-      domToImage.toPng(domElements, {
-        width: width * 2,
-        height: height  * 2,
-        style: {
-          transform: "scale(" + 2 + ")",
-          transformOrigin: "top left"
-        }
-      })
-      .then(async (value: any) => {
-        const pdfBytes = await this.pdfGeneratorService.generatePdf(formData?.data, value, width);
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        saveAs(blob, 'form_data.pdf');
-        this.downloadingPDF.next(false);
-      })
-      .catch(error => {
-        throw error
-      })
-    })
+    let formValue = JSON.parse(JSON.stringify(this.formWithWorkflow[index]));
+    let submission = formValue?.data
+    delete formValue?.data
+    let exporter = new FormioExport(formValue, submission, {});
+    let config = {
+      download: false,
+      filename: 'example.pdf'
+    };
+    exporter.toPdf(config).then((pdf) => {
+      pdf.save();
+    });
+    this.downloadingPDF.next(false);
   }
 
   ngOnDestroy(): void {

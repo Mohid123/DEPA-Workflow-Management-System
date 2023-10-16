@@ -31,12 +31,10 @@
           class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Re-Activate
         </a>
-        <!--PDF-->
-        <!-- <button (click)="downloadAsPDF()">DOWNLAOD</button> -->
       </div>
     </div>
     <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
-      <section class="flex justify-between my-8">
+      <section class="flex justify-between my-8 relative">
         <nav
           tuiTabs
           vertical="left"
@@ -48,6 +46,12 @@
         </nav>
         <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
           <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer ml-2 lg:ml-0">
+            <div *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus !== 5 &&
+            (workflowProgress | async) < 100 && disableAll == false" class="absolute z-10 -top-7 right-1">
+              <a (click)="downloadAsPDF(i)" class="rounded-md cursor-pointer" title="Download PDF">
+                <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+              </a>
+            </div>
             <formio
               #formioForm
               [readOnly]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true"
