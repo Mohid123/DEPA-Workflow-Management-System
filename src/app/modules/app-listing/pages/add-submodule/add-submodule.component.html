@@ -693,6 +693,13 @@
     >
       Email Template For Notify
     </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 2"
+      class="flex justify-end"
+    >
+      Preview
+    </button>
   </tui-tabs>
   <!--Editor-->
   <div *ngIf="activeItemIndex == 0" class="my-3 h-[480px]">
@@ -701,6 +708,10 @@
   <!--Editor Notify-->
   <div *ngIf="activeItemIndex == 1" class="my-3 h-[480px]">
     <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="emailContentNotify" class="h-full"></ngx-monaco-editor>
+  </div>
+  <!--Preview-->
+  <div *ngIf="activeItemIndex == 2" class="my-3 h-[480px]">
+    Preview Goes Here!
   </div>
   <div class="flex justify-start gap-x-3">
     <button tuiButton type="button" size="m" (click)="confirmEmailTemplate()">
