@@ -7,7 +7,7 @@
     </div>
   </ng-container>
   <ng-template #dashboardapps>
-    <section class="grid w-11/12 grid-cols-12 md:grid-cols-8 lg:grid-cols-12 gap-4 pb-20 mx-auto md:mt-52 mt-40">
+    <section class="grid w-11/12 grid-cols-12 gap-4 pb-20 mx-auto md:mt-52 mt-40">
       <ng-container *ngIf="(dashboardApps | async)?.length == 0">
         <p class="col-span-12 my-8 text-base font-semibold text-center">
         Create a category to start adding new apps
@@ -28,17 +28,19 @@
           <ng-container *ngFor="let appdata of app?.submodules; let i = index; let firstModule = first; let last = last;">
             <ng-container *ngIf="appdata?.status !== 3">
               <grid-top-app
+                *ngIf="checkAccess(appdata)"
                 (deleteModule)="showDialog($event, template)"
                 [appData]="appdata"
-                [ngClass]="appdata?.layout && appdata?.layout?.colWidth ? 'col-span-' + toString(appdata?.layout?.colWidth) : 'col-span-4'"
+                class="lg:col-span-4 md:col-span-6 col-span-12"
               ></grid-top-app>
             </ng-container>
             <ng-container *ngIf="appdata?.status == 3">
              <ng-container *ngIf="currentUser?.id == appdata?.createdBy">
               <grid-top-app
+                *ngIf="checkAccess(appdata)"
                 (deleteModule)="showDialog($event, template)"
                 [appData]="appdata"
-                [ngClass]="appdata?.layout && appdata?.layout?.colWidth ? 'col-span-' + toString(appdata?.layout?.colWidth) : 'col-span-4'"
+                class="lg:col-span-4 md:col-span-6 col-span-12"
               ></grid-top-app>
              </ng-container>
             </ng-container>

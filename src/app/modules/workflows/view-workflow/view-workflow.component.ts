@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, debounceTime, distinctUntilChanged, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
@@ -74,7 +74,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   formValues: any[] = [];
   formValuesTemp: any[] = [];
   formSubmission = new BehaviorSubject<Array<any>>([]);
-  exporter: FormioExport
+  exporter: FormioExport;
+  currentBreakpoint: string = '';
+  disableAll: boolean;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -87,6 +89,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private notif: NotificationsService
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.disableAll = getItem(StorageItem.previewMode) || false
     this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
     this.userRoleAdmin = this.auth.checkIfRolesExist('admin')
     this.fetchData();
@@ -161,7 +164,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     }
     return true;
   }
-
 
   getUserData(limit: number, page: number) {
     this.dashboard.getAllUsersForListing(limit, page)

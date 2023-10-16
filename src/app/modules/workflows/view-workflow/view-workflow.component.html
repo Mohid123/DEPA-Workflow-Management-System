@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
+<section class="lg:w-11/12 w-[98%] h-auto min-h-screen mx-auto lg:mt-52 mt-44 pb-44">
   <ng-container *ngIf="(loadingData | async) == false; else showSkeleton">
     <div class="flex justify-between">
       <p class="text-lg font-semibold">Forms</p>
@@ -9,7 +9,7 @@
         <a
           title="Delete"
           *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus !== 5 &&
-          (workflowProgress | async) < 100"
+          (workflowProgress | async) < 100 && disableAll == false"
           (click)="showDeleteDialog(dialog, 'delete')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf2729] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>&nbsp; Delete
@@ -18,7 +18,7 @@
         <a
           title="Cancel Submission"
           *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus !== 5 &&
-          (workflowProgress | async) < 100"
+          (workflowProgress | async) < 100 && disableAll == false"
           (click)="showDeleteDialog(dialog, 'cancel')"
           class="font-medium ml-2 px-2 py-1 bg-[#cf5c27] text-white rounded-md hover:text-white no-underline cursor-pointer text-xs hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-ban fa-lg" aria-hidden="true"></i>&nbsp; Cancel
@@ -26,7 +26,7 @@
         <!--Enable-->
         <a
           title="Re-Activate"
-          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus == 5 && (workflowProgress | async) < 100"
+          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus == 5 && (workflowProgress | async) < 100 && disableAll == false"
           (click)="showDeleteDialog(dialog, 'enable')"
           class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Re-Activate
@@ -40,17 +40,17 @@
         <nav
           tuiTabs
           vertical="left"
-          class="w-32 mr-5"
+          class="lg:w-32 w-18 lg:mr-5"
         >
           <ng-container *ngFor="let tab of formTabs; let j = index">
             <button id="form-title-id" (click)="activeIndex = j" tuiTab>{{tab}}</button>
           </ng-container>
         </nav>
         <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
-          <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer">
+          <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer ml-2 lg:ml-0">
             <formio
               #formioForm
-              [readOnly]="checkEditDisableDeleteButton(workflowData) == false"
+              [readOnly]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true"
               [options]="{'disableAlerts': true}"
               [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)"
               [form]="form"
@@ -66,7 +66,7 @@
         type="button"
         [showLoader]="(savingDecision | async)"
         size="m"
-        [disabled]="checkEditDisableDeleteButton(workflowData) == false"
+        [disabled]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true"
         (click)="updateFormData()"
       >
         Update Forms Data
@@ -99,14 +99,14 @@
                     size="m"
                     [max]="max"
                     [value]="workflowProgress | async"
-                    class="w-180"
+                    class="md:w-180 w-screen"
                     [color]="changeProgressColor((workflowProgress | async))"
                   ></progress>
                 </label>
               </div>
             </div>
           </div>
-          <div class="col-span-3 text-sm place-self-end">
+          <div class="lg:col-span-3 col-span-6 text-sm lg:place-self-end place-self-start">
             <p class="my-2 text-sm font-semibold text-left">Legend</p>
             <div class="flex flex-col justify-start gap-2">
               <div class="flex gap-1">
@@ -124,11 +124,11 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-wrap justify-start gap-2">
+        <div class="flex flex-wrap justify-start gap-2 w-full">
           <ng-container *ngFor="let user of workflowUsers; let i = index; let lastItem = last; let firstItem = first">
             <tui-island
               size="l"
-              class="my-4 shadow-lg w-[398px]"
+              class="my-4 shadow-lg md:w-[398px] w-full"
               [hoverable]="true"
               [ngClass]="(user?.status == 'approved') ? 'border border-green-600' : (user?.status == 'rejected') ? 'border border-red-600' : (user?.status == 'inProgress') ? 'border border-blue-600' : 'border border-yellow-600'"
             >
@@ -142,7 +142,7 @@
                 </tui-badge>
                 <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) &&
                 (workflowData?.submissionStatus !== 5 &&
-                  workflowData?.submissionStatus !== 3
+                  workflowData?.submissionStatus !== 3 && disableAll == false
                 )">
                   <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -163,7 +163,7 @@
                 </tui-badge>
                 <ng-container *ngIf="(userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) &&
                 (workflowData?.submissionStatus !== 5 &&
-                  workflowData?.submissionStatus !== 3
+                  workflowData?.submissionStatus !== 3 && disableAll == false
                 )">
                   <button (click)="openEditUserDialog(editUsersDialog, user)" class="float-right px-2 mx-2 text-white bg-blue-500 rounded-md hover:bg-opacity-80 hover:transition-colors">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -212,12 +212,14 @@
                           checkApproveOrRejectButtons(user, approvers?.id) == true &&
                           checkIfUserisStillActive(currentUser?.fullName) == true &&
                           userApprovedCheckResult(approvers?.name) == false &&
-                          workflowData?.submissionStatus !== 5
+                          workflowData?.submissionStatus !== 5 &&
+                          disableAll == false
                         ) || (
                           user?.status == 'inProgress' &&
                           userApprovedCheckResult(approvers?.name) == false &&
                           checkAdminUsersForWorkflow() == true &&
-                          workflowData?.submissionStatus !== 5
+                          workflowData?.submissionStatus !== 5 &&
+                          disableAll == false
                         )"
                         class="flex justify-end gap-5 decision-buttons"
                       >
@@ -247,14 +249,13 @@
                 </ng-container>
               </ul>
             </tui-island>
-            <div class="flex items-center">
+            <div class="md:flex md:items-center hidden">
               <i *ngIf="!lastItem" class="fa fa-long-arrow-right fa-2x" aria-hidden="true"></i>
             </div>
             <div *ngIf="
               lastItem && (userRoleSysAdmin == true || checkAdminUsersForWorkflow() == true) &&
-              (workflowData?.submissionStatus !== 5 &&
-                workflowData?.submissionStatus !== 3
-              )"
+              (workflowData?.submissionStatus !== 5 && workflowData?.submissionStatus !== 3
+              ) && disableAll == false"
               class="flex items-center"
             >
               <button tuiIconButton icon="tuiIconPlusCircleLarge" size="m" (click)="openAddStepDialog(addUserDialog)"></button>
@@ -265,7 +266,7 @@
       <!--Approval Logs-->
       <section class="my-4">
         <p class="mb-5 text-lg font-semibold">Approval Logs</p>
-        <div class="grid grid-cols-12">
+        <div class="grid grid-cols-12 w-full">
           <div class="col-span-11">
             <tui-island size="l" class="w-full shadow-lg">
               <ng-container *ngIf="approvalLogs?.length == 0">
@@ -408,7 +409,7 @@
     </div>
   </div>
   <ng-container *ngIf="control?.hasError('required')">
-    <span class="text-xs text-left text-red-500">Please provide at least one user</span>
+    <span class="text-xs text-left text-black">Please provide at least one user</span>
   </ng-container>
   <ng-container *ngIf="(showConditionError | async) == true">
     <span class="text-xs text-left text-red-500">Please select either AND/OR as condition</span>
@@ -443,7 +444,7 @@
   <div class="flex justify-center mt-4">
     <button
       tuiButton
-      appearance="secondary-destructive"
+      appearance="primary"
       type="button"
       [showLoader]="(editingStep | async) == true"
       size="m"
@@ -457,6 +458,7 @@
       tuiButton
       type="button"
       size="m"
+      appearance="accent"
       (click)="observer.complete()"
       >
       Cancel
@@ -507,7 +509,7 @@
     </div>
   </div>
   <ng-container *ngIf="addControl?.hasError('required')">
-    <span class="text-xs text-left text-red-500">Please provide at least one user</span>
+    <span class="text-xs text-left text-black">Please provide at least one user</span>
   </ng-container>
   <ng-container *ngIf="(showConditionError | async) == true">
     <span class="text-xs text-left text-red-500">Please select either AND/OR as condition</span>

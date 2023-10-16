@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, pluck, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, distinctUntilChanged, pluck, switchMap, takeUntil, tap } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { FormioUtils } from '@formio/angular';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
+import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   templateUrl: './add-submission.component.html',
@@ -52,7 +53,14 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   userRoleCheckAdmin: any;
   userRoleCheckUser: any;
   adminUsers: any[] = [];
+  currentBreakpoint: string = '';
+  BreakPoints = Breakpoints
   @ViewChildren('formioForm') formioForms: QueryList<any>;
+  readonly breakpoint$ = this.breakpointObserver
+  .observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
+  .pipe(
+    distinctUntilChanged()
+  );
 
   constructor(
     private fb: FormBuilder,
@@ -64,7 +72,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     private auth: AuthService,
     private transportService: DataTransportService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private dashboard: DashboardService
+    private dashboard: DashboardService,
+    private breakpointObserver: BreakpointObserver
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheckAdmin = this.auth.checkIfRolesExist('sysAdmin')
@@ -96,6 +105,21 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       caption: 'Add Submission',
       routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
     }];
+    this.breakpoint$.subscribe(() =>
+      this.breakpointChanged()
+    );
+  }
+  
+  private breakpointChanged() {
+    if(this.breakpointObserver.isMatched(Breakpoints.Large)) {
+      this.currentBreakpoint = Breakpoints.Large;
+    } else if(this.breakpointObserver.isMatched(Breakpoints.Medium)) {
+      this.currentBreakpoint = Breakpoints.Medium;
+    } else if(this.breakpointObserver.isMatched(Breakpoints.Small)) {
+      this.currentBreakpoint = Breakpoints.Small;
+    } else if(this.breakpointObserver.isMatched('(min-width: 500px)')) {
+      this.currentBreakpoint = '(min-width: 500px)';
+    }
   }
 
   openEmailNotifyModal(

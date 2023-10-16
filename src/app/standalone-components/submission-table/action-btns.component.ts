@@ -25,7 +25,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
         <!--VIEW-->
         <a
           title="View Submission"
-          (click)="editWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
+          (click)="viewWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
           *ngIf="checkViewButtonCondition(cellValue?.data) == true"
           class="w-10 px-1.5 pt-1 pb-1.5 text-center text-xs font-medium text-white no-underline bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
@@ -142,6 +142,14 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   }
 
   editWorkflowRoute(id: string, key: string) {
+    setItem(StorageItem.previewMode, false)
+    setItem(StorageItem.formKey, key)
+    setItem(StorageItem.formID, id)
+    this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
+  }
+
+  viewWorkflowRoute(id: string, key: string) {
+    setItem(StorageItem.previewMode, true)
     setItem(StorageItem.formKey, key)
     setItem(StorageItem.formID, id)
     this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
