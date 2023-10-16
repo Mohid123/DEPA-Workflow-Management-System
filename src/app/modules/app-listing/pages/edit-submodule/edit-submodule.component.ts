@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Formio, FormioForm, FormioOptions, FormioSubmission, FormioUtils } from '@formio/angular';
+import { Formio, FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
@@ -14,18 +14,13 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
-import Editor from 'ckeditor5/build/ckeditor';
-import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
   styleUrls: ['./edit-submodule.component.scss']
 })
 export class EditSubmoduleComponent implements OnDestroy, OnInit {
-  public Editor = Editor.Editor;
   activeItemIndex = 0;
-  @ViewChild('editor') editor: CKEditorComponent
-  @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
   formComponents: any[] = [];
   activeIndex: number = 0;
@@ -92,78 +87,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   defaultFormIndex: number;
   firstEditorPreview = false;
   secondEditorPreview = false;
-  public editorConfig = {
-    toolbar: {
-			items: [
-				'heading',
-        'alignment',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'insertTable',
-				'fontColor',
-				'fontFamily',
-				'horizontalLine',
-				'fontSize',
-				'mediaEmbed',
-				'undo',
-				'redo',
-				'codeBlock',
-				'code',
-				'findAndReplace',
-				'htmlEmbed',
-				'selectAll',
-				'strikethrough',
-				'subscript',
-				'superscript',
-				'highlight',
-				'fontBackgroundColor',
-				'imageInsert',
-				'specialCharacters',
-				'todoList'
-			]
-		},
-    isReadOnly: false,
-		language: 'en',
-		image: {
-			toolbar: [
-				'imageTextAlternative',
-				'toggleImageCaption',
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side',
-				'linkImage'
-			]
-		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
-		},
-    mention: {
-      feeds: [
-        {
-          marker: '@',
-          feed: [],
-          minimumCharacters: 0
-        }
-      ]
-    }
-  };
   emailContent: any;
   emailContentNotify: any;
   defaultEmailTemplateFromEdit: any;
-  addForms: FormControl<boolean> = new FormControl(true)
+  addForms: FormControl<boolean> = new FormControl(true);
+  editorOptions = {theme: 'vs-dark', language: 'handlebars'};
 
   constructor(
     private fb: FormBuilder,
@@ -257,34 +185,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       }
     }
     return value
-  }
-
-  switchToReadOnly() {
-    this.firstEditorPreview = true;
-    let toolbar = document.getElementsByClassName('ck-toolbar');
-    toolbar[0].classList.add('hidden');
-    this.editor.disabled = true
-  }
-
-  switchToReadOnly2() {
-    this.secondEditorPreview = true
-    let toolbar = document.getElementsByClassName('ck-toolbar');
-    toolbar[1].classList.add('hidden');
-    this.editor2.disabled = true;
-  }
-
-  switchToEditor() {
-    this.firstEditorPreview = false;
-    let toolbar = document.getElementsByClassName('ck-toolbar');
-    toolbar[0].classList.remove('hidden');
-    this.editor.disabled = false
-  }
-  
-  switchToEditor2() {
-    let toolbar = document.getElementsByClassName('ck-toolbar');
-    toolbar[1].classList.remove('hidden');
-    this.editor2.disabled = false;
-    this.secondEditorPreview = false;
   }
 
   openModifyEditorDialog(
@@ -448,14 +348,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               })
-              if(this.summarySchemaFields.length > 0) {
-                let markers = [...this.summarySchemaFields]
-                markers = markers.map(val => {
-                  val = '@'+ val
-                  return val
-                })
-                this.editorConfig.mention.feeds[0].feed = markers
-              }
               this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
@@ -487,16 +379,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               })
-              if(this.summarySchemaFields.length > 0) {
-                let markers = [...this.summarySchemaFields]
-                markers = markers.map(val => {
-                  val = '@'+ val
-                  return val
-                })
-                this.editorConfig.mention.feeds[0].feed = markers
-              }
               this.formKeysForViewSchema = this.summarySchemaFields;
-
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
                   this.defaultFormIndex = index

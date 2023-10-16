@@ -19,8 +19,7 @@ import { SubmodulesListComponent } from './pages/submodule-list/submodule-list.c
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { SubmissionTableComponent } from 'src/app/standalone-components/submission-table/submission-table.component';
 import { EditSubmissionComponent } from './pages/edit-submission/edit-submission.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 @NgModule({
   declarations: [
@@ -65,7 +64,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     TuiInputTagModule,
     TuiDataListModule,
     TuiCheckboxLabeledModule,
-    CKEditorModule
+    MonacoEditorModule
   ]
 })
 export class AppListingModule { }

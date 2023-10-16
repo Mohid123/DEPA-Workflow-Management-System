@@ -12,6 +12,7 @@ import { FormioAppConfig } from "@formio/angular";
 import { AppConfig } from "./config";
 import { TuiPreviewModule } from "@taiga-ui/addon-preview";
 import { EmailSubmissionComponent } from "./modules/workflows/email-submission/email-submission.component";
+import { MonacoEditorModule } from "ngx-monaco-editor-v2";
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { EmailSubmissionComponent } from "./modules/workflows/email-submission/e
     TuiDialogModule,
     TuiPreviewModule,
     TuiNotificationModule,
-    EmailSubmissionComponent
+    EmailSubmissionComponent,
+    MonacoEditorModule.forRoot()
 ],
   providers: [
     // {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},

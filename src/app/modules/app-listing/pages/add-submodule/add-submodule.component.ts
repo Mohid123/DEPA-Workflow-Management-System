@@ -13,17 +13,12 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
-import Editor from 'ckeditor5/build/ckeditor';
-import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   templateUrl: './add-submodule.component.html',
   styleUrls: ['./add-submodule.component.scss']
 })
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
-  public Editor = Editor.Editor;
-  @ViewChild('editor') editor: CKEditorComponent
-  @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
   activeItemIndex = 0;
   submoduleFromLS: any;
@@ -295,74 +290,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
   inheritLoader = new Subject<boolean>();
-  public editorConfig = {
-    toolbar: {
-			items: [
-				'heading',
-        'alignment',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'insertTable',
-				'fontColor',
-				'fontFamily',
-				'horizontalLine',
-				'fontSize',
-				'mediaEmbed',
-				'undo',
-				'redo',
-				'codeBlock',
-				'code',
-				'findAndReplace',
-				'htmlEmbed',
-				'selectAll',
-				'strikethrough',
-				'subscript',
-				'superscript',
-				'highlight',
-				'fontBackgroundColor',
-				'imageInsert',
-				'specialCharacters',
-				'todoList'
-			]
-		},
-    isReadOnly: false,
-		language: 'en',
-		image: {
-			toolbar: [
-				'imageTextAlternative',
-				'toggleImageCaption',
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side',
-				'linkImage'
-			]
-		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
-		},
-    mention: {
-      feeds: [
-        {
-          marker: '@',
-          feed: [],
-          minimumCharacters: 0
-        }
-      ]
-    }
-  };
+  editorOptions = {theme: 'vs-dark', language: 'handlebars'};
 
   constructor(
     private fb: FormBuilder,
@@ -402,14 +330,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       let res = generateKeyCombinations(val)
       return res
     })
-    if(this.summarySchemaFields.length > 0) {
-      let markers = [...this.summarySchemaFields]
-      markers = markers.map(val => {
-        val = '@'+ val
-        return val
-      })
-      this.editorConfig.mention.feeds[0].feed = markers
-    }
     this.formKeysForViewSchema = this.summarySchemaFields;
     // get users for email
     this.search$.pipe(
