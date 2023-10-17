@@ -15,7 +15,7 @@ export class SubmodulesListComponent implements OnDestroy {
   subModuleData: Observable<any>;
   moduleData: Observable<any>;
   moduleSlug: string;
-  limit: number = 8;
+  limit: number = 6;
   page: number = 1;
   searchValue: FormControl = new FormControl();
   currentUser: any;
