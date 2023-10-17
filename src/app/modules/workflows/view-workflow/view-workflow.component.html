@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<section class="lg:w-11/12 w-[98%] h-auto min-h-screen mx-auto lg:mt-52 mt-44 pb-44">
+<section class="lg:w-11/12 w-[98%] h-auto min-h-screen mx-auto lg:mt-52 mt-40 pb-44">
   <ng-container *ngIf="(loadingData | async) == false; else showSkeleton">
     <div class="flex justify-between">
       <p class="text-lg font-semibold">Forms</p>
@@ -38,14 +38,14 @@
         <nav
           tuiTabs
           vertical="left"
-          class="lg:w-32 w-18 lg:mr-5"
+          class="lg:w-32 w-20 lg:mr-5"
         >
           <ng-container *ngFor="let tab of formTabs; let j = index">
             <button id="form-title-id" (click)="activeIndex = j" tuiTab>{{tab}}</button>
           </ng-container>
         </nav>
         <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
-          <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer ml-2 lg:ml-0">
+          <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer ml-2 lg:ml-0 overflow-x-auto">
             <div *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus !== 5 &&
             (workflowProgress | async) < 100 && disableAll == false" class="absolute z-10 -top-7 right-1">
               <a (click)="downloadAsPDF(i)" class="rounded-md cursor-pointer" title="Download PDF">
