@@ -1,7 +1,7 @@
-import { Inject, Injectable, } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
@@ -15,7 +15,7 @@ import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
   providedIn: 'root'
 })
 
-export class ModuleGuard implements CanActivate {
+export class ModuleGuard implements CanActivate, OnDestroy {
 
   /**
    * Injects aiga UI's Dialog Service, {@link DashboardService} and Angular's Router
@@ -30,6 +30,8 @@ export class ModuleGuard implements CanActivate {
     private router: Router
   ) {}
 
+  destroy$ = new Subject();
+
   /**
    * Implements the Can Activate route method which uses an Interface that a class can implement to be a guard deciding if a route can be activated.
    * @param route Contains the information about a route associated with a component loaded in an outlet at a particular moment in time.
@@ -40,11 +42,11 @@ export class ModuleGuard implements CanActivate {
   {
     let currentDialogState: DialogState;
     if(this.dashboard.moduleEditData.value !== null || getItem(StorageItem.publishAppValue)) {
-      this.dialog.open(new PolymorpheusComponent(ModuleGuardComponent), {
+      this.transportService.closeAllDialogs.push(this.dialog.open(new PolymorpheusComponent(ModuleGuardComponent), {
         dismissible: true,
         closeable: true
-      }).subscribe();
-      this.transportService.dialogState.subscribe(val => {
+      }).subscribe());
+      this.transportService.dialogState.pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val === DialogState.DISCARD) {
           this.router.navigate([state.url]);
           return true
@@ -56,6 +58,11 @@ export class ModuleGuard implements CanActivate {
       return true;
     }
     return false
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
   
 }

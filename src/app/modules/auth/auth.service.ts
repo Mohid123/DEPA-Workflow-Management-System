@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, exhaustMap, finalize, map, shareReplay, tap } from 'rxjs/operators';
+import { catchError, exhaustMap, finalize, map, shareReplay, tap, } from 'rxjs/operators';
 import { getItem, removeItem, setItem, StorageItem } from 'src/core/utils/local-storage.utils';
 import { SignInResponse } from 'src/core/models/sign-in-response.model';
 import { ApiService } from 'src/core/core-services/api.service';
@@ -11,6 +11,8 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { AuthCredentials } from 'src/core/models/auth-credentials.model';
 import { TuiNotification } from '@taiga-ui/core';
+import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
+import { SubmoduleGuardComponent } from './templates/submodule-guard/submodule-guard.component';
 
 /**
  * Type defintion that is provided as the type of the Api Service
@@ -88,7 +90,8 @@ export class AuthService extends ApiService<AuthApiData> {
   constructor(
     protected override http: HttpClient,
     private router: Router,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private transportService: DataTransportService
   ) {
     super(http);
     this.isLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -141,6 +144,12 @@ export class AuthService extends ApiService<AuthApiData> {
     );
   }
 
+  cancel() {
+    this.transportService.saveDraftLocally({});
+    this.transportService.sendFormBuilderData([{ title: '', key: '', display: '', components: [] }]);
+    this.transportService.dialogState.emit(DialogState.DISCARD);
+  }
+
   /**
    * Login user via Active Directory or Windows users
    * @param params Authentication or Login credentials provided by user
@@ -191,6 +200,8 @@ export class AuthService extends ApiService<AuthApiData> {
   logout(): Observable<ApiResponse<any>> {
     if(this.RefreshToken && this.RefreshToken != "") {
       this.currentUserSubject.next(null);
+      this.cancel()
+      this.transportService.closeAllDialogs.forEach(val => val.unsubscribe())
       return this.post('/auth/logout', {refreshToken: this.RefreshToken})
       .pipe(shareReplay(), map((res: ApiResponse<any>) => {
         if(!res.hasErrors()) {
@@ -207,7 +218,7 @@ export class AuthService extends ApiService<AuthApiData> {
   }
 
   responseAfterLogout() {
-    localStorage.clear()
+    localStorage.clear();
     this.router.navigate(['/auth/login'], {
       queryParams: {},
     });

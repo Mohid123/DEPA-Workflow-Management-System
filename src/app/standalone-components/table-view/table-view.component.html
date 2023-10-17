@@ -1,5 +1,5 @@
-<div class="flex justify-between mt-5 mb-2">
-  <app-search-bar class="md:w-1/3 w-1/2 mb-2" (searchStr)="sendSearchValue($event)"></app-search-bar>
+<div class="flex mt-5 mb-2" [ngClass]="checkAccessPagination() == true ? 'justify-between': 'justify-end'">
+  <app-search-bar *ngIf="tableData?.results?.length > 0 && checkAccessPagination() == true" class="md:w-1/3 w-1/2 mb-2" (searchStr)="sendSearchValue($event)"></app-search-bar>
   <ng-container *ngIf="moduleData | async as modData">
     <div class="relative mt-5 cursor-pointer">
       <a
@@ -19,25 +19,17 @@
   </ng-container>
 </div>
 
-<ng-container *ngIf="tableData?.results?.length == 0 && (showEmptyMessage | async) == true;">
-  <div class="flex items-center justify-center">
-    <img src="../../../assets/empty-box.svg" alt="empty_box" width="240" height="240">
-  </div>
-  <p class="px-5 text-lg font-semibold text-center text-gray-500">
-    No results found!
-  </p>
-</ng-container>
 <tui-loader [overlay]="true" size="xl" [showLoader]="fetchingTableData | async">
-  <ng-container *ngIf="tableData?.results?.length == 0 && (showEmptyMessage | async) == false; else showSubModules">
+  <ng-container *ngIf="tableData?.results?.length == 0; else showSubModules">
     <p></p>
   </ng-container>
   <ng-template #showSubModules>
-    <section class="grid grid-cols-12 md:grid-cols-8 lg:grid-cols-12 gap-4">
+    <section class="grid grid-cols-12 gap-4">
       <ng-container *ngFor="let data of tableData?.results; let i = index; let first = first; let last = last">
         <ng-container *ngIf="data?.status !== 3">
           <div
             *ngIf="data?.status !== 3 && checkAccessMain(data) == true"
-            class="bg-white rounded-md shadow-md h-auto drop-shadow-md flex flex-col border-t-4 border-t-[#F15B41] cursor-pointer" [ngClass]="data?.layout && data?.layout?.colWidth ? 'col-span-' + data?.layout?.colWidth.toString() : 'col-span-4'">
+            class="bg-white rounded-md shadow-md h-auto drop-shadow-md flex flex-col border-t-4 border-t-[#F15B41] cursor-pointer lg:col-span-4 md:col-span-6 col-span-12">
             <div (click)="setSubmoduleSlug(data?.code, data?.id)" class="flex px-4 pt-5 pb-3 space-x-8 mb-10">
               <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
                 <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
@@ -50,14 +42,15 @@
               </div>
             </div>
             <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5 fixed bottom-0 px-3">
-              <a *ngIf="data?.status !== 3 && checkAccessMain(data) == true" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+              <!-- <a *ngIf="data?.status !== 3 && checkAccessMain(data) == true" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                 <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
-              </a>
+              </a> -->
               <a title="Edit"
                 *ngIf="
-                currentUser?.id == data?.createdBy ||
-                userRoleCheck == true ||
-                checkIfUserisAdmin(data?.adminUsers)"
+                  currentUser?.id == data?.createdBy ||
+                  userRoleCheck == true ||
+                  checkIfUserisAdmin(data?.adminUsers)
+                "
                 [routerLink]="['/modules/edit-module', data?.id]"
                 (click)="setEditSlug(data?.code, data?.id, data?.title)"
                 class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
@@ -71,6 +64,20 @@
                 <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
               </a>
               <div class="ml-auto">
+                <a
+                  tuiHintDirection="top"
+                  [tuiHintAppearance]="'success'"
+                  [tuiHint]="hint"
+                  (mouseenter)="setHintDataTool(data)"
+                  class="px-2 py-1 text-white bg-blue-400 rounded-md cursor-pointer hover:text-white mr-2 relative">
+                  <tui-badge
+                    class="absolute -top-2 -right-2 bg-yellow-600"
+                    status="custom"
+                    size="s"
+                    [value]="setHintData(data)?.stats?.completedCount"
+                  ></tui-badge>
+                  <i class="fa fa-user-circle fa-lg" aria-hidden="true"></i>
+                </a>
                 <a
                   tuiHintDirection="top"
                   [tuiHintAppearance]="'success'"
@@ -104,7 +111,7 @@
         </ng-container>
         <ng-container *ngIf="data?.status == 3">
           <ng-container *ngIf="currentUser?.id == data?.createdBy">
-            <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41]" [ngClass]="data?.layout && data?.layout?.colWidth ? 'col-span-' + data?.layout?.colWidth.toString() : 'col-span-4'">
+            <div class="bg-white rounded-md shadow-lg h-auto drop-shadow-lg flex flex-col border-t-8 border-t-[#F15B41] lg:col-span-4 md:col-span-6 col-span-12">
               <div (click)="setSubmoduleSlug(data?.code, data?.id)" class="flex px-4 pt-5 pb-3 space-x-8 mb-10">
                 <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
                   <img [src]="data?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
@@ -125,9 +132,9 @@
                 </div>
               </div>
               <div class="flex items-center justify-center w-full h-8 py-5 bg-gradient-to-r from-orange-200 to-slate-200 rounded-br-md rounded-bl-md fixed bottom-0">
-                <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+                <!-- <a *ngIf="data?.status !== 3" title="Apps and Submissions" (click)="setSubmoduleSlug(data?.code, data?.id)" class="px-2 py-1 text-white bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                   <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
-                </a>
+                </a> -->
                 <a title="Edit" (click)="setEditSlug(data?.code, data?.id, data?.title)" *ngIf="currentUser?.id == data?.createdBy" [routerLink]="['/modules/edit-module', data?.id]" class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
                   <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
                 </a>
@@ -140,7 +147,7 @@
         </ng-container>
       </ng-container>
     </section>
-    <div *ngIf="(showEmptyMessage | async) == false" class="py-6">
+    <div *ngIf="tableData?.results?.length > 0 && checkAccessPagination() == true" class="py-6">
       <tui-pagination
         [length]="tableData?.totalPages || 1"
         [index]="tableData?.page - 1 || 0"

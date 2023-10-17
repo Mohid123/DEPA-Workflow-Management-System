@@ -11,7 +11,7 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 })
 export class WorkflowsService extends ApiService<any> {
 
-  actionComplete = new EventEmitter()
+  actionComplete = new EventEmitter();
 
   constructor(protected override http: HttpClient, private notif: NotificationsService) {
     super(http)

@@ -30,6 +30,7 @@ export enum StorageItem {
   formID = 'App/formID',
   editSubmissionId = 'App/editSubmissionId',
   editBreadcrumbs = 'App/editBreadcrumbs',
+  previewMode = 'App/previewMode'
 }
 
 /**

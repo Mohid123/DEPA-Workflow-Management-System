@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-center items-center rounded-br-md rounded-bl-md py-5 px-3">
-    <a
+    <!-- <a
       *ngIf="appData?.status !== 3 && checkAccess(appData) == true"
       title="Apps and Submissions"
       (click)="storeModuleID(appData?._id, appData?.code)"
@@ -31,7 +31,7 @@
       [queryParams]="{moduleID: appData?._id}" class="px-2 py-1 text-white bg-green-600 rounded-md hover:text-white hover:bg-opacity-80 hover:transition-colors"
     >
       <i class="fa fa-sitemap fa-lg" aria-hidden="true"></i>
-    </a>
+    </a> -->
     <a
       title="Edit"
       *ngIf="
@@ -55,6 +55,19 @@
       <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
     </a>
     <div class="ml-auto">
+      <a
+        tuiHintDirection="top"
+        [tuiHintAppearance]="'success'"
+        [tuiHint]="hint3"
+        class="px-2 py-1 text-white bg-blue-400 rounded-md cursor-pointer hover:text-white mr-2 relative">
+        <tui-badge
+          class="absolute -top-2 -right-2 bg-yellow-600"
+          status="custom"
+          size="s"
+          [value]="appData?.stats?.completedCount"
+        ></tui-badge>
+        <i class="fa fa-user-circle fa-lg" aria-hidden="true"></i>
+      </a>
       <a
         tuiHintDirection="top"
         [tuiHintAppearance]="'success'"
@@ -85,9 +98,13 @@
 </div>
 
 <ng-template #hint>
-  <strong class="text-base">Completed Submissions: &nbsp; {{appData?.stats?.completedCount || 0}}</strong>
+  <strong class="text-base">Completed submissions: &nbsp; {{appData?.stats?.completedCount}}</strong>
 </ng-template>
 
 <ng-template #hint2>
-  <strong class="text-base">In Progress Submissions: &nbsp; {{appData?.stats?.inProgressCount || 0}}</strong>
+  <strong class="text-base">In Progress submissions: &nbsp; {{appData?.stats?.inProgressCount}}</strong>
+</ng-template>
+
+<ng-template #hint3>
+  <strong class="text-base">Your pending submissions: &nbsp; {{appData?.stats?.inProgressCount}}</strong>
 </ng-template>

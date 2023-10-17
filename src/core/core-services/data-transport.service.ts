@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 /**
  * Defines the state of the Dialog
@@ -32,6 +32,7 @@ export class DataTransportService {
   public subModuleDraft: BehaviorSubject<any> = new BehaviorSubject({});
 
   moduleID = new BehaviorSubject<string>('');
+  closeAllDialogs: Subscription[] = [];
 
   moduleCode = new BehaviorSubject<string>('');
 

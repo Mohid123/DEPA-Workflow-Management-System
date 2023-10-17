@@ -13,17 +13,12 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
-import Editor from 'ckeditor5/build/ckeditor';
-import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
   templateUrl: './add-submodule.component.html',
   styleUrls: ['./add-submodule.component.scss']
 })
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
-  public Editor = Editor.Editor;
-  @ViewChild('editor') editor: CKEditorComponent
-  @ViewChild('editor2') editor2: CKEditorComponent
   subModuleForm!: FormGroup;
   activeItemIndex = 0;
   submoduleFromLS: any;
@@ -251,6 +246,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
    </tr>
 </table>
   `;
+  emailContentCSS: any;
+  emailContentNotifyCSS: any;
   categoryList: any[];
   domainURL = window.location.origin;
   currentFieldArray: any;
@@ -295,74 +292,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   defaultFormIndex: number;
   defaultFormSubscription: Subscription[] = [];
   inheritLoader = new Subject<boolean>();
-  public editorConfig = {
-    toolbar: {
-			items: [
-				'heading',
-        'alignment',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'insertTable',
-				'fontColor',
-				'fontFamily',
-				'horizontalLine',
-				'fontSize',
-				'mediaEmbed',
-				'undo',
-				'redo',
-				'codeBlock',
-				'code',
-				'findAndReplace',
-				'htmlEmbed',
-				'selectAll',
-				'strikethrough',
-				'subscript',
-				'superscript',
-				'highlight',
-				'fontBackgroundColor',
-				'imageInsert',
-				'specialCharacters',
-				'todoList'
-			]
-		},
-    isReadOnly: false,
-		language: 'en',
-		image: {
-			toolbar: [
-				'imageTextAlternative',
-				'toggleImageCaption',
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side',
-				'linkImage'
-			]
-		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
-		},
-    mention: {
-      feeds: [
-        {
-          marker: '@',
-          feed: [],
-          minimumCharacters: 0
-        }
-      ]
-    }
-  };
+  editorOptions = {theme: 'vs-dark', language: 'handlebars'};
+  cssEditorOptions = {theme: 'vs-dark', language: 'css'}
 
   constructor(
     private fb: FormBuilder,
@@ -393,7 +324,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
     this.getAllCompanies();
     this.formComponents = this.transportService.formBuilderData.value;
-    this.formTabs = this.formComponents.map(val => val.title);
+    this.formTabs = this.formComponents?.map(val => val.title);
     let formComps = JSON.parse(JSON.stringify(this.formComponents));
     formComps?.map(form => {
       this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, false)})
@@ -402,14 +333,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       let res = generateKeyCombinations(val)
       return res
     })
-    if(this.summarySchemaFields.length > 0) {
-      let markers = [...this.summarySchemaFields]
-      markers = markers.map(val => {
-        val = '@'+ val
-        return val
-      })
-      this.editorConfig.mention.feeds[0].feed = markers
-    }
     this.formKeysForViewSchema = this.summarySchemaFields;
     // get users for email
     this.search$.pipe(
@@ -458,38 +381,42 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   inheritParentForm() {
     this.inheritLoader.next(true);
     let data = JSON.parse(JSON.stringify(this.dashboard.inheritSubmoduleData.value));
-    data?.formIds?.forEach(value => {
-      value.title = value.title + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
-      value.key = value.key + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
-      FormioUtils.eachComponent(value?.components, (component) => {
-        if(component.type == 'select') {
-          component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-        }
-        if(component.type == 'editgrid') {
-          for (const key in component.templates) {
-            component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    if(data?.formIds?.length > 0) {
+      data?.formIds?.forEach(value => {
+        value.title = value.title + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
+        value.key = value.key + '-' + String(Math.floor(Math.random()*(999-100+1)+100));
+        FormioUtils.eachComponent(value?.components, (component) => {
+          if(component.type == 'select') {
+            component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
           }
+          if(component.type == 'editgrid') {
+            for (const key in component.templates) {
+              component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            }
+          }
+        })
+      })
+      this.formComponents = data?.formIds;
+      this.formTabs = data?.formIds?.map(forms => forms.title);
+      let formComps = JSON.parse(JSON.stringify(this.formComponents));
+      formComps?.map(form => {
+        this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
+      })
+      this.summarySchemaFields = this.formKeys.flatMap(val => {
+        let res = generateKeyCombinations(val)
+        return res
+      });
+      this.formKeysForViewSchema = this.summarySchemaFields;
+      formComps?.map((data, index) => {
+        if(data?.defaultData) {
+          this.defaultFormIndex = index
+          this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
         }
       })
-    })
-    this.formComponents = data?.formIds;
-    this.formTabs = data?.formIds?.map(forms => forms.title);
-    let formComps = JSON.parse(JSON.stringify(this.formComponents));
-    formComps?.map(form => {
-      this.formKeys?.push({[form.key]: FormioUtils.flattenComponents(form?.components, true)})
-    })
-    this.summarySchemaFields = this.formKeys.flatMap(val => {
-      let res = generateKeyCombinations(val)
-      return res
-    });
-    this.formKeysForViewSchema = this.summarySchemaFields;
-
-    formComps?.map((data, index) => {
-      if(data?.defaultData) {
-        this.defaultFormIndex = index
-        this.deafultFormSubmission[this.defaultFormIndex] = data?.defaultData;
-      }
-    })
+    }
+    else {
+      this.formComponents = [{title: '', key: '', display: '', components: []}];
+    }
     const companyId = {
       value: data?.companyId?.id,
       label: data?.companyId?.title
@@ -964,6 +891,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       action: this.emailContent,
       notify: this.emailContentNotify,
     }});
+    this.transportService.formBuilderData.next([{title: '', key: '', display: '', components: []}])
     let approvers = this.workflows?.value?.flatMap(data => {
       return data?.approverIds?.map(approver => {
         return {

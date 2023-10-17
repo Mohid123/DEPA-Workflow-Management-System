@@ -150,17 +150,18 @@ export class UsersListComponent implements OnDestroy {
         this.dashboard.getAllUsersForListing(this.limit, this.page)
         .pipe(takeUntil(this.destroy$))
         .subscribe((res: any) => {
+          this.userAddFormCustom.reset();
           this.rowData = res?.results;
           this.cf.detectChanges();
+          this.userAddFormCustom.get('password')?.setValue('Welcome1!')
         });
       }
     })
   }
 
   cancel() {
-    this.userAddFormCustom.reset()
-    this.userAddFormCustom.controls['password'].setValue('Welcome1!')
-    this.userAddFormCustom.controls['role'].setValue('user')
+    this.userAddFormCustom.reset();
+    this.userAddFormCustom.get('password')?.setValue('Welcome1!')
   }
 
   ngOnDestroy(): void {

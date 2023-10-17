@@ -33,7 +33,7 @@ export class ModuleGuardComponent {
      * @param content epresents an embedded template that can be used to instantiate embedded views. 
      */
    showDialog(content: TemplateRef<TuiDialogContext>): void {
-    this.dialog.open(content).subscribe();
+    this.transportService.closeAllDialogs.push(this.dialog.open(content).subscribe());
   }
 
   /**

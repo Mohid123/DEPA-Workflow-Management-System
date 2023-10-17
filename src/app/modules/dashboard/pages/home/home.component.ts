@@ -33,6 +33,13 @@ export class HomeComponent implements OnDestroy {
     this.dashboardApps = this.dashboard.getDashboardApps();
   }
 
+  checkAccess(data: any) {
+    if (this.userRoleCheck == false && data?.accessType == "disabled" && !data.authorizedUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+
   showAddDialog(content: PolymorpheusContent<TuiDialogContext>) {
     this.dialogs.open(content, {
       dismissible: false,

@@ -1,20 +1,20 @@
 <app-header></app-header>
 
-<section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
+<section class="w-11/12 h-auto min-h-screen mx-auto lg:mt-52 mt-40 pb-44">
   <p class="text-lg font-semibold">Forms</p>
   <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">
     <section class="relative flex justify-between my-8">
       <nav
         tuiTabs
         vertical="left"
-        class="w-32 mr-5"
+        class="lg:w-32 w-18 lg:mr-5"
       >
         <ng-container *ngFor="let tab of formTabs; let j = index">
           <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
         </ng-container>
       </nav>
       <ng-container *ngFor="let form of forms; let i = index;">
-        <div class="w-full well jsonviewer" [ngClass]="activeIndex == i ? 'block': 'hidden'">
+        <div class="w-full well jsonviewer ml-2 lg:ml-0" [ngClass]="activeIndex == i ? 'block': 'hidden'">
           <div class="absolute z-10 -top-7 right-1">
             <a (click)="sendFormForEdit(i, form?._id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">
               <i class="text-white bg-blue-600 fa fa-pencil-square-o fa-lg p-1.5 rounded-md hover:text-white hover:bg-opacity-80 hover:transition-colors" aria-hidden="true"></i>
@@ -60,12 +60,12 @@
       <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first">
         <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
         <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
-          <div class="col-span-4">
+          <div class="lg:col-span-4 col-span-5">
             <label class="block pb-1">{{first ? 'Creators': 'Approvers'}} <span class="text-xs text-red-400">*</span></label>
             <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
             <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
           </div>
-          <div class="col-span-4">
+          <div class="lg:col-span-4 col-span-5">
             <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
             <select (change)="validateSelection(i)" formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">
               <option value="and">AND</option>
@@ -95,7 +95,7 @@
               ></button>
             </tui-badged-content>
           </div>
-          <div class="col-span-1 mt-8 -ml-8">
+          <div class="col-span-1 mt-8 lg:-ml-6 ml-3">
             <button
               tuiIconButton
               type="button"
@@ -121,12 +121,12 @@
   <ng-container *ngIf="activeItemIndex == 0">
     <tui-island
       size="l"
-      class="w-[97.5%] my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"
+      class="lg:w-[97.5%] w-[95%] my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"
     >
       <h4 class="mb-5 text-base font-semibold text-gray-700">Workflow Steps</h4>
       <tui-carousel
         [draggable]="true"
-        [itemsCount]="3"
+        [itemsCount]="currentBreakpoint == BreakPoints.Small ? 2 : 3"
         [(index)]="carouselIndex"
       >
       <ng-container *ngFor="let item of items; let i = index; let last = last">

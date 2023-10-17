@@ -1,7 +1,7 @@
-import { Inject, Injectable, } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Observable, take } from 'rxjs';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { SubmoduleGuardComponent } from '../templates/submodule-guard/submodule-guard.component';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
@@ -14,7 +14,7 @@ import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.u
   providedIn: 'root'
 })
 
-export class SubmoduleGuard implements CanActivate {
+export class SubmoduleGuard implements CanActivate, OnDestroy {
 
   /**
    * Injects aiga UI's Dialog Service, {@link DataTransportService} and Angular's Router
@@ -28,6 +28,8 @@ export class SubmoduleGuard implements CanActivate {
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
+  
+  destroy$ = new Subject();
 
   /**
    * Implements the Can Activate route method which uses an Interface that a class can implement to be a guard deciding if a route can be activated.
@@ -39,11 +41,11 @@ export class SubmoduleGuard implements CanActivate {
   {
     let currentDialogState: DialogState;
     if(Object.keys(this.transportService.subModuleDraft.value)?.length > 0) {
-      this.dialog.open(new PolymorpheusComponent(SubmoduleGuardComponent), {
+      this.transportService.closeAllDialogs.push(this.dialog.open(new PolymorpheusComponent(SubmoduleGuardComponent), {
         dismissible: true,
         closeable: true
-      }).subscribe();
-      this.transportService.dialogState.subscribe(val => {
+      }).subscribe());
+      this.transportService.dialogState.pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val === DialogState.DISCARD) {
           this.routeToBasedOnPreviousPage()
           return true
@@ -68,6 +70,11 @@ export class SubmoduleGuard implements CanActivate {
         return this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
   
 }

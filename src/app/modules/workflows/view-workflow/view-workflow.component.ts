@@ -6,11 +6,9 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
-import domToImage from 'dom-to-image';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
-import { saveAs } from 'file-saver';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { FormioUtils } from '@formio/angular';
 import FormioExport from 'formio-export';
@@ -65,6 +63,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   editStepUserData = new BehaviorSubject<any>({})
   editingStep = new Subject<boolean>();
   userRoleSysAdmin: any;
+  userRoleAdmin: any;
   condition = new FormControl('none');
   conditionAddUser = new FormControl('none');
   showConditionError = new Subject<boolean>();
@@ -73,7 +72,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   formValues: any[] = [];
   formValuesTemp: any[] = [];
   formSubmission = new BehaviorSubject<Array<any>>([]);
-  exporter: FormioExport
+  exporter: FormioExport;
+  currentBreakpoint: string = '';
+  disableAll: boolean;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -86,7 +87,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private notif: NotificationsService
   ) {
     this.currentUser = this.auth.currentUserValue;
+    this.disableAll = getItem(StorageItem.previewMode) || false
     this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
+    this.userRoleAdmin = this.auth.checkIfRolesExist('admin')
     this.fetchData();
     this.getUserData(this.limit, this.page);
   }
@@ -147,6 +150,17 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.showConditionError.next(false)
       }
     })
+  }
+
+  checkEditDisableDeleteButton(data: any) {
+    if (!this.currentUser.roles.includes('sysAdmin') &&
+      data.subModuleId.accessType == "disabled" &&
+      !data.activeStepUsers.includes(this.currentUser.id) &&
+      !data.subModuleId.adminUsers.includes(this.currentUser.id)
+    ) {
+      return false;
+    }
+    return true;
   }
 
   getUserData(limit: number, page: number) {
@@ -702,30 +716,20 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     )
   }
 
-  downloadAsPDF() {
+  downloadAsPDF(index: number) {
     this.downloadingPDF.next(true);
-    this.formWithWorkflow?.forEach(formData => {
-      const width = this.formPdf.nativeElement.clientWidth;
-      const height = this.formPdf.nativeElement.clientHeight + 300;
-      const domElements = this.formPdf?.nativeElement;
-      domToImage.toPng(domElements, {
-        width: width * 2,
-        height: height  * 2,
-        style: {
-          transform: "scale(" + 2 + ")",
-          transformOrigin: "top left"
-        }
-      })
-      .then(async (value: any) => {
-        const pdfBytes = await this.pdfGeneratorService.generatePdf(formData?.data, value, width);
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        saveAs(blob, 'form_data.pdf');
-        this.downloadingPDF.next(false);
-      })
-      .catch(error => {
-        throw error
-      })
-    })
+    let formValue = JSON.parse(JSON.stringify(this.formWithWorkflow[index]));
+    let submission = formValue?.data
+    delete formValue?.data
+    let exporter = new FormioExport(formValue, submission, {});
+    let config = {
+      download: false,
+      filename: 'example.pdf'
+    };
+    exporter.toPdf(config).then((pdf) => {
+      pdf.save();
+    });
+    this.downloadingPDF.next(false);
   }
 
   ngOnDestroy(): void {

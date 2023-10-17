@@ -157,7 +157,6 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     });
     event.form.display = this.formDisplayType?.value;
     event.form.title = this.formTitleControl?.value;
-    this.formValue = event.form;
     if(event.component?.type == 'file') {
       event.component.storage = "url";
       event.component.url = `${environment.apiUrl}/upload`;
@@ -168,6 +167,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     if(event.component?.type == 'select') {
       event.component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
     }
+    this.formValue = event.form;
     this.addCustomEventTrigger()
   }
 
@@ -237,18 +237,23 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
     this.form.title = this.formTitleControl?.value;
     this.form.display = this.formDisplayType?.value;
     this.form.key = this.formCodeControl?.value;
+    debugger
     if(this.editMode == false) {
+      debugger
       if(this.transportService.formBuilderData.value[0].components?.length > 0) {
+        debugger
         const data = [...this.transportService.formBuilderData.value, this.form];
         this.transportService.sendFormBuilderData(data);
         this.location.back()
       }
       else {
+        debugger
         this.transportService.sendFormBuilderData([this.form]);
         this.location.back()
       }
     }
     else {
+      debugger
       if(this.transportService.formBuilderData.value?.components?.length == 0 || Object.keys(this.transportService.formBuilderData.value)?.length == 0) {
         this.transportService.formBuilderData.next([this.form])
       }
@@ -258,6 +263,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
         }
         return val
       });
+      debugger
       this.transportService.sendFormBuilderData(data);
       this.location.back()
     }

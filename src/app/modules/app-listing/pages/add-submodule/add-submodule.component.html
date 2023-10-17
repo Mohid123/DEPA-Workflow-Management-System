@@ -1,5 +1,5 @@
 <app-header></app-header>
-<section class="w-11/12 h-auto min-h-screen mx-auto mt-52 pb-44">
+<section class="w-11/12 h-auto min-h-screen mx-auto mt-44 md:mt-52 pb-44">
   <section>
     <h3 class="text-xl font-semibold text-center">Create a new app</h3>
     <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md mt-2">
@@ -330,7 +330,8 @@
           class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors"
           (click)="openModifyEditorDialog(ckTemplate)"
         >
-        Modify Email Template</button>
+          Modify Email Template
+        </button>
       </div>
     </section>
     <!--Admin and View only users-->
@@ -373,7 +374,7 @@
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
           <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">
             <ng-container *ngIf="i == 0">
-              <div class="col-span-3">
+              <div class="lg:col-span-3 col-span-5">
                 <label class="block pb-1">{{first ? 'Creators': 'Approvers'}} <span class="text-xs text-red-400">*</span></label>
                 <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
                 <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
@@ -381,7 +382,7 @@
                   Please specify submission creator/s
                 </span>
               </div>
-              <div class="col-span-3">
+              <div class="lg:col-span-3 col-span-5">
                 <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
                 <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
                   <ng-container *ngIf="i > 0">
@@ -413,7 +414,7 @@
                   ></button>
                 </tui-badged-content>
               </div>
-              <div class="col-span-4">
+              <div class="lg:col-span-4 col-span-10">
                 <div class="flex justify-between mt-8">
                   <tui-radio-labeled
                     [formControl]="accessTypeValue"
@@ -455,12 +456,12 @@
               </div>
             </ng-container>
             <ng-container *ngIf="i > 0">
-              <div class="col-span-4">
+              <div class="lg:col-span-4 col-span-5">
                 <label class="block pb-1">Approvers <span class="text-xs text-red-400">*</span></label>
                 <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>
                 <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>
               </div>
-              <div class="col-span-4">
+              <div class="lg:col-span-4 col-span-5">
                 <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>
                 <select (change)="validateSelection(i)" formControlName="condition" class="h-10 mt-2 form-select form-control" aria-label="Default select example" id="conditionSelect">
                   <option value="and">AND</option>
@@ -490,7 +491,7 @@
                   ></button>
                 </tui-badged-content>
               </div>
-              <div class="col-span-1 mt-8 -ml-4">
+              <div class="col-span-1 mt-8 lg:-ml-4 ml-2">
                 <button
                   tuiIconButton
                   type="button"
@@ -528,7 +529,7 @@
         <a
           *ngIf="formComponents[0]?.components?.length > 0"
           (click)="openSummarySchemaDialog(summarySchemaTemplate)"
-          class="px-2.5 py-2 text-white bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors"
+          class="px-2.5 py-2 text-white bg-[#A58F81] rounded-xl cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors"
         >
           Summary & View Schema
         </a>
@@ -541,7 +542,7 @@
               <nav
                 tuiTabs
                 vertical="left"
-                class="w-32 mr-5"
+                class="lg:w-32 w-18 mr-5"
               >
                 <ng-container *ngFor="let tab of formTabs; let j = index">
                   <button (click)="activeIndex = j" tuiTab>{{tab}}</button>
@@ -596,7 +597,7 @@
     <!--Add new Form-->
     <div *ngIf="addForms.value == true" class="mt-7">
       <a (click)="saveDraft()" class="px-5 py-3 rounded-lg bg-[#a58f81] no-underline text-white cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
-        {{formComponents[0]?.components?.length == 0 ? 'Add form' : 'Add form'}}
+        Add Form
       </a>
     </div>
 
@@ -684,22 +685,55 @@
       tuiTab
       (click)="activeItemIndex = 0"
     >
-      Email Template For Action
+      Email Template For Action.hbs
     </button>
     <button
       tuiTab
       (click)="activeItemIndex = 1"
     >
-      Email Template For Notify
+      Email Template For Notify.hbs
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 2"
+      class="flex justify-end"
+    >
+      Email Template For Action.css
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 3"
+      class="flex justify-end"
+    >
+      Email Template For Notify.css
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 4"
+      class="flex justify-end"
+    >
+      Preview
     </button>
   </tui-tabs>
   <!--Editor-->
-  <div *ngIf="activeItemIndex == 0" class="my-3">
-    <ckeditor #editor [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContent"></ckeditor>
+  <div *ngIf="activeItemIndex == 0" class="my-3 h-[480px]">
+    <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="emailContent" class="h-full"></ngx-monaco-editor>
   </div>
   <!--Editor Notify-->
-  <div *ngIf="activeItemIndex == 1" class="my-3">
-    <ckeditor #editor2 [config]="editorConfig" [editor]="Editor" [(ngModel)]="emailContentNotify"></ckeditor>
+  <div *ngIf="activeItemIndex == 1" class="my-3 h-[480px]">
+    <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="emailContentNotify" class="h-full"></ngx-monaco-editor>
+  </div>
+  <!--CSS-->
+  <div *ngIf="activeItemIndex == 2" class="my-3 h-[480px]">
+    <ngx-monaco-editor [options]="cssEditorOptions" [(ngModel)]="emailContentCSS" class="h-full"></ngx-monaco-editor>
+  </div>
+  <!--CSS 2-->
+  <div *ngIf="activeItemIndex == 3" class="my-3 h-[480px]">
+    <ngx-monaco-editor [options]="cssEditorOptions" [(ngModel)]="emailContentNotifyCSS" class="h-full"></ngx-monaco-editor>
+  </div>
+  <!--Preview-->
+  <div *ngIf="activeItemIndex == 4" class="my-3 h-[480px]">
+    Preview goes here!
   </div>
   <div class="flex justify-start gap-x-3">
     <button tuiButton type="button" size="m" (click)="confirmEmailTemplate()">
@@ -859,7 +893,7 @@
   <div class="flex justify-center mt-4">
     <button
       tuiButton
-      appearance="secondary-destructive"
+      appearance="primary"
       type="button"
       size="m"
       class="mx-3"
@@ -872,6 +906,7 @@
       tuiButton
       type="button"
       size="m"
+      appearance="accent"
       (click)="observer.complete()"
       >
       Cancel

@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { CommonModule, Location, NgOptimizedImage } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { TuiAvatarModule, TuiBreadcrumbsModule } from '@taiga-ui/kit';
+import { TuiAvatarModule, TuiBreadcrumbsModule, TuiMarkerIconModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { Subscription } from 'rxjs';
-import { TuiHintModule, TuiHostedDropdownModule } from '@taiga-ui/core';
+import { TuiExpandModule, TuiHintModule, TuiHostedDropdownModule } from '@taiga-ui/core';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, RouterModule, TuiBreadcrumbsModule, TuiAvatarModule, TuiHintModule, TuiHostedDropdownModule],
+  imports: [CommonModule, NgOptimizedImage, RouterModule, TuiBreadcrumbsModule, TuiAvatarModule, TuiHintModule, TuiHostedDropdownModule, TuiMarkerIconModule, TuiExpandModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,11 +23,16 @@ export class HeaderComponent implements OnDestroy {
   open = false;
   userRoleCheck: any;
   path: any;
+  expanded = false;
 
   constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location, private ac: ActivatedRoute) {
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
+  }
+
+  toggle(): void {
+    this.expanded = !this.expanded;
   }
 
   checkCurrentRouteIncludes() {
