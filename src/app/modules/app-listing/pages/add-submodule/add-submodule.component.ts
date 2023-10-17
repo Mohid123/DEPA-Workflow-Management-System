@@ -246,6 +246,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
    </tr>
 </table>
   `;
+  emailContentCSS: any;
+  emailContentNotifyCSS: any;
   categoryList: any[];
   domainURL = window.location.origin;
   currentFieldArray: any;
@@ -291,6 +293,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   defaultFormSubscription: Subscription[] = [];
   inheritLoader = new Subject<boolean>();
   editorOptions = {theme: 'vs-dark', language: 'handlebars'};
+  cssEditorOptions = {theme: 'vs-dark', language: 'css'}
 
   constructor(
     private fb: FormBuilder,

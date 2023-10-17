@@ -91,7 +91,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   emailContentNotify: any;
   defaultEmailTemplateFromEdit: any;
   addForms: FormControl<boolean> = new FormControl(true);
+  emailContentCSS: any;
+  emailContentNotifyCSS: any;
   editorOptions = {theme: 'vs-dark', language: 'handlebars'};
+  cssEditorOptions = {theme: 'vs-dark', language: 'css'}
 
   constructor(
     private fb: FormBuilder,
