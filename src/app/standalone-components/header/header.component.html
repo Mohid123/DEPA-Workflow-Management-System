@@ -1,4 +1,4 @@
-<nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md">
+<nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md hidden md:block">
   <div class="flex flex-wrap items-center justify-between max-w-screen p-4 mx-3 lg:mx-20">
     <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="40" height="36">
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
@@ -34,6 +34,46 @@
     </div>
   </div>
 </nav>
+
+<!-- Mobile View -->
+<nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md block md:hidden">
+  <div class="col-span-2 pt-2 ml-2 cursor-pointer">
+    <tui-marker-icon (click)="toggle()" size="xs" src="tuiIconMenuLarge" mode="warning"></tui-marker-icon>
+  </div>
+  <tui-expand [expanded]="expanded">
+    <ng-template tuiExpandContent>
+      <div class="flex flex-col items-center justify-center max-w-screen p-4 mx-3">
+        <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="40" height="36">
+        <div class="items-center justify-between w-full flex md:w-auto md:order-1" id="navbar-sticky">
+          <ul class="flex flex-col px-4 py-2 font-medium rounded-lg md:flex-row md:space-x-6">
+            <li class="mt-2">
+              <a [routerLink]="['/dashboard/home']" routerLinkActive="router-link-active"
+                class="block px-4 py-2 text-white no-underline hover:text-gray-100">Home</a>
+            </li>
+            <li *ngIf="userRoleCheck == true" class="mt-2">
+              <a [routerLink]="['/dashboard/categories']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Categories</a>
+            </li>
+            <li *ngIf="userRoleCheck == true" class="mt-2">
+              <a [routerLink]="['/dashboard/companies']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Companies</a>
+            </li>
+            <li *ngIf="userRoleCheck == true" class="mt-2">
+              <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Users</a>
+            </li>
+            <li *ngIf="userRoleCheck == true" class="mt-2">
+              <a [routerLink]="['/dashboard/profile']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Profile</a>
+            </li>
+            <li class="cursor-pointer mt-4">
+              <a (click)="logoutSession()" class="block py-2 px-4 no-underline rounded-lg bg-red-500 cursor-pointer font-medium text-sm text-white hover:text-white">
+                <i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp; Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ng-template>
+  </tui-expand>
+</nav>
+
 
 <!--breadcrumbs-->
 <div class="fixed z-30 flex justify-between w-full px-5 pt-2 mt-8 border-b-2 shadow-md border-b-gray-300 top-9 md:top-16 bg-white">
