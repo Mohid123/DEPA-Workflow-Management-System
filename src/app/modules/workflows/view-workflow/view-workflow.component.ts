@@ -117,6 +117,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       if(data?.length < 2) {
         this.condition.setValue('none');
         this.condition.disable();
+        this.showConditionError.next(false)
       }
       if(data?.length >= 2) {
         this.condition.enable();
@@ -130,6 +131,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
       if(data?.length < 2) {
         this.conditionAddUser.setValue('none');
         this.conditionAddUser.disable();
+        this.showConditionError.next(false)
       }
       if(data?.length >= 2) {
         this.conditionAddUser.enable();
