@@ -179,6 +179,9 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             if(component?.type == 'select') {
               component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
+            if(component?.type == 'content') {
+              component.html = component.html?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            }
             if(component?.wysiwyg && component?.wysiwyg == true) {
               comp.sanitize = true
             }
@@ -200,7 +203,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
                 }
               })
             }
-          })
+          }, true)
         })
         this.subModuleData = res;
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
