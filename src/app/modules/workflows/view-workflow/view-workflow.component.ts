@@ -165,6 +165,10 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     return true;
   }
 
+  cancel() {
+    this.addControl.setValue([])
+  }
+
   getUserData(limit: number, page: number) {
     this.dashboard.getAllUsersForListing(limit, page)
     .pipe(takeUntil(this.destroy$))
