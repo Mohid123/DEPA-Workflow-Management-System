@@ -1,17 +1,34 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { CommonModule, Location, NgOptimizedImage } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { TuiAvatarModule, TuiBreadcrumbsModule, TuiMarkerIconModule } from '@taiga-ui/kit';
+import { TuiAvatarModule, TuiBadgedContentModule, TuiBreadcrumbsModule, TuiMarkerIconModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { Subscription } from 'rxjs';
-import { TuiExpandModule, TuiHintModule, TuiHostedDropdownModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiExpandModule, TuiHintModule, TuiHostedDropdownModule, TuiNotificationModule } from '@taiga-ui/core';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
+import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, RouterModule, TuiBreadcrumbsModule, TuiAvatarModule, TuiHintModule, TuiHostedDropdownModule, TuiMarkerIconModule, TuiExpandModule],
+  imports: [
+    CommonModule,
+    TuiButtonModule,
+    NgOptimizedImage,
+    RouterModule,
+    TuiBreadcrumbsModule,
+    TuiAvatarModule,
+    TuiHintModule,
+    TuiHostedDropdownModule,
+    TuiMarkerIconModule,
+    TuiExpandModule,
+    TuiSidebarModule,
+    TuiActiveZoneModule,
+    TuiNotificationModule,
+    TuiBadgedContentModule
+  ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,6 +41,7 @@ export class HeaderComponent implements OnDestroy {
   userRoleCheck: any;
   path: any;
   expanded = false;
+  openSideNav = false
 
   constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location, private ac: ActivatedRoute) {
     this.currentRoute = this.router.url;
@@ -33,6 +51,10 @@ export class HeaderComponent implements OnDestroy {
 
   toggle(): void {
     this.expanded = !this.expanded;
+  }
+
+  toggleSideNav(openSideNav: boolean) {
+    this.openSideNav = openSideNav;
   }
 
   checkCurrentRouteIncludes() {
