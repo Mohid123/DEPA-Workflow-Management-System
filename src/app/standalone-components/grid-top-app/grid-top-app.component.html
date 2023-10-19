@@ -8,7 +8,7 @@
       <img [src]="appData?.image" alt="top_app_icon" class="object-contain w-full h-full rounded-lg" loading="eager">
     </div>
     <div class="w-full h-full">
-      <h3 [title]="appData?.title" class="mb-2 text-lg font-semibold line-clamp-2">
+      <h3 [title]="appData?.title" class="mb-2 text-sm md:text-lg font-semibold line-clamp-2">
         {{appData?.title}}
         <ng-container *ngIf="appData?.status === 3">
           <tui-badge
@@ -54,7 +54,7 @@
     >
       <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
     </a>
-    <div class="ml-auto">
+    <div class="ml-auto mr-3">
       <!-- <a
         tuiHintDirection="top"
         [tuiHintAppearance]="'success'"
