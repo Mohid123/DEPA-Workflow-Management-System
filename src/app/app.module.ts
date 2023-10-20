@@ -9,11 +9,10 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CoreModule } from "src/core/core.module";
 import { FormioAppConfig } from "@formio/angular";
-import { AppConfig } from "./config";
+import { AppConfig, MonacoConfig } from "./config";
 import { TuiPreviewModule } from "@taiga-ui/addon-preview";
 import { EmailSubmissionComponent } from "./modules/workflows/email-submission/email-submission.component";
-import { MonacoEditorModule } from "ngx-monaco-editor-v2";
-
+import { MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from "ngx-monaco-editor-v2";
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +39,8 @@ import { MonacoEditorModule } from "ngx-monaco-editor-v2";
 ],
   providers: [
     // {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},
-    {provide: FormioAppConfig, useValue: AppConfig},
+    { provide: FormioAppConfig, useValue: AppConfig },
+    { provide: NGX_MONACO_EDITOR_CONFIG, useValue: MonacoConfig }
   ],
   bootstrap: [AppComponent]
 })
