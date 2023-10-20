@@ -559,7 +559,7 @@
     </button>
     <button
       tuiTab
-      (click)="activeItemIndex = 4"
+      (click)="setPreview(activeItemIndex); activeItemIndex = 4"
       class="flex justify-end"
     >
       Preview
@@ -583,7 +583,7 @@
   </div>
   <!--Preview-->
   <div *ngIf="activeItemIndex == 4" class="my-3 h-[480px]">
-    Preview goes here!
+    <div class="h-[480px] overflow-scroll" [innerHTML]="previewData"></div>
   </div>
   <div class="flex justify-start gap-x-3">
     <button tuiButton type="button" size="m" (click)="confirmEmailTemplate()">

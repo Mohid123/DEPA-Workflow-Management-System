@@ -14,6 +14,7 @@ import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
 import { ApiResponse } from 'src/core/models/api-response.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './edit-submodule.component.html',
@@ -21,6 +22,7 @@ import { ApiResponse } from 'src/core/models/api-response.model';
 })
 export class EditSubmoduleComponent implements OnDestroy, OnInit {
   activeItemIndex = 0;
+  previewData: any;
   subModuleForm!: FormGroup;
   formComponents: any[] = [];
   activeIndex: number = 0;
@@ -106,7 +108,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     private notif: NotificationsService,
     private formService: FormsService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private media: MediaUploadService
+    private media: MediaUploadService,
+    private domSanitizer: DomSanitizer
   ) {
     this.initSubModuleForm();
     this.accessTypeValue = new FormControl(null)
@@ -169,6 +172,17 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  setPreview(i: any) {
+    if(i == 0 || i == 2) {
+      this.previewData = '<style>' + this.emailContentCSS + '</style>' + this.emailContent;
+      this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
+    }
+    if(i == 1 || i == 3) {
+      this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
+      this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
+    }
+  }
+
   sanitizeSubmission(value: any) {
     let data = value?.data;
     if(data) {
@@ -207,8 +221,10 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   cancelEmailTemplate() {
-    this.emailContent = this.dashboard.emailContent;
-    this.emailContentNotify = this.dashboard.emailContentNotify;
+    this.emailContent = this.defaultEmailTemplateFromEdit.action || this.dashboard.emailContent;
+    this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify || this.dashboard.emailContentNotify;
+    this.emailContentCSS = this.defaultEmailTemplateFromEdit.actionCSS || this.dashboard.emailContentCSS;
+    this.emailContentNotifyCSS = this.defaultEmailTemplateFromEdit.notifyCSS || this.dashboard.emailContentNotifyCSS;
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
@@ -308,6 +324,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             this.defaultEmailTemplateFromEdit = response.emailTemplate;
             this.emailContent = this.defaultEmailTemplateFromEdit.action || this.dashboard.emailContent;
             this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify || this.dashboard.emailContentNotify;
+            this.emailContentCSS = this.defaultEmailTemplateFromEdit.actionCSS || this.dashboard.emailContentCSS;
+            this.emailContentNotifyCSS = this.defaultEmailTemplateFromEdit.notifyCSS || this.dashboard.emailContentNotifyCSS;
             this.schemaForm.controls['summarySchema']?.setValue(response?.summarySchema);
             if(response.viewSchema?.length > 0) {
               this.schemaForm.controls['viewSchema'].removeAt(0);
@@ -807,7 +825,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       accessType: this.accessTypeValue?.value?.name,
       emailTemplate: {
         action: this.emailContent,
-        notify: this.emailContentNotify
+        actionCSS: this.emailContentCSS,
+        notify: this.emailContentNotify,
+        notifyCSS: this.emailContentNotifyCSS
       }
     }
     if(statusStr) {

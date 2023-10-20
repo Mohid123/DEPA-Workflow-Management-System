@@ -26,24 +26,12 @@
         </ng-container>
         <ng-template #showApps>
           <ng-container *ngFor="let appdata of app?.submodules; let i = index; let firstModule = first; let last = last;">
-            <ng-container *ngIf="appdata?.status !== 3">
-              <grid-top-app
-                *ngIf="checkAccess(appdata)"
-                (deleteModule)="showDialog($event, template)"
-                [appData]="appdata"
-                class="lg:col-span-4 md:col-span-6 col-span-12"
-              ></grid-top-app>
-            </ng-container>
-            <ng-container *ngIf="appdata?.status == 3">
-             <ng-container *ngIf="currentUser?.id == appdata?.createdBy">
-              <grid-top-app
-                *ngIf="checkAccess(appdata)"
-                (deleteModule)="showDialog($event, template)"
-                [appData]="appdata"
-                class="lg:col-span-4 md:col-span-6 col-span-12"
-              ></grid-top-app>
-             </ng-container>
-            </ng-container>
+            <grid-top-app
+              *ngIf="checkAccess(appdata)"
+              (deleteModule)="showDialog($event, template)"
+              [appData]="appdata"
+              class="lg:col-span-4 md:col-span-6 col-span-12"
+            ></grid-top-app>
           </ng-container>
         </ng-template>
       </ng-container>
