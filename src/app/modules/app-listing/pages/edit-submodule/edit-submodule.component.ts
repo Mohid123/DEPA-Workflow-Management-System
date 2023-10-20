@@ -248,20 +248,27 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   onFileSelect(event: any) {
     const file = event?.target?.files[0];
     if(calculateFileSize(file) == true) {
-      calculateAspectRatio(file).then((res) => {
-        if(res == false) {
-          this.notif.displayNotification('Image should be of 1:1 aspect ratio', 'File Upload', TuiNotification.Warning)
-        }
-        else {
-          this.file = file;
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = (e) => {
-            this.base64File = reader.result;
-          };
-        }
-      });
-    }
+      this.file = file;
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          this.base64File = reader.result;
+        };
+      }
+    //   calculateAspectRatio(file).then((res) => {
+    //     if(res == false) {
+    //       this.notif.displayNotification('Image should be of 1:1 aspect ratio', 'File Upload', TuiNotification.Warning)
+    //     }
+    //     else {
+    //       this.file = file;
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onload = (e) => {
+    //         this.base64File = reader.result;
+    //       };
+    //     }
+    //   });
+    // }
     else {
       this.notif.displayNotification('Allowed file types are JPG/PNG/WebP. File size cannot exceed 2MB', 'File Upload', TuiNotification.Warning)
     }
