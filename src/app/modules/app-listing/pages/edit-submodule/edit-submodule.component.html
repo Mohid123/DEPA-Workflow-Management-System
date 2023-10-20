@@ -177,14 +177,6 @@
     <section class="mt-10">
       <div class="flex justify-between bg-[#EAE4D8] px-2 py-2 rounded-md">
         <h4 class="text-lg font-semibold mt-1">User Access & Workflow</h4>
-        <button
-          tuiButton
-          appearance="custom"
-          size="s"
-          class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors"
-          (click)="openModifyEditorDialog(ckTemplate)"
-        >
-        Modify Email Template</button>
       </div>
     </section>
     <!--Admin and View only users-->
@@ -222,7 +214,17 @@
 
     <!--Edit Workflow-->
     <div class="mt-12 mb-14">
-      <h4 class="py-2 mb-3 text-lg font-semibold bg-[#EAE4D8] px-2 rounded-md">Workflow</h4>
+      <div class="flex justify-between bg-[#EAE4D8] px-2 rounded-md py-2">
+        <h4 class="text-lg font-semibold mt-1">Workflow</h4>
+        <button
+          tuiButton
+          appearance="custom"
+          size="s"
+          class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors"
+          (click)="openModifyEditorDialog(ckTemplate)"
+        >
+        Modify Email Template</button>
+      </div>
       <ng-container formArrayName="workFlowId">
         <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first; let last = last">
           <p class="text-base font-semibold mt-7">Step {{i === 0 ? '1' : i+1}}</p>
