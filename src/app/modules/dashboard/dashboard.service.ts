@@ -666,7 +666,8 @@ export class DashboardService extends ApiService<any> {
   tempItems = new EventEmitter<BreadCrumbs[]>();
   previousRoute: string;
   id: string;
-  inheritSubmoduleData: BehaviorSubject<any> = new BehaviorSubject({})
+  inheritSubmoduleData: BehaviorSubject<any> = new BehaviorSubject({});
+  fetchedNewSubmissions = new EventEmitter<boolean>()
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
@@ -717,6 +718,19 @@ export class DashboardService extends ApiService<any> {
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
           return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch data', 'Get dashboard apps', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  getPendingSubmissions(): Observable<ApiResponse<any>> {
+    return this.get('/user/pendings').pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch data', 'Get pending submissions', TuiNotification.Error)
         }
       }
     }))
@@ -1201,7 +1215,6 @@ export class DashboardService extends ApiService<any> {
       page: page,
       ...queryParams
     }
-
     if(queryParams?.search) {
       delete params?.page
     }

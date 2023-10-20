@@ -17,44 +17,44 @@
           <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Users</a>
         </li>
         <li class="mt-2">
-          <tui-badged-content
-            [contentTop]="3"
-            size="xs"
-            colorTop="#F0775F"
-          >
-            <button
-              tuiIconButton
-              size="s"
-              icon="tuiIconBellLarge"
-              appearance="custom"
-              class="text-white "
-              (click)="toggleSideNav(true)"
-              (tuiActiveZoneChange)="toggleSideNav($event)"
+          <ng-container *ngIf="(pendingSubmissions | async) as pendings">
+            <tui-badged-content
+              [contentTop]="pendings?.totalResults"
+              size="xs"
+              colorTop="#F0775F"
             >
-              <div *tuiSidebar="openSideNav; direction: 'right';" class="px-4 py-5">
-                <h1 class="text-center font-bold text-xl border-b border-gray-300 pb-4">Pending Submissions</h1>
-                <div class="flex flex-col">
-                  <tui-notification
-                    status="success"
-                    class="tui-space_vertical-4"
-                  >
-                    A short simple informative message
-                  </tui-notification>
-                  <tui-notification
-                    status="error"
-                  >
-                    A short simple informative message
-                  </tui-notification>
-                  <tui-notification
-                    status="info"
-                    class="tui-space_vertical-4"
-                  >
-                    A short simple informative message
-                  </tui-notification>
+              <button
+                tuiIconButton
+                size="s"
+                icon="tuiIconBellLarge"
+                appearance="custom"
+                class="text-white "
+                (click)="toggleSideNav(true)"
+                (tuiActiveZoneChange)="toggleSideNav($event)"
+              >
+                <div *tuiSidebar="openSideNav; direction: 'right';" class="px-4 py-5 overflow-y-auto">
+                  <h1 class="text-center font-bold text-xl border-b border-gray-300 pb-4">Pending Submissions</h1>
+                  <div class="flex flex-col">
+                    <tui-loader [showLoader]="(loader | async) == true" [overlay]="true" [inheritColor]="true">
+                      <ng-container *ngFor="let pending of pendings?.results">
+                        <tui-notification
+                          status="warning"
+                          class="tui-space_vertical-3 cursor-pointer"
+                          (click)="goToSubmissions(pending?.code, pending?.id, pending?.subModuleId?.code)"
+                        >
+                          <strong>Code:</strong> {{pending?.code}}
+                          <br>
+                          <strong>Last Activity:</strong> {{pending?.summaryData?.lastActivityPerformedBy?.fullName}}
+                          <br>
+                          <strong>Progress:</strong> {{pending?.summaryData?.progress}}%
+                        </tui-notification>
+                      </ng-container>
+                    </tui-loader>
+                  </div>
                 </div>
-              </div>
-            </button>
-          </tui-badged-content>
+              </button>
+            </tui-badged-content>
+          </ng-container>
         </li>
         <li class="cursor-pointer">
           <tui-hosted-dropdown

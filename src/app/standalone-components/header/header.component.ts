@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location, NgOptimizedImage } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiAvatarModule, TuiBadgedContentModule, TuiBreadcrumbsModule, TuiMarkerIconModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { Subscription } from 'rxjs';
-import { TuiButtonModule, TuiExpandModule, TuiHintModule, TuiHostedDropdownModule, TuiNotificationModule } from '@taiga-ui/core';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { Subscription, Observable, Subject } from 'rxjs';
+import { TuiButtonModule, TuiExpandModule, TuiHintModule, TuiHostedDropdownModule, TuiLoaderModule, TuiNotificationModule } from '@taiga-ui/core';
+import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
 
@@ -27,7 +27,8 @@ import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
     TuiSidebarModule,
     TuiActiveZoneModule,
     TuiNotificationModule,
-    TuiBadgedContentModule
+    TuiBadgedContentModule,
+    TuiLoaderModule
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
@@ -41,9 +42,12 @@ export class HeaderComponent implements OnDestroy {
   userRoleCheck: any;
   path: any;
   expanded = false;
-  openSideNav = false
+  openSideNav = false;
+  pendingSubmissions: Observable<any>;
+  loader = new Subject<boolean>();
 
-  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location, private ac: ActivatedRoute) {
+  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location, private ac: ActivatedRoute, private cf: ChangeDetectorRef) {
+    this.pendingSubmissions = this.dashboardService.getPendingSubmissions();
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
@@ -51,6 +55,34 @@ export class HeaderComponent implements OnDestroy {
 
   toggle(): void {
     this.expanded = !this.expanded;
+  }
+
+  goToSubmissions(key: string, id: string, moduleSlug: string) {
+    this.loader.next(true)
+    let hierarchy = getItem(StorageItem.navHierarchy);
+    if(!hierarchy) {
+      this.dashboardService.getSubModuleByModuleSlug(moduleSlug, 6, 1).subscribe(val => {
+        if(val) {
+          setItem(StorageItem.previewMode, false)
+          setItem(StorageItem.moduleSlug, moduleSlug)
+          setItem(StorageItem.formKey, key)
+          setItem(StorageItem.formID, id)
+          this.loader.next(false)
+          this.toggleSideNav(false)
+          this.router.navigate([`/modules`, moduleSlug || getItem(StorageItem.moduleSlug), key, id])
+        }
+      });
+    }
+    else {
+      setItem(StorageItem.moduleSlug, moduleSlug)
+      setItem(StorageItem.previewMode, false)
+      setItem(StorageItem.formKey, key)
+      setItem(StorageItem.formID, id)
+      this.loader.next(false)
+      this.toggleSideNav(false)
+      this.router.navigate([`/modules`, moduleSlug || getItem(StorageItem.moduleSlug), key, id])
+      this.cf.detectChanges()
+    }
   }
 
   toggleSideNav(openSideNav: boolean) {
