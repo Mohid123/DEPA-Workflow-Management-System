@@ -5,6 +5,7 @@ import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
@@ -26,8 +27,10 @@ export class HomeComponent implements OnDestroy {
   constructor(
     private dashboard: DashboardService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router
   ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('admin');
     this.dashboardApps = this.dashboard.getDashboardApps();
