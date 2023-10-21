@@ -32,7 +32,7 @@
                 (click)="toggleSideNav(true)"
                 (tuiActiveZoneChange)="toggleSideNav($event)"
               >
-                <div *tuiSidebar="openSideNav; direction: 'right';" class="px-4 py-5 overflow-y-auto">
+                <div *tuiSidebar="openSideNav; direction: 'right';" class="px-4 py-5 overflow-y-auto hide-scroll">
                   <h1 class="text-center font-bold text-xl border-b border-gray-300 pb-4">Pending Submissions</h1>
                   <div class="flex flex-col">
                     <tui-loader [showLoader]="(loader | async) == true" [overlay]="true" [inheritColor]="true">
@@ -40,7 +40,7 @@
                         <tui-notification
                           status="warning"
                           class="tui-space_vertical-3 cursor-pointer"
-                          (click)="goToSubmissions(pending?.code, pending?.id, pending?.subModuleId?.code)"
+                          (click)="goToSubmissions(pending?.code, pending?.id, pending?.subModuleId?.code,pending?.subModuleId?.id)"
                         >
                           <strong>Code:</strong> {{pending?.code}}
                           <br>
@@ -78,7 +78,7 @@
 <!-- Mobile View -->
 <nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md block md:hidden">
   <div class="flex justify-between py-2 ml-2 cursor-pointer">
-    <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="30" height="26">
+    <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="30" height="27">
     <tui-marker-icon (click)="toggle()" size="xs" src="tuiIconMenuLarge" mode="warning" class="mx-3"></tui-marker-icon>
   </div>
   <tui-expand [expanded]="expanded">

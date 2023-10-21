@@ -84,6 +84,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private router: Router,
     private notif: NotificationsService
   ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.currentUser = this.auth.currentUserValue;
     this.disableAll = getItem(StorageItem.previewMode) || false
     this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
@@ -502,7 +503,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     .subscribe((res: any) => {
       if(res) {
         this.fetchData();
-        
         this.savingDecision.next(false);
         this.remarks.reset();
         this.saveDialogSubscription.forEach(val => val.unsubscribe());
@@ -510,6 +510,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.approve.reset();
         this.reject.enable();
         this.approve.enable();
+        this.dashboard.submissionPendingDone.emit(true)
       }
       else {
         this.savingDecision.next(false);
@@ -546,7 +547,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.saveDialogSubscription.forEach(val => val.unsubscribe);
           this.remarks.reset();
           this.fetchData();
-          
+
           // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
       })
@@ -560,7 +561,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.saveDialogSubscription.forEach(val => val.unsubscribe);
           this.remarks.reset();
           this.fetchData();
-          
+
           // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
       })
@@ -700,7 +701,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     this.workflowService.updateMultipleFormsData({formDataIds: this.formSubmission.value}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
         this.fetchData();
-        
+
       }
     })
   }

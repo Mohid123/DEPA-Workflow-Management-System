@@ -46,6 +46,8 @@ export class DashboardService extends ApiService<any> {
 
   actionComplete = new EventEmitter();
 
+  submissionPendingDone = new EventEmitter();
+
   emailContent: any = `
   <head></head>
   <body>

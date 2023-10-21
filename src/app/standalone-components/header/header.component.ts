@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiAvatarModule, TuiBadgedContentModule, TuiBreadcrumbsModule, TuiMarkerIconModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { Subscription, Observable, Subject } from 'rxjs';
+import { Subscription, Observable, Subject, takeUntil, take } from 'rxjs';
 import { TuiButtonModule, TuiExpandModule, TuiHintModule, TuiHostedDropdownModule, TuiLoaderModule, TuiNotificationModule } from '@taiga-ui/core';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -45,9 +45,24 @@ export class HeaderComponent implements OnDestroy {
   openSideNav = false;
   pendingSubmissions: Observable<any>;
   loader = new Subject<boolean>();
+  destroy$ = new Subject();
 
-  constructor(public dashboardService: DashboardService, private auth: AuthService, private router: Router, private location: Location, private ac: ActivatedRoute, private cf: ChangeDetectorRef) {
+  constructor(
+    public dashboardService: DashboardService,
+    private auth: AuthService,
+    private router: Router,
+    private location: Location,
+    private ac: ActivatedRoute,
+    private cf: ChangeDetectorRef
+  ) {
     this.pendingSubmissions = this.dashboardService.getPendingSubmissions();
+    this.dashboardService.submissionPendingDone.pipe(take(2), takeUntil(this.destroy$)).subscribe(res => {
+      if(res == true) {
+        this.pendingSubmissions = this.dashboardService.getPendingSubmissions();
+        this.cf.detectChanges()
+        this.dashboardService.submissionPendingDone.emit(false)
+      }
+    })
     this.currentRoute = this.router.url;
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
@@ -57,32 +72,20 @@ export class HeaderComponent implements OnDestroy {
     this.expanded = !this.expanded;
   }
 
-  goToSubmissions(key: string, id: string, moduleSlug: string) {
+  goToSubmissions(key: string, id: string, moduleSlug: string, moduleID: string) {
     this.loader.next(true)
-    let hierarchy = getItem(StorageItem.navHierarchy);
-    if(!hierarchy) {
-      this.dashboardService.getSubModuleByModuleSlug(moduleSlug, 6, 1).subscribe(val => {
-        if(val) {
-          setItem(StorageItem.previewMode, false)
-          setItem(StorageItem.moduleSlug, moduleSlug)
-          setItem(StorageItem.formKey, key)
-          setItem(StorageItem.formID, id)
-          this.loader.next(false)
-          this.toggleSideNav(false)
-          this.router.navigate([`/modules`, moduleSlug || getItem(StorageItem.moduleSlug), key, id])
-        }
-      });
-    }
-    else {
-      setItem(StorageItem.moduleSlug, moduleSlug)
-      setItem(StorageItem.previewMode, false)
-      setItem(StorageItem.formKey, key)
-      setItem(StorageItem.formID, id)
-      this.loader.next(false)
-      this.toggleSideNav(false)
-      this.router.navigate([`/modules`, moduleSlug || getItem(StorageItem.moduleSlug), key, id])
-      this.cf.detectChanges()
-    }
+    this.dashboardService.getSubModuleByModuleSlug(moduleSlug, 6, 1).subscribe(val => {
+      if(val) {
+        setItem(StorageItem.previewMode, false)
+        setItem(StorageItem.moduleSlug, moduleSlug)
+        setItem(StorageItem.moduleID, moduleID)
+        setItem(StorageItem.formKey, key)
+        setItem(StorageItem.formID, id)
+        this.loader.next(false)
+        this.toggleSideNav(false)
+        this.router.navigate([`/modules`, moduleSlug || getItem(StorageItem.moduleSlug), key, id])
+      }
+    })
   }
 
   toggleSideNav(openSideNav: boolean) {
@@ -128,6 +131,8 @@ export class HeaderComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.forEach(subs => subs.unsubscribe());
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
 }
