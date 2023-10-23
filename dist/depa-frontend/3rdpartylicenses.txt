@@ -330,6 +330,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+@taiga-ui/addon-mobile
+Apache-2.0
+
 @taiga-ui/addon-preview
 Apache-2.0
                                  Apache License
