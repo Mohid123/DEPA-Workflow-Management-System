@@ -17,44 +17,42 @@
           <a [routerLink]="['/dashboard/users']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Users</a>
         </li>
         <li class="mt-2">
-          <ng-container *ngIf="(pendingSubmissions | async) as pendings">
-            <tui-badged-content
-              [contentTop]="pendings?.totalResults"
-              size="xs"
-              colorTop="#F0775F"
+          <tui-badged-content
+            [contentTop]="(pendingSubmissions | async)?.totalResults"
+            size="xs"
+            colorTop="#F0775F"
+          >
+            <button
+              tuiIconButton
+              size="s"
+              icon="tuiIconBellLarge"
+              appearance="custom"
+              class="text-white "
+              (click)="toggleSideNav(true)"
+              (tuiActiveZoneChange)="toggleSideNav($event)"
             >
-              <button
-                tuiIconButton
-                size="s"
-                icon="tuiIconBellLarge"
-                appearance="custom"
-                class="text-white "
-                (click)="toggleSideNav(true)"
-                (tuiActiveZoneChange)="toggleSideNav($event)"
-              >
-                <div *tuiSidebar="openSideNav; direction: 'right';" class="px-4 py-5 overflow-y-auto hide-scroll">
-                  <h1 class="pb-4 text-xl font-bold text-center border-b border-gray-300">Pending Submissions</h1>
-                  <div class="flex flex-col">
-                    <tui-loader [showLoader]="(loader | async) == true" [overlay]="true" [inheritColor]="true">
-                      <ng-container *ngFor="let pending of pendings?.results">
-                        <tui-notification
-                          status="warning"
-                          class="cursor-pointer tui-space_vertical-3"
-                          (click)="goToSubmissions(pending?.code, pending?.id, pending?.subModuleId?.code,pending?.subModuleId?.id)"
-                        >
-                          <strong>Code:</strong> {{pending?.code}}
-                          <br>
-                          <strong>Last Activity:</strong> {{pending?.summaryData?.lastActivityPerformedBy?.fullName}}
-                          <br>
-                          <strong>Progress:</strong> {{pending?.summaryData?.progress}}%
-                        </tui-notification>
-                      </ng-container>
-                    </tui-loader>
-                  </div>
+              <div *tuiSidebar="openSideNav; direction: 'right';" class="px-4 py-5 overflow-y-auto hide-scroll">
+                <h1 class="pb-4 text-xl font-bold text-center border-b border-gray-300">Pending Submissions</h1>
+                <div class="flex flex-col">
+                  <tui-loader [showLoader]="(loader | async) == true" [overlay]="true" [inheritColor]="true">
+                    <ng-container *ngFor="let pending of (pendingSubmissions | async)?.results">
+                      <tui-notification
+                        status="warning"
+                        class="cursor-pointer tui-space_vertical-3"
+                        (click)="goToSubmissions(pending?.code, pending?.id, pending?.subModuleId?.code,pending?.subModuleId?.id)"
+                      >
+                        <strong>Code:</strong> {{pending?.code}}
+                        <br>
+                        <strong>Last Activity:</strong> {{pending?.summaryData?.lastActivityPerformedBy?.fullName}}
+                        <br>
+                        <strong>Progress:</strong> {{pending?.summaryData?.progress}}%
+                      </tui-notification>
+                    </ng-container>
+                  </tui-loader>
                 </div>
-              </button>
-            </tui-badged-content>
-          </ng-container>
+              </div>
+            </button>
+          </tui-badged-content>
         </li>
         <li class="cursor-pointer">
           <tui-hosted-dropdown
@@ -102,6 +100,46 @@
             </li>
             <li *ngIf="userRoleCheck == true" class="mt-2">
               <a [routerLink]="['/dashboard/profile']" routerLinkActive="router-link-active" class="block px-4 py-2 text-white no-underline hover:text-gray-100">Profile</a>
+            </li>
+            <li class="mt-2">
+              <ng-container *ngIf="(pendingSubmissions | async) as pendings">
+                <tui-badged-content
+                  [contentTop]="pendings?.totalResults"
+                  size="xs"
+                  colorTop="#F0775F"
+                >
+                  <button
+                    tuiIconButton
+                    size="s"
+                    icon="tuiIconBellLarge"
+                    appearance="custom"
+                    class="text-white "
+                    (click)="toggleSideNav(true)"
+                    (tuiActiveZoneChange)="toggleSideNav($event)"
+                  >
+                    <div *tuiSidebar="openSideNav; direction: 'right';" class="px-4 py-5 overflow-y-auto hide-scroll">
+                      <h1 class="pb-4 text-xl font-bold text-center border-b border-gray-300">Pending Submissions</h1>
+                      <div class="flex flex-col">
+                        <tui-loader [showLoader]="(loader | async) == true" [overlay]="true" [inheritColor]="true">
+                          <ng-container *ngFor="let pending of pendings?.results">
+                            <tui-notification
+                              status="warning"
+                              class="cursor-pointer tui-space_vertical-3"
+                              (click)="goToSubmissions(pending?.code, pending?.id, pending?.subModuleId?.code,pending?.subModuleId?.id)"
+                            >
+                              <strong>Code:</strong> {{pending?.code}}
+                              <br>
+                              <strong>Last Activity:</strong> {{pending?.summaryData?.lastActivityPerformedBy?.fullName}}
+                              <br>
+                              <strong>Progress:</strong> {{pending?.summaryData?.progress}}%
+                            </tui-notification>
+                          </ng-container>
+                        </tui-loader>
+                      </div>
+                    </div>
+                  </button>
+                </tui-badged-content>
+              </ng-container>
             </li>
             <li class="mt-4 cursor-pointer">
               <a (click)="logoutSession()" class="block px-4 py-2 text-sm font-medium text-white no-underline bg-red-500 rounded-lg cursor-pointer hover:text-white">

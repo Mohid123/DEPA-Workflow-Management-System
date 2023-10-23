@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiAvatarModule, TuiBadgedContentModule, TuiBreadcrumbsModule, TuiMarkerIconModule } from '@taiga-ui/kit';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { Subscription, Observable, Subject, takeUntil, take } from 'rxjs';
+import { Subscription, Observable, Subject, takeUntil, take, isEmpty, of } from 'rxjs';
 import { TuiButtonModule, TuiExpandModule, TuiHintModule, TuiHostedDropdownModule, TuiLoaderModule, TuiNotificationModule } from '@taiga-ui/core';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -46,6 +46,7 @@ export class HeaderComponent implements OnDestroy {
   pendingSubmissions: Observable<any>;
   loader = new Subject<boolean>();
   destroy$ = new Subject();
+  private initialized = false;
 
   constructor(
     public dashboardService: DashboardService,
@@ -55,7 +56,7 @@ export class HeaderComponent implements OnDestroy {
     private ac: ActivatedRoute,
     private cf: ChangeDetectorRef
   ) {
-    this.pendingSubmissions = this.dashboardService.getPendingSubmissions();
+    this.pendingSubmissions = this.dashboardService.getPendingSubmissions()
     this.dashboardService.submissionPendingDone.pipe(take(2), takeUntil(this.destroy$)).subscribe(res => {
       if(res == true) {
         this.pendingSubmissions = this.dashboardService.getPendingSubmissions();

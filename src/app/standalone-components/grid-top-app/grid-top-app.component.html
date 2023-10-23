@@ -1,11 +1,11 @@
 <div
   *ngIf="checkAccess(appData) == true"
-  class="main"
+  class="bg-white rounded-md shadow-md h-auto drop-shadow-md flex flex-col border-t-4 border-t-[#F15B41] cursor-pointer"
 >
   <div (click)="appData?.status !== 3 ? storeModuleID(appData?._id, appData?.code) : ''" [routerLink]="appData?.status !== 3 ? ['/modules', appData?.code] : null"
-    [queryParams]="{moduleID: appData?._id}" class="inner_main">
-    <div class="img_div">
-      <img [src]="appData?.image" alt="top_app_icon" loading="eager" class="app_img">
+    [queryParams]="{moduleID: appData?._id}" class="flex pt-5 space-x-8 px-4 pb-3">
+    <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">
+      <img [src]="appData?.image" alt="top_app_icon" loading="eager" class="object-contain w-full h-full rounded-lg">
     </div>
     <div class="w-full h-full ml-3">
       <h3 [title]="appData?.title" class="mb-2 text-lg font-semibold line-clamp-2">
@@ -22,7 +22,7 @@
       <p [title]="appData?.description" class="leading-6 line-clamp-2">{{appData?.description}}</p>
     </div>
   </div>
-  <div class="bottom_div">
+  <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-between items-center rounded-br-md rounded-bl-md py-5 px-3">
     <div>
       <a
         title="Edit"
@@ -47,31 +47,31 @@
         <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
       </a>
     </div>
-    <div>
+    <div class="mr-5 lg:mr-0">
       <a
         tuiHintDirection="top"
         [tuiHintAppearance]="'success'"
         [tuiHint]="hint"
-        class="px-2 py-1 text-white bg-green-500 rounded-md cursor-pointer hover:text-white mr-2 position-relative">
+        class="text-white lg:px-2 lg:py-1 lg:bg-green-500 cursor-pointer hover:text-white mr-2 relative rounded-md">
         <tui-badge
-          class="position-absolute -top-2 -right-2 bg-yellow-600"
+          class="absolute -top-2 -right-2 bg-yellow-600"
           status="custom"
           size="s"
           [value]="appData?.stats?.completedCount"
         ></tui-badge>
-        <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
+        <i class="fa fa-check-circle fa-lg bg-green-500 lg:bg-transparent p-1 lg:p-0 rounded-md" aria-hidden="true"></i>
       </a>
       <a
         tuiHintDirection="top"
         [tuiHint]="hint2"
-        class="px-2 py-1 text-white bg-gray-500 rounded-md cursor-pointer hover:text-white position-relative">
+        class="text-white lg:px-2 lg:py-1 lg:bg-gray-500 cursor-pointer hover:text-white relative rounded-md">
         <tui-badge
-          class="position-absolute -top-2 -right-2 bg-yellow-600"
+          class="absolute -top-2 -right-2 bg-yellow-600"
           status="custom"
           size="s"
           [value]="appData?.stats?.inProgressCount"
         ></tui-badge>
-        <i class="fa fa-clock-o fa-lg" aria-hidden="true"></i>
+        <i class="fa fa-clock-o fa-lg bg-gray-500 lg:bg-transparent p-1 lg:p-0 rounded-md" aria-hidden="true"></i>
       </a>
     </div>
   </div>  
