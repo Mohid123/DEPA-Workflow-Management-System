@@ -155,7 +155,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             if(component?.type == 'select') {
               component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
-            if(component?.type == 'content') {
+            if(component?.html) {
               component.html = component.html?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
             if(component?.wysiwyg && component?.wysiwyg == true) {

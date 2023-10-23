@@ -179,7 +179,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             if(component?.type == 'select') {
               component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
-            if(component?.type == 'content') {
+            if(component?.html) {
               component.html = component.html?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
             if(component?.wysiwyg && component?.wysiwyg == true) {
