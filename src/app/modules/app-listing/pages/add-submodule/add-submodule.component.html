@@ -740,7 +740,7 @@
         <div class="h-[480px] overflow-scroll" [innerHTML]="previewData"></div>
       </div>
     </div>
-    <div class="w-[28%] ml-6">
+    <div class="w-[28%] ml-6 h-[480px] overflow-y-auto overflow-x-hidden">
       <p class="text-lg font-semibold my-2 text-black">Form Keys</p>
       <ul *ngFor="let key of summarySchemaFields">
         <li class="my-2 list-disc text-black">{{key}}</li>

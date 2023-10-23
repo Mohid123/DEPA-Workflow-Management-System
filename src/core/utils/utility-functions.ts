@@ -92,6 +92,7 @@ export const generateKeyCombinations = (inputObject) => {
     val !== `${firstKey}.dataMap` &&
     val !== `${firstKey}.dataGrid` &&
     val !== `${firstKey}.editGrid` &&
+    val !== `${firstKey}.editGrid.dataGrid` &&
     val !== `${firstKey}.tree`
   ))
   return combinations;
