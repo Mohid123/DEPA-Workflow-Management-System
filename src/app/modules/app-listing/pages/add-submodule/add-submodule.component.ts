@@ -817,12 +817,15 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           if(component.type == 'select') {
             component.template = component?.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
           }
+          if(component?.html) {
+            component.html = component.html?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+          }
           if(component.type == 'editgrid') {
             for (const key in component.templates) {
               component.templates[key] = component.templates[key]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
           }
-        })
+        }, true)
       })
       this.formComponents = data?.formIds;
       this.formTabs = data?.formIds?.map(forms => forms.title);

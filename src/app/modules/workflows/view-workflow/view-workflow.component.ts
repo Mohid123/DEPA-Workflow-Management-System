@@ -232,6 +232,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             if(component?.type == 'select') {
               component.template = component.template?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
             }
+            if(component?.html) {
+              component.html = component.html?.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            }
             if(component?.permissions && component?.permissions?.length > 0) {
               return component?.permissions?.map(permit => {
                 if(this.currentUser?.id == permit?.id) {
@@ -250,7 +253,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
                 }
               })
             }
-          })
+          }, true)
         })
         this.workflowData = data;
         this.currentStepId = this.workflowData?.workflowStatus?.filter(data => {
