@@ -6,6 +6,7 @@ import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { SubmoduleGuardComponent } from '../templates/submodule-guard/submodule-guard.component';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
 import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
+import { Location } from '@angular/common';
 
 /**
  * Guard that protects the Submodule page from rerouting without user feedback on the unsaved data
@@ -26,7 +27,8 @@ export class SubmoduleGuard implements CanActivate, OnDestroy {
     @Inject(TuiDialogService) private readonly dialog: TuiDialogService,
     private transportService: DataTransportService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private location: Location
   ) {}
   
   destroy$ = new Subject();
@@ -62,12 +64,11 @@ export class SubmoduleGuard implements CanActivate, OnDestroy {
   routeToBasedOnPreviousPage() {
     this.activatedRoute.queryParams.pipe(take(1)).subscribe(val => {
       if(Object.keys(val).length > 0) {
-        removeItem(StorageItem.editmoduleId)
-        removeItem(StorageItem.editmoduleSlug)
         return this.router.navigate(['/dashboard/home'])
+        
       }
       else {
-        return this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        return this.location.back()
       }
     })
   }
