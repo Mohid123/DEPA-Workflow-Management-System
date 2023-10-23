@@ -8,7 +8,6 @@ import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
-import { PdfGeneratorService } from 'src/core/core-services/pdf-generation.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { FormioUtils } from '@formio/angular';
 import FormioExport from 'formio-export';
@@ -83,9 +82,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
-    private pdfGeneratorService: PdfGeneratorService,
     private notif: NotificationsService
   ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.currentUser = this.auth.currentUserValue;
     this.disableAll = getItem(StorageItem.previewMode) || false
     this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
@@ -96,13 +95,15 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     const hierarchy = getItem(StorageItem.navHierarchy);
-    hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
-    })
-    this.dashboard.items = [...hierarchy, {
-      caption: getItem(StorageItem.formKey),
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}/${getItem(StorageItem.formID)}`
-    }];
+    if(hierarchy) {
+      hierarchy.forEach(val => {
+        val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+      })
+      this.dashboard.items = [...hierarchy, {
+        caption: getItem(StorageItem.formKey),
+        routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}/${getItem(StorageItem.formID)}`
+      }];
+    }
 
     this.search$.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(value => {
       this.dashboard.getAllUsersForListing(this.limit, this.page, value)
@@ -514,6 +515,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         this.approve.reset();
         this.reject.enable();
         this.approve.enable();
+        this.dashboard.submissionPendingDone.emit(true)
       }
       else {
         this.savingDecision.next(false);
@@ -550,6 +552,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.saveDialogSubscription.forEach(val => val.unsubscribe);
           this.remarks.reset();
           this.fetchData();
+
           // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
       })
@@ -563,6 +566,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.saveDialogSubscription.forEach(val => val.unsubscribe);
           this.remarks.reset();
           this.fetchData();
+
           // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
         }
       })
@@ -701,7 +705,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     })
     this.workflowService.updateMultipleFormsData({formDataIds: this.formSubmission.value}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
-        this.fetchData()
+        this.fetchData();
+
       }
     })
   }

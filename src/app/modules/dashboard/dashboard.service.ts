@@ -46,200 +46,619 @@ export class DashboardService extends ApiService<any> {
 
   actionComplete = new EventEmitter();
 
+  submissionPendingDone = new EventEmitter();
+
   emailContent: any = `
-  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-   <tr>
-      <td align="center">
-         <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-            <tr>
-               <td class="header">
-                  <a href="http://127.0.0.1:8080/">
-                  </a>
-               </td>
-            </tr>
-            <tr>
-               <td class="body">
-                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
-                     role="presentation">
-                     <tr class="header">
-                        <td>
-                           <a href="http://127.0.0.1:8080/">
-                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
-                                 class="logo">
-                           </a>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td class="content-cell">
-                           <h1>Hello!</h1>
-                           <div class="form-data">
-                              <h3>Forms data</h3>
-                              <table class="approval-log">
-                                 {{#each formsData}}
-                                 <tr>
-                                    <th colspan=2>Form Title: {{formId.title}}</th>
-                                 </tr>
-                                 <tr>
-                                    <th>key</th>
-                                    <th>value</th>
-                                 </tr>
-                                 {{#each data}}
-                                 <tr>
-                                    <td>{{@key}}</td>
-                                    <td>{{this}}</td>
-                                 </tr>
-                                 {{/each}}
-                                 {{/each}}
-                              </table>
-                           </div>
-                           <h3>Summary</h3>
-                           <table class="summary-data">
-                              <tr>
-                                 <th>Progress</th>
-                                 <th>Recent Activity</th>
-                                 <th>Pending On</th>
-                              </tr>
-                              <tr>
-                                 <td>{{summaryData.progress}}%</td>
-                                 <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
-                                 <td>
-                                    {{#each summaryData.pendingOnUsers}}
-                                    {{this.fullName}}{{#unless @last}}, {{/unless}}
+  <head></head>
+  <body>
+      <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+          <td align="center">
+            <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td class="header">
+                      <a href="http://127.0.0.1:8080/">
+                      </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="body">
+                      <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                        role="presentation">
+                        <tr class="header">
+                            <td>
+                              <a href="http://127.0.0.1:8080/">
+                                  <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                    class="logo">
+                              </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="content-cell">
+                              <h1>Hello!</h1>
+                              <div class="form-data">
+                                  <h3>Forms data</h3>
+                                  <table class="approval-log">
+                                    {{#each formsData}}
+                                    <tr>
+                                        <th colspan=2>Form Title: {{formId.title}}</th>
+                                    </tr>
+                                    <tr>
+                                        <th>key</th>
+                                        <th>value</th>
+                                    </tr>
+                                    {{#each data}}
+                                    <tr>
+                                        <td>{{@key}}</td>
+                                        <td>{{this}}</td>
+                                    </tr>
                                     {{/each}}
-                                 </td>
-                              </tr>
-                           </table>
-                           <h3>Approval logs</h3>
-                           <table class="approval-log">
-                              <tr>
-                                 <th>Performed By</th>
-                                 <th>Decision</th>
-                                 <th>Comments</th>
-                              </tr>
-                              {{#each approvalLogs}}
-                              <tr>
-                                 <td>{{performedById.fullName}}</td>
-                                 <td>{{approvalStatus}}</td>
-                                 <td>{{remarks}}</td>
-                              </tr>
-                              {{/each}}
-                           </table>
-                           <p>Now it's your turn to execute the workflow. Please perform the necessary
-                              action as soon as possible so that the rest of the workflow can be executed.
-                           </p>
-                           <div class="btn-align" cellpadding="0">
-                              <a id="accept-button"
-                                 href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true"
-                                 class="button button-primary" target="_self"
-                                 rel="noopener">Approve</a>
-                              <a id="reject-button"
-                                 href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved="
-                                 class="button button-danger" target="_self"
-                                 rel="noopener">Reject</a>
-                           </div>
-                           <p>Regards,<br> DEPA Groups</p>
-                        </td>
-                     </tr>
-                  </table>
-               </td>
-            </tr>
-         </table>
-      </td>
-   </tr>
-</table>
+                                    {{/each}}
+                                  </table>
+                              </div>
+                              <h3>Summary</h3>
+                              <table class="summary-data">
+                                  <tr>
+                                    <th>Progress</th>
+                                    <th>Recent Activity</th>
+                                    <th>Pending On</th>
+                                  </tr>
+                                  <tr>
+                                    <td>{{summaryData.progress}}%</td>
+                                    <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                    <td>
+                                        {{#each summaryData.pendingOnUsers}}
+                                        {{this.fullName}}{{#unless @last}}, {{/unless}}
+                                        {{/each}}
+                                    </td>
+                                  </tr>
+                              </table>
+                              <h3>Approval logs</h3>
+                              <table class="approval-log">
+                                  <tr>
+                                    <th>Performed By</th>
+                                    <th>Decision</th>
+                                    <th>Comments</th>
+                                  </tr>
+                                  {{#each approvalLogs}}
+                                  <tr>
+                                    <td>{{performedById.fullName}}</td>
+                                    <td>{{approvalStatus}}</td>
+                                    <td>{{remarks}}</td>
+                                  </tr>
+                                  {{/each}}
+                              </table>
+                              <p>Now it's your turn to execute the workflow. Please perform the necessary
+                                  action as soon as possible so that the rest of the workflow can be executed.
+                              </p>
+                              <div class="btn-align" cellpadding="0">
+                                  <a id="accept-button"
+                                    href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved=true"
+                                    class="button button-primary" target="_self"
+                                    rel="noopener">Approve</a>
+                                  <a id="reject-button"
+                                    href="https://depa-frontend.pages.dev/email-submission?submissionId={{submissionId}}&stepId={{stepId}}&userId={{userId}}&isApproved="
+                                    class="button button-danger" target="_self"
+                                    rel="noopener">Reject</a>
+                              </div>
+                              <p>Regards,<br> DEPA Groups</p>
+                            </td>
+                        </tr>
+                      </table>
+                  </td>
+                </tr>
+            </table>
+          </td>
+      </tr>
+    </table>
+  </body>
   `;
   emailContentNotify: any = `
-  <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-   <tr>
-      <td align="center">
-         <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-            <tr>
-               <td class="header">
-                  <a href="http://127.0.0.1:8080/">
-                  </a>
-               </td>
-            </tr>
-            <tr>
-               <td class="body">
-                  <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
-                     role="presentation">
-                     <tr class="header">
-                        <td>
-                           <a href="http://127.0.0.1:8080/">
-                              <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
-                                 class="logo">
-                           </a>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td class="content-cell">
-                           <h1>Hello!</h1>
-                           <div class="form-data">
-                              <h3>Forms data</h3>
-                              <table class="approval-log">
-                                 {{#each formsData}}
-                                 <tr>
-                                    <th colspan=2>Form Title: {{formId.title}}</th>
-                                 </tr>
-                                 <tr>
-                                    <th>key</th>
-                                    <th>value</th>
-                                 </tr>
-                                 {{#each data}}
-                                 <tr>
-                                    <td>{{@key}}</td>
-                                    <td>{{this}}</td>
-                                 </tr>
-                                 {{/each}}
-                                 {{/each}}
-                              </table>
-                           </div>
-                           <h3>Summary</h3>
-                           <table class="summary-data">
-                              <tr>
-                                 <th>Progress</th>
-                                 <th>Recent Activity</th>
-                                 <th>Pending On</th>
-                              </tr>
-                              <tr>
-                                 <td>{{summaryData.progress}}%</td>
-                                 <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
-                                 <td>
-                                    {{#each summaryData.pendingOnUsers}}
-                                    {{this.fullName}}{{#unless @last}}, {{/unless}}
+  <head></head>
+  <body>
+      <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+          <td align="center">
+            <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td class="header">
+                      <a href="http://127.0.0.1:8080/">
+                      </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="body">
+                      <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
+                        role="presentation">
+                        <tr class="header">
+                            <td>
+                              <a href="http://127.0.0.1:8080/">
+                                  <img src="https://depa.com/images/logo.png" alt="DEPA Organization Logo"
+                                    class="logo">
+                              </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="content-cell">
+                              <h1>Hello!</h1>
+                              <div class="form-data">
+                                  <h3>Forms data</h3>
+                                  <table class="approval-log">
+                                    {{#each formsData}}
+                                    <tr>
+                                        <th colspan=2>Form Title: {{formId.title}}</th>
+                                    </tr>
+                                    <tr>
+                                        <th>key</th>
+                                        <th>value</th>
+                                    </tr>
+                                    {{#each data}}
+                                    <tr>
+                                        <td>{{@key}}</td>
+                                        <td>{{this}}</td>
+                                    </tr>
                                     {{/each}}
-                                 </td>
-                              </tr>
-                           </table>
-                           <h3>Approval logs</h3>
-                           <table class="approval-log">
-                              <tr>
-                                 <th>Performed By</th>
-                                 <th>Decision</th>
-                                 <th>Comments</th>
-                              </tr>
-                              {{#each approvalLogs}}
-                              <tr>
-                                 <td>{{performedById.fullName}}</td>
-                                 <td>{{approvalStatus}}</td>
-                                 <td>{{remarks}}</td>
-                              </tr>
-                              {{/each}}
-                           </table>
-                           <p>The last action has been performed by the user, and the action is
-                           "blablabla". Currently, the step is active
-                           for the following users: User A, User B, and User C.
-                           </p>
-                           <p>Regards,<br> DEPA Groups</p>
-                        </td>
-                     </tr>
-                  </table>
-               </td>
-            </tr>
-         </table>
-      </td>
-   </tr>
-</table>
+                                    {{/each}}
+                                  </table>
+                              </div>
+                              <h3>Summary</h3>
+                              <table class="summary-data">
+                                  <tr>
+                                    <th>Progress</th>
+                                    <th>Recent Activity</th>
+                                    <th>Pending On</th>
+                                  </tr>
+                                  <tr>
+                                    <td>{{summaryData.progress}}%</td>
+                                    <td>{{summaryData.lastActivityPerformedBy.fullName}}</td>
+                                    <td>
+                                        {{#each summaryData.pendingOnUsers}}
+                                        {{this.fullName}}{{#unless @last}}, {{/unless}}
+                                        {{/each}}
+                                    </td>
+                                  </tr>
+                              </table>
+                              <h3>Approval logs</h3>
+                              <table class="approval-log">
+                                  <tr>
+                                    <th>Performed By</th>
+                                    <th>Decision</th>
+                                    <th>Comments</th>
+                                  </tr>
+                                  {{#each approvalLogs}}
+                                  <tr>
+                                    <td>{{performedById.fullName}}</td>
+                                    <td>{{approvalStatus}}</td>
+                                    <td>{{remarks}}</td>
+                                  </tr>
+                                  {{/each}}
+                              </table>
+                              <p>The last action has been performed by the user, and the action is
+                              "blablabla". Currently, the step is active
+                              for the following users: User A, User B, and User C.
+                              </p>
+                              <p>Regards,<br> DEPA Groups</p>
+                            </td>
+                        </tr>
+                      </table>
+                  </td>
+                </tr>
+            </table>
+          </td>
+      </tr>
+    </table>
+  </body>
+  `;
+
+  emailContentCSS: any = `
+    body {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -webkit-text-size-adjust: none;
+      background-color: #ffffff;
+      color: #718096;
+      height: 100%;
+      line-height: 1.4;
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+    }
+
+    .wrapper {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      background-color: #edf2f7;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .header {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: absolute;
+        top: -110px;
+      left: 40%;
+      padding: 50px 0 25px 0;
+      text-align: center;
+    }
+
+    .content {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .body {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      background-color: #edf2f7;
+      border-bottom: 1px solid #edf2f7;
+      border-top: 1px solid #edf2f7;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      border: hidden !important;
+      position: relative;
+    }
+
+    .inner-body {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 570px;
+      background-color: #ffffff;
+      border-color: #e8e5ef;
+      border-radius: 2px;
+      border-width: 1px;
+      box-shadow: 0 2px 0 rgba(0, 0, 150, 0.025), 2px 4px 0 rgba(0, 0, 150, 0.015);
+      margin: 70px auto 50px auto;
+      padding: 0;
+      width: 570px;
+      padding: 32px;
+    }
+
+    .form-data {
+      width: 100%;
+      min-height: 100px;
+      height: 200px;
+      overflow-y: scroll;
+      margin-bottom: 20px;
+    }
+
+    .form-data ul {
+      list-style-type: none;
+      margin-left: -40px;
+    }
+
+    .form-data ul li {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .form-data ul li span:first-child {
+      font-weight: 500;
+    }
+
+    .action {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      margin: 30px auto;
+      padding: 0;
+      text-align: center;
+      width: 100%;
+      display:flex;
+      justify-content: center;
+    }
+
+    .action td {
+      padding-right: 1rem;
+    }
+
+    .button {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -webkit-text-size-adjust: none;
+      border-radius: 4px;
+      color: #fff;
+      display: inline-block;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    .button-primary {
+      border-bottom: 8px solid #4CAF50;
+      border-left: 18px solid #4CAF50;
+      border-right: 18px solid #4CAF50;
+      border-top: 8px solid #4CAF50;
+      background-color: #4CAF50;
+    }
+
+    .button-primary:hover {
+      background-color: #4CAF50;
+    }
+
+    .button-danger {
+      border-bottom: 8px solid #f44336;
+      border-left: 18px solid #f44336;
+      border-right: 18px solid #f44336;
+      border-top: 8px solid #f44336;
+      background-color: #f44336;
+    }
+
+    .button-danger:hover {
+      background-color: #f4433f;
+    }
+
+    .content-cell h1 {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      color: #3d4852;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 0;
+      text-align: left;
+    }
+
+    .form-title {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .form-key {
+      font-weight: 500;
+    }
+
+    .form-value {
+      font-weight: 300;
+    }
+
+    .approval-log, .summary-data {
+      width: 100%;
+    }
+
+    .approval-log tr th, .summary-data tr th {
+      background-color: #f2f2f2;
+    }
+
+    .approval-log tr th, .approval-log tr td
+    .summary-data tr th, .summary-data tr td {
+      text-align:center;
+    }
+
+    .btn-align {
+      text-align: left;
+    }
+  `;
+  emailContentNotifyCSS: any = `
+    body {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -webkit-text-size-adjust: none;
+      background-color: #ffffff;
+      color: #718096;
+      height: 100%;
+      line-height: 1.4;
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+    }
+
+    .wrapper {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      background-color: #edf2f7;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .header {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: absolute;
+        top: -110px;
+      left: 40%;
+      padding: 50px 0 25px 0;
+      text-align: center;
+    }
+
+    .content {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .body {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      background-color: #edf2f7;
+      border-bottom: 1px solid #edf2f7;
+      border-top: 1px solid #edf2f7;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      border: hidden !important;
+      position: relative;
+    }
+
+    .inner-body {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 570px;
+      background-color: #ffffff;
+      border-color: #e8e5ef;
+      border-radius: 2px;
+      border-width: 1px;
+      box-shadow: 0 2px 0 rgba(0, 0, 150, 0.025), 2px 4px 0 rgba(0, 0, 150, 0.015);
+      margin: 70px auto 50px auto;
+      padding: 0;
+      width: 570px;
+      padding: 32px;
+    }
+
+    .form-data {
+      width: 100%;
+      min-height: 100px;
+      height: 200px;
+      overflow-y: scroll;
+      margin-bottom: 20px;
+    }
+
+    .form-data ul {
+      list-style-type: none;
+      margin-left: -40px;
+    }
+
+    .form-data ul li {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .form-data ul li span:first-child {
+      font-weight: 500;
+    }
+
+    .action {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -premailer-cellpadding: 0;
+      -premailer-cellspacing: 0;
+      -premailer-width: 100%;
+      margin: 30px auto;
+      padding: 0;
+      text-align: center;
+      width: 100%;
+      display:flex;
+      justify-content: center;
+    }
+
+    .action td {
+      padding-right: 1rem;
+    }
+
+    .button {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      -webkit-text-size-adjust: none;
+      border-radius: 4px;
+      color: #fff;
+      display: inline-block;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    .button-primary {
+      border-bottom: 8px solid #4CAF50;
+      border-left: 18px solid #4CAF50;
+      border-right: 18px solid #4CAF50;
+      border-top: 8px solid #4CAF50;
+      background-color: #4CAF50;
+    }
+
+    .button-primary:hover {
+      background-color: #4CAF50;
+    }
+
+    .button-danger {
+      border-bottom: 8px solid #f44336;
+      border-left: 18px solid #f44336;
+      border-right: 18px solid #f44336;
+      border-top: 8px solid #f44336;
+      background-color: #f44336;
+    }
+
+    .button-danger:hover {
+      background-color: #f4433f;
+    }
+
+    .content-cell h1 {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      position: relative;
+      color: #3d4852;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 0;
+      text-align: left;
+    }
+
+    .form-title {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .form-key {
+      font-weight: 500;
+    }
+
+    .form-value {
+      font-weight: 300;
+    }
+
+    .approval-log, .summary-data {
+      width: 100%;
+    }
+
+    .approval-log tr th, .summary-data tr th {
+      background-color: #f2f2f2;
+    }
+
+    .approval-log tr th, .approval-log tr td
+    .summary-data tr th, .summary-data tr td {
+      text-align:center;
+    }
+
+    .btn-align {
+      text-align: left;
+    }
   `;
 
   /**
@@ -249,7 +668,8 @@ export class DashboardService extends ApiService<any> {
   tempItems = new EventEmitter<BreadCrumbs[]>();
   previousRoute: string;
   id: string;
-  inheritSubmoduleData: BehaviorSubject<any> = new BehaviorSubject({})
+  inheritSubmoduleData: BehaviorSubject<any> = new BehaviorSubject({});
+  fetchedNewSubmissions = new EventEmitter<boolean>()
 
   /**
    * Uses HttpClient as an override method that asserts that function it describes is in the parent or base class i.e http methods inside the Api Service
@@ -300,6 +720,19 @@ export class DashboardService extends ApiService<any> {
       else {
         if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
           return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch data', 'Get dashboard apps', TuiNotification.Error)
+        }
+      }
+    }))
+  }
+
+  getPendingSubmissions(): Observable<ApiResponse<any>> {
+    return this.get('/user/pendings').pipe(shareReplay(), map((res: ApiResponse<any>) => {
+      if(!res.hasErrors()) {
+        return res.data
+      }
+      else {
+        if (res.errors[0].code && ![401, 403].includes(res.errors[0].code)) {
+          return this.notif.displayNotification(res.errors[0]?.error?.message || 'Failed to fetch data', 'Get pending submissions', TuiNotification.Error)
         }
       }
     }))
@@ -784,7 +1217,6 @@ export class DashboardService extends ApiService<any> {
       page: page,
       ...queryParams
     }
-
     if(queryParams?.search) {
       delete params?.page
     }
