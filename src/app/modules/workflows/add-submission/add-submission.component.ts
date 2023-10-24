@@ -396,10 +396,8 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         })
       })
     }
-    debugger
     let finalData = [];
     this.formValues = this.formValuesTemp;
-    debugger
     this.formWithWorkflow.forEach((form: any) => {
       finalData.push({
         formId: form.id,

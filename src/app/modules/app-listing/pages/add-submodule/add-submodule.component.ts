@@ -1496,6 +1496,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           name: 'afterSubmit',
           code: this.triggerCodeAfter
         }
+      ],
+      events: [
+        {
+          name: this.eventComponent?.value,
+          code: this.eventCode
+        }
       ]
     }
     debugger

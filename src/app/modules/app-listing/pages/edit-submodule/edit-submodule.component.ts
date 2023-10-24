@@ -877,6 +877,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           name: 'afterSubmit',
           code: this.triggerCodeAfter
         }
+      ],
+      events: [
+        {
+          name: this.eventComponent?.value,
+          code: this.eventCode
+        }
       ]
     }
     if(statusStr) {
