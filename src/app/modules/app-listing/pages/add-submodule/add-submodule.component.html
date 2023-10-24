@@ -528,13 +528,20 @@
         >
           <p class="font-semibold text-lg -mb-1">{{addForms.value == true ? "Include forms in Submission": "Exclude forms in Submission"}}</p>
         </tui-checkbox-labeled>
-        <a
-          *ngIf="formComponents[0]?.components?.length > 0"
-          (click)="openSummarySchemaDialog(summarySchemaTemplate)"
-          class="px-2.5 py-2 text-white bg-[#A58F81] rounded-xl cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors"
-        >
-          Summary & View Schema
-        </a>
+        <div *ngIf="formComponents[0]?.components?.length > 0" class="flex gap-x-2">
+          <button
+            class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors px-2.5 py-2 rounded-xl"
+            (click)="openTriggerEditorDialog(triggerTemp)"
+          >
+            Triggers & Events
+          </button>
+          <a
+            (click)="openSummarySchemaDialog(summarySchemaTemplate)"
+            class="px-2.5 py-2 text-white bg-[#A58F81] rounded-xl cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors"
+          >
+            Summary & View Schema
+          </a>
+        </div>
       </div>
       <ng-container *ngIf="addForms.value == true">
         <h4 class="mt-3 text-base font-semibold text-center">Form/s Preview</h4>
@@ -687,31 +694,31 @@
       tuiTab
       (click)="activeItemIndex = 0"
     >
-      Action Template.hbs
+      HTML
     </button>
-    <button
+    <!-- <button
       tuiTab
       (click)="activeItemIndex = 1"
     >
       Notify Template.hbs
-    </button>
+    </button> -->
     <button
       tuiTab
-      (click)="activeItemIndex = 2"
+      (click)="activeItemIndex = 1"
       class="flex justify-end"
     >
-      Action Template.css
+      Style Sheet
     </button>
-    <button
+    <!-- <button
       tuiTab
       (click)="activeItemIndex = 3"
       class="flex justify-end"
     >
       Notify Template.css
-    </button>
+    </button> -->
     <button
       tuiTab
-      (click)="setPreview(activeItemIndex); activeItemIndex = 4"
+      (click)="setPreview(activeItemIndex); activeItemIndex = 2"
       class="flex justify-end"
     >
       Preview
@@ -724,19 +731,19 @@
         <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="emailContent" class="h-full"></ngx-monaco-editor>
       </div>
       <!--Editor Notify-->
-      <div *ngIf="activeItemIndex == 1" class="my-3 h-[480px]">
+      <!-- <div *ngIf="activeItemIndex == 1" class="my-3 h-[480px]">
         <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="emailContentNotify" class="h-full"></ngx-monaco-editor>
-      </div>
+      </div> -->
       <!--CSS-->
-      <div *ngIf="activeItemIndex == 2" class="my-3 h-[480px]">
+      <div *ngIf="activeItemIndex == 1" class="my-3 h-[480px]">
         <ngx-monaco-editor [options]="cssEditorOptions" [(ngModel)]="emailContentCSS" class="h-full"></ngx-monaco-editor>
       </div>
       <!--CSS 2-->
-      <div *ngIf="activeItemIndex == 3" class="my-3 h-[480px]">
+      <!-- <div *ngIf="activeItemIndex == 3" class="my-3 h-[480px]">
         <ngx-monaco-editor [options]="cssEditorOptions" [(ngModel)]="emailContentNotifyCSS" class="h-full"></ngx-monaco-editor>
-      </div>
+      </div> -->
       <!--Preview-->
-      <div *ngIf="activeItemIndex == 4" class="my-3 h-[480px]">
+      <div *ngIf="activeItemIndex == 2" class="my-3 h-[480px]">
         <div class="h-[480px] overflow-scroll" [innerHTML]="previewData"></div>
       </div>
     </div>
@@ -745,6 +752,64 @@
       <ul *ngFor="let key of summarySchemaFields">
         <li class="my-2 list-disc text-black">{{key}}</li>
       </ul>
+    </div>
+  </div>
+  <div class="flex justify-start gap-x-3">
+    <button tuiButton type="button" size="m" (click)="confirmEmailTemplate()">
+      Save
+    </button>
+    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailTemplate()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<!--TRIGGERS-->
+<ng-template #triggerTemp>
+  <p class="text-xl font-semibold text-center">Triggers</p>
+  <tui-tabs [(activeItemIndex)]="activeItemIndexHooks">
+    <button
+      tuiTab
+      (click)="activeItemIndexHooks = 0"
+    >
+      Before Submit
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 1"
+      class="flex justify-end"
+    >
+      After Submit
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 2"
+      class="flex justify-end"
+    >
+      Event
+    </button>
+  </tui-tabs>
+  <div class="w-full">
+    <!--Editor-->
+    <div *ngIf="activeItemIndexHooks == 0" class="my-3 h-[480px]">
+      <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="triggerCode" class="h-full"></ngx-monaco-editor>
+    </div>
+    <div *ngIf="activeItemIndexHooks == 1" class="my-3 h-[480px]">
+      <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="triggerCodeAfter" class="h-full"></ngx-monaco-editor>
+    </div>
+    <div *ngIf="activeItemIndexHooks == 2" class="my-3 h-[480px]">
+      <div class="mb-3">
+        <label class="block">Select component where this logic should apply</label>
+        <select required [formControl]="eventComponent" class="form-control" type="text">
+          <ng-container *ngFor="let col of summarySchemaFields;">
+            <option [value]="col">{{col}}</option>
+          </ng-container>
+        </select>
+      </div>
+      <label class="block">Logic</label>
+      <div class="my-3 h-[350px]">
+        <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="eventCode" class="h-full"></ngx-monaco-editor>
+      </div>
     </div>
   </div>
   <div class="flex justify-start gap-x-3">

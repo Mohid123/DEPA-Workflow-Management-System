@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormioForm, FormioOptions, FormioUtils } from '@formio/angular';
@@ -22,6 +22,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   activeItemIndex = 0;
+  activeItemIndexHooks = 0;
   submoduleFromLS: any;
   formKeys: any[] = [];
   formComponents: any[] = [];
@@ -32,7 +33,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   languageForm = new FormGroup({
     languages: new FormControl(this.langItems[0]),
   });
-
+  eventCode: string;
+  eventComponent = new FormControl(null)
   readonly conditions = [
     'OR',
     'AND',
@@ -709,7 +711,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   defaultFormSubscription: Subscription[] = [];
   inheritLoader = new Subject<boolean>();
   editorOptions = {theme: 'vs-dark', language: 'handlebars'};
-  cssEditorOptions = {theme: 'vs-dark', language: 'css'}
+  cssEditorOptions = {theme: 'vs-dark', language: 'css'};
+  jsEditorOptions = {theme: 'vs-dark', language: 'javascript'};
+  triggerCode: string = `function x(submission) {
+    console.log(submission, "Hello world!");
+  }`;
+  triggerCodeAfter: string = `function x(submission) {
+    console.log(submission, "Hello world!");
+  }`
 
   constructor(
     private fb: FormBuilder,
@@ -753,8 +762,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.formKeysForViewSchema = this.summarySchemaFields;
     // get users for email
     this.search$.pipe(
-      switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search)),
-      takeUntil(this.destroy$))
+      switchMap(search => this.dashboard.getAllUsersForListing(this.limit, this.page, search)),takeUntil(this.destroy$))
     .subscribe((res: any) => {
       if (res) {
         this.userListForEmail = res?.results?.map((data) => data?.email);
@@ -796,14 +804,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setPreview(i: any) {
-    if(i == 0 || i == 2) {
+    // if(i == 0 || i == 2) {
       this.previewData = '<style>' + this.emailContentCSS + '</style>' + this.emailContent;
       this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
-    }
-    if(i == 1 || i == 3) {
-      this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
-      this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
-    }
+    // }
+    // if(i == 1 || i == 3) {
+    //   this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
+    //   this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
+    // }
   }
 
   inheritParentForm() {
@@ -1038,6 +1046,18 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   openModifyEditorDialog(
+    content: PolymorpheusContent<TuiDialogContext>
+  ): void {
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+        size: 'l'
+      })
+      .subscribe());
+  }
+
+  openTriggerEditorDialog(
     content: PolymorpheusContent<TuiDialogContext>
   ): void {
     this.saveDialogSubscription.push(this.dialogs
@@ -1466,8 +1486,19 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         actionCSS: this.emailContentCSS,
         notify: this.emailContentNotify,
         notifyCSS: this.emailContentNotifyCSS
-      }
+      },
+      triggers: [
+        {
+          name: 'beforeSubmit',
+          code: this.triggerCode
+        },
+        {
+          name: 'afterSubmit',
+          code: this.triggerCodeAfter
+        }
+      ]
     }
+    debugger
     if(statusStr) {
       this.isSavingAsDraft.next(true)
     } else {

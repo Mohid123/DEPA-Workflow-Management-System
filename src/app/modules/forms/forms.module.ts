@@ -11,6 +11,7 @@ import { EditFormComponent } from './pages/edit-form/edit-form.component';
 import { FormBuilderComponent } from './pages/form-builder/form-builder.component';
 import { HeaderComponent } from 'src/app/standalone-components/header/header.component';
 import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom-multi-select/custom-multi-select.component';
+import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CustomMultiSelectComponent } from 'src/app/standalone-components/custom
     TuiButtonModule,
     HeaderComponent,
     ReactiveFormsModule,
-    CustomMultiSelectComponent
+    CustomMultiSelectComponent,
+    MonacoEditorModule
   ]
 })
 export class FormsModule { }

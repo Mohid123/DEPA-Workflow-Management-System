@@ -54,6 +54,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   userRoleCheckUser: any;
   adminUsers: any[] = [];
   currentBreakpoint: string = '';
+  hooks: any;
   BreakPoints = Breakpoints
   @ViewChildren('formioForm') formioForms: QueryList<any>;
   readonly breakpoint$ = this.breakpointObserver
@@ -169,6 +170,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       takeUntil(this.destroy$)
     ).subscribe((res: any) => {
       if(res) {
+        this.hooks = res?.triggers || [];
         res?.formIds?.forEach(comp => {
           FormioUtils.eachComponent(comp?.components, (component) => {
             if(component?.type == 'editgrid') {
@@ -204,7 +206,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
               })
             }
           }, true)
-        })
+        });
         this.subModuleData = res;
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
@@ -384,8 +386,20 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     else {
       this.draftingSubmission.next(true)
     }
+    if(this.hooks?.length > 0) {
+      this.formValuesTemp?.forEach(submission => {
+        this.hooks.forEach(val => {
+          if(val?.name == 'beforeSubmit') {
+            val.code = new Function('return ' + val.code)();
+            val.code(submission?.data);
+          }
+        })
+      })
+    }
+    debugger
     let finalData = [];
-    this.formValues = this.formValuesTemp
+    this.formValues = this.formValuesTemp;
+    debugger
     this.formWithWorkflow.forEach((form: any) => {
       finalData.push({
         formId: form.id,
@@ -417,6 +431,16 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       if(res) {
+        if(this.hooks?.length > 0) {
+          this.formValuesTemp?.forEach(submission => {
+            this.hooks.forEach(val => {
+              if(val?.name == 'afterSubmit') {
+                val.code = new Function('return ' + val.code)();
+                val.code(submission?.data);
+              }
+            })
+          })
+        }
         this.creatingSubmission.next(false);
         this.draftingSubmission.next(false)
         this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
