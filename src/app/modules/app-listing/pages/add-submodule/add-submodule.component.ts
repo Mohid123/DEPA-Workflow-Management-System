@@ -1395,8 +1395,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   confirmDefaultSubmission() {
-    this.deafultFormSubmissionDialog = this.deafultFormSubmission;
-    this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex]
+    this.deafultFormSubmission = this.deafultFormSubmissionDialog;
+    this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex];
     this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
 
