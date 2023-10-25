@@ -878,12 +878,13 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
           code: this.triggerCodeAfter
         }
       ],
-      events: [
+      events: this.eventComponent?.value ? 
+      [
         {
           name: this.eventComponent?.value,
           code: this.eventCode
         }
-      ]
+      ] : undefined
     }
     if(statusStr) {
       const status = statusStr;

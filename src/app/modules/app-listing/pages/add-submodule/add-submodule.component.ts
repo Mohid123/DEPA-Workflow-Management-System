@@ -1497,12 +1497,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
           code: this.triggerCodeAfter
         }
       ],
-      events: [
+      events: this.eventComponent?.value ? 
+      [
         {
           name: this.eventComponent?.value,
           code: this.eventCode
         }
-      ]
+      ] : undefined
     }
     debugger
     if(statusStr) {
