@@ -50,7 +50,7 @@ export class SubmoduleGuard implements CanActivate, OnDestroy {
       this.transportService.dialogState.pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val === DialogState.DISCARD) {
           if(state.url.includes('modules')) {
-            this.router.navigate([state.url], {queryParams: {moduleID: getItem(StorageItem.moduleID)}})
+            this.router.navigate([state.url?.split('?')[0]], {queryParams: {moduleID: getItem(StorageItem.moduleID)}})
           }
           else {
             this.router.navigate([state.url])
