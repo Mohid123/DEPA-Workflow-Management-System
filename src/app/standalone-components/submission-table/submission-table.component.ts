@@ -59,7 +59,8 @@ export class SubmissionTableComponent implements OnDestroy {
       filter: true,
       floatingFilter: true,
       sortable: true,
-      resizable: true
+      resizable: true,
+      width: 200
     },
     {
       field: 'submissionStatus',
@@ -67,7 +68,8 @@ export class SubmissionTableComponent implements OnDestroy {
       filter: true,
       floatingFilter: true,
       sortable: true,
-      resizable: true
+      resizable: true,
+      width: 200
     },
     {
       field: 'lastActivityPerformedBy',
@@ -75,7 +77,8 @@ export class SubmissionTableComponent implements OnDestroy {
       filter: true,
       floatingFilter: true,
       sortable: true,
-      resizable: true
+      resizable: true,
+      width: 250
     },
     {
       field: 'pendingOnUsers',
@@ -83,7 +86,8 @@ export class SubmissionTableComponent implements OnDestroy {
       filter: true,
       floatingFilter: true,
       sortable: true,
-      resizable: true
+      resizable: true,
+      width: 300
     },
     {
       field: 'progress',
@@ -91,16 +95,16 @@ export class SubmissionTableComponent implements OnDestroy {
       filter: true,
       floatingFilter: true,
       sortable: true,
-      resizable: true
+      resizable: true,
+      width: 200
     },
     {
       field: 'actions',
       headerName: 'Actions',
       cellRenderer: ActionButtonRenderer,
-      width: 130
+      width: 150
     },
   ];
-
   rowData = [];
 
   constructor(
@@ -128,7 +132,9 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   onGridReady(params) {
-    params.api.sizeColumnsToFit();
+    if(this.columnDefs?.length <= 6) {
+      params.api.sizeColumnsToFit();
+    }
   }
 
   checkViewButtonCondition(data: any) {
@@ -143,7 +149,25 @@ export class SubmissionTableComponent implements OnDestroy {
     .subscribe((val: any) => {
       this.submissionData = val;
       this.tableDataValue = val?.results;
+      let flag = true;
       this.rowData = this.tableDataValue?.map(data => {
+        for (let key in data?.summaryData) {
+          if (typeof data?.summaryData[key] === 'object' && key !== 'lastActivityPerformedBy' && key !== 'submissionStatus' && key !== 'pendingOnUsers' && key !== 'progress') {
+            delete data?.summaryData[key]
+            if (flag) {
+              this.columnDefs.splice(5, 0, {
+                field: this.findDynamicKey(data?.summaryData),
+                headerName: this.findDynamicKey(data?.summaryData)?.charAt(0)?.toLocaleUpperCase() + this.findDynamicKey(data?.summaryData)?.slice(1),
+                filter: true,
+                floatingFilter: true,
+                sortable: true,
+                resizable: true,
+                width: 200
+              })
+              flag = false
+            }
+          }
+        }
         return {
           id: data?.id,
           status: data?.status,
@@ -152,6 +176,7 @@ export class SubmissionTableComponent implements OnDestroy {
           lastActivityPerformedBy: data?.summaryData?.lastActivityPerformedBy?.fullName,
           pendingOnUsers: data?.summaryData?.pendingOnUsers?.map(val => val?.fullName),
           progress: String(data?.summaryData?.progress) + '%',
+          [this.findDynamicKey(data?.summaryData)] : this.findDynamicValues(data?.summaryData),
           subModuleId: data?.subModuleId,
           activeStepUsers: data?.activeStepUsers,
           workflowStatus: data?.workflowStatus,
@@ -160,6 +185,25 @@ export class SubmissionTableComponent implements OnDestroy {
       })
       this.createdByUsers = val?.results?.map(data => data?.subModuleId?.createdBy);
     }))
+  }
+
+  findDynamicKey(data: Object) {
+    return Object.keys(data).find(
+      key => key !== 'code' &&
+      key !== 'submissionStatus' &&
+      key !== 'lastActivityPerformedBy' &&
+      key !== 'pendingOnUsers' &&
+      key !== 'progress')
+  }
+
+  findDynamicValues(data: Object) {
+    let dataKey = Object.keys(data).find(
+      key => key !== 'code' &&
+      key !== 'submissionStatus' &&
+      key !== 'lastActivityPerformedBy' &&
+      key !== 'pendingOnUsers' &&
+      key !== 'progress')
+    return typeof(data[dataKey]) == 'string' ? data[dataKey]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">") : data[dataKey]
   }
 
   checkIfUserisAdmin(value: any[]): boolean {

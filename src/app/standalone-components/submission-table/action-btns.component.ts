@@ -15,37 +15,39 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
     selector: 'action-button-component',
     template: `
       <ng-container *ngIf="cellValue?.data?.submissionStatus !== 'Draft' && cellValue?.data?.status !== 2">
-        <a
-          title="Edit Submission & Perform Workflow Action"
-          (click)="editWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
-          *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
-          class="w-10 px-[8px] pt-1 pb-1.5 mr-1.5 text-xs font-medium text-center text-white no-underline bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
-          <i class="fa fa-pencil" aria-hidden="true"></i>
-        </a>
-        <!--VIEW-->
-        <a
-          title="View Submission"
-          (click)="viewWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
-          *ngIf="checkViewButtonCondition(cellValue?.data) == true"
-          class="w-10 px-1.5 pt-1 pb-1.5 text-center text-xs font-medium text-white no-underline bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
-          <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
-        </a>
-        <!--Delete-->
-        <a
-          title="Delete Submission"
-          (click)="showDeleteDialog(dialog, 'delete', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-          *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
-          class="w-10 px-2 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
-          <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
-        </a>
-        <!--Cancel-->
-        <a
-          title="Cancel Submission"
-          (click)="showDeleteDialog(dialog, 'cancel', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-          *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
-          class="w-10 px-1.5 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
-          <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
-        </a>
+        <div class="w-full">
+          <a
+            title="Edit Submission & Perform Workflow Action"
+            (click)="editWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
+            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+            class="w-10 px-[8px] pt-1 pb-1.5 mr-1.5 text-xs font-medium text-center text-white no-underline bg-blue-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+          <!--VIEW-->
+          <a
+            title="View Submission"
+            (click)="viewWorkflowRoute(cellValue?.data?.id, cellValue?.data?.code)"
+            *ngIf="checkViewButtonCondition(cellValue?.data) == true"
+            class="w-10 px-1.5 pt-1 pb-1.5 text-center text-xs font-medium text-white no-underline bg-green-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+            <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+          </a>
+          <!--Delete-->
+          <a
+            title="Delete Submission"
+            (click)="showDeleteDialog(dialog, 'delete', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
+            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+            class="w-10 px-2 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+            <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+          </a>
+          <!--Cancel-->
+          <a
+            title="Cancel Submission"
+            (click)="showDeleteDialog(dialog, 'cancel', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
+            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+            class="w-10 px-1.5 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
+            <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
+          </a>
+        </div>
       </ng-container>
       <!--EDIT SUBMISSION PAGE-->
       <a

@@ -64,7 +64,7 @@ export class DialogTemplate {
   this.workflowApprovers = getItem(StorageItem.approvers) || [];
   if (this.workflowApprovers.length > 0) {
     this.workflowApprovers.forEach(user => {
-      let userMatchFound = false; // Initialize the flag
+      let userMatchFound = false;
 
       if (this.data && this.data?.permissions?.length > 0) {
         this.data?.permissions?.forEach(value => {
