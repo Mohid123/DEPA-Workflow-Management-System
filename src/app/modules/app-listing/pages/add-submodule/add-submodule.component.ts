@@ -22,6 +22,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class AddSubmoduleComponent implements OnDestroy, OnInit {
   subModuleForm!: FormGroup;
   activeItemIndex = 0;
+  topTabIndex = 0;
   activeItemIndexHooks = 0;
   submoduleFromLS: any;
   formKeys: any[] = [];
@@ -55,7 +56,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   secondEditorPreview = false;
   
   emailContent: any = `
-  <head></head>
+  <head>Action</head>
   <body>
       <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
@@ -160,7 +161,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   </body>
   `;
   emailContentNotify: any = `
-  <head></head>
+  <head>FYI</head>
   <body>
   <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
    <tr>
@@ -804,14 +805,14 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setPreview(i: any) {
-    // if(i == 0 || i == 2) {
+    if(i == 0) {
       this.previewData = '<style>' + this.emailContentCSS + '</style>' + this.emailContent;
       this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
-    // }
-    // if(i == 1 || i == 3) {
-    //   this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
-    //   this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
-    // }
+    }
+    if(i == 1) {
+      this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
+      this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
+    }
   }
 
   inheritParentForm() {

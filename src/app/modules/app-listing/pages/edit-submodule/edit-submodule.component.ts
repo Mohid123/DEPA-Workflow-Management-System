@@ -22,6 +22,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class EditSubmoduleComponent implements OnDestroy, OnInit {
   activeItemIndex = 0;
+  topTabIndex = 0;
   activeItemIndexHooks = 0;
   previewData: any;
   subModuleForm!: FormGroup;
@@ -180,14 +181,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setPreview(i: any) {
-    // if(i == 0 || i == 2) {
+    if(i == 0) {
       this.previewData = '<style>' + this.emailContentCSS + '</style>' + this.emailContent;
       this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
-    // }
-    // if(i == 1 || i == 3) {
-    //   this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
-    //   this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
-    // }
+    }
+    if(i == 1) {
+      this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
+      this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
+    }
   }
 
   sanitizeSubmission(value: any) {

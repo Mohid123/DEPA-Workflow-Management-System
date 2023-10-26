@@ -689,19 +689,27 @@
 <!--CKEDITOR-->
 <ng-template #ckTemplate>
   <p class="text-xl font-semibold text-center">Email Templates</p>
-  <tui-tabs [(activeItemIndex)]="activeItemIndex">
+  <tui-tabs [(activeItemIndex)]="topTabIndex">
+    <button
+      tuiTab
+      (click)="setPreview(0); topTabIndex = 0"
+    >
+      Action
+    </button>
+    <button
+      tuiTab
+      (click)="setPreview(1); topTabIndex = 1"
+    >
+      FYI
+    </button>
+  </tui-tabs>
+  <tui-tabs *ngIf="topTabIndex == 0" [(activeItemIndex)]="activeItemIndex">
     <button
       tuiTab
       (click)="activeItemIndex = 0"
     >
       HTML
     </button>
-    <!-- <button
-      tuiTab
-      (click)="activeItemIndex = 1"
-    >
-      Notify Template.hbs
-    </button> -->
     <button
       tuiTab
       (click)="activeItemIndex = 1"
@@ -709,16 +717,31 @@
     >
       Style Sheet
     </button>
-    <!-- <button
-      tuiTab
-      (click)="activeItemIndex = 3"
-      class="flex justify-end"
-    >
-      Notify Template.css
-    </button> -->
     <button
       tuiTab
-      (click)="setPreview(activeItemIndex); activeItemIndex = 2"
+      (click)="setPreview(topTabIndex); activeItemIndex = 2"
+      class="flex justify-end"
+    >
+      Preview
+    </button>
+  </tui-tabs>
+  <tui-tabs *ngIf="topTabIndex == 1" [(activeItemIndex)]="activeItemIndex">
+    <button
+      tuiTab
+      (click)="activeItemIndex = 3"
+    >
+      HTML
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 4"
+      class="flex justify-end"
+    >
+      Style Sheet
+    </button>
+    <button
+      tuiTab
+      (click)="setPreview(topTabIndex); activeItemIndex = 5"
       class="flex justify-end"
     >
       Preview
@@ -727,21 +750,21 @@
   <div class="flex justify-between">
     <div class="w-full">
        <!--Editor-->
-      <div *ngIf="activeItemIndex == 0" class="my-3 h-[480px]">
+      <div *ngIf="activeItemIndex == 0 && topTabIndex == 0" class="my-3 h-[480px]">
         <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="emailContent" class="h-full"></ngx-monaco-editor>
       </div>
       <!--Editor Notify-->
-      <!-- <div *ngIf="activeItemIndex == 1" class="my-3 h-[480px]">
+      <div *ngIf="activeItemIndex == 0 && topTabIndex == 1" class="my-3 h-[480px]">
         <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="emailContentNotify" class="h-full"></ngx-monaco-editor>
-      </div> -->
+      </div>
       <!--CSS-->
-      <div *ngIf="activeItemIndex == 1" class="my-3 h-[480px]">
+      <div *ngIf="activeItemIndex == 1 && topTabIndex == 0" class="my-3 h-[480px]">
         <ngx-monaco-editor [options]="cssEditorOptions" [(ngModel)]="emailContentCSS" class="h-full"></ngx-monaco-editor>
       </div>
       <!--CSS 2-->
-      <!-- <div *ngIf="activeItemIndex == 3" class="my-3 h-[480px]">
+      <div *ngIf="activeItemIndex == 1 && topTabIndex == 1" class="my-3 h-[480px]">
         <ngx-monaco-editor [options]="cssEditorOptions" [(ngModel)]="emailContentNotifyCSS" class="h-full"></ngx-monaco-editor>
-      </div> -->
+      </div>
       <!--Preview-->
       <div *ngIf="activeItemIndex == 2" class="my-3 h-[480px]">
         <div class="h-[480px] overflow-scroll" [innerHTML]="previewData"></div>
