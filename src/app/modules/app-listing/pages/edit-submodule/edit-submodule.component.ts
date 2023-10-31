@@ -22,6 +22,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class EditSubmoduleComponent implements OnDestroy, OnInit {
   activeItemIndex = 0;
+  topTabIndex = 0;
+  activeItemIndexHooks = 0;
   previewData: any;
   subModuleForm!: FormGroup;
   formComponents: any[] = [];
@@ -67,6 +69,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   accessTypeValue: FormControl
   formKeysForViewSchema: any[] = [];
   summarySchemaFields: any[] = [];
+  dropDownForButtons: any[] = [];
   formKeys: any[] = [];
   formKeysFinal: any[] = [];
   schemaSubscription: Subscription[] = [];
@@ -96,7 +99,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   emailContentCSS: any;
   emailContentNotifyCSS: any;
   editorOptions = {theme: 'vs-dark', language: 'handlebars'};
-  cssEditorOptions = {theme: 'vs-dark', language: 'css'}
+  cssEditorOptions = {theme: 'vs-dark', language: 'css'};
+  jsEditorOptions = {theme: 'vs-dark', language: 'javascript'};
+  triggerCode: string;
+  triggerCodeAfter: string;
+  eventCode: string;
+  eventComponent = new FormControl(null)
 
   constructor(
     private fb: FormBuilder,
@@ -173,11 +181,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   setPreview(i: any) {
-    if(i == 0 || i == 2) {
+    if(i == 0) {
       this.previewData = '<style>' + this.emailContentCSS + '</style>' + this.emailContent;
       this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
     }
-    if(i == 1 || i == 3) {
+    if(i == 1) {
       this.previewData = '<style>' + this.emailContentNotifyCSS + '</style>' + this.emailContentNotify;
       this.previewData = this.domSanitizer.bypassSecurityTrustHtml(this.previewData)
     }
@@ -329,6 +337,12 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
             }
             this.defaultEmailTemplateFromEdit = response.emailTemplate;
+            this.triggerCode = response.triggers[0]?.code || `function x(submission) {
+              console.log(submission, "Hello world!");
+            }`;
+            this.triggerCodeAfter = response.triggers[1]?.code || `function x(submission) {
+              console.log(submission, "Hello world!");
+            }`;;
             this.emailContent = this.defaultEmailTemplateFromEdit.action || this.dashboard.emailContent;
             this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify || this.dashboard.emailContentNotify;
             this.emailContentCSS = this.defaultEmailTemplateFromEdit.actionCSS || this.dashboard.emailContentCSS;
@@ -378,7 +392,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               this.summarySchemaFields = this.formKeys.flatMap(val => {
                 let res = generateKeyCombinations(val)
                 return res
-              })
+              });
+              
               this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
@@ -411,8 +426,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               })
               this.summarySchemaFields = this.formKeys.flatMap(val => {
                 let res = generateKeyCombinations(val)
-                return res
-              })
+                return res;
+              });
               this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {
@@ -800,6 +815,18 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
+  openTriggerEditorDialog(
+    content: PolymorpheusContent<TuiDialogContext>
+  ): void {
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+        size: 'l'
+      })
+      .subscribe());
+  }
+
   saveSubModule(statusStr?: number) {
     if(!statusStr) {
       if(this.dataSubmitValidation() == false) {
@@ -845,7 +872,24 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         actionCSS: this.emailContentCSS,
         notify: this.emailContentNotify,
         notifyCSS: this.emailContentNotifyCSS
-      }
+      },
+      triggers: [
+        {
+          name: 'beforeSubmit',
+          code: this.triggerCode
+        },
+        {
+          name: 'afterSubmit',
+          code: this.triggerCodeAfter
+        }
+      ],
+      events: this.eventComponent?.value ? 
+      [
+        {
+          name: this.eventComponent?.value,
+          code: this.eventCode
+        }
+      ] : undefined
     }
     if(statusStr) {
       const status = statusStr;

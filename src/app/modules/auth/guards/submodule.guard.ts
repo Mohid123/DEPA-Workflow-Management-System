@@ -49,7 +49,12 @@ export class SubmoduleGuard implements CanActivate, OnDestroy {
       }).subscribe());
       this.transportService.dialogState.pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val === DialogState.DISCARD) {
-          this.routeToBasedOnPreviousPage()
+          if(state.url.includes('modules')) {
+            this.router.navigate([state.url?.split('?')[0]], {queryParams: {moduleID: getItem(StorageItem.moduleID)}})
+          }
+          else {
+            this.router.navigate([state.url])
+          }
           return true
         }
         return false
@@ -63,7 +68,7 @@ export class SubmoduleGuard implements CanActivate, OnDestroy {
 
   routeToBasedOnPreviousPage() {
     this.activatedRoute.queryParams.pipe(take(1)).subscribe(val => {
-      if(Object.keys(val).length > 0) {
+      if(Object.keys(val).length > 0 || !this.router.url.includes('modules')) {
         return this.router.navigate(['/dashboard/home'])
         
       }

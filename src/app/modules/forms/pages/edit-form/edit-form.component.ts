@@ -48,7 +48,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
   formTitleControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
   ]));
-  formCodeControl = new FormControl({value: '', disabled: true}, Validators.compose([
+  formCodeControl = new FormControl({value: '', disabled: this.editMode}, Validators.compose([
     Validators.required
   ]), [CodeValidator.createValidator(this.dashboard, 'form')]);
   formDisplayType = new FormControl('form');

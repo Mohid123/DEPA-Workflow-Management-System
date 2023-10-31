@@ -9,10 +9,10 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { CoreModule } from "src/core/core.module";
 import { FormioAppConfig } from "@formio/angular";
-import { AppConfig, MonacoConfig } from "./config";
+import { AppConfig } from "./config";
 import { TuiPreviewModule } from "@taiga-ui/addon-preview";
 import { EmailSubmissionComponent } from "./modules/workflows/email-submission/email-submission.component";
-import { MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } from "ngx-monaco-editor-v2";
+import { MONACO_PATH, MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,12 +35,15 @@ import { MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG, NgxMonacoEditorConfig } f
     TuiPreviewModule,
     TuiNotificationModule,
     EmailSubmissionComponent,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule
 ],
   providers: [
     // {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},
     { provide: FormioAppConfig, useValue: AppConfig },
-    { provide: NGX_MONACO_EDITOR_CONFIG, useValue: MonacoConfig }
+    {
+      provide: MONACO_PATH,
+      useValue: 'https://unpkg.com/monaco-editor@0.44.0/min/vs',
+    },
   ],
   bootstrap: [AppComponent]
 })
