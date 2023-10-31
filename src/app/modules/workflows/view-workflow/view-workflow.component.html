@@ -46,8 +46,7 @@
         </nav>
         <ng-container *ngFor="let form of formWithWorkflow; let i = index;">
           <div [ngClass]="activeIndex == i ? 'block': 'hidden'" class="w-full well jsonviewer ml-2 lg:ml-0">
-            <div *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus !== 5 &&
-            (workflowProgress | async) < 100 && disableAll == false" class="absolute z-10 -top-7 right-1">
+            <div class="absolute z-10 -top-7 right-1">
               <a (click)="downloadAsPDF(i)" class="rounded-md cursor-pointer" title="Download PDF">
                 <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
               </a>

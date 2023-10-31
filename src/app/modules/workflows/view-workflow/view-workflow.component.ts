@@ -735,6 +735,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
 
   downloadAsPDF(index: number) {
     this.downloadingPDF.next(true);
+    let formValue = JSON.parse(JSON.stringify(this.formWithWorkflow[index]));
+    let submission = formValue?.data;
+    const originalDate = new Date(submission?.reportDate);
+    // const year = originalDate.getFullYear();
+    // const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    // const day = String(originalDate.getDate()).padStart(2, '0');
+    console.log(submission)
     const documentDefinition = {
       header: {
         width: 50,
@@ -749,9 +756,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             color: '#76777F',
             fontSize: 15,
             table: {
-                body: [
-                      [ 'Home  >', 'Deming  >', 'Material Inspection Report']
-                    ]
+              body: [
+                [ this.dashboard.items?.map(item => item.caption).join(' > ') ]
+              ]
             }
         },
         {
@@ -760,22 +767,22 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             margin: [-40, 15, 0, 0],
             color: 'white',
             fontSize: 15,
-                bold: true,
+            bold: true,
             table: {
-                body: [
-                      ['', 'General information', '']
-                    ]
+              body: [
+                  ['', 'General information', '']
+                ]
             }
         },
         {
             fillColor: 'white',
             margin: [-35, 15, 0, 0],
             ul: [
-                    'Subject :  ABC',
-                    'Supplier :  DEPA',
-                    'Inspection  Date : 21-03-23',
-                    'Inspection Location :  Dubai'
-                  ]
+              `Subject :  ${submission?.subject || 'N/A'}`,
+              `Supplier :  ${submission?.supplier?.map(val => val?.Project_Name)?.join(', ') || 'N/A'}`,
+              `Inspection Date : ${submission?.inspectionDate?.split('T')[0] || 'N/A'}`,
+              `Inspection Location :  ${submission?.location || 'N/A'}`
+            ]
         },
         {
             fillColor: '#76777F',
@@ -783,11 +790,11 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             margin: [-40, 20, 0, 0],
             color: 'white',
             fontSize: 15,
-                bold: true,
+            bold: true,
             table: {
-                body: [
-                      ['', 'Material Detail', '']
-                    ]
+              body: [
+                ['', 'Material Detail', '']
+              ]
             }
         },
         {
@@ -797,10 +804,16 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             color: 'black',
             fontSize: 15,
             table: {
-                body: [
-                      [ 'Item Description', 'Application Area', 'UOM', 'Total Qty', 'Summary'],
-                      [ { text: 'Butter for Cooking', fontSize: 12 }, { text: 'ABC DEF', fontSize: 12 }, { text: 'KG', fontSize: 12 }, { text: '12', fontSize: 12 }, { text: 'Approved: 3, Rejected: 9', fontSize: 12 } ]
-                    ]
+              body: [
+                [ 'Item Description', 'Application Area', 'Units', 'Total Qty', 'Summary'],
+                ...(submission?.editGrid?.map((val) => [
+                  { text: val?.itemDescription, fontSize: 12 },
+                  { text: val?.applicationArea, fontSize: 12 },
+                  { text: val?.uom, fontSize: 12 },
+                  { text: val?.totalQty, fontSize: 12 },
+                  { text: val?.statusSummary, fontSize: 12 },
+                ]) || [])
+              ]
             }
         },
         {
@@ -811,30 +824,22 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
             fontSize: 15,
                 bold: true,
             table: {
-                body: [
-                      ['', 'Attachments', '']
-                    ]
+              body: [
+                ['', 'Attachments', '']
+              ]
             }
         },
         {
           columns: [
-            [
-              {
-            text: 'Attachment A',
-            italics: true,
-            color: '#0074C1',
-            margin: [0, 10, 0, 0],
-            link: 'http://quaidtech.ddns.net:8500/uploads/images/1696421497513.png'
-            },
-              {
-            text: 'Attachment B',
-            italics: true,
-            margin: [0, 5, 0, 0],
-            color: '#0074C1',
-            link: 'http://quaidtech.ddns.net:8500/uploads/images/1696421497513.png'
-            },
-              
-            ]
+            submission?.attachDocuments?.map(val => {
+              return {
+                text: val?.originalName,
+                italics: true,
+                color: '#0074C1',
+                margin: [0, 10, 0, 0],
+                link: val?.url
+              }
+            }) || []
           ]
         }
       ]
