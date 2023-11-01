@@ -396,7 +396,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.hooks.forEach(val => {
           if(val?.name == 'beforeSubmit') {
             val.code = new Function('return ' + val.code)();
-            val.code(submission?.data, 'acb-01', 'sf-03', this.formService, takeUntil, this.destroy$, forkJoin);
+            val.code(submission?.data, this.formService, takeUntil, this.destroy$, forkJoin);
           }
         })
       })
