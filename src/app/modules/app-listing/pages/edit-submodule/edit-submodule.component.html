@@ -386,12 +386,18 @@
         <div *ngIf="formComponents[0]?.components?.length > 0 && addForms?.value == true" class="flex gap-x-2">
           <button
             class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors px-2.5 py-2 rounded-xl"
-            (click)="openTriggerEditorDialog(triggerTemp)"
+            (click)="openTriggeOrPdfOrSummarySchemaDialog(pdfTemplate)"
+          >
+            PDF template
+          </button>
+          <button
+            class="bg-[#a58f81] text-white hover:bg-opacity-80 hover:transition-colors px-2.5 py-2 rounded-xl"
+            (click)="openTriggeOrPdfOrSummarySchemaDialog(triggerTemp)"
           >
             Triggers
           </button>
           <a
-            (click)="openSummarySchemaDialog(summarySchemaTemplate)"
+            (click)="openTriggeOrPdfOrSummarySchemaDialog(summarySchemaTemplate)"
             class="px-2.5 py-2 text-white bg-[#A58F81] rounded-xl cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors"
           >
             Summary & View Schema
@@ -687,6 +693,25 @@
       <div class="my-3 h-[350px]">
         <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="eventCode" class="h-full"></ngx-monaco-editor>
       </div>
+    </div>
+  </div>
+  <div class="flex justify-start gap-x-3">
+    <button tuiButton type="button" size="m" (click)="confirmEmailTemplate()">
+      Save
+    </button>
+    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailTemplate()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<!--TRIGGERS-->
+<ng-template #pdfTemplate>
+  <p class="text-xl font-semibold text-center">PDF Template</p>
+  <div class="w-full">
+    <!--Editor-->
+    <div class="my-3 h-[480px]">
+      <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="pdfTempCode" class="h-full"></ngx-monaco-editor>
     </div>
   </div>
   <div class="flex justify-start gap-x-3">

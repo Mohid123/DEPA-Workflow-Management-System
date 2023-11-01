@@ -102,6 +102,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   cssEditorOptions = {theme: 'vs-dark', language: 'css'};
   jsEditorOptions = {theme: 'vs-dark', language: 'javascript'};
   triggerCode: string;
+  pdfTempCode: string;
   triggerCodeAfter: string;
   eventCode: string;
   eventComponent = new FormControl(null)
@@ -332,6 +333,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             this.addForms.setValue(response?.formVisibility)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
+            this.pdfTempCode = response?.pdfTemplate;
             response.emailTemplate = {
               action: response.emailTemplate?.action?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">"),
               notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
@@ -604,16 +606,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
   }
 
-  openSummarySchemaDialog(content: PolymorpheusContent<TuiDialogContext>): void {
-    this.schemaSubscription.push(this.dialogs
-    .open(content, {
-      dismissible: false,
-      closeable: false,
-      size: 'l'
-    })
-    .subscribe());
-  }
-
   addDefaultData(i: number, content: PolymorpheusContent<TuiDialogContext>) {
     this.formForDefaultData = this.formComponents[i]
     this.defaultFormIndex = i;
@@ -812,10 +804,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   closeSchemaDialog() {
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
-  openTriggerEditorDialog(
+  openTriggeOrPdfOrSummarySchemaDialog(
     content: PolymorpheusContent<TuiDialogContext>
   ): void {
     this.saveDialogSubscription.push(this.dialogs
@@ -867,6 +860,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name,
+      pdfTemplate: this.pdfTempCode,
       emailTemplate: {
         action: this.emailContent,
         actionCSS: this.emailContentCSS,
