@@ -432,14 +432,14 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       })
     }
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
-    .subscribe(res => {
+    .subscribe((res: any) => {
       if(res) {
         if(this.hooks?.length > 0) {
           this.formValuesTemp?.forEach(submission => {
             this.hooks.forEach(val => {
               if(val?.name == 'afterSubmit') {
                 val.code = new Function('return ' + val.code)();
-                val.code(submission?.data);
+                val.code(submission?.data, this.formService, takeUntil, this.destroy$, forkJoin, res?.summaryData?.progress, res?.submissionStatus);
               }
             })
           })
