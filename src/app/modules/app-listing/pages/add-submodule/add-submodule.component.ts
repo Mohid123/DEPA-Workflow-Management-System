@@ -717,6 +717,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   triggerCode: string = `function x(submission) {
     console.log(submission, "Hello world!");
   }`;
+  pdfTempCode: string;
   triggerCodeAfter: string = `function x(submission) {
     console.log(submission, "Hello world!");
   }`
@@ -779,6 +780,13 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    let hierarchy = getItem(StorageItem.navHierarchy)?.map(value => value?.caption);
+    if(hierarchy?.includes('Material Inspection Report')) {
+      this.pdfTempCode = this.dashboard.pdfTemplate
+    }
+    if(hierarchy?.includes('General Quality Report')) {
+      this.pdfTempCode = this.dashboard.pdfTemplateForQR
+    }
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length == 0) {
         const hierarchy = getItem(StorageItem.navHierarchy);
@@ -1058,7 +1066,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       .subscribe());
   }
 
-  openTriggerEditorDialog(
+  openTriggeOrPdfOrSummarySchemaDialog(
     content: PolymorpheusContent<TuiDialogContext>
   ): void {
     this.saveDialogSubscription.push(this.dialogs
@@ -1445,6 +1453,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   closeSchemaDialog() {
+    this.saveDialogSubscription.forEach(val => val.unsubscribe())
     this.schemaForm?.reset()
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
@@ -1488,6 +1497,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         notify: this.emailContentNotify,
         notifyCSS: this.emailContentNotifyCSS
       },
+      pdfTemplate: this.pdfTempCode,
       triggers: [
         {
           name: 'beforeSubmit',
@@ -1633,16 +1643,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
 
   setViewUsers(users: string[]) {
     this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
-  }
-
-  openSummarySchemaDialog(content: PolymorpheusContent<TuiDialogContext>): void {
-    this.schemaSubscription.push(this.dialogs
-    .open(content, {
-      dismissible: false,
-      closeable: false,
-      size: 'l'
-    })
-    .subscribe());
   }
 
   ngOnDestroy(): void {

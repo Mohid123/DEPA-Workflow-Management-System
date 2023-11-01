@@ -48,7 +48,7 @@ export class DashboardService extends ApiService<any> {
 
   submissionPendingDone = new EventEmitter();
 
-  emailContent: any = `
+  emailContent: string = `
   <head></head>
   <body>
       <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -153,7 +153,7 @@ export class DashboardService extends ApiService<any> {
     </table>
   </body>
   `;
-  emailContentNotify: any = `
+  emailContentNotify: string = `
   <head></head>
   <body>
       <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -250,7 +250,7 @@ export class DashboardService extends ApiService<any> {
   </body>
   `;
 
-  emailContentCSS: any = `
+  emailContentCSS: string = `
     body {
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -455,7 +455,7 @@ export class DashboardService extends ApiService<any> {
       text-align: left;
     }
   `;
-  emailContentNotifyCSS: any = `
+  emailContentNotifyCSS: string = `
     body {
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -660,6 +660,334 @@ export class DashboardService extends ApiService<any> {
       text-align: left;
     }
   `;
+
+  pdfTemplate: string = `function generateString(submission, dashboard, progress, logs) {
+    const documentDefinition = {
+      watermark: { text: \`\${progress != 100 ? 'DRAFT': 'COMPLETE'}, color: '#F15B41', opacity: 0.3, bold: true, italics: false },
+      header: {
+        columns: [
+          {
+            width: 50,
+            height: 50,
+            margin: [15,5,0,0],
+            image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABhCAMAAAAX8fTVAAAC/VBMVEXxW0H////9///6///xW0LxWkDyWkH4///8///8/v3wWUH53dHwXEHwW0HzWUH//f/4s6TyTzLxWT/xWD3yXD/xTzP9//32lYTvUTD9/v////38/f3wXEPxVDn+/v/6/v38/fvvXT73///05eLoY0vvXED+/P/8//7zWkTzWj/uVjrwW0DtUTL//v7+//vy0sn70MnuWT7zVTvzTjX+/v3+/f3yWz3xVzrzUjbwUTbwUDbvUjPqZ1HuXUDzUzn4+/j23tnz29TsXkHzVz3rUjbyTTL//vz6/fn49fP35+D13dbyz8TtopPxXkbyXELwWzvsVjbwUzbxVTX6//3//fr8+/j59e/2kX3skX3tjHzseGHvdFzobFHtXkfvWTvxTzntUzDpUzDwTy7z///+/vz6+Pb38vH57u346OTzxb3zta30rKLvq5vsmIvxm4nzkYDng2vocFfuYU71WUPzW0H2Vj3uXjvxUjjyWTftUjf3/vz8//r/+PX27Oz24d3219Tz2NHzvbrxubH0s6ryp5nup5nxoZbyn4/ul4PrlYHth3TubFjuZ1DuZEjoYEHyWUDvWUDxVkD1WT3pWzzxWTvzVTnyUTT0UDTwTjHzTS7rVCv8//35+/z88/H16uXy4t724tnyyLz2w7rzwLbswrXts6fvr6DypZLtoY3rkoLvgHHyhW/uf2ntf2focF/tblTwa1TsWUPoWUL1WUHqVj7uVD7rYDrsWzn3UzfyUTH28Oz44+P17OHy5+D32tf72dPz0c/52s3zycbxysDtyb70u7T2u7LztaTrm4/xk4bvkIDuiXzqg3Due2jpemXyc2Pre1/rZE7pYEnzWjz0TDLrVTHwVC/09/Xy5+b74tvw2Nju1c301cz30Mnv0L7xvbHnvK7uvKzru6jrraLmoZbxmY/mmob1loLwj3nwi3TniXPvb13ybljobFbvXkvqaEr3TDr3Vzj9/fTx8/Pt8+3zwbDzm4T0k4DqfG7siG3eeGftcmbqY0v3TzXwRCn886LaAAAJIElEQVRo3u2WZVQcVxiGr8zOzKazu80K3YX1BFhggeLuFghOQoHi8QQoLknj7u7unjSe1KONe1J3d3c5vcMKJORPe862f/bhB2dn773PfN/Mfe8CJ06c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'
+  
+          },
+          {
+            text: 'QUALITY REPORT',
+            margin: [150, 5, 0, 0],
+            bold: true,
+            fontSize: 20
+          }
+        ]
+      },
+      content: [
+        {
+            fillColor: 'white',
+            layout: 'noBorders',
+            margin: [100, -5, 0, 0],
+            color: '#76777F',
+            fontSize: 12,
+            table: {
+              body: [
+                [ dashboard.items?.map(item => item.caption).join(' > ') ]
+              ]
+            }
+        },
+        {
+            fillColor: '#76777F',
+            layout: 'noBorders',
+            margin: [-40, 15, 0, 0],
+            color: 'white',
+            fontSize: 15,
+            bold: true,
+            table: {
+              body: [
+                  ['', 'General information', '']
+                ]
+            }
+        },
+        {
+            fillColor: 'white',
+            margin: [-35, 15, 0, 0],
+            ul: [
+              'Subject :  ' + (submission && submission.subject ? submission.subject : 'N/A'),
+              'Supplier :  ' + (submission && submission.supplier ? submission.supplier.map(val => val && val.Project_Name).join(', ') : 'N/A'),
+              'Inspection Date : ' + (submission && submission.inspectionDate ? submission.inspectionDate.split('T')[0] : 'N/A'),
+              'Inspection Location :  ' + (submission && submission.location ? submission.location : 'N/A')
+            ]
+        },
+        {
+            fillColor: '#76777F',
+            layout: 'noBorders',
+            margin: [-40, 20, 0, 0],
+            color: 'white',
+            fontSize: 15,
+            bold: true,
+            table: {
+              body: [
+                ['', 'Material Detail', '']
+              ]
+            }
+        },
+        {
+            fillColor: 'white',
+            margin: [-35, 15, 0, 0],
+            widths: [ 'auto', 'auto', 'auto', 'auto'],
+            color: 'black',
+            fontSize: 12,
+            table: {
+              body: [
+                [ 'Item Description', 'Application Area', 'Units', 'Total Qty', 'Summary'],
+                ...(submission?.editGrid?.map((val) => {
+                  if (val?.applicationArea) {
+                    let doc = new DOMParser().parseFromString(val?.applicationArea, 'text/html');
+                    val.applicationArea = doc.body.textContent;
+                  }
+                  return [
+                    { text: val?.itemDescription, fontSize: 12 },
+                    { text: val?.applicationArea || '', fontSize: 12 },
+                    { text: val?.uom, fontSize: 12 },
+                    { text: val?.totalQty, fontSize: 12 },
+                    { text: val?.statusSummary, fontSize: 12 },
+                  ];
+                }) || [])
+              ]
+            }
+        },
+        {
+          fillColor: '#76777F',
+          layout: 'noBorders',
+          margin: [-40, 20, 0, 0],
+          color: 'white',
+          fontSize: 15,
+          bold: true,
+          table: {
+            body: [
+              ['', 'Observations/Remarks', '']
+            ]
+          }
+        },
+        {
+          text: \`\${
+            (submission && submission.note) ?
+            (submission.note = new DOMParser().parseFromString(submission.note, 'text/html').body.textContent):
+            'N/A'}\`,
+          margin: [0, 10, 0, 0],
+        },
+        {
+          fillColor: '#76777F',
+          layout: 'noBorders',
+          margin: [-40, 20, 0, 0],
+          color: 'white',
+          fontSize: 15,
+          bold: true,
+          table: {
+            body: [
+              ['', 'Attachment Types', '']
+            ]
+          }
+        },
+        {
+          text: 'Followup required: ' + ((submission && submission.attachmentTypes) ? (Object.values(submission.attachmentTypes)[0] === false ? 'No' : 'Yes') : 'N/A') + '             Packing list: ' + ((submission && submission.attachmentTypes) ? (Object.values(submission.attachmentTypes)[1] === false ? 'No' : 'Yes') : 'N/A') + '              Drawing: ' + ((submission && submission.attachmentTypes) ? (Object.values(submission.attachmentTypes)[2] === false ? 'No' : 'Yes') : 'N/A'),
+          margin: [0, 10, 0, 0],
+        },
+        {
+            fillColor: '#76777F',
+            layout: 'noBorders',
+            margin: [-40, 20, 0, 0],
+            color: 'white',
+            fontSize: 15,
+                bold: true,
+            table: {
+              body: [
+                ['', 'Attachments', '']
+              ]
+            }
+        },
+        {
+          columns: [
+            submission?.attachDocuments?.map(val => {
+              return {
+                text: val?.originalName,
+                italics: true,
+                color: '#F15B41',
+                margin: [0, 10, 0, 0],
+                link: val?.url
+              }
+            }) || []
+          ]
+        },
+        {
+          layout: 'noBorders',
+          margin: [0, 20, 0, 10],
+          color: 'black',
+          fontSize: 18,
+          bold: true,
+          table: {
+            body: [
+              ['Approval Logs']
+            ]
+          }
+        },
+        {
+          fillColor: 'white',
+          justify: 'left',
+          widths: [ 'auto', 'auto', 'auto', 'auto'],
+          color: 'black',
+          table: {
+            body: [
+              [ 'Performed by', 'Action', 'Approved On', 'Comments'],
+              ...(logs?.map((val) => [
+                { text: val?.performedBy, fontSize: 12 },
+                { text: val?.approvalStatus, fontSize: 12 },
+                { text: val?.approvedOn, fontSize: 12 },
+                { text: val?.comments, fontSize: 12 }
+              ]) || [])
+            ]
+          }
+        }
+      ]
+    }
+    return documentDefinition
+  }
+  `;
+
+  pdfTemplateForQR: string = `function generateString(submission, dashboard, progress, logs) {
+    const documentDefinition = {
+      watermark: { text: \`\${progress != 100 ? 'DRAFT': 'COMPLETE'}, color: '#F15B41', opacity: 0.3, bold: true, italics: false },
+      header: {
+        columns: [
+          {
+            width: 50,
+            height: 50,
+            margin: [15,5,0,0],
+            image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABhCAMAAAAX8fTVAAAC/VBMVEXxW0H////9///6///xW0LxWkDyWkH4///8///8/v3wWUH53dHwXEHwW0HzWUH//f/4s6TyTzLxWT/xWD3yXD/xTzP9//32lYTvUTD9/v////38/f3wXEPxVDn+/v/6/v38/fvvXT73///05eLoY0vvXED+/P/8//7zWkTzWj/uVjrwW0DtUTL//v7+//vy0sn70MnuWT7zVTvzTjX+/v3+/f3yWz3xVzrzUjbwUTbwUDbvUjPqZ1HuXUDzUzn4+/j23tnz29TsXkHzVz3rUjbyTTL//vz6/fn49fP35+D13dbyz8TtopPxXkbyXELwWzvsVjbwUzbxVTX6//3//fr8+/j59e/2kX3skX3tjHzseGHvdFzobFHtXkfvWTvxTzntUzDpUzDwTy7z///+/vz6+Pb38vH57u346OTzxb3zta30rKLvq5vsmIvxm4nzkYDng2vocFfuYU71WUPzW0H2Vj3uXjvxUjjyWTftUjf3/vz8//r/+PX27Oz24d3219Tz2NHzvbrxubH0s6ryp5nup5nxoZbyn4/ul4PrlYHth3TubFjuZ1DuZEjoYEHyWUDvWUDxVkD1WT3pWzzxWTvzVTnyUTT0UDTwTjHzTS7rVCv8//35+/z88/H16uXy4t724tnyyLz2w7rzwLbswrXts6fvr6DypZLtoY3rkoLvgHHyhW/uf2ntf2focF/tblTwa1TsWUPoWUL1WUHqVj7uVD7rYDrsWzn3UzfyUTH28Oz44+P17OHy5+D32tf72dPz0c/52s3zycbxysDtyb70u7T2u7LztaTrm4/xk4bvkIDuiXzqg3Due2jpemXyc2Pre1/rZE7pYEnzWjz0TDLrVTHwVC/09/Xy5+b74tvw2Nju1c301cz30Mnv0L7xvbHnvK7uvKzru6jrraLmoZbxmY/mmob1loLwj3nwi3TniXPvb13ybljobFbvXkvqaEr3TDr3Vzj9/fTx8/Pt8+3zwbDzm4T0k4DqfG7siG3eeGftcmbqY0v3TzXwRCn886LaAAAJIElEQVRo3u2WZVQcVxiGr8zOzKazu80K3YX1BFhggeLuFghOQoHi8QQoLknj7u7unjSe1KONe1J3d3c5vcMKJORPe862f/bhB2dn773PfN/Mfe8CJ06c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'
+  
+          },
+          {
+            text: 'QUALITY REPORT',
+            margin: [150, 5, 0, 0],
+            bold: true,
+            fontSize: 20
+          }
+        ]
+      },
+      content: [
+        {
+            fillColor: 'white',
+            layout: 'noBorders',
+            margin: [100, -5, 0, 0],
+            color: '#76777F',
+            fontSize: 12,
+            table: {
+              body: [
+                [ dashboard.items?.map(item => item.caption).join(' > ') ]
+              ]
+            }
+        },
+        {
+            fillColor: '#76777F',
+            layout: 'noBorders',
+            margin: [-40, 15, 0, 0],
+            color: 'white',
+            fontSize: 15,
+            bold: true,
+            table: {
+              body: [
+                  ['', 'General information', '']
+                ]
+            }
+        },
+        {
+            fillColor: 'white',
+            margin: [-35, 15, 0, 0],
+            ul: [
+              'Subject :  ' + (submission && submission.subject ? submission.subject : 'N/A'),
+              'Supplier :  ' + (submission && submission.supplier ? submission.supplier.map(val => val && val.Project_Name).join(', ') : 'N/A'),
+              'Inspection Date : ' + (submission && submission.inspectionDate ? submission.inspectionDate.split('T')[0] : 'N/A'),
+              'Inspection Location :  ' + (submission && submission.location ? submission.location : 'N/A')
+            ]
+        },
+        {
+          fillColor: '#76777F',
+          layout: 'noBorders',
+          margin: [-40, 20, 0, 0],
+          color: 'white',
+          fontSize: 15,
+          bold: true,
+          table: {
+            body: [
+              ['', 'Observations/Remarks', '']
+            ]
+          }
+        },
+        {
+          text: \`\${
+            (submission && submission.note) ?
+            (submission.note = new DOMParser().parseFromString(submission.note, 'text/html').body.textContent):
+            'N/A'}\`,,
+          margin: [0, 10, 0, 0],
+        },
+        {
+            fillColor: '#76777F',
+            layout: 'noBorders',
+            margin: [-40, 20, 0, 0],
+            color: 'white',
+            fontSize: 15,
+                bold: true,
+            table: {
+              body: [
+                ['', 'Attachments', '']
+              ]
+            }
+        },
+        {
+          columns: [
+            submission?.attachDocuments?.map(val => {
+              return {
+                text: val?.originalName,
+                italics: true,
+                color: '#0074C1',
+                margin: [0, 10, 0, 0],
+                link: val?.url
+              }
+            }) || []
+          ]
+        },
+        {
+          layout: 'noBorders',
+          margin: [0, 20, 0, 10],
+          color: 'black',
+          fontSize: 18,
+          bold: true,
+          table: {
+            body: [
+              ['Approval Logs']
+            ]
+          }
+        },
+        {
+          fillColor: 'white',
+          justify: 'left',
+          widths: [ 'auto', 'auto', 'auto', 'auto'],
+          color: 'black',
+          table: {
+            body: [
+              [ 'Performed by', 'Action', 'Approved On', 'Comments'],
+              ...(logs?.map((val) => [
+                { text: val?.performedBy, fontSize: 12 },
+                { text: val?.approvalStatus, fontSize: 12 },
+                { text: val?.approvedOn, fontSize: 12 },
+                { text: val?.comments, fontSize: 12 }
+              ]) || [])
+            ]
+          }
+        }
+      ]
+    }
+    return documentDefinition
+  }`
 
   /**
    * Breadcrumb array to display
