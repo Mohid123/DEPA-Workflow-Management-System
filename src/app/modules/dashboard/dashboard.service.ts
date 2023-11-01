@@ -847,7 +847,17 @@ export class DashboardService extends ApiService<any> {
             ]
           }
         }
-      ]
+      ],
+      footer: {
+        color: '#76777F',
+        fontSize: '8',
+        margin: [8,0,0,0],
+          ol: [
+            'This report reflects the findings at the time and place of inspection based on random samples selected.',
+            'This Quality Report does not relieve suppliers/subcontractors from their contractual obligations for any apparent and/or hidden defects not detected during inspection or occurring thereafter.',
+            'This is system generated report which does not require a signature.'
+          ]
+      }
     }
     return documentDefinition
   }
