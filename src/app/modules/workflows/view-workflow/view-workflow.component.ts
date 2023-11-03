@@ -749,7 +749,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     });
     this.workflowData.subModuleId.pdfTemplate = this.workflowData?.subModuleId?.pdfTemplate?.replace(/&lt;/g, "<")
     let dd = new Function('return ' + this.workflowData?.subModuleId?.pdfTemplate)();
-    let pdfCode = dd(submission, this.dashboard, progress, logs)
+    let pdfCode = dd(submission, this.dashboard, progress, logs, this.currentUser)
     pdfMake.createPdf(pdfCode).open();
     // let formValue = JSON.parse(JSON.stringify(this.formWithWorkflow[index]));
     // let submission = formValue?.data
