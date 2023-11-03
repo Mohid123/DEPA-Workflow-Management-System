@@ -810,13 +810,20 @@
     >
       After Submit
     </button>
-    <!-- <button
+    <button
       tuiTab
       (click)="activeItemIndex = 2"
       class="flex justify-end"
     >
-      Event
-    </button> -->
+      On Change
+    </button>
+    <button
+      tuiTab
+      (click)="activeItemIndex = 3"
+      class="flex justify-end"
+    >
+      On Load
+    </button>
   </tui-tabs>
   <div class="w-full">
     <!--Editor-->
@@ -827,18 +834,10 @@
       <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="triggerCodeAfter" class="h-full"></ngx-monaco-editor>
     </div>
     <div *ngIf="activeItemIndexHooks == 2" class="my-3 h-[480px]">
-      <div class="mb-3">
-        <label class="block">Select component where this logic should apply</label>
-        <select required [formControl]="eventComponent" class="form-control" type="text">
-          <ng-container *ngFor="let col of summarySchemaFields;">
-            <option [value]="col">{{col}}</option>
-          </ng-container>
-        </select>
-      </div>
-      <label class="block">Logic</label>
-      <div class="my-3 h-[350px]">
-        <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="eventCode" class="h-full"></ngx-monaco-editor>
-      </div>
+      <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="eventCodeOnChange" class="h-full"></ngx-monaco-editor>
+    </div>
+    <div *ngIf="activeItemIndexHooks == 3" class="my-3 h-[480px]">
+      <ngx-monaco-editor [options]="jsEditorOptions" [(ngModel)]="eventCodeOnLoad" class="h-full"></ngx-monaco-editor>
     </div>
   </div>
   <div class="flex justify-start gap-x-3">

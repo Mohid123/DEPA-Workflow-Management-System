@@ -1,6 +1,6 @@
 <nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md hidden md:block">
   <div class="flex flex-wrap items-center justify-between p-4 mx-3 max-w-screen lg:mx-20">
-    <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="40" height="36">
+    <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="40" height="36" loading="auto">
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
       <ul class="flex flex-col px-4 py-2 font-medium rounded-lg md:flex-row md:space-x-6">
         <li class="mt-2">
@@ -76,7 +76,7 @@
 <!-- Mobile View -->
 <nav class="bg-[#2F3044] fixed w-full z-40 top-0 left-0 border-b border-gray-200 shadow-md block md:hidden">
   <div class="flex justify-between py-2 ml-2 cursor-pointer">
-    <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="30" height="27">
+    <img [routerLink]="['/dashboard/home']" ngSrc="../../../assets/depa_logo.svg" width="30" height="27" loading="auto">
     <tui-marker-icon (click)="toggle()" size="xs" src="tuiIconMenuLarge" mode="warning" class="mx-3"></tui-marker-icon>
   </div>
   <tui-expand [expanded]="expanded">

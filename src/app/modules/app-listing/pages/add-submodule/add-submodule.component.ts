@@ -34,7 +34,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   languageForm = new FormGroup({
     languages: new FormControl(this.langItems[0]),
   });
-  eventCode: string;
+  eventCodeOnChange: string;
+  eventCodeOnLoad: string;
   eventComponent = new FormControl(null)
   readonly conditions = [
     'OR',
@@ -1501,20 +1502,23 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       triggers: [
         {
           name: 'beforeSubmit',
-          code: this.triggerCode
+          code: this.triggerCode || 'function beforeSubmit(){}'
         },
         {
           name: 'afterSubmit',
-          code: this.triggerCodeAfter
+          code: this.triggerCodeAfter || 'function afterSubmit(){}'
         }
       ],
-      events: this.eventComponent?.value ? 
-      [
+      events: [
         {
-          name: this.eventComponent?.value,
-          code: this.eventCode
+          name: 'onChange',
+          code: this.eventCodeOnChange || 'function onChange(){}'
+        },
+        {
+          name: 'onLoad',
+          code: this.eventCodeOnLoad || 'function onLoad(){}'
         }
-      ] : undefined
+      ]
     }
     debugger
     if(statusStr) {

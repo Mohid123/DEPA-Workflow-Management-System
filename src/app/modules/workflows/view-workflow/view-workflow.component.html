@@ -66,17 +66,19 @@
     <div class="flex justify-end my-4 gap-x-3">
       <button
         tuiButton
+        icon="tuiIconSave"
         type="button"
         [showLoader]="(savingDecision | async)"
         size="m"
         [disabled]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true || workflowData?.submissionStatus == 5"
         (click)="updateFormData()"
       >
-        Update Forms Data
+        Save
       </button>
       <button
         tuiButton
         type="button"
+        icon="tuiIconArrowLeft"
         appearance="accent"
         [showLoader]="(savingDecision | async)"
         size="m"

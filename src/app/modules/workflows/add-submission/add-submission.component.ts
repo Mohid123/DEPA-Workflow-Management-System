@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, distinctUntilChanged, forkJoin, pluck, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, distinctUntilChanged, forkJoin, pluck, switchMap, takeUntil, tap, take, map } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -63,6 +63,14 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   .pipe(
     distinctUntilChanged()
   );
+  rxJsOperators = {
+    takeUntil,
+    forkJoin,
+    take,
+    map,
+    tap,
+    switchMap
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -386,20 +394,20 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
     if(!status) {
-      this.creatingSubmission.next(true)
+      this.creatingSubmission.next(true);
+      if(this.hooks?.length > 0) {
+        this.formValuesTemp?.forEach(submission => {
+          this.hooks.forEach(val => {
+            if(val?.name == 'beforeSubmit') {
+              val.code = new Function('return ' + val.code)();
+              val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$);
+            }
+          })
+        })
+      }
     }
     else {
       this.draftingSubmission.next(true)
-    }
-    if(this.hooks?.length > 0) {
-      this.formValuesTemp?.forEach(submission => {
-        this.hooks.forEach(val => {
-          if(val?.name == 'beforeSubmit') {
-            val.code = new Function('return ' + val.code)();
-            val.code(submission?.data, this.formService, takeUntil, this.destroy$, forkJoin);
-          }
-        })
-      })
     }
     let finalData = [];
     this.formValues = this.formValuesTemp;
@@ -435,15 +443,17 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
       if(res) {
-        if(this.hooks?.length > 0) {
-          this.formValuesTemp?.forEach(submission => {
-            this.hooks.forEach(val => {
-              if(val?.name == 'afterSubmit') {
-                val.code = new Function('return ' + val.code)();
-                val.code(submission?.data, this.formService, takeUntil, this.destroy$, forkJoin, res?.summaryData?.progress, res?.submissionStatus);
-              }
+        if(!status) {
+          if(this.hooks?.length > 0) {
+            this.formValuesTemp?.forEach(submission => {
+              this.hooks.forEach(val => {
+                if(val?.name == 'afterSubmit') {
+                  val.code = new Function('return ' + val.code)();
+                  val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
+                }
+              })
             })
-          })
+          }
         }
         this.creatingSubmission.next(false);
         this.draftingSubmission.next(false)
