@@ -494,6 +494,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   sendApproveOrRejectDecisionData() {
+    this.updateFormData()
     this.savingDecision.next(true);
     const payload: any = {
       stepId: this.decisionData?.value?.stepId || this.decisionData?.value[0]?.stepId,
@@ -745,7 +746,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         approvedOn: val?.approvedOn?.split('T')[0],
         comments: val?.comments || 'N/A'
       }
-    })
+    });
+    this.workflowData.subModuleId.pdfTemplate = this.workflowData?.subModuleId?.pdfTemplate?.replace(/&lt;/g, "<")
     let dd = new Function('return ' + this.workflowData?.subModuleId?.pdfTemplate)();
     let pdfCode = dd(submission, this.dashboard, progress, logs)
     pdfMake.createPdf(pdfCode).open();

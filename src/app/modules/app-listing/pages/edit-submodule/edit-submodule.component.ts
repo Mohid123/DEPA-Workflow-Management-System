@@ -104,7 +104,8 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   triggerCode: string;
   pdfTempCode: string;
   triggerCodeAfter: string;
-  eventCode: string;
+  eventCodeOnChange: string;
+  eventCodeOnLoad: string;
   eventComponent = new FormControl(null)
 
   constructor(
@@ -333,7 +334,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             this.addForms.setValue(response?.formVisibility)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
-            this.pdfTempCode = response?.pdfTemplate;
+            this.pdfTempCode = response?.pdfTemplate?.replace(/&lt;/g, "<");
             response.emailTemplate = {
               action: response.emailTemplate?.action?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">"),
               notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
@@ -870,20 +871,23 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       triggers: [
         {
           name: 'beforeSubmit',
-          code: this.triggerCode
+          code: this.triggerCode || 'function beforeSubmit(){}'
         },
         {
           name: 'afterSubmit',
-          code: this.triggerCodeAfter
+          code: this.triggerCodeAfter || 'function afterSubmit(){}'
         }
       ],
-      events: this.eventComponent?.value ? 
-      [
+      events: [
         {
-          name: this.eventComponent?.value,
-          code: this.eventCode
+          name: 'onChange',
+          code: this.eventCodeOnChange || 'function onChange(){}'
+        },
+        {
+          name: 'onLoad',
+          code: this.eventCodeOnLoad || 'function onLoad(){}'
         }
-      ] : undefined
+      ]
     }
     if(statusStr) {
       const status = statusStr;

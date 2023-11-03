@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, distinctUntilChanged, switchMap, takeUntil, forkJoin, take, map, tap } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
@@ -13,6 +13,7 @@ import { Location } from '@angular/common';
 import { FormioUtils } from '@formio/angular';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
+import { FormsService } from 'src/app/modules/forms/services/forms.service';
 
 @Component({
   templateUrl: './edit-submission.component.html',
@@ -59,6 +60,16 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   .pipe(
     distinctUntilChanged()
   );
+  hooks: any;
+  rxJsOperators = {
+    takeUntil,
+    forkJoin,
+    take,
+    map,
+    tap,
+    distinctUntilChanged,
+    switchMap
+  }
 
   constructor(
     private auth: AuthService,
@@ -71,7 +82,8 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private location: Location,
     private transportService: DataTransportService,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private formService: FormsService
   ) {
     this.currentUser = this.auth.currentUserValue;
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin')
@@ -434,7 +446,17 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
       return this.notif.displayNotification('Please provide valid condition for the workflow step/s', 'Create Submission', TuiNotification.Warning)
     }
     if(!status) {
-      this.creatingSubmission.next(true)
+      this.creatingSubmission.next(true);
+      if(this.hooks?.length > 0) {
+        this.formValuesTemp?.forEach(submission => {
+          this.hooks.forEach(val => {
+            if(val?.name == 'beforeSubmit') {
+              val.code = new Function('return ' + val.code)();
+              val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$);
+            }
+          })
+        })
+      }
     }
     else {
       this.draftingSubmission.next(true)
@@ -476,6 +498,23 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     this.workflowService.updateSubmissionWorkflow(this.subModuleId, payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
       if(res) {
+        debugger
+        if(!status) {
+          debugger
+          if(this.hooks?.length > 0) {
+            debugger
+            this.formValuesTemp?.forEach(submission => {
+              this.hooks.forEach(val => {
+                debugger
+                if(val?.name == 'afterSubmit') {
+                  val.code = new Function('return ' + val.code)();
+                  debugger
+                  val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
+                }
+              })
+            })
+          }
+        }
         this.creatingSubmission.next(true);
         this.location.back()
       }
