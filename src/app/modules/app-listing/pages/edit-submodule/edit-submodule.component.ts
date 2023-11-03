@@ -47,7 +47,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   redirectToModuleID: string;
   companyList: any[];
   cols: any[] = [
-    "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
+    "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
   ]
   domainUrl = window.location.origin;
   currentFieldArray: any;
@@ -334,7 +334,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
             this.addForms.setValue(response?.formVisibility)
             this.workFlowId = response?.workFlowId?.id;
             this.categoryId = response?.categoryId?.id;
-            this.pdfTempCode = response?.pdfTemplate?.replace(/&lt;/g, "<");
+            this.pdfTempCode = response?.pdfTemplate?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");;
             response.emailTemplate = {
               action: response.emailTemplate?.action?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">"),
               notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
@@ -396,7 +396,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
                 let res = generateKeyCombinations(val)
                 return res
               });
-              
+
               this.formKeysForViewSchema = this.summarySchemaFields;
               formComps?.map((data, index) => {
                 if(data?.defaultData) {

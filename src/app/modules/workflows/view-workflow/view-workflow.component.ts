@@ -741,13 +741,13 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     let progress = this.workflowData?.summaryData?.progress;
     let logs = this.workflowData?.approvalLog?.map(val => {
       return {
-        performedBy: val?.performedById?.fullName,
+        performedBy: val?.onBehalfOf ? val?.onBehalfOf?.fullName + ' on behalf of ' + val?.performedById?.fullName : val?.performedById?.fullName,
         approvalStatus: val?.approvalStatus?.charAt(0)?.toUpperCase() + val?.approvalStatus?.slice(1),
         approvedOn: val?.approvedOn?.split('T')[0],
         comments: val?.comments || 'N/A'
       }
     });
-    this.workflowData.subModuleId.pdfTemplate = this.workflowData?.subModuleId?.pdfTemplate?.replace(/&lt;/g, "<")
+    this.workflowData.subModuleId.pdfTemplate = this.workflowData?.subModuleId?.pdfTemplate?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
     let dd = new Function('return ' + this.workflowData?.subModuleId?.pdfTemplate)();
     let pdfCode = dd(submission, this.dashboard, progress, logs, this.currentUser)
     pdfMake.createPdf(pdfCode).open();
