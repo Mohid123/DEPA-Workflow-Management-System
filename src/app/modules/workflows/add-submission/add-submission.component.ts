@@ -70,7 +70,9 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     map,
     tap,
     switchMap
-  }
+  };
+  onLoadFn: Function;
+  onChangeFn: Function;
 
   constructor(
     private fb: FormBuilder,
@@ -221,6 +223,16 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
           }, true)
         });
         this.subModuleData = res;
+        if(this.subModuleData?.events && this.subModuleData?.events?.length > 0) {
+          this.subModuleData?.events?.forEach(val => {
+            if(val?.name == 'onLoad') {
+              this.onLoadFn = new Function('return ' + val.code)();
+            }
+            if(val?.name == 'onChange') {
+              this.onChangeFn = new Function('return ' + val.code)();
+            }
+          })
+        }
         this.adminUsers = res?.adminUsers?.map(val => val?.id);
         this.formWithWorkflow = res?.formIds?.map(comp => {
           return {

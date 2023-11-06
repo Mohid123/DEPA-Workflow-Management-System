@@ -1512,11 +1512,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       events: [
         {
           name: 'onChange',
-          code: this.eventCodeOnChange || 'function onChange(){}'
+          code: this.eventCodeOnChange || "function onChange(event){console.log('On Change Works!')}"
         },
         {
           name: 'onLoad',
-          code: this.eventCodeOnLoad || 'function onLoad(){}'
+          code: this.eventCodeOnLoad || "function onLoad(event){console.log('On Load Works!')}"
         }
       ]
     }
