@@ -1498,7 +1498,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         notify: this.emailContentNotify,
         notifyCSS: this.emailContentNotifyCSS
       },
-      pdfTemplate: this.pdfTempCode,
+      pdfTemplate: this.pdfTempCode || undefined,
       triggers: [
         {
           name: 'beforeSubmit',
@@ -1520,7 +1520,6 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         }
       ]
     }
-    debugger
     if(statusStr) {
       this.isSavingAsDraft.next(true)
     } else {
