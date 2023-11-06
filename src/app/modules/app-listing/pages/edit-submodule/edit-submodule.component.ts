@@ -861,7 +861,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       summarySchema: this.schemaForm.value?.summarySchema?.length > 0 ? this.schemaForm.value?.summarySchema : undefined,
       viewSchema: this.schemaForm.value?.viewSchema[0]?.displayAs ? this.schemaForm.value?.viewSchema : undefined,
       accessType: this.accessTypeValue?.value?.name,
-      pdfTemplate: this.pdfTempCode,
+      pdfTemplate: this.pdfTempCode || undefined,
       emailTemplate: {
         action: this.emailContent,
         actionCSS: this.emailContentCSS,
@@ -889,6 +889,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }
       ]
     }
+    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})
