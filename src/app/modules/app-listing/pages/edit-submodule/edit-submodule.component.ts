@@ -888,7 +888,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         }
       ]
     }
-    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})
