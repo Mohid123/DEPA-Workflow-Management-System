@@ -801,7 +801,6 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     else {
       return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)
     }
-    console.log(this.schemaForm.value)
   }
 
   closeSchemaDialog() {
@@ -881,15 +880,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       events: [
         {
           name: 'onChange',
-          code: this.eventCodeOnChange || 'function onChange(){}'
+          code: this.eventCodeOnChange || "function onChange(event){console.log('On Change Works!')}"
         },
         {
           name: 'onLoad',
-          code: this.eventCodeOnLoad || 'function onLoad(){}'
+          code: this.eventCodeOnLoad || "function onLoad(event){console.log('On Load Works!')}"
         }
       ]
     }
-    debugger
     if(statusStr) {
       const status = statusStr;
       Object.assign(payload, {status})

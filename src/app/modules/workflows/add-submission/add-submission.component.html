@@ -25,7 +25,8 @@
             [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form?.defaultData)"
             [options]="options"
             [form]="form"
-            (change)="onChange($event, i)"
+            (change)="onChange($event, i); onChangeFn($event)"
+            (formLoad)="onLoadFn($event)"
           ></formio>
         </div>
       </ng-container>

@@ -69,7 +69,9 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     tap,
     distinctUntilChanged,
     switchMap
-  }
+  };
+  onLoadFn: Function;
+  onChangeFn: Function;
 
   constructor(
     private auth: AuthService,
@@ -194,6 +196,16 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
           }, true)
         })
         this.subModuleData = res;
+        if(this.subModuleData?.events && this.subModuleData?.events?.length > 0) {
+          this.subModuleData?.events?.forEach(val => {
+            if(val?.name == 'onLoad') {
+              this.onLoadFn = new Function('return ' + val.code)();
+            }
+            if(val?.name == 'onChange') {
+              this.onChangeFn = new Function('return ' + val.code)();
+            }
+          })
+        }
         this.workFlowId = res?.workFlowId?._id;
         this.approvalLogs = res?.approvalLog;
         this.forms = res?.formIds?.map(comp => {
