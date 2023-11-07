@@ -3,6 +3,11 @@ import { Observable, debounceTime, distinctUntilChanged, first, map, of, switchM
 import { ApiResponse } from "../models/api-response.model";
 import { DashboardService } from "src/app/modules/dashboard/dashboard.service";
 
+/**
+ * Function for calculating the aspect ratio of the selected image
+ * @param image Image
+ * @returns Promise of type boolean
+ */
 export const calculateAspectRatio = (image: any): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -22,6 +27,11 @@ export const calculateAspectRatio = (image: any): Promise<boolean> => {
   });
 }
 
+/**
+ * Calculates file size and checks if it matches the required file size specs
+ * @param file File
+ * @returns Boolean
+ */
 export const calculateFileSize = (file: any): boolean => {
   const maxSize = (1024 * 1024) * 2;
   if (
@@ -36,11 +46,28 @@ export const calculateFileSize = (file: any): boolean => {
   return false;
 }
 
+/**
+ * Function for filtering out duplicate values from an array of objects
+ * @param arr Array of Objects
+ * @param key Object key as a string
+ * @returns New Array that has only unique values
+ */
 export const getUniqueListBy = (arr: any, key: any): any => {
   return [...new Map(arr.map((item: any) => [item[key], item])).values()]
 }
 
+/**
+ * Class that handles the api calls for validation of existing key/code in apps/submodules
+ */
 export class CodeValidator {
+  /**
+   * Static method for valiating app keys/codes
+   * @param dashboard The dashboard service class
+   * @param model string
+   * @param key string
+   * @param typedVal string
+   * @returns An asynchronous validator function that returns true or false based on provided criteria
+   */
   static createValidator(dashboard: DashboardService, model: string, key?: string, typedVal?: string): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       if (!control.valueChanges || control.pristine) {
@@ -59,6 +86,12 @@ export class CodeValidator {
   }
 }
 
+/**
+ * Function to convert strings to key value pairs in an object
+ * @param inputString string
+ * @param value Value to assign to the string key
+ * @returns Object
+ */
 export const convertStringToKeyValuePairs = (inputString, value) => {
   const keys = inputString.split('.');
   if (keys.length === 1) {
@@ -71,6 +104,11 @@ export const convertStringToKeyValuePairs = (inputString, value) => {
   };
 }
 
+/**
+ * Method for creating key combinations for Summary Schema fields
+ * @param inputObject Object to generate keys from
+ * @returns Array of combinations of key and values
+ */
 export const generateKeyCombinations = (inputObject) => {
   const keys = Object.keys(inputObject);
   const firstKey = keys[0];
@@ -98,7 +136,15 @@ export const generateKeyCombinations = (inputObject) => {
   return combinations;
 }
 
+/**
+ * Class that handles the api calls for validation of existing key/code in forms
+ */
 export class FormKeyValidator {
+  /**
+   * Static method for valiating app/form keys/codes
+   * @param dashboard The dashboard service class
+   * @returns An asynchronous validator function that returns true or false based on provided criteria
+   */
   static createValidator(dashboard: DashboardService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       if (!control.valueChanges || control.pristine) {

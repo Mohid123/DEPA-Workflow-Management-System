@@ -33,35 +33,18 @@ export class LoginComponent implements OnDestroy {
   constructor(private auth: AuthService, private notif: NotificationsService, private router: Router) {}
 
   onSubmit(submission: any) {
-    if(this.loginViaActiveDir?.value === true) {
-      const params: any = {
-        username: submission?.data?.email,
-        password: submission?.data?.password
-      }
-      if(params.username && params.password) {
-        this.auth.loginWithActiveDirectory(params).pipe(takeUntil(this.destroy$), first())
-        .subscribe((res: ApiResponse<any>) => {
-          if(!res.hasErrors()) {
-            this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
-            this.router.navigate(['/dashboard/home'])
-          }
-        })
-      }
+    const params: any = {
+      email: submission?.data?.email,
+      password: submission?.data?.password
     }
-    else {
-      const params: any = {
-        email: submission?.data?.email,
-        password: submission?.data?.password
-      }
-      if(params.email && params.password) {
-        this.auth.login(params).pipe(first(), takeUntil(this.destroy$))
-        .subscribe((res: ApiResponse<any>) => {
-          if(!res.hasErrors()) {
-            this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
-            this.router.navigate(['/dashboard/home'])
-          }
-        })
-      }
+    if(params.email && params.password) {
+      this.auth.login(params).pipe(first(), takeUntil(this.destroy$))
+      .subscribe((res: ApiResponse<any>) => {
+        if(!res.hasErrors()) {
+          this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
+          this.router.navigate(['/dashboard/home'])
+        }
+      })
     }
   }
 

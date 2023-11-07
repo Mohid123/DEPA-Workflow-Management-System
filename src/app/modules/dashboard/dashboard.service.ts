@@ -697,7 +697,7 @@ export class DashboardService extends ApiService<any> {
    * Handles the dynamic creation of breadcrumbs when route changes
    * @param route Provides access to information about a route associated with a component that is loaded in an outlet.
    * @param routerLink The route path
-   * @param breadcrumbs Array fo breadcrumbs
+   * @param breadcrumbs Array of breadcrumbs
    * @returns {BreadCrumbs[]} An array of breadcrumbs
    */
   public createBreadcrumbs(route: ActivatedRoute, routerLink: string = '', breadcrumbs: BreadCrumbs[] = []) {
@@ -738,7 +738,7 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for fetching pending submissions on the currently logged in user
-   * @returns Observable Array
+   * @returns Observable Array of Pending Submissions
    */
   getPendingSubmissions(): Observable<ApiResponse<any>> {
     return this.get('/user/pendings').pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -759,7 +759,7 @@ export class DashboardService extends ApiService<any> {
    * @param model 
    * @param key 
    * @param typedVal 
-   * @returns Observable
+   * @returns Observable of fetch call for module code validation
    */
   validateModuleCode(codeValue: string, model: string, key?: string, typedVal?: string): Observable<ApiResponse<any>> {
     let params = {
@@ -779,7 +779,7 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for validating if form code/slug/key already exists
-   * @param codeValue 
+   * @param codeValue string
    * @returns 
    */
   validateFormCode(codeValue: string): Observable<ApiResponse<any>> {
@@ -789,8 +789,8 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Get child app or module in relationship to it's parent module
-   * @param moduleID 
-   * @returns 
+   * @param moduleID string
+   * @returns Observable of Submodule
    */
   getSubModuleByModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/module/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -807,11 +807,11 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for fetching all users
-   * @param limit 
-   * @param page 
-   * @param name 
-   * @param role 
-   * @param sortBy 
+   * @param limit number
+   * @param page number
+   * @param name string
+   * @param role string
+   * @param sortBy string
    * @returns 
    */
   getAllUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
@@ -847,11 +847,11 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * @ignore
-   * @param limit 
-   * @param page 
-   * @param name 
-   * @param role 
-   * @param sortBy 
+   * @param limit number
+   * @param page number
+   * @param name string
+   * @param role string
+   * @param sortBy string
    * @returns 
    */
   getAllUsersForListing(limit: number, page?: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
@@ -880,11 +880,11 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for fetching only Admin Users
-   * @param limit 
-   * @param page 
-   * @param name 
-   * @param role 
-   * @param sortBy 
+   * @param limit number
+   * @param page number
+   * @param name string
+   * @param role string
+   * @param sortBy string
    * @returns 
    */
   getAllAdminUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
@@ -919,8 +919,8 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * @ignore
-   * @param limit 
-   * @param page 
+   * @param limit number
+   * @param page number
    * @param name 
    * @param role 
    * @param sortBy 
@@ -952,9 +952,9 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for updating user
-   * @param id 
-   * @param payload 
-   * @returns 
+   * @param id string
+   * @param payload Object
+   * @returns Observable of updated user object
    */
   updateUser(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/users/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -1010,8 +1010,8 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for fetching companies
-   * @param limit 
-   * @param page 
+   * @param limit number
+   * @param page number
    * @returns Observable array containg data of companies
    */
   getAllCompanies(limit: number, page: number): Observable<ApiResponse<any>> {
@@ -1414,9 +1414,9 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for updating child app by id
-   * @param id 
-   * @param payload 
-   * @returns 
+   * @param id string
+   * @param payload Object
+   * @returns Observable of updated submodule/ child app
    */
   updateSubModule(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/subModules/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -1432,8 +1432,8 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for fetching all categories
-   * @param limit 
-   * @returns 
+   * @param limit number 
+   * @returns Observable of array of categories
    */
   getAllCategories(limit: number): Observable<ApiResponse<any>> {
     const params: any = {
@@ -1453,8 +1453,8 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for creating a new category
-   * @param category 
-   * @returns 
+   * @param category Object
+   * @returns Observable of Category
    */
   addCategory(category: {name: string}): Observable<ApiResponse<any>> {
     return this.post('/categories', category).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -1471,9 +1471,9 @@ export class DashboardService extends ApiService<any> {
 
   /**
    * Method for updating category
-   * @param category 
-   * @param id 
-   * @returns 
+   * @param category Object
+   * @param id string
+   * @returns Observable of Updated Category
    */
   editCategory(category: {name: string}, id: string): Observable<ApiResponse<any>> {
     return this.patch(`/categories/${id}`, category).pipe(shareReplay(), map((res: ApiResponse<any>) => {
