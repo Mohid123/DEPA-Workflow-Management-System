@@ -461,7 +461,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
               this.hooks.forEach(val => {
                 if(val?.name == 'afterSubmit') {
                   val.code = new Function('return ' + val.code)();
-                  val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
+                  val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
                 }
               })
             })
