@@ -37,7 +37,7 @@ export class LoginComponent implements OnDestroy {
     private ac: ActivatedRoute
   ) {
     this.ac.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
-      if(val) {
+      if(Object.keys(val)?.length > 0) {
         this.auth.loginWithActiveDirectory(val['graphData']).pipe(takeUntil(this.destroy$))
         .subscribe((res: ApiResponse<any>) => {
           debugger
