@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, debounceTime, map, of, pluck, switchMap, take, takeUntil, forkJoin, tap } from 'rxjs';
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
@@ -13,6 +13,7 @@ import { FormioUtils } from '@formio/angular';
 import FormioExport from 'formio-export';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { FormsService } from '../../forms/services/forms.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 @Component({
   templateUrl: './view-workflow.component.html',
@@ -77,6 +78,15 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   exporter: FormioExport;
   currentBreakpoint: string = '';
   disableAll: boolean;
+  hooks: any;
+  rxJsOperators = {
+    takeUntil,
+    forkJoin,
+    take,
+    map,
+    tap,
+    switchMap
+  };
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -85,7 +95,8 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     private auth: AuthService,
     private dashboard: DashboardService,
     private router: Router,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private formService: FormsService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.currentUser = this.auth.currentUserValue;
@@ -259,6 +270,26 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           }, true)
         })
         this.workflowData = data;
+        if(this.hooks?.length > 0) {
+          this.formValuesTemp?.forEach(submission => {
+            this.hooks.forEach(val => {
+              if(val?.name == 'afterSubmit') {
+                val.code = new Function('return ' + val.code)();
+                val.code(
+                  submission?.data,
+                  this.formService,
+                  this.workflowService,
+                  this.dashboard,
+                  this.rxJsOperators,
+                  this.destroy$,
+                  this.workflowData?.summaryData?.progress,
+                  this.workflowData?.submissionStatus
+                );
+              }
+            })
+          })
+        }
+        this.hooks = this.workflowData?.subModuleId?.triggers;
         this.currentStepId = this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null
         })[0]?.stepId;
@@ -706,7 +737,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     this.workflowService.updateMultipleFormsData({formDataIds: this.formSubmission.value}).pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val) {
         this.fetchData();
-
       }
     })
   }
