@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import { Subject, takeUntil, first, Observable, BehaviorSubject } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TuiNotification } from '@taiga-ui/core';
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { activeDirectoryLoginForm, emailLoginForm } from 'src/app/forms-schema/forms';
@@ -30,7 +30,27 @@ export class LoginComponent implements OnDestroy {
     "disableAlerts": true
   }
 
-  constructor(private auth: AuthService, private notif: NotificationsService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private notif: NotificationsService,
+    private router: Router,
+    private ac: ActivatedRoute
+  ) {
+    this.ac.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
+      if(val) {
+        this.auth.loginWithActiveDirectory(val['graphData']).pipe(takeUntil(this.destroy$))
+        .subscribe((res: ApiResponse<any>) => {
+          debugger
+          if(!res.hasErrors()) {
+            debugger
+            this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
+            debugger
+            this.router.navigate(['/dashboard/home'])
+          }
+        })
+      }
+    })
+    }
 
   onSubmit(submission: any) {
     const params: any = {

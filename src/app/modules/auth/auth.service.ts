@@ -155,23 +155,26 @@ export class AuthService extends ApiService<AuthApiData> {
    * @param params Authentication or Login credentials provided by user
    * @returns User object or null
    */
-  loginWithActiveDirectory(params: {username: string, password: string}) {
+  loginWithActiveDirectory(params: any) {
     this.isLoadingSubject.next(true);
-    Array.from(document.getElementsByClassName('fa-spin')).forEach(val => val.classList.remove('hidden'))
-    return this.post('/auth/login/active-directory', params).pipe(
+    debugger
+    return this.get('/auth/adl-redirect', params).pipe(
       shareReplay(),
       map((result: ApiResponse<any>) => {
         if (!result.hasErrors()) {
+          debugger
           setItem(StorageItem.User, result?.data?.user || null);
+          debugger
           setItem(StorageItem.JwtToken, result?.data?.tokens?.access?.token || null);
+          debugger
           setItem(StorageItem.RefreshToken, result?.data?.tokens?.refresh?.token || null);
+          debugger
           if(result?.data?.user)
           this.currentUserSubject.next(result?.data?.user);
           return result
         }
         else {
           this.notif.displayNotification(result.errors[0]?.error?.message || 'Failed to authenticate', 'Login Failed!', TuiNotification.Error);
-          Array.from(document.getElementsByClassName('fa-spin')).forEach(val => val.classList.add('hidden'))
           throw result.errors[0].error?.message
         }
       }),
