@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
@@ -1372,8 +1372,8 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     if(approvers.length == 0) {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
-    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
-    setItem(StorageItem.approvers, approvers)
+    setItemSession(StorageItem.editBreadcrumbs, this.dashboard.items)
+    setItemSession(StorageItem.approvers, approvers)
     if(this.categoryIdForMatch) {
       this.router.navigate(['/forms/form-builder'], {queryParams: {isParent: true}});
     }
@@ -1413,7 +1413,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   sendFormForEdit(index: number) {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
-    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
+    setItemSession(StorageItem.editBreadcrumbs, this.dashboard.items)
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file, emailTemplate: {
       action: this.emailContent,
       actionCSS: this.emailContentCSS,

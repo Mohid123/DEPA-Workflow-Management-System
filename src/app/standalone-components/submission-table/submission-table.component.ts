@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { TuiButtonModule, TuiDropdownModule, TuiHostedDropdownModule } from '@taiga-ui/core';
 import { FilterComponent } from '../filter/filter.component';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession } from 'src/core/utils/local-storage.utils';
 import { TuiPaginationModule, TuiProgressModule } from '@taiga-ui/kit';
 import { TableLoaderComponent } from 'src/app/skeleton-loaders/table-loader/table-loader.component';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -276,7 +276,7 @@ export class SubmissionTableComponent implements OnDestroy {
   }
 
   addSubmissionRoute() {
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/add-submission`, this.submoduleId])
+    this.router.navigate([`/modules/${getItemSession(StorageItem.moduleSlug)}/add-submission`, this.submoduleId])
   }
 
   ngOnDestroy(): void {

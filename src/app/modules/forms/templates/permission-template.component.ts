@@ -6,7 +6,7 @@ import { TuiButtonModule, TuiDialogContext, TuiDialogService } from "@taiga-ui/c
 import { TuiCheckboxLabeledModule } from "@taiga-ui/kit";
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { DataTransportService } from "src/core/core-services/data-transport.service";
-import { StorageItem, getItem } from "src/core/utils/local-storage.utils";
+import { StorageItem, getItem, getItemSession } from "src/core/utils/local-storage.utils";
 
 @Component({
   template: `
@@ -61,7 +61,7 @@ export class DialogTemplate {
   @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
   private transport: DataTransportService
 ) {
-  this.workflowApprovers = getItem(StorageItem.approvers) || [];
+  this.workflowApprovers = getItemSession(StorageItem.approvers) || [];
   if (this.workflowApprovers.length > 0) {
     this.workflowApprovers.forEach(user => {
       let userMatchFound = false;

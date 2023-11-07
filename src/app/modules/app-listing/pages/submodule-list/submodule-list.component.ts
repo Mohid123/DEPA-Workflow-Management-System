@@ -5,7 +5,7 @@ import { Observable, Subject, map, pluck, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 
 @Component({
   templateUrl: './submodule-list.component.html',
@@ -38,7 +38,7 @@ export class SubmodulesListComponent implements OnDestroy {
     this.activatedRoute.params.pipe(
       pluck('name'),
       map(name => {
-        setItem(StorageItem.moduleSlug, name);
+        setItemSession(StorageItem.moduleSlug, name);
         this.moduleSlug = name;
         return name
       }),
@@ -49,7 +49,7 @@ export class SubmodulesListComponent implements OnDestroy {
 
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(val['moduleID']) {
-        setItem(StorageItem.moduleID, val['moduleID']);
+        setItemSession(StorageItem.moduleID, val['moduleID']);
         this.transport.moduleID.next(val['moduleID']);
         this.moduleData = this.dashBoardService.getSubModuleByID(val['moduleID']);
       }
@@ -74,7 +74,7 @@ export class SubmodulesListComponent implements OnDestroy {
   }
 
   addSubmissionRoute() {
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}/add-submission`, this.transport.moduleID?.value])
+    this.router.navigate([`/modules/${getItemSession(StorageItem.moduleSlug)}/add-submission`, this.transport.moduleID?.value])
   }
 
   checkIfUserisAdmin(value: any[]): boolean {
@@ -83,8 +83,8 @@ export class SubmodulesListComponent implements OnDestroy {
 
   fetchFreshData(data: any) {
     if(data) {
-      this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), this.limit, 1);
-      this.moduleData = this.dashBoardService.getSubModuleByID(getItem(StorageItem.moduleID))
+      this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(getItemSession(StorageItem.moduleSlug), this.limit, 1);
+      this.moduleData = this.dashBoardService.getSubModuleByID(getItemSession(StorageItem.moduleID))
     }
   }
 

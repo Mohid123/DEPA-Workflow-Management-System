@@ -7,7 +7,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
-import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, removeItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { CodeValidator, FormKeyValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -115,9 +115,9 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.dashboard.items = [
-      ...getItem(StorageItem.editBreadcrumbs),
+      ...getItemSession(StorageItem.editBreadcrumbs),
       {
-        caption: getItem(StorageItem.formKey) || 'Add Form',
+        caption: getItemSession(StorageItem.formKey) || 'Add Form',
         routerLink: `/forms/edit-form?id=${this.editFormID}`
       }
     ];
@@ -258,7 +258,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
       display: this.form?.display ?? this.formDisplayType.value,
       components: this.form?.components
     }
-    const formFromEditModule = getItem(StorageItem.formEdit)
+    const formFromEditModule = getItemSession(StorageItem.formEdit)
     if(this.editFormID) {
       this.formService.updateForm(this.editFormID, formData)
       .pipe(takeUntil(this.destroy$)).subscribe(val => {
@@ -304,7 +304,7 @@ export class EditFormComponent implements OnDestroy, OnInit, AfterViewInit {
 
   cancelFormData() {
     removeItem(StorageItem.approvers)
-    const formFromEditModule = getItem(StorageItem.formEdit)
+    const formFromEditModule = getItemSession(StorageItem.formEdit)
     if(formFromEditModule) {
       removeItem(StorageItem.formEdit)
       this._location.back()

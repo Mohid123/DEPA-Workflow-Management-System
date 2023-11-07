@@ -219,6 +219,7 @@ export class AuthService extends ApiService<AuthApiData> {
 
   responseAfterLogout() {
     localStorage.clear();
+    sessionStorage.clear();
     this.router.navigate(['/auth/login'], {
       queryParams: {},
     });

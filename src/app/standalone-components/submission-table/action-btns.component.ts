@@ -7,7 +7,7 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
 import {ICellRendererParams} from "ag-grid-community";
 import { Subject, Subscription, takeUntil } from "rxjs";
 import { AuthService } from "src/app/modules/auth/auth.service";
-import { StorageItem, getItem, setItem } from "src/core/utils/local-storage.utils";
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from "src/core/utils/local-storage.utils";
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
 
@@ -128,8 +128,8 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   }
 
   setWorkflowID(key: string, submissionID: string) {
-    setItem(StorageItem.formKey, key)
-    setItem(StorageItem.editSubmissionId, submissionID)
+    setItemSession(StorageItem.formKey, key)
+    setItemSession(StorageItem.editSubmissionId, submissionID)
   }
 
   checkEditDisableDeleteButton(data: any) {
@@ -144,17 +144,17 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
   }
 
   editWorkflowRoute(id: string, key: string) {
-    setItem(StorageItem.previewMode, false)
-    setItem(StorageItem.formKey, key)
-    setItem(StorageItem.formID, id)
-    this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
+    setItemSession(StorageItem.previewMode, false)
+    setItemSession(StorageItem.formKey, key)
+    setItemSession(StorageItem.formID, id)
+    this.router.navigate([`/modules`, getItemSession(StorageItem.moduleSlug), key, id])
   }
 
   viewWorkflowRoute(id: string, key: string) {
-    setItem(StorageItem.previewMode, true)
-    setItem(StorageItem.formKey, key)
-    setItem(StorageItem.formID, id)
-    this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
+    setItemSession(StorageItem.previewMode, true)
+    setItemSession(StorageItem.formKey, key)
+    setItemSession(StorageItem.formID, id)
+    this.router.navigate([`/modules`, getItemSession(StorageItem.moduleSlug), key, id])
   }
 
   checkViewButtonCondition(data: any) {

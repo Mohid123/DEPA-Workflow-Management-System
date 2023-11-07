@@ -6,7 +6,7 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { Subscription, Observable, Subject, takeUntil, take, isEmpty, of } from 'rxjs';
 import { TuiButtonModule, TuiExpandModule, TuiHintModule, TuiHostedDropdownModule, TuiLoaderModule, TuiNotificationModule } from '@taiga-ui/core';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
 
@@ -77,14 +77,14 @@ export class HeaderComponent implements OnDestroy {
     this.loader.next(true)
     this.dashboardService.getSubModuleByModuleSlug(moduleSlug, 6, 1).subscribe(val => {
       if(val) {
-        setItem(StorageItem.previewMode, false)
-        setItem(StorageItem.moduleSlug, moduleSlug)
-        setItem(StorageItem.moduleID, moduleID)
-        setItem(StorageItem.formKey, key)
-        setItem(StorageItem.formID, id)
+        setItemSession(StorageItem.previewMode, false)
+        setItemSession(StorageItem.moduleSlug, moduleSlug)
+        setItemSession(StorageItem.moduleID, moduleID)
+        setItemSession(StorageItem.formKey, key)
+        setItemSession(StorageItem.formID, id)
         this.loader.next(false)
         this.toggleSideNav(false)
-        this.router.navigate([`/modules`, moduleSlug || getItem(StorageItem.moduleSlug), key, id])
+        this.router.navigate([`/modules`, moduleSlug || getItemSession(StorageItem.moduleSlug), key, id])
       }
     })
   }
@@ -110,14 +110,14 @@ export class HeaderComponent implements OnDestroy {
   }
 
   finalQueryParams() {
-    if(this.router.url.includes('add-submission') || this.router.url.includes('edit-submission') || this.router.url.includes('add-module') || this.router.url.includes(getItem(StorageItem.formID))) {
-      return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+    if(this.router.url.includes('add-submission') || this.router.url.includes('edit-submission') || this.router.url.includes('add-module') || this.router.url.includes(getItemSession(StorageItem.formID))) {
+      return Object.fromEntries([this.encodeQuery(`/modules/${getItemSession(StorageItem.moduleSlug)}?moduleID=${getItemSession(StorageItem.moduleID)}`).split('=')])
     }
     if(this.router.url.includes('edit-module') && this.router.url.includes('moduleCode')) {
-      return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleCode=${getItem(StorageItem.moduleSlug)}`).split('=')])
+      return Object.fromEntries([this.encodeQuery(`/modules/${getItemSession(StorageItem.moduleSlug)}?moduleCode=${getItemSession(StorageItem.moduleSlug)}`).split('=')])
     }
     if(this.router.url.includes('fromSubmission')) {
-      return Object.fromEntries([this.encodeQuery(`/modules/${getItem(StorageItem.moduleSlug)}?moduleID=${getItem(StorageItem.moduleID)}`).split('=')])
+      return Object.fromEntries([this.encodeQuery(`/modules/${getItemSession(StorageItem.moduleSlug)}?moduleID=${getItemSession(StorageItem.moduleID)}`).split('=')])
     }
     return null
   }

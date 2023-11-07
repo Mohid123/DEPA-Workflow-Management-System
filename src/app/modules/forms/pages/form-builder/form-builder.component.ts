@@ -8,7 +8,8 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { Subject, takeUntil } from 'rxjs';
 import { FormsService } from '../../services/forms.service';
 import { Location } from '@angular/common';
-import { environment } from 'src/environments/environment';import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
+import { environment } from 'src/environments/environment';
+import { StorageItem, getItem, getItemSession, removeItem } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import {  CodeValidator } from 'src/core/utils/utility-functions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -101,7 +102,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.dashboard.items = [
-        ...getItem(StorageItem.editBreadcrumbs),
+        ...getItemSession(StorageItem.editBreadcrumbs),
         {
           caption: 'Add Form',
           routerLink: `/forms/form-builder`

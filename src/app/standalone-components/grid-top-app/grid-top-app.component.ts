@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, setItemSession } from 'src/core/utils/local-storage.utils';
 import { TuiBadgeModule } from '@taiga-ui/kit';
 import { TuiHintModule } from '@taiga-ui/core/directives/hint';
 
@@ -43,7 +43,7 @@ export class GridTopAppComponent {
 
   storeModuleID(id: string, code: string) {
     this.transport.moduleID.next(id);
-    setItem(StorageItem.moduleSlug, code);
+    setItemSession(StorageItem.moduleSlug, code);
   }
 
    deleteModuleEvent(id: string) {
@@ -51,9 +51,9 @@ export class GridTopAppComponent {
    }
 
    editModuleEvent(id: string, code: string, title: string) {
-    setItem(StorageItem.moduleSlug, code);
-    setItem(StorageItem.editmoduleTitle, title);
-    setItem(StorageItem.editmoduleId, id);
+    setItemSession(StorageItem.moduleSlug, code);
+    setItemSession(StorageItem.editmoduleTitle, title);
+    setItemSession(StorageItem.editmoduleId, id);
     this.editModule.emit(id)
     this.transport.moduleID.next(id)
    }

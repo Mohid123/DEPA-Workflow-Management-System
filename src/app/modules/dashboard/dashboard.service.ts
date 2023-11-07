@@ -9,7 +9,7 @@ import { NotificationsService } from 'src/core/core-services/notifications.servi
 import { ApiResponse } from 'src/core/models/api-response.model';
 import { Module } from 'src/core/models/module.model';
 import { User } from 'src/core/models/user.model';
-import { StorageItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 
 /**
  * Interface for Breadcrumb navigation
@@ -1240,7 +1240,7 @@ export class DashboardService extends ApiService<any> {
             routerLink: val?.id
           }
         })
-        setItem(StorageItem.navHierarchy, hierarchy)
+        setItemSession(StorageItem.navHierarchy, hierarchy)
         this.tempItems.emit(hierarchy);
         return res.data
       }
