@@ -340,12 +340,14 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
               notify: response.emailTemplate?.notify?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">")
             }
             this.defaultEmailTemplateFromEdit = response.emailTemplate;
-            this.triggerCode = response.triggers[0]?.code || `function x(submission) {
+            this.triggerCode = response.triggers[0]?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">") || `function x(submission) {
               console.log(submission, "Hello world!");
             }`;
-            this.triggerCodeAfter = response.triggers[1]?.code || `function x(submission) {
+            this.triggerCodeAfter = response.triggers[1]?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">") || `function x(submission) {
               console.log(submission, "Hello world!");
-            }`;;
+            }`;
+            this.eventCodeOnChange = response.events[0]?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+            this.eventCodeOnLoad = response.events[1]?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
             this.emailContent = this.defaultEmailTemplateFromEdit.action || this.dashboard.emailContent;
             this.emailContentNotify = this.defaultEmailTemplateFromEdit.notify || this.dashboard.emailContentNotify;
             this.emailContentCSS = this.defaultEmailTemplateFromEdit.actionCSS || this.dashboard.emailContentCSS;

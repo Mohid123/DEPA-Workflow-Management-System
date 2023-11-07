@@ -72,6 +72,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   };
   onLoadFn: Function;
   onChangeFn: Function;
+  globalVar: any;
 
   constructor(
     private auth: AuthService,
@@ -199,9 +200,11 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         if(this.subModuleData?.events && this.subModuleData?.events?.length > 0) {
           this.subModuleData?.events?.forEach(val => {
             if(val?.name == 'onLoad') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               this.onLoadFn = new Function('return ' + val.code)();
             }
             if(val?.name == 'onChange') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               this.onChangeFn = new Function('return ' + val.code)();
             }
           })
@@ -463,8 +466,9 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         this.formValuesTemp?.forEach(submission => {
           this.hooks.forEach(val => {
             if(val?.name == 'beforeSubmit') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               val.code = new Function('return ' + val.code)();
-              val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$);
+              val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, 0, 1, this.globalVar);
             }
           })
         })
@@ -510,18 +514,14 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
     this.workflowService.updateSubmissionWorkflow(this.subModuleId, payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
       if(res) {
-        debugger
         if(!status) {
-          debugger
           if(this.hooks?.length > 0) {
-            debugger
             this.formValuesTemp?.forEach(submission => {
               this.hooks.forEach(val => {
-                debugger
                 if(val?.name == 'afterSubmit') {
+                  val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
                   val.code = new Function('return ' + val.code)();
-                  debugger
-                  val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
+                  val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus, this.globalVar);
                 }
               })
             })

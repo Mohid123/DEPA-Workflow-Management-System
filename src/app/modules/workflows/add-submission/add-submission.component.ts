@@ -73,6 +73,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   };
   onLoadFn: Function;
   onChangeFn: Function;
+  globalVar: any;
 
   constructor(
     private fb: FormBuilder,
@@ -226,9 +227,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         if(this.subModuleData?.events && this.subModuleData?.events?.length > 0) {
           this.subModuleData?.events?.forEach(val => {
             if(val?.name == 'onLoad') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               this.onLoadFn = new Function('return ' + val.code)();
             }
             if(val?.name == 'onChange') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               this.onChangeFn = new Function('return ' + val.code)();
             }
           })
@@ -411,8 +414,9 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         this.formValuesTemp?.forEach(submission => {
           this.hooks.forEach(val => {
             if(val?.name == 'beforeSubmit') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               val.code = new Function('return ' + val.code)();
-              val.code(submission?.data, this.formService, this.rxJsOperators, this.destroy$);
+              val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, 0, 1, this.globalVar);
             }
           })
         })
@@ -459,8 +463,9 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             this.formValuesTemp?.forEach(submission => {
               this.hooks.forEach(val => {
                 if(val?.name == 'afterSubmit') {
+                  val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
                   val.code = new Function('return ' + val.code)();
-                  val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
+                  val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus, this.globalVar);
                 }
               })
             })
