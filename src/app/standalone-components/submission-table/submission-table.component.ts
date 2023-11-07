@@ -131,12 +131,21 @@ export class SubmissionTableComponent implements OnDestroy {
     }))
   }
 
+  /**
+   * Method called once the grid is ready i.e. grid data is rendered
+   * @param params Object of params related to the AG Grid
+   */
   onGridReady(params) {
     if(this.columnDefs?.length <= 6) {
       params.api.sizeColumnsToFit();
     }
   }
 
+  /**
+   * Method for checking view rights
+   * @param data any
+   * @returns boolean for allowing permission to view
+   */
   checkViewButtonCondition(data: any) {
     if (this.currentUser && !this.currentUser.roles.includes('sysAdmin') && data.subModuleId.accessType == "disabled" && !data.workFlowUsers.includes(this.currentUser.id)) {
       return false;
@@ -144,6 +153,9 @@ export class SubmissionTableComponent implements OnDestroy {
     return true;
   }
 
+  /**
+   * Method to fetch all submissions and populate the grid
+   */
   fetchDataAndPopulate() {
     this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
     .subscribe((val: any) => {
@@ -187,6 +199,11 @@ export class SubmissionTableComponent implements OnDestroy {
     }))
   }
 
+  /**
+   * @ignore
+   * @param data 
+   * @returns 
+   */
   findDynamicKey(data: Object) {
     return Object.keys(data).find(
       key => key !== 'code' &&
@@ -196,6 +213,11 @@ export class SubmissionTableComponent implements OnDestroy {
       key !== 'progress')
   }
 
+  /**
+   * @ignore
+   * @param data 
+   * @returns 
+   */
   findDynamicValues(data: Object) {
     let dataKey = Object.keys(data).find(
       key => key !== 'code' &&
@@ -206,20 +228,40 @@ export class SubmissionTableComponent implements OnDestroy {
     return typeof(data[dataKey]) == 'string' ? data[dataKey]?.replace(/&lt;/g, "<").replace(/&gt;/g, ">") : data[dataKey]
   }
 
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
   checkIfUserisAdmin(value: any[]): boolean {
     return value?.map(data => data?.id).includes(this.currentUser?.id)
   }
 
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
   checkIfUserIsFirstUser(value: any) {
     if(value[0]?.status == 'inProgress') {
       return value[0]?.activeUsers?.includes(this.currentUser?.id)
     }
   }
 
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
   checkIfUserisViewOnly(value: any[]): boolean {
     return value?.map(data => data?.id).includes(this.currentUser?.id)
   }
 
+  /**
+   * Method for changing color of progress based on current progress number 
+   * @param value 
+   * @returns a hex color code
+   */
   changeProgressColor(value: number) {
     if(value <= 49) {
       return '#F15B41'
@@ -233,6 +275,11 @@ export class SubmissionTableComponent implements OnDestroy {
     return '#fff'
   }
 
+  /**
+   * Method for converting the status of the submission from number to string
+   * @param submissionStatus numeric status of the submission
+   * @returns A string value that reflects the 
+   */
   showStatus(submissionStatus: number): string {
     if(submissionStatus === 1) {
       return 'Created'
@@ -275,6 +322,9 @@ export class SubmissionTableComponent implements OnDestroy {
     return value?.map(data => data?.fullName)
   }
 
+  /**
+   * Method for navigating the user to the module it belongs.
+   */
   addSubmissionRoute() {
     this.router.navigate([`/modules/${getItemSession(StorageItem.moduleSlug)}/add-submission`, this.submoduleId])
   }

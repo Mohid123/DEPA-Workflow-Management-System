@@ -736,6 +736,10 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching pending submissions on the currently logged in user
+   * @returns Observable Array
+   */
   getPendingSubmissions(): Observable<ApiResponse<any>> {
     return this.get('/user/pendings').pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -749,8 +753,14 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  // Validate Module Code
-
+  /**
+   * Method for validating if module code already exists
+   * @param codeValue
+   * @param model 
+   * @param key 
+   * @param typedVal 
+   * @returns Observable
+   */
   validateModuleCode(codeValue: string, model: string, key?: string, typedVal?: string): Observable<ApiResponse<any>> {
     let params = {
       model: model,
@@ -767,11 +777,21 @@ export class DashboardService extends ApiService<any> {
     return this.get(`/validate/unique`, params)
   }
 
+  /**
+   * Method for validating if form code/slug/key already exists
+   * @param codeValue 
+   * @returns 
+   */
   validateFormCode(codeValue: string): Observable<ApiResponse<any>> {
     let params = {key: codeValue}
     return this.get(`/forms/validate-key`, params)
   }
 
+  /**
+   * Get child app or module in relationship to it's parent module
+   * @param moduleID 
+   * @returns 
+   */
   getSubModuleByModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/module/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -785,8 +805,15 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  //Users
-
+  /**
+   * Method for fetching all users
+   * @param limit 
+   * @param page 
+   * @param name 
+   * @param role 
+   * @param sortBy 
+   * @returns 
+   */
   getAllUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
     let params: any = {
       limit: limit,
@@ -818,6 +845,15 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * @ignore
+   * @param limit 
+   * @param page 
+   * @param name 
+   * @param role 
+   * @param sortBy 
+   * @returns 
+   */
   getAllUsersForListing(limit: number, page?: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
     let params: any = {
       limit: limit,
@@ -842,6 +878,15 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching only Admin Users
+   * @param limit 
+   * @param page 
+   * @param name 
+   * @param role 
+   * @param sortBy 
+   * @returns 
+   */
   getAllAdminUsers(limit: number, page: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
     let params: any = {
       limit: limit,
@@ -872,6 +917,15 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * @ignore
+   * @param limit 
+   * @param page 
+   * @param name 
+   * @param role 
+   * @param sortBy 
+   * @returns 
+   */
   getAdminUsers(limit: number, page?: number, name?: string, role?: string, sortBy?: string): Observable<ApiResponse<any>> {
     let params: any = {
       limit: limit,
@@ -896,6 +950,12 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating user
+   * @param id 
+   * @param payload 
+   * @returns 
+   */
   updateUser(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/users/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -910,6 +970,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for deleting user
+   * @param id string
+   * @returns Observable with confirmation object of delete status
+   */
   deleteUser(id: string): Observable<ApiResponse<any>> {
     return this.delete(`/users/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -924,6 +989,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for adding a new user
+   * @param payload Object
+   * @returns Observable of user object
+   */
   addNewUser(payload: any): Observable<ApiResponse<any>> {
     return this.post(`/users`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -938,8 +1008,12 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  // Companies
-
+  /**
+   * Method for fetching companies
+   * @param limit 
+   * @param page 
+   * @returns Observable array containg data of companies
+   */
   getAllCompanies(limit: number, page: number): Observable<ApiResponse<any>> {
     const params: any = {
       limit: limit,
@@ -957,6 +1031,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for adding a new company
+   * @param payload company object payload
+   * @returns Observable of company added
+   */
   addCompany(payload: any): Observable<ApiResponse<any>> {
     return this.post(`/companies`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -971,6 +1050,12 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating company data
+   * @param payload company object
+   * @param companyId string
+   * @returns updated company data
+   */
   updateCompany(payload: any, companyId: string): Observable<ApiResponse<any>> {
     return this.patch(`/companies/${companyId}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -984,6 +1069,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for deleting a company
+   * @param companyId stirng
+   * @returns Observable with confirmation of deleted status of company
+   */
   deleteCompany(companyId: string): Observable<ApiResponse<any>> {
     return this.delete(`/companies/${companyId}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -997,8 +1087,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  // Modules
-
+  /**
+   * Method for creating a new app or module
+   * @param payload Module object
+   * @returns Module object as Observable after creation and storage
+   */
   createModule(payload: Module): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.post(`/modules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -1015,6 +1108,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for deleting module
+   * @param moduleID string
+   * @returns Observable with confirmation of deleted status of module/app
+   */
   deleteModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.delete(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1029,6 +1127,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching module by id
+   * @param moduleID string
+   * @returns Observable Module Object
+   */
   getModuleByID(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1042,6 +1145,10 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching all modules
+   * @returns Observable array of modules
+   */
   getAllModules(): Observable<ApiResponse<any>> {
     // const params: any = {
     //   limit: limit,
@@ -1060,6 +1167,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * @ignore
+   * @param moduleID 
+   * @returns 
+   */
   getModuleByIDForEditModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1074,6 +1186,12 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating a module/app
+   * @param moduleID string
+   * @param payload module object
+   * @returns updated module object
+   */
   editModule(moduleID: string, payload: any): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.patch(`/modules/${moduleID}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -1090,6 +1208,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching only the module from the parent app
+   * @param moduleID string
+   * @returns The workflow attached to the parent module
+   */
   getWorkflowFromModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1117,6 +1240,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching the workflow from the submodule
+   * @param moduleID string
+   * @returns The workflow attached to the child module/s
+   */
   getWorkflowFromSubModule(moduleID: string): Observable<ApiResponse<any>> {
     return this.get(`/subModules/${moduleID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1144,6 +1272,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for creating a submodule i.e a child app inside a parent app/module
+   * @param payload Object
+   * @returns 
+   */
   createSubModule(payload: any): Observable<ApiResponse<any>> {
     this.creatingModule.next(true);
     return this.post(`/subModules`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
@@ -1161,6 +1294,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for deleting the submodule/child app
+   * @param id string
+   * @returns 
+   */
   deleteSubModule(id: string): Observable<ApiResponse<any>> {
     return this.delete(`/subModules/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1175,7 +1313,12 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  // needed for edit Submodule page
+  /**
+   * Method for fetching child app by it's mongo ID
+   * @param submodID string
+   * @param extractDefaults check for fetching data inside the form field on add submission page
+   * @returns 
+   */
   getSubModuleByID(submodID: string, extractDefaults?: boolean): Observable<ApiResponse<any>> {
     let params: any = {
       extractDefaults: extractDefaults
@@ -1195,6 +1338,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching module/app by it's slug name
+   * @param slugName 
+   * @returns 
+   */
   getModulesBySlugName(slugName: string): Observable<ApiResponse<any>> {
     return this.get(`/modules/slug/${slugName}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1208,6 +1356,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+ /**
+   * Method for fetching child app by it's slug name
+   * @param slugName 
+   * @returns 
+   */
   getSubModuleBySlugName(slugName: string): Observable<ApiResponse<any>> {
     return this.get(`/subModules/slug/${slugName}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1221,7 +1374,14 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  // needed for showing submodule list by module name on submodules listing page
+  /**
+   * Method for fetching child app by the slug of it's parent
+   * @param moduleSlug Parent app slug/key/code
+   * @param limit number
+   * @param page number
+   * @param queryParams 
+   * @returns 
+   */
   getSubModuleByModuleSlug(moduleSlug: string, limit: any, page: any, queryParams?: any): Observable<ApiResponse<any>> {
     const params: any = {
       limit: limit,
@@ -1252,6 +1412,12 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating child app by id
+   * @param id 
+   * @param payload 
+   * @returns 
+   */
   updateSubModule(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/subModules/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1264,7 +1430,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
-  //categories
+  /**
+   * Method for fetching all categories
+   * @param limit 
+   * @returns 
+   */
   getAllCategories(limit: number): Observable<ApiResponse<any>> {
     const params: any = {
       limit: limit
@@ -1281,6 +1451,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for creating a new category
+   * @param category 
+   * @returns 
+   */
   addCategory(category: {name: string}): Observable<ApiResponse<any>> {
     return this.post('/categories', category).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1294,6 +1469,12 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating category
+   * @param category 
+   * @param id 
+   * @returns 
+   */
   editCategory(category: {name: string}, id: string): Observable<ApiResponse<any>> {
     return this.patch(`/categories/${id}`, category).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -1307,6 +1488,11 @@ export class DashboardService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for deleting category
+   * @param id 
+   * @returns 
+   */
   deleteCategory(id: string): Observable<ApiResponse<any>> {
     return this.delete(`/categories/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

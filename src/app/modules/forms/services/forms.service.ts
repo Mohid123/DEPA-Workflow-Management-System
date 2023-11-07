@@ -15,6 +15,11 @@ export class FormsService extends ApiService<any> {
     super(http)
   }
 
+  /**
+   * Method for fetching a form by it's id
+   * @param formID form id string
+   * @returns Observable of Form Object
+   */
   getFormById(formID: string): Observable<ApiResponse<any>> {
     return this.get(`/forms/${formID}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -26,6 +31,11 @@ export class FormsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching form by it's key
+   * @param key Form key/code/slug string
+   * @returns Observable form object
+   */
   getFormByKey(key: string): Observable<ApiResponse<any>> {
     return this.get(`/forms/slug/${key}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -37,6 +47,12 @@ export class FormsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating form
+   * @param id form id string
+   * @param payload form data object
+   * @returns Observable of updated form object
+   */
   updateForm(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/forms/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -49,6 +65,11 @@ export class FormsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for creating new form
+   * @param payload Form object
+   * @returns Observable Form object
+   */
   createForm(payload: any): Observable<ApiResponse<any>> {
     return this.post(`/forms`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -61,6 +82,11 @@ export class FormsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for deleting form
+   * @param id form string
+   * @returns Observable of form's deleted status
+   */
   deleteForm(id: string): Observable<ApiResponse<any>> {
     return this.delete(`/forms/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

@@ -17,6 +17,11 @@ export class WorkflowsService extends ApiService<any> {
     super(http)
   }
 
+  /**
+   * Method for fetching Submission by id
+   * @param id string
+   * @returns Observable of Submission with its' workflow and form data
+   */
   getWorkflowSubmission(id: string): Observable<ApiResponse<any>> {
     return this.get(`/submissions/${id}`).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -30,6 +35,17 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for fetching submission from its' app
+   * @param id 
+   * @param limit 
+   * @param page 
+   * @param submissionStatus 
+   * @param sortBy 
+   * @param sortByFormat 
+   * @param payload 
+   * @returns Observable of Submission Object
+   */
   getSubmissionFromSubModule(id: string, limit: any, page: any, submissionStatus?: number, sortBy?: string, sortByFormat?: string, payload?: any): Observable<ApiResponse<any>> {
     const params = {
       subModuleId: id,
@@ -60,6 +76,12 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating submission by email
+   * @param id 
+   * @param payload 
+   * @returns 
+   */
   updateSubmissionByEmail(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/submissions/email/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -74,6 +96,12 @@ export class WorkflowsService extends ApiService<any> {
     })) 
   }
 
+  /**
+   * Method for updating submission and it's workflow
+   * @param id 
+   * @param payload 
+   * @returns 
+   */
   updateSubmissionWorkflow(id: string, payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/submissions/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -88,6 +116,11 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for creating a new Submission on a collection of forms
+   * @param payload Submission data object from form
+   * @returns 
+   */
   addNewSubmission(payload: any): Observable<ApiResponse<any>> {
     return this.post(`/submissions/create`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -102,6 +135,12 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating the forms data object of a submission and all its' submissions
+   * @param payload Object
+   * @param id string
+   * @returns 
+   */
   updateFormsData(payload: any, id: string): Observable<ApiResponse<any>> {
     return this.patch(`/formsData/${id}`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -116,6 +155,11 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating multiple forms data objects for multiple forms simultaneously
+   * @param payload Array of objects
+   * @returns 
+   */
   updateMultipleFormsData(payload: any): Observable<ApiResponse<any>> {
     return this.patch(`/formsData/multiple`, payload).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {
@@ -130,6 +174,12 @@ export class WorkflowsService extends ApiService<any> {
     }))
   }
 
+  /**
+   * Method for updating a specific workflow step
+   * @param data Workflow data object
+   * @param id string
+   * @returns 
+   */
   updateWorkflowStep(data: any, id: string): Observable<ApiResponse<any>> {
     return this.patch(`/submissions/workflow/${id}`, data).pipe(shareReplay(), map((res: ApiResponse<any>) => {
       if(!res.hasErrors()) {

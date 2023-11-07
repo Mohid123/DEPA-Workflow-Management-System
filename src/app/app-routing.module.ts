@@ -6,6 +6,9 @@ import { SubmoduleGuard } from './modules/auth/guards/submodule.guard';
 import { NotFoundComponent } from './standalone-components/not-found/not-found.component';
 import { EmailSubmissionComponent } from './modules/workflows/email-submission/email-submission.component';
 
+/**
+ * Routes array which contains all modules to be lazy loaded
+ */
 const routes: Routes = [
   {
     path: 'auth',

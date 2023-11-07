@@ -35,18 +35,60 @@ import {TuiSidebarModule} from '@taiga-ui/addon-mobile';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent implements OnDestroy {
+  /**
+   * Array of subscriptions used for managing all observable subscriptions
+   */
   subscription: Subscription[] = [];
+
+  /**
+   * The current path or route
+   */
   currentRoute: any;
+
+  /**
+   * The currently logged in user
+   */
   currentUser: any;
+
+  /**
+   * @ignore
+   */
   open = false;
+
+  /**
+   * Used for checking the role of current user
+   */
   userRoleCheck: any;
+
+  /**
+   * @ignore
+   */
   path: any;
+
+  /**
+   * Used for managing the state of dropdown in tablet mode
+   */
   expanded = false;
+
+  /**
+   * Boolean check for managing the state of the notifications panel
+   */
   openSideNav = false;
+
+  /**
+   * Observable array carrying the pending submissions
+   */
   pendingSubmissions: Observable<any>;
+
+  /**
+   * Loading spinner state manager
+   */
   loader = new Subject<boolean>();
+
+  /**
+   * Subject for unsusbcribing from observables
+   */
   destroy$ = new Subject();
-  private initialized = false;
 
   constructor(
     public dashboardService: DashboardService,
@@ -69,10 +111,20 @@ export class HeaderComponent implements OnDestroy {
     this.userRoleCheck = this.auth.checkIfRolesExist('sysAdmin');
   }
 
+  /**
+   * Used for changing the state of dropdown
+   */
   toggle(): void {
     this.expanded = !this.expanded;
   }
 
+  /**
+   * Method for redirecting to submission/workflow page once a submission is selected
+   * @param key submission key
+   * @param id submission id
+   * @param moduleSlug module key
+   * @param moduleID module id
+   */
   goToSubmissions(key: string, id: string, moduleSlug: string, moduleID: string) {
     this.loader.next(true)
     this.dashboardService.getSubModuleByModuleSlug(moduleSlug, 6, 1).subscribe(val => {
@@ -89,6 +141,10 @@ export class HeaderComponent implements OnDestroy {
     })
   }
 
+  /**
+   * Toggles the state of the side bar
+   * @param openSideNav boolean for storing state of side bar
+   */
   toggleSideNav(openSideNav: boolean) {
     this.openSideNav = openSideNav;
   }
@@ -97,18 +153,35 @@ export class HeaderComponent implements OnDestroy {
     return this.currentRoute.includes('moduleID')
   }
 
+  /**
+   * Logout of application
+   */
   logoutSession() {
     this.subscription.push(this.auth.logout().subscribe())
   }
 
+  /**
+   * Encode string method and return the actual path of route
+   * @param value a string value of the path
+   * @returns the actual path of route without query parameters
+   */
   encode(value: string) {
     return value.split('?')[0]
   }
 
+  /**
+   * Encode string method and return only the query parameters
+   * @param value a string value of the path
+   * @returns the query parameters
+   */
   encodeQuery(value: string) {
     return value.split('?')[1]
   }
 
+  /**
+   * Method for handling the attachment of query params on specific routes
+   * @returns url path as a string or null
+   */
   finalQueryParams() {
     if(this.router.url.includes('add-submission') || this.router.url.includes('edit-submission') || this.router.url.includes('add-module') || this.router.url.includes(getItemSession(StorageItem.formID))) {
       return Object.fromEntries([this.encodeQuery(`/modules/${getItemSession(StorageItem.moduleSlug)}?moduleID=${getItemSession(StorageItem.moduleID)}`).split('=')])
@@ -122,10 +195,18 @@ export class HeaderComponent implements OnDestroy {
     return null
   }
 
+  /**
+   * @ignore
+   */
   goBack() {
     this.location.back();
   }
 
+  /**
+   * 
+   * @param value string
+   * @returns String without any extra characters that compromose the path integrity
+   */
   setString(value: string): string {
     return value?.replace(/[_-]/g, ' ')
   }

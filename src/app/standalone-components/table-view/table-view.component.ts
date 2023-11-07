@@ -142,6 +142,9 @@ export class TableViewComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Method for deleting the selected module/app
+   */
   deleteModule() {
     this.dashboardService.deleteSubModule(this.submoduleID).subscribe((res: any) => {
       this.emitDeleteEvent.emit(true);
@@ -155,6 +158,11 @@ export class TableViewComponent implements OnDestroy {
     .subscribe();
   }
 
+  /**
+   * 
+   * @param data 
+   * @returns bollean based on user permissions status
+   */
   checkAccessMain(data: any) {
     if (this.userRoleCheck == false &&
       data?.accessType == "disabled" &&
@@ -169,6 +177,11 @@ export class TableViewComponent implements OnDestroy {
     return this.tableData?.results.some(data => this.checkAccessMain(data))
   }
 
+  /**
+   * Method for converting the numeric enum value of status to string equivalent
+   * @param value number
+   * @returns A string that shows the current status
+   */
   showStatus(value: number) {
     if(value == 1) {
       return 'Published'

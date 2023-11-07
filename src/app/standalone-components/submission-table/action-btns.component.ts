@@ -96,13 +96,36 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
     imports: [CommonModule, RouterModule, ReactiveFormsModule, TuiButtonModule]
 })
 export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy {
+  /**
+   * Current value of the cell in the grid
+   */
   public cellValue: any;
+  
+  /**
+   * The currently logged in user
+   */
   public currentUser: any;
+
+  /**
+   * The title of the dialog to be dynamically changed
+   */
   public dialogTitle: any;
+
+  /**
+   * The id of the currently active step in the workflow
+   */
   public currentStepId: string;
   public isDeleting: string;
   public  workflowID: string;
+
+  /**
+   * Form Control for handling remarks
+   */
   remarks = new FormControl('');
+
+  /**
+   * Boolean Subject for handling the status of the decision 
+   */
   sendingDecision = new Subject<boolean>();
   destroy$ = new Subject();
   saveDialogSubscription: Subscription[] = [];
@@ -116,22 +139,39 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     this.currentUser = this.auth.currentUserValue;
   }
 
-  // gets called once before the renderer is used
+  /**
+   * gets called once before the renderer is used
+   * @param params Cell Renderer Params provided by AG GRID
+   */
   agInit(params: ICellRendererParams): void {
     this.cellValue = params;
   }
 
-  // gets called whenever the cell refreshes
+  /**
+   * gets called whenever the cell refreshes
+   * @param params Cell Renderer Params provided by AG GRID
+   * @returns boolean
+   */
   refresh(params: ICellRendererParams): boolean {
     this.cellValue = params
     return true;
   }
 
+  /**
+   * Method for storing workflow ID in current session
+   * @param key submission key
+   * @param submissionID submission id
+   */
   setWorkflowID(key: string, submissionID: string) {
     setItemSession(StorageItem.formKey, key)
     setItemSession(StorageItem.editSubmissionId, submissionID)
   }
 
+  /**
+   * Method to check if the user has permission to view the delete/cancel btns
+   * @param data 
+   * @returns Boolean
+   */
   checkEditDisableDeleteButton(data: any) {
     if (!this.currentUser.roles.includes('sysAdmin') &&
       data.subModuleId.accessType == "disabled" &&
@@ -143,6 +183,11 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     return true;
   }
 
+  /**
+   * Method to store the form key and slug and re route to the workflow page for edit mode
+   * @param id form id
+   * @param key for key/slug
+   */
   editWorkflowRoute(id: string, key: string) {
     setItemSession(StorageItem.previewMode, false)
     setItemSession(StorageItem.formKey, key)
@@ -150,6 +195,11 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     this.router.navigate([`/modules`, getItemSession(StorageItem.moduleSlug), key, id])
   }
 
+  /**
+   * Method to store the form key and slug and re route to the workflow page for view only mode
+   * @param id form id
+   * @param key form key
+   */
   viewWorkflowRoute(id: string, key: string) {
     setItemSession(StorageItem.previewMode, true)
     setItemSession(StorageItem.formKey, key)
@@ -157,6 +207,11 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     this.router.navigate([`/modules`, getItemSession(StorageItem.moduleSlug), key, id])
   }
 
+  /**
+   * Method to check if the view button should be visible to user
+   * @param data 
+   * @returns boolean
+   */
   checkViewButtonCondition(data: any) {
     if (this.currentUser &&
       !this.currentUser.roles.includes('sysAdmin') &&
@@ -170,6 +225,13 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     return true;
   }
 
+  /**
+   * Opens the dialog for delete or cancel
+   * @param content PolymorpheusContent
+   * @param checkDecision The dialog type to open i.e. Cancel or Delete
+   * @param workflowId workflow id
+   * @param workflowStatus workflow status
+   */
   showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string, workflowId: string, workflowStatus: any): void {
     workflowStatus?.map(value => {
       if(value?.status == 'inProgress') {
@@ -193,6 +255,9 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     }).subscribe());
   }
 
+  /**
+   * Method for sending api call for the delete or cancel decisions
+   */
   sendDeleteOrCancelDecision() {
     this.sendingDecision.next(true)
     let payload: any = {
