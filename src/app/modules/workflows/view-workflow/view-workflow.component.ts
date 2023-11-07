@@ -87,6 +87,9 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
     tap,
     switchMap
   };
+  onLoadFn: Function;
+  onChangeFn: Function;
+  globalVar: any
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -274,6 +277,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.formValuesTemp?.forEach(submission => {
             this.hooks.forEach(val => {
               if(val?.name == 'afterSubmit') {
+                val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
                 val.code = new Function('return ' + val.code)();
                 val.code(
                   submission?.data,
@@ -290,6 +294,18 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           })
         }
         this.hooks = this.workflowData?.subModuleId?.triggers;
+        if(this.workflowData?.subModuleId?.events && this.workflowData?.subModuleId?.events?.length > 0) {
+          this.workflowData?.subModuleId?.events?.forEach(val => {
+            if(val?.name == 'onLoad') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              this.onLoadFn = new Function('return ' + val.code)();
+            }
+            if(val?.name == 'onChange') {
+              val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+              this.onChangeFn = new Function('return ' + val.code)();
+            }
+          })
+        }
         this.currentStepId = this.workflowData?.workflowStatus?.filter(data => {
           return data?.status == 'inProgress' ? data : null
         })[0]?.stepId;
@@ -699,6 +715,26 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   updateFormData() {
+    if(this.hooks?.length > 0) {
+      this.formValuesTemp?.forEach(submission => {
+        this.hooks.forEach(val => {
+          if(val?.name == 'beforeSubmit') {
+            val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
+            val.code = new Function('return ' + val.code)();
+            val.code(
+              submission?.data,
+              this.formService,
+              this.workflowService,
+              this.dashboard,
+              this.rxJsOperators,
+              this.destroy$,
+              this.workflowData?.summaryData?.progress,
+              this.workflowData?.submissionStatus
+            );
+          }
+        })
+      })
+    }
     let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
     let formioInstance: any[] = [];
     formComps?.forEach((form, index) => {
