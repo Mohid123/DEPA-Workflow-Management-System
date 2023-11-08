@@ -56,6 +56,7 @@ export class ApiService<T> {
       params: new HttpParams({ fromString: this.objectToQueryString(params) }),
       headers: this.setHeaders()
     };
+    debugger
     return this.mapAndCatchError<T>(
       this.http.get<ApiResponse<T>>(`${environment.apiUrl}${path}`, options).pipe(shareReplay())
     );

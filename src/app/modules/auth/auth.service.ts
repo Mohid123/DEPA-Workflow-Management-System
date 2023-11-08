@@ -157,7 +157,7 @@ export class AuthService extends ApiService<AuthApiData> {
    */
   loginWithActiveDirectory(params: any) {
     this.isLoadingSubject.next(true);
-    return this.adlget('/auth/adl-redirect', params).pipe(
+    return this.get('/auth/adl-redirect', params).pipe(
       shareReplay(),
       map((result: ApiResponse<any>) => {
         if (!result.hasErrors()) {
