@@ -26,7 +26,7 @@
         <!--Enable-->
         <a
           title="Re-Activate"
-          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus == 5 && disableAll == false"
+          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus == 5"
           (click)="showDeleteDialog(dialog, 'enable')"
           class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Re-Activate
@@ -53,7 +53,7 @@
             </div>
             <formio
               #formioForm
-              [readOnly]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true"
+              [readOnly]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true || workflowData?.submissionStatus == 5"
               [options]="{'disableAlerts': true}"
               [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)"
               [form]="form"
@@ -71,7 +71,7 @@
         type="button"
         [showLoader]="(savingDecision | async)"
         size="m"
-        [disabled]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true"
+        [disabled]="checkEditDisableDeleteButton(workflowData) == false || workflowData?.summaryData?.progress == 100 || disableAll == true || workflowData?.submissionStatus == 5"
         (click)="updateFormData()"
       >
         Save
