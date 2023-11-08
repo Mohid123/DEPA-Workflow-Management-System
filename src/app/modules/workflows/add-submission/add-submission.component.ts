@@ -110,6 +110,9 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     });
   }
 
+  /**
+   * Angular's lifecycle hook that runs once the component is initialized
+   */
   ngOnInit(): void {
     const hierarchy = getItemSession(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
@@ -123,7 +126,10 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       this.breakpointChanged()
     );
   }
-  
+
+  /**
+   * Private method for detecting breakpoint changes
+   */
   private breakpointChanged() {
     if(this.breakpointObserver.isMatched(Breakpoints.Large)) {
       this.currentBreakpoint = Breakpoints.Large;
@@ -136,6 +142,12 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method for opening dialog for email notify users
+   * @param content PolymorpheusContent (content with varying shape or type. In this case it is a html template for the dialog)
+   * @param fieldArray FormArray
+   * @param index number
+   */
   openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
     fieldArray: FormArray,
@@ -151,10 +163,17 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       .subscribe());
   }
 
+  /**
+   * Method to initiate search and pass the value to a Subject for further subscription and process
+   * @param search string
+   */
   onSearchChange(search: string) {
     this.search$.next(search);
   }
 
+  /**
+   * Method to validate if emails and email ids are valid based on regex string
+   */
   validateEmails() {
     let emails = this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.value;
     emails = emails.map(element => {
@@ -171,11 +190,17 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method to validate if emails and email ids are valid based on regex string
+   */
   cancelEmailNotify() {
     this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.setValue([]);
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
+  /**
+   * Method to fetch submission data and populate forms and workflow
+   */
   populateData() {
     this.activatedRoute.params.pipe(
       pluck('id'),
@@ -278,6 +303,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     })
   }
 
+   /**
+   * Method to ensure HTML tags are properly created and rendered for all form elements that may include them
+   * @param value Object | any
+   * @returns Sanitized value of the imput
+   */
   sanitizeSubmission(value: any) {
     let data = value?.data;
     if(data) {
@@ -299,6 +329,10 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     return value
   }
 
+  /**
+   * Method to check user permissions
+   * @returns boolean
+   */
   disableModify() {
     if(this.subModuleData?.accessType && this.subModuleData?.accessType == 'anyCreateAndModify') {
       return false
@@ -312,6 +346,10 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     return true
   }
 
+  /**
+   * Method to initialize workflow form
+   * @param item any
+   */
   initWorkflowForm(item?: any) {
     if(item) {
       this.workflowForm = this.fb.group({
@@ -338,10 +376,16 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Getter for Workflows form array
+   */
   get workflows() {
     return this.workflowForm.controls['workflows'] as FormArray
   }
 
+  /**
+   * Method for adding new workflow step
+   */
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       approverIds: [[], Validators.required],
@@ -351,14 +395,28 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.workflows.push(workflowStepForm);
   }
 
+  /**
+   * Method for removing workflow step from form array
+   * @param index number
+   */
   removeWorkflowStep(index: number) {
     this.workflows.removeAt(index);
   }
 
+  /**
+   * Get list of approvers from workflow
+   * @param value string[]
+   * @param index number
+   */
   getApproverList(value: string[], index: number) {
     this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
+  /**
+   * Method for handling change event on form
+   * @param event form event
+   * @param index number
+   */
   onChange(event: any, index: number) {
     if(event?.changed && event?.changed?.component?.type == 'file') {
       let key = event?.changed?.component?.key
@@ -372,6 +430,10 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method for checking validity of data submission
+   * @returns boolean
+   */
   dataSubmitValidation() {
     if(
       this.workflows?.length == 0 ||
@@ -383,6 +445,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     return true
   }
 
+  /**
+   * Method for creating new submission
+   * @param status number
+   * @returns any
+   */
   createSubmission(status?: any) {
     let formComps = JSON.parse(JSON.stringify(this.formWithWorkflow))
     let formioInstance: any[] = [];
@@ -482,6 +549,12 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     })
   }
 
+  /**
+   * @ignore
+   * @param value 
+   * @param index 
+   * @returns 
+   */
   countUsers(value: number, index: number) {
     this.errorIndex = index
     if(value < 2) {
@@ -495,6 +568,11 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.showError.next(false)
   }
 
+  /**
+   * @ignore
+   * @param index 
+   * @returns 
+   */
   validateSelection(index: number) {
     this.errorIndex = index
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
@@ -508,10 +586,21 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     this.showError.next(false)
   }
 
+  /**
+   * @ignore
+   * @returns 
+   */
   cancelSubmission() {
     this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
   }
 
+  /**
+   * Method for editing forms and sending forms for edit
+   * @param i number
+   * @param formID string
+   * @param key string
+   * @returns any
+   */
   sendFormForEdit(i: number, formID: string, key: string) {
     if(formID) {
       let approvers = this.workflows?.value?.flatMap(data => {
@@ -533,6 +622,9 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();
