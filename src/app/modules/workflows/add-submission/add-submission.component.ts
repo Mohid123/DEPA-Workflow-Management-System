@@ -416,7 +416,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             if(val?.name == 'beforeSubmit') {
               val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               val.code = new Function('return ' + val.code)();
-              val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, 0, 1, this.globalVar);
+              val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, 0, 1);
             }
           })
         })
@@ -465,7 +465,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
                 if(val?.name == 'afterSubmit') {
                   val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
                   val.code = new Function('return ' + val.code)();
-                  val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus, this.globalVar);
+                  val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
                 }
               })
             })
