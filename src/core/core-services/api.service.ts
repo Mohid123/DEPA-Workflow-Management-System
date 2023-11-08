@@ -56,7 +56,6 @@ export class ApiService<T> {
       params: new HttpParams({ fromString: this.objectToQueryString(params) }),
       headers: this.setHeaders()
     };
-    debugger
     return this.mapAndCatchError<T>(
       this.http.get<ApiResponse<T>>(`${environment.apiUrl}${path}`, options).pipe(shareReplay())
     );
@@ -72,12 +71,8 @@ export class ApiService<T> {
     path: string,
     params?: any
   ): Observable<ApiResponse<T>> {
-    const options = {
-      params: params,
-      headers: this.setHeaders()
-    };
     return this.mapAndCatchError<T>(
-      this.http.get<ApiResponse<T>>(`${environment.apiUrl}${path}`, options).pipe(shareReplay())
+      this.http.get<ApiResponse<T>>(`${environment.apiUrl}${path}?graphData=${params}`).pipe(shareReplay())
     );
   }
 
