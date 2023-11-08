@@ -62,6 +62,25 @@ export class ApiService<T> {
   }
 
   /**
+   * Generic Get Request method for handling get requests
+   * @param path The path or URL to send the request to
+   * @param params Any parameters that need to be attached to the endpoint of the request URL
+   * @returns {@link ApiResponse}
+   */
+  public adlget(
+    path: string,
+    params?: any
+  ): Observable<ApiResponse<T>> {
+    const options = {
+      params: params,
+      headers: this.setHeaders()
+    };
+    return this.mapAndCatchError<T>(
+      this.http.get<ApiResponse<T>>(`${environment.apiUrl}${path}`, options).pipe(shareReplay())
+    );
+  }
+
+  /**
    * Generic POst Request method for handling post requests
    * @param path The path or URL to send the request to
    * @param body The payload object to send with the request

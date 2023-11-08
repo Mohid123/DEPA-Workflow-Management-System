@@ -20,7 +20,7 @@
           <tui-badged-content
             [contentTop]="(pendingSubmissions | async)?.totalResults"
             size="xs"
-            colorTop="#F0775F"
+            [colorTop]="(pendingSubmissions | async)?.totalResults ? '#F0775F': '#2F3044'"
           >
             <button
               tuiIconButton
