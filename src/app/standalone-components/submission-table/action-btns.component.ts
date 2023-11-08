@@ -7,7 +7,7 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
 import {ICellRendererParams} from "ag-grid-community";
 import { Subject, Subscription, takeUntil } from "rxjs";
 import { AuthService } from "src/app/modules/auth/auth.service";
-import { StorageItem, getItem, setItem } from "src/core/utils/local-storage.utils";
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from "src/core/utils/local-storage.utils";
 import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
 
@@ -35,7 +35,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           <a
             title="Delete Submission"
             (click)="showDeleteDialog(dialog, 'delete', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created' || cellValue?.data?.submissionStatus == 'Completed')"
             class="w-10 px-2 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
             <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
           </a>
@@ -43,7 +43,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           <a
             title="Cancel Submission"
             (click)="showDeleteDialog(dialog, 'cancel', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created' || cellValue?.data?.submissionStatus == 'Completed')"
             class="w-10 px-1.5 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
             <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
           </a>
@@ -96,13 +96,36 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
     imports: [CommonModule, RouterModule, ReactiveFormsModule, TuiButtonModule]
 })
 export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy {
+  /**
+   * Current value of the cell in the grid
+   */
   public cellValue: any;
+  
+  /**
+   * The currently logged in user
+   */
   public currentUser: any;
+
+  /**
+   * The title of the dialog to be dynamically changed
+   */
   public dialogTitle: any;
+
+  /**
+   * The id of the currently active step in the workflow
+   */
   public currentStepId: string;
   public isDeleting: string;
   public  workflowID: string;
+
+  /**
+   * Form Control for handling remarks
+   */
   remarks = new FormControl('');
+
+  /**
+   * Boolean Subject for handling the status of the decision 
+   */
   sendingDecision = new Subject<boolean>();
   destroy$ = new Subject();
   saveDialogSubscription: Subscription[] = [];
@@ -116,22 +139,39 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     this.currentUser = this.auth.currentUserValue;
   }
 
-  // gets called once before the renderer is used
+  /**
+   * gets called once before the renderer is used
+   * @param params Cell Renderer Params provided by AG GRID
+   */
   agInit(params: ICellRendererParams): void {
     this.cellValue = params;
   }
 
-  // gets called whenever the cell refreshes
+  /**
+   * gets called whenever the cell refreshes
+   * @param params Cell Renderer Params provided by AG GRID
+   * @returns boolean
+   */
   refresh(params: ICellRendererParams): boolean {
     this.cellValue = params
     return true;
   }
 
+  /**
+   * Method for storing workflow ID in current session
+   * @param key submission key
+   * @param submissionID submission id
+   */
   setWorkflowID(key: string, submissionID: string) {
-    setItem(StorageItem.formKey, key)
-    setItem(StorageItem.editSubmissionId, submissionID)
+    setItemSession(StorageItem.formKey, key)
+    setItemSession(StorageItem.editSubmissionId, submissionID)
   }
 
+  /**
+   * Method to check if the user has permission to view the delete/cancel btns
+   * @param data 
+   * @returns Boolean
+   */
   checkEditDisableDeleteButton(data: any) {
     if (!this.currentUser.roles.includes('sysAdmin') &&
       data.subModuleId.accessType == "disabled" &&
@@ -143,20 +183,35 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     return true;
   }
 
+  /**
+   * Method to store the form key and slug and re route to the workflow page for edit mode
+   * @param id form id
+   * @param key for key/slug
+   */
   editWorkflowRoute(id: string, key: string) {
-    setItem(StorageItem.previewMode, false)
-    setItem(StorageItem.formKey, key)
-    setItem(StorageItem.formID, id)
-    this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
+    setItemSession(StorageItem.previewMode, false)
+    setItemSession(StorageItem.formKey, key)
+    setItemSession(StorageItem.formID, id)
+    this.router.navigate([`/modules`, getItemSession(StorageItem.moduleSlug), key, id])
   }
 
+  /**
+   * Method to store the form key and slug and re route to the workflow page for view only mode
+   * @param id form id
+   * @param key form key
+   */
   viewWorkflowRoute(id: string, key: string) {
-    setItem(StorageItem.previewMode, true)
-    setItem(StorageItem.formKey, key)
-    setItem(StorageItem.formID, id)
-    this.router.navigate([`/modules`, getItem(StorageItem.moduleSlug), key, id])
+    setItemSession(StorageItem.previewMode, true)
+    setItemSession(StorageItem.formKey, key)
+    setItemSession(StorageItem.formID, id)
+    this.router.navigate([`/modules`, getItemSession(StorageItem.moduleSlug), key, id])
   }
 
+  /**
+   * Method to check if the view button should be visible to user
+   * @param data 
+   * @returns boolean
+   */
   checkViewButtonCondition(data: any) {
     if (this.currentUser &&
       !this.currentUser.roles.includes('sysAdmin') &&
@@ -170,11 +225,16 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     return true;
   }
 
+  /**
+   * Opens the dialog for delete or cancel
+   * @param content PolymorpheusContent
+   * @param checkDecision The dialog type to open i.e. Cancel or Delete
+   * @param workflowId workflow id
+   * @param workflowStatus workflow status
+   */
   showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string, workflowId: string, workflowStatus: any): void {
     workflowStatus?.map(value => {
-      if(value?.status == 'inProgress') {
-        this.currentStepId = value?.stepId
-      }
+      this.currentStepId = value?.stepId
     })
     this.isDeleting = checkDecision;
     this.workflowID = workflowId;
@@ -193,6 +253,9 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
     }).subscribe());
   }
 
+  /**
+   * Method for sending api call for the delete or cancel decisions
+   */
   sendDeleteOrCancelDecision() {
     this.sendingDecision.next(true)
     let payload: any = {

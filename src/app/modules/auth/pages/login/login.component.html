@@ -6,7 +6,7 @@
       </div>
       <div class="card">
         <p class="pt-3 pb-2 md:text-2xl text-xl font-bold">Welcome to Depa App Store</p>
-        <p class="md:text-lg text-base text-[#B5B5C3]">Enter your {{loginViaActiveDir?.value === false ? 'Login' : 'Windows'}} credentials</p>
+        <p class="md:text-lg text-base text-[#B5B5C3]">Enter your Login credentials</p>
         <div class="px-4 pt-2 text-left">
           <!-- <ng-container *ngIf="loginViaActiveDir?.value === false"> -->
             <formio [submission]="submission" (submit)="onSubmit($event)" [form]="emailLoginForm" [options]="options"></formio>
@@ -14,12 +14,15 @@
           <!-- <ng-container *ngIf="loginViaActiveDir?.value === true">
             <formio [submission]="submission" (change)="onChange($event)" (submit)="onSubmit($event)" [form]="activeDirectoryLoginForm" [options]="options"></formio>
           </ng-container> -->
-          <div class="inline-flex pb-2 gap-x-3">
-            <tui-checkbox
+          <p class="-mt-3"> - or -</p>
+          <div class="pb-2 mt-3 gap-x-3">
+            <!-- <tui-checkbox
               [formControl]="loginViaActiveDir"
               class="mt-0.5"
-            ></tui-checkbox>
-            <label>Login via Windows Credentials</label>
+            ></tui-checkbox> -->
+            <a href="http://127.0.0.1:4000/auth/signin?redirectUri='https://depa-frontend.pages.dev/auth/login'" class="bg-[#005DA6] text-white hover:text-white px-3 py-2 rounded-md text-base cursor-pointer">
+              Login via Windows Credentials
+            </a>
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 import { FormioUtils } from '@formio/angular';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
@@ -111,13 +111,13 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    const hierarchy = getItem(StorageItem.navHierarchy);
+    const hierarchy = getItemSession(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+      val.routerLink = `/modules/${val.code}?moduleID=${getItemSession(StorageItem.moduleID)}`
     })
     this.dashboard.items = [...hierarchy, {
       caption: 'Add Submission',
-      routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/add-submission/${getItem(StorageItem.moduleID)}`
+      routerLink: `/modules/${getItemSession(StorageItem.moduleSlug)}/add-submission/${getItemSession(StorageItem.moduleID)}`
     }];
     this.breakpoint$.subscribe(() =>
       this.breakpointChanged()
@@ -416,7 +416,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
             if(val?.name == 'beforeSubmit') {
               val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               val.code = new Function('return ' + val.code)();
-              val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, 0, 1, this.globalVar);
+              val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, 0, 1);
             }
           })
         })
@@ -466,7 +466,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
                 if(val?.name == 'afterSubmit') {
                   val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
                   val.code = new Function('return ' + val.code)();
-                  val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus, this.globalVar);
+                  val.code(submission?.data, this.formService, this.submissionService, this.dashBoardService, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
                 }
               })
             })
@@ -474,7 +474,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         }
         this.creatingSubmission.next(false);
         this.draftingSubmission.next(false)
-        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
       }
       else {
         this.creatingSubmission.next(false);
@@ -510,7 +510,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
   }
 
   cancelSubmission() {
-    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
   }
 
   sendFormForEdit(i: number, formID: string, key: string) {
@@ -526,10 +526,10 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
       if(approvers.length == 0) {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
-      setItem(StorageItem.approvers, approvers)
-      setItem(StorageItem.formKey, key)
+      setItemSession(StorageItem.approvers, approvers)
+      setItemSession(StorageItem.formKey, key)
       this.transportService.editBreadcrumbs.next(this.dashboard.items)
-      setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
+      setItemSession(StorageItem.editBreadcrumbs, this.dashboard.items)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID, fromSubmission: true}});
     }
   }

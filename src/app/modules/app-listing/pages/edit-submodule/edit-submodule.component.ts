@@ -9,7 +9,7 @@ import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { FormsService } from 'src/app/modules/forms/services/forms.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { StorageItem, getItem, removeItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, removeItem, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateAspectRatio, calculateFileSize, generateKeyCombinations, getUniqueListBy } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
@@ -152,30 +152,30 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length == 0) {
-        const hierarchy = getItem(StorageItem.navHierarchy) || [];
+        const hierarchy = getItemSession(StorageItem.navHierarchy) || [];
         hierarchy.forEach(val => {
-          val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+          val.routerLink = `/modules/${val.code}?moduleID=${getItemSession(StorageItem.moduleID)}`
         })
         this.dashboard.items = getUniqueListBy([...hierarchy, {
-          caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-          routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}`
+          caption: getItemSession(StorageItem.editmoduleTitle) || getItemSession(StorageItem.moduleSlug),
+          routerLink: `/modules/edit-module/${getItemSession(StorageItem.editmoduleId)}`
         }], 'caption')
       }
       else {
         if(this.router.url.includes('moduleCode')) {
           this.dashboard.items = getUniqueListBy([{
-            caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId)}?moduleCode=${getItem(StorageItem.moduleSlug)}`
+            caption: getItemSession(StorageItem.editmoduleTitle) || getItemSession(StorageItem.moduleSlug),
+            routerLink: `/modules/edit-module/${getItemSession(StorageItem.editmoduleId)}?moduleCode=${getItemSession(StorageItem.moduleSlug)}`
           }], 'caption')
         }
         else {
-          const hierarchy = getItem(StorageItem.navHierarchy) || [];
+          const hierarchy = getItemSession(StorageItem.navHierarchy) || [];
           hierarchy.forEach(val => {
-            val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+            val.routerLink = `/modules/${val.code}?moduleID=${getItemSession(StorageItem.moduleID)}`
           })
           this.dashboard.items = getUniqueListBy([{
-            caption: getItem(StorageItem.editmoduleTitle) || getItem(StorageItem.moduleSlug),
-            routerLink: `/modules/edit-module/${getItem(StorageItem.editmoduleId) || getItem(StorageItem.moduleID)}`
+            caption: getItemSession(StorageItem.editmoduleTitle) || getItemSession(StorageItem.moduleSlug),
+            routerLink: `/modules/edit-module/${getItemSession(StorageItem.editmoduleId) || getItemSession(StorageItem.moduleID)}`
           }], 'caption')
         }
       }
@@ -663,16 +663,16 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
     this.transportService.editBreadcrumbs.next(this.dashboard.items)
-    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
-    setItem(StorageItem.approvers, approvers)
-    setItem(StorageItem.formKey, key)
+    setItemSession(StorageItem.editBreadcrumbs, this.dashboard.items)
+    setItemSession(StorageItem.approvers, approvers)
+    setItemSession(StorageItem.formKey, key)
     if(formID) {
-      setItem(StorageItem.formEdit, true);
+      setItemSession(StorageItem.formEdit, true);
       this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID}});
     }
     else {
-      setItem(StorageItem.formEdit, true)
+      setItemSession(StorageItem.formEdit, true)
       this.transportService.isFormEdit.next(true);
       this.transportService.sendFormDataForEdit.next(this.formComponents[i]);
       this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
@@ -707,11 +707,11 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
     if(approvers.length == 0) {
       return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
     }
-    setItem(StorageItem.approvers, approvers)
+    setItemSession(StorageItem.approvers, approvers)
     this.transportService.sendFormBuilderData(this.formComponents)
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file});
     this.transportService.editBreadcrumbs.next(this.dashboard.items)
-    setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
+    setItemSession(StorageItem.editBreadcrumbs, this.dashboard.items)
     this.router.navigate(['/forms/edit-form']);
   }
 
@@ -776,9 +776,9 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
   }
 
   cancelSubmodule() {
-    let slug = getItem(StorageItem.moduleSlug);
+    let slug = getItemSession(StorageItem.moduleSlug);
     if(slug) {
-      this.router.navigate(['/modules', getItem(StorageItem.moduleSlug)], {queryParams: {moduleID: getItem(StorageItem.moduleID)}});
+      this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug)], {queryParams: {moduleID: getItemSession(StorageItem.moduleID)}});
     }
     else {
       this.router.navigate(['/dashboard/home'])
@@ -798,7 +798,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Field labels must be unique', 'Schema Controls', TuiNotification.Warning)
     }
     if (this.schemaForm?.value?.viewSchema[0]?.displayAs) {
-      this.schemaSubscription.forEach(val => val.unsubscribe())
+      this.saveDialogSubscription.forEach(val => val.unsubscribe())
     }
     else {
       return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)
@@ -949,7 +949,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
         this.router.navigate(['/dashboard/home'])
       }
       else {
-        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
       }
     })
   }

@@ -1,36 +1,35 @@
 import { Directive, Input, ElementRef, Renderer2, HostListener } from '@angular/core';
-import { Sort } from '../utils/utility-functions';
 
-
+/**
+ * Standalone directive for Manual Sort on tables. (For Test only)
+ */
 @Directive({
   selector: '[appSort]',
   standalone: true
 })
 export class SortDirective {
 
+  /**
+   * Array of data to sort
+   */
   @Input() appSort: Array<any>;
+
   constructor(private renderer: Renderer2, private targetElem: ElementRef) { }
 
+  /**
+   * Host Listener method that listens to changes on DOM via a specified event (click in this case) and performs an action
+   */
   @HostListener("click")
   sortData() {
-    // Create Object of Sort Class
-    const sort = new Sort();
-    // Get Reference Of Current Clicked Element
+    const sort = {}; // new Sort();
     const elem = this.targetElem.nativeElement;
-    // Get In WHich Order list should be sorted by default it should be set to desc on element attribute
     const order = elem.getAttribute("data-order");
-    // Get The Property Type specially set [data-type=date] if it is date field
     const type = elem.getAttribute("data-type");
-    // Get The Property Name from Element Attribute
     const property = elem.getAttribute("data-name");
     if (order === "desc") {
-      debugger
-      this.appSort?.sort(sort.startSort(property, order, type));
       elem.setAttribute("data-order", "asc");
     }
     else {
-      debugger
-      this.appSort?.sort(sort.startSort(property, order, type));
       elem.setAttribute("data-order", "desc");
     }
   }

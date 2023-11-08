@@ -6,7 +6,7 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkflowsService } from '../workflows.service';
 import { AuthService } from '../../auth/auth.service';
-import { StorageItem, getItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItemSession } from 'src/core/utils/local-storage.utils';
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { FormioUtils } from '@formio/angular';
@@ -103,7 +103,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.currentUser = this.auth.currentUserValue;
-    this.disableAll = getItem(StorageItem.previewMode) || false
+    this.disableAll = getItemSession(StorageItem.previewMode) || false
     this.userRoleSysAdmin = this.auth.checkIfRolesExist('sysAdmin')
     this.userRoleAdmin = this.auth.checkIfRolesExist('admin')
     this.fetchData();
@@ -111,14 +111,14 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    const hierarchy = getItem(StorageItem.navHierarchy);
+    const hierarchy = getItemSession(StorageItem.navHierarchy);
     if(hierarchy) {
       hierarchy.forEach(val => {
-        val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+        val.routerLink = `/modules/${val.code}?moduleID=${getItemSession(StorageItem.moduleID)}`
       })
       this.dashboard.items = [...hierarchy, {
-        caption: getItem(StorageItem.formKey),
-        routerLink: `/modules/${getItem(StorageItem.moduleSlug)}/${getItem(StorageItem.formKey)}/${getItem(StorageItem.formID)}`
+        caption: getItemSession(StorageItem.formKey),
+        routerLink: `/modules/${getItemSession(StorageItem.moduleSlug)}/${getItemSession(StorageItem.formKey)}/${getItemSession(StorageItem.formID)}`
       }];
     }
 
@@ -589,7 +589,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.sendingDecision.next(false)
           this.saveDialogSubscription.forEach(val => val.unsubscribe());
           this.remarks.reset();
-          this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+          this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
         }
       })
     }
@@ -601,7 +601,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.sendingDecision.next(false)
           this.saveDialogSubscription.forEach(val => val.unsubscribe);
           this.remarks.reset();
-          this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+          this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
         }
       })
     }
@@ -615,7 +615,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
           this.remarks.reset();
           this.fetchData();
 
-          // this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+          // this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
         }
       })
     }
@@ -779,7 +779,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   }
 
   backToListing() {
-    this.router.navigate([`/modules/${getItem(StorageItem.moduleSlug)}`], {queryParams: {moduleID: getItem(StorageItem.moduleID)}})
+    this.router.navigate([`/modules/${getItemSession(StorageItem.moduleSlug)}`], {queryParams: {moduleID: getItemSession(StorageItem.moduleID)}})
   }
 
   hideRejectButton(condition: string, workflowIndex: number, approvers: any[]): boolean {

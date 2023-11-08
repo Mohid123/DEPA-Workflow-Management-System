@@ -5,7 +5,7 @@ import { Observable, Subject, take, takeUntil } from 'rxjs';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { SubmoduleGuardComponent } from '../templates/submodule-guard/submodule-guard.component';
 import { DataTransportService, DialogState } from 'src/core/core-services/data-transport.service';
-import { StorageItem, getItem, removeItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, removeItem } from 'src/core/utils/local-storage.utils';
 import { Location } from '@angular/common';
 
 /**
@@ -50,7 +50,7 @@ export class SubmoduleGuard implements CanActivate, OnDestroy {
       this.transportService.dialogState.pipe(takeUntil(this.destroy$)).subscribe(val => {
         if(val === DialogState.DISCARD) {
           if(state.url.includes('modules')) {
-            this.router.navigate([state.url?.split('?')[0]], {queryParams: {moduleID: getItem(StorageItem.moduleID)}})
+            this.router.navigate([state.url?.split('?')[0]], {queryParams: {moduleID: getItemSession(StorageItem.moduleID)}})
           }
           else {
             this.router.navigate([state.url])

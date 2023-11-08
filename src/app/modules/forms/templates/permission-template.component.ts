@@ -6,7 +6,7 @@ import { TuiButtonModule, TuiDialogContext, TuiDialogService } from "@taiga-ui/c
 import { TuiCheckboxLabeledModule } from "@taiga-ui/kit";
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { DataTransportService } from "src/core/core-services/data-transport.service";
-import { StorageItem, getItem } from "src/core/utils/local-storage.utils";
+import { StorageItem, getItem, getItemSession } from "src/core/utils/local-storage.utils";
 
 @Component({
   template: `
@@ -53,7 +53,14 @@ import { StorageItem, getItem } from "src/core/utils/local-storage.utils";
 })
 
 export class DialogTemplate {
+  /**
+   * Array of users that are part of the workflow
+   */
   workflowApprovers: any[];
+
+  /**
+   * Form Controls for managing the data and permissions of the workflow users
+   */
   userFormControls: { [userId: number]: { canEdit: FormControl, canView: FormControl } } = {};
 
   constructor(@Inject(POLYMORPHEUS_CONTEXT)
@@ -61,7 +68,10 @@ export class DialogTemplate {
   @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
   private transport: DataTransportService
 ) {
-  this.workflowApprovers = getItem(StorageItem.approvers) || [];
+  this.workflowApprovers = getItemSession(StorageItem.approvers) || [];
+  /**
+   * Checks if the user exists, then checks their permission status and based on that sets the permissions
+   */
   if (this.workflowApprovers.length > 0) {
     this.workflowApprovers.forEach(user => {
       let userMatchFound = false;
@@ -92,19 +102,29 @@ export class DialogTemplate {
       };
     });
   }
-
 }
 
-setCanView(value, id) {
-  if(value == true) {
-    this.userFormControls[id]?.canView?.setValue(true)
+/**
+ * Method to set the view permission for the user
+ * @param value any
+ * @param id string
+ */
+  setCanView(value, id) {
+    if(value == true) {
+      this.userFormControls[id]?.canView?.setValue(true)
+    }
   }
-}
 
+  /**
+   * Get Dialog context data
+   */
   get data(): any {
     return this.context.data;
   }
 
+  /**
+   * Submit the permissions after setting for users
+   */
   submitPermission() {
     this.workflowApprovers = this.workflowApprovers?.map(user => {
       return {
@@ -121,10 +141,17 @@ setCanView(value, id) {
     this.context.completeWith(this.data);
   }
 
+  /**
+   * Cancel without setting permissions
+   */
   cancel() {
     this.context.completeWith(null);
   }
 
+  /**
+   * Method to show permissions dialog
+   * @param content Template which contains the dialog UI
+   */
   showDialog(content: TemplateRef<TuiDialogContext>): void {
     this.dialogs.open(content, {dismissible: false, closeable: false, size: 'l'}).subscribe();
   }

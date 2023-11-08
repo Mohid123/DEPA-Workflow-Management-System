@@ -5,7 +5,7 @@ import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/c
 import { BehaviorSubject, Subject, Subscription, distinctUntilChanged, switchMap, takeUntil, forkJoin, take, map, tap } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { WorkflowsService } from 'src/app/modules/workflows/workflows.service';
@@ -110,13 +110,13 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const hierarchy = getItem(StorageItem.navHierarchy);
+    const hierarchy = getItemSession(StorageItem.navHierarchy);
     hierarchy.forEach(val => {
-      val.routerLink = `/modules/${val.code}?moduleID=${getItem(StorageItem.moduleID)}`
+      val.routerLink = `/modules/${val.code}?moduleID=${getItemSession(StorageItem.moduleID)}`
     })
     this.dashboard.items = [...hierarchy, {
-      caption: getItem(StorageItem.formKey) || 'Edit Submission',
-      routerLink: `/modules/edit-submission/${getItem(StorageItem.editSubmissionId)}`
+      caption: getItemSession(StorageItem.formKey) || 'Edit Submission',
+      routerLink: `/modules/edit-submission/${getItemSession(StorageItem.editSubmissionId)}`
     }];
     this.breakpoint$.subscribe(() =>
       this.breakpointChanged()
@@ -333,9 +333,9 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
         return this.notif.displayNotification('Please create a default workflow before adding forms', 'Default Workflow', TuiNotification.Warning)
       }
       this.transportService.editBreadcrumbs.next(this.dashboard.items)
-      setItem(StorageItem.editBreadcrumbs, this.dashboard.items)
-      setItem(StorageItem.formKey, key)
-      setItem(StorageItem.approvers, approvers)
+      setItemSession(StorageItem.editBreadcrumbs, this.dashboard.items)
+      setItemSession(StorageItem.formKey, key)
+      setItemSession(StorageItem.approvers, approvers)
       this.router.navigate(['/forms/edit-form'], {queryParams: {id: formID, fromSubmission: true}});
     }
   }
@@ -418,7 +418,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
   }
 
   cancelSubmission() {
-    this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+    this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
   }
 
   onChange(event: any, index: number) {
@@ -468,7 +468,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
             if(val?.name == 'beforeSubmit') {
               val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
               val.code = new Function('return ' + val.code)();
-              val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, 0, 1, this.globalVar);
+              val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, 0, 1);
             }
           })
         })
@@ -521,7 +521,7 @@ export class EditSubmissionComponent implements OnInit, OnDestroy {
                 if(val?.name == 'afterSubmit') {
                   val.code = val?.code?.replace(/&lt;/g, "<")?.replace(/&gt;/g, ">");
                   val.code = new Function('return ' + val.code)();
-                  val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus, this.globalVar);
+                  val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
                 }
               })
             })

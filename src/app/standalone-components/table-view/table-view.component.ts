@@ -10,7 +10,7 @@ import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { AuthService } from 'src/app/modules/auth/auth.service';
-import { StorageItem, getItem, setItem } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, setItemSession } from 'src/core/utils/local-storage.utils';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import {TuiPreviewDialogService} from '@taiga-ui/addon-preview';
 import { tuiHintOptionsProvider } from '@taiga-ui/core/directives/hint';
@@ -142,6 +142,9 @@ export class TableViewComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Method for deleting the selected module/app
+   */
   deleteModule() {
     this.dashboardService.deleteSubModule(this.submoduleID).subscribe((res: any) => {
       this.emitDeleteEvent.emit(true);
@@ -155,6 +158,11 @@ export class TableViewComponent implements OnDestroy {
     .subscribe();
   }
 
+  /**
+   * 
+   * @param data 
+   * @returns bollean based on user permissions status
+   */
   checkAccessMain(data: any) {
     if (this.userRoleCheck == false &&
       data?.accessType == "disabled" &&
@@ -169,6 +177,11 @@ export class TableViewComponent implements OnDestroy {
     return this.tableData?.results.some(data => this.checkAccessMain(data))
   }
 
+  /**
+   * Method for converting the numeric enum value of status to string equivalent
+   * @param value number
+   * @returns A string that shows the current status
+   */
   showStatus(value: number) {
     if(value == 1) {
       return 'Published'
@@ -237,7 +250,7 @@ export class TableViewComponent implements OnDestroy {
       if(queryParams.sortByTime == undefined) {
         delete queryParams.sortByTime
       }
-      this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
+      this.dashboardService.getSubModuleByModuleSlug(getItemSession(StorageItem.moduleSlug), 7, this.page, queryParams)
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.tableData = res
@@ -264,7 +277,7 @@ export class TableViewComponent implements OnDestroy {
     if(queryParams.search == null) {
       delete queryParams.search
     }
-    this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page, queryParams)
+    this.dashboardService.getSubModuleByModuleSlug(getItemSession(StorageItem.moduleSlug), 7, this.page, queryParams)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
       if(res?.results?.length == 0) {
@@ -281,7 +294,7 @@ export class TableViewComponent implements OnDestroy {
   resetFilterValues(value: any) {
     this.fetchingTableData.next(true)
     if(value) {
-      this.dashboardService.getSubModuleByModuleSlug(getItem(StorageItem.moduleSlug), 7, this.page)
+      this.dashboardService.getSubModuleByModuleSlug(getItemSession(StorageItem.moduleSlug), 7, this.page)
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.tableData = res;
@@ -291,16 +304,16 @@ export class TableViewComponent implements OnDestroy {
   }
 
   setSubmoduleSlug(code: string, id: string) {
-    setItem(StorageItem.moduleSlug, code);
-    setItem(StorageItem.moduleID, id);
+    setItemSession(StorageItem.moduleSlug, code);
+    setItemSession(StorageItem.moduleID, id);
     this.emitPageChange.emit({code, id})
     this.router.navigate(['/modules', code], {queryParams: {moduleID: id || ''}})
   }
 
   setEditSlug(code: string, id: string, title: string) {
-    setItem(StorageItem.editmoduleSlug, code);
-    setItem(StorageItem.editmoduleTitle, title);
-    setItem(StorageItem.editmoduleId, id);
+    setItemSession(StorageItem.editmoduleSlug, code);
+    setItemSession(StorageItem.editmoduleTitle, title);
+    setItemSession(StorageItem.editmoduleId, id);
   }
 
   ngOnDestroy(): void {
