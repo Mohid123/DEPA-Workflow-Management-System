@@ -780,6 +780,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  /**
+   * Angular's lifecycle hook that runs once the component is initialized
+   */
   ngOnInit(): void {
     let hierarchy = getItem(StorageItem.navHierarchy)?.map(value => value?.caption);
     if(hierarchy?.includes('Material Inspection Report')) {
@@ -813,6 +816,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  /**
+   * Method to set the preview of the email template
+   * @param i number
+   */
   setPreview(i: any) {
     if(i == 0) {
       this.previewData = '<style>' + this.emailContentCSS + '</style>' + this.emailContent;
@@ -824,6 +831,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method to initiate the inheritance of the immediate parent app's data into the child data
+   */
   inheritParentForm() {
     this.inheritLoader.next(true);
     let data = JSON.parse(JSON.stringify(this.dashboard.inheritSubmoduleData.value));
@@ -930,6 +940,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.inheritLoader.next(false);
   }
 
+  /**
+   * Method to ensure HTML tags are properly created and rendered for all form elements that may include them
+   * @param value Object | any
+   * @returns Sanitized value of the imput
+   */
   sanitizeSubmission(value: any) {
     let data = value?.data;
     if(data) {
@@ -951,6 +966,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     return value
   }
 
+  /**
+   * Method to set the summary and view schema
+   * @param data The data array carrying the summary schema information
+   */
   applySummarySchemaValuesToViewSchema(data: any) {
     data?.forEach((val, index) => {
       this.schemaForm?.controls['viewSchema']?.value?.forEach((data, i) => {
@@ -964,6 +983,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method to check that no tow labels overlap or have the same name
+   * @returns boolean
+   */
   checkIfLabelIsUnique() {
     let unique = new Set(this.schemaForm.controls['viewSchema'].value?.map(data => data?.displayAs));
     if(unique.size !== this.schemaForm.controls['viewSchema'].value?.length) {
@@ -972,10 +995,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     return true
   }
 
+  /**
+   * Getter for the view schema form value
+   */
   get viewSchema() {
     return this.schemaForm.controls['viewSchema'] as FormArray;
   }
 
+  /**
+   * Method for adding a new form array into the existinmg view schema form
+   */
   addViewSchema() {
     const schemaForm = this.fb.group({
       fieldKey: new FormControl(''),
@@ -985,10 +1014,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.viewSchema.push(schemaForm)
   }
 
+  /**
+   * Method for removing a form array instance at a specified index
+   * @param index number
+   */
   deleteViewSchema(index: number) {
     this.viewSchema.removeAt(index);
   }
 
+  /**
+   * Method to fetch the defualt app workflow from the parent and populate it into the Workflow section
+   */
   getDefaultWorkflowByModule() {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
@@ -1010,6 +1046,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  /**
+   * Method to fetch the defualt app workflow from the child and populate it into the Workflow section
+   */
   getDefaultWorkflowBySubModule() {
     this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if(params['id']) {
@@ -1038,7 +1077,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
-  // email notify functions
+  /**
+   * Method to open the Email Notify users dialog
+   * @param content PolymorpheusContent (content with varying shape or type. In this case it is a html template for the dialog)
+   * @param fieldArray FormArray
+   * @param index number
+   */
   openEmailNotifyModal(
     content: PolymorpheusContent<TuiDialogContext>,
     fieldArray: FormArray,
@@ -1055,6 +1099,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       .subscribe());
   }
 
+  /**
+   * Method to open and render the Email Template dialog (notify and action)
+   * @param content PolymorpheusContent (content with varying shape or type. In this case it is a html template for the dialog)
+   */
   openModifyEditorDialog(
     content: PolymorpheusContent<TuiDialogContext>
   ): void {
@@ -1067,6 +1115,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       .subscribe());
   }
 
+  /**
+   * Common method to open the Triggers, PDF Template and Summary Schema dalogs
+   * @param content PolymorpheusContent (content with varying shape or type. In this case it is a html template for the dialog)
+   */
   openTriggeOrPdfOrSummarySchemaDialog(
     content: PolymorpheusContent<TuiDialogContext>
   ): void {
@@ -1079,10 +1131,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
       .subscribe());
   }
 
+  /**
+   * Method to initiate search and pass the value to a Subject for further subscription and process
+   * @param search string
+   */
   onSearchChange(search: string) {
     this.search$.next(search);
   }
 
+  /**
+   * Method to validate if emails and email ids are valid based on regex string
+   */
   validateEmails() {
     let emails = this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.value;
     emails = emails.map(element => {
@@ -1099,6 +1158,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method to cancel the email notification users
+   */
   cancelEmailNotify() {
     this.workflows.at(this.activeEmailIndex)?.get('emailNotifyTo')?.setValue([]);
     // this.emailContent = this.dashboard.emailContent;
@@ -1106,10 +1168,16 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
+  /**
+   * Method to confirm and save the email template in local state before publishing
+   */
   confirmEmailTemplate() {
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
+  /**
+   * @ignore
+   */
   cancelEmailTemplate() {
     this.emailContent = this.dashboard.emailContent;
     this.emailContentNotify = this.dashboard.emailContentNotify;
@@ -1118,6 +1186,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
   }
 
+  /**
+   * Method to fetch all companies
+   */
   getAllCompanies() {
     this.dashboard.getAllCompanies(20, 0)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
@@ -1130,6 +1201,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  /**
+   * Method to fetch all categories
+   */
   getAllCategories() {
     this.dashboard.getAllCategories(20)
     .pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
@@ -1148,6 +1222,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     });
   }
 
+  /**
+   * Method to initialize the submoduole form once the page loads
+   * @param item Submodule data Object
+   */
   initSubModuleForm(item?: any) {
     this.subModuleForm = this.fb.group({
       companies: this.fb.array([]),
@@ -1192,6 +1270,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     })
   }
 
+  /**
+   * Method to trigger file selection and validation before upload
+   * @param event change or click event to select files
+   */
   onFileSelect(event: any) {
     const file = event?.target?.files[0];
     if(calculateFileSize(file) == true) {
@@ -1221,14 +1303,23 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Getter for form values and controls of entire submodule form
+   */
   get f() {
     return this.subModuleForm.controls
   }
 
+  /**
+   * Getter for comapnies form array data and controls
+   */
   get companies() {
     return this.f["companies"] as FormArray;
   }
 
+  /**
+   * Method for adding a new company to the form array
+   */
   addCompany() {
     const companyForm = this.fb.group({
       title: ['', Validators.compose([Validators.required]), [CodeValidator.createValidator(this.dashboard, 'company', 'title')]],
@@ -1242,10 +1333,20 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.companies.push(companyForm)
   }
 
+  /**
+   * Method for validating the form data of company
+   * @param i number
+   * @returns boolean baed on whether company item is valid
+   */
   getValidityForCompany(i) {
     return (<FormArray>this.companies).controls[i]?.get('title').hasError('required') && (<FormArray>this.companies).controls[i]?.get('title').dirty ;
   }
 
+    /**
+   * Method for validating the form data of company code
+   * @param i number
+   * @returns boolean based on whether company item is valid
+   */
   getValidityForCompanyCode(i) {
     return ((<FormArray>this.companies).controls[i]?.get('groupCode').hasError('required') ||
     (<FormArray>this.companies).controls[i]?.get('groupCode').hasError('maxlength') ||
@@ -1253,34 +1354,68 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     (<FormArray>this.companies).controls[i]?.get('groupCode').dirty
   }
 
+    /**
+   * Method for validating the form data of workflow step
+   * @returns boolean based on whether workflow step is valid
+   */
   getValidityForWorkflowStep() {
     return (<FormArray>this.workflows).controls[0]?.get('approverIds')?.hasError('required') && (<FormArray>this.workflows).controls[0]?.get('approverIds')?.touched
   }
 
+  /**
+   * Method for checking if company code exists
+   * @param i number
+   * @returns boolean based on whether company item is valid
+   */
   getValidityForCompanyCodeExists(i) {
     return (<FormArray>this.companies).controls[i]?.get('title')?.hasError('codeExists');
   }
 
+  /**
+   * @ignore
+   * @param i 
+   * @returns 
+   */
   getValidityForCompanyCodeExistsGroup(i) {
     return (<FormArray>this.companies).controls[i]?.get('groupCode')?.hasError('codeExists');
   }
 
+  /**
+   * @ignore
+   * @param i 
+   * @returns 
+   */
   getValidityForCategory(i) {
     return (<FormArray>this.categories).controls[i].hasError('required') && (<FormArray>this.categories).controls[i].touched;
   }
 
+  /**
+   * @ignore
+   * @param i 
+   * @returns 
+   */
   getValidityForCategoryCode(i) {
     return (<FormArray>this.categories).controls[i]?.get('name').hasError('codeExists');
   }
 
+  /**
+   * Method for removing company from form array
+   * @param index number
+   */
   removeCompany(index: number) {
     this.companies.removeAt(index);
   }
 
+  /**
+   * Getter for categories form array
+   */
   get categories() {
     return this.f["categories"] as FormArray;
   }
 
+  /**
+   * Method for adding new category to form array
+   */
   addCategory() {
     const categoryForm = this.fb.group({
       name: ['', Validators.compose([Validators.required, Validators.maxLength(40)]),
@@ -1289,14 +1424,24 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.categories.push(categoryForm)
   }
 
+  /**
+   * Method for removing category from form array
+   * @param index number
+   */
   removeCategory(index: number) {
     this.categories.removeAt(index);
   }
 
+  /**
+   * Getter for worklfows form array
+   */
   get workflows() {
     return this.f['workflows'] as FormArray
   }
 
+  /**
+   * Method for adding new workflow step to form array
+   */
   addWorkflowStep() {
     const workflowStepForm = this.fb.group({
       condition: ['', Validators.required],
@@ -1306,14 +1451,26 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.workflows.push(workflowStepForm)
   }
 
+  /**
+   * Method for removing workflow step from form array
+   * @param index number
+   */
   removeWorkflowStep(index: number) {
     this.workflows.removeAt(index);
   }
 
+  /**
+   * Method to get list of all approvers in form array
+   * @param value array<string>
+   * @param index number
+   */
   getApproverList(value: string[], index: number) {
     this.workflows.at(index)?.get('approverIds')?.setValue(value);
   }
 
+  /**
+   * Method to add a new company if one doesn't exist
+   */
   submitNewCompany() {
     let companySubmit: Array<Observable<any>> = [];
     for (let i = 0; i < this.f['companies']?.value?.length; i++) {
@@ -1339,6 +1496,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method to add a new category if one doesn't exist
+   */
   submitNewCategory() {
     const payload: any = {
       name: this.f["categories"]?.value[0]?.name
@@ -1352,6 +1512,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     })
   }
 
+  /**
+   * Method to save data of app in local state on route from form to app
+   * @returns void
+   */
   saveDraft() {
     this.transportService.isFormEdit.next(false);
     this.transportService.saveDraftLocally({...this.subModuleForm.value, image: this.base64File, file: this.file, emailTemplate: {
@@ -1382,6 +1546,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method for adding default data to the form/s
+   * @param i number
+   * @param content PolymorpheusContent (content with varying shape or type. In this case it is a html template for the dialog)
+   */
   addDefaultData(i: number, content: PolymorpheusContent<TuiDialogContext>) {
     this.formForDefaultData = this.formComponents[i]
     this.defaultFormIndex = i;
@@ -1392,6 +1561,10 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }).subscribe())
   }
 
+  /**
+   * Method that detects changes on the form and performs actions subsequently
+   * @param event Formio Event
+   */
   onChangeForm(event: any) {
     if(event?.data && event?.changed && event.isModified == true) {
       event.changed.component.validate = {}
@@ -1404,12 +1577,19 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * Method to confirm the default data submission locally
+   */
   confirmDefaultSubmission() {
     this.deafultFormSubmission = this.deafultFormSubmissionDialog;
     this.formComponents[this.defaultFormIndex].defaultData = this.deafultFormSubmission[this.defaultFormIndex];
     this.defaultFormSubscription.forEach(val => val.unsubscribe())
   }
 
+  /**
+   * Method to reroute to edit form page and save all data in state
+   * @param index number
+   */
   sendFormForEdit(index: number) {
     this.transportService.isFormEdit.next(true);
     this.transportService.sendFormDataForEdit.next(this.formComponents[index]);
@@ -1423,6 +1603,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.router.navigate(['/forms/form-builder']);
   }
 
+  /**
+   * Method for deleting form dialog open
+   * @param content any
+   * @param index number
+   */
   deleteFormDialog(content: any, index: number) {
     this.delIndex = index;
     this.dialogs.open(content, {
@@ -1431,15 +1616,26 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }).pipe(takeUntil(this.destroy$)).subscribe()
   }
 
+  /**
+   * Method for removing form from array of forms
+   */
   deleteForm() {
     this.formComponents.splice(this.delIndex, 1)
     this.formTabs.splice(this.delIndex, 1)
   }
 
+  /**
+   * @ignore
+   * @param lang string
+   */
   changeLanguage(lang: string) {
     this.language.emit(lang);
   }
 
+  /**
+   * @ignore
+   * @returns void
+   */
   setSummaryAndViewSchema() {
     if(this.checkIfLabelIsUnique() == false) {
       return this.notif.displayNotification('Field labels must be unique', 'Schema Controls', TuiNotification.Warning)
@@ -1453,12 +1649,20 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     console.log(this.schemaForm.value)
   }
 
+  /**
+   * @ignore
+   */
   closeSchemaDialog() {
     this.saveDialogSubscription.forEach(val => val.unsubscribe())
     this.schemaForm?.reset()
     this.schemaSubscription.forEach(val => val.unsubscribe())
   }
 
+  /**
+   * Method called to save entire submodule/app data to server
+   * @param statusStr number
+   * @returns void
+   */
   saveSubModule(statusStr?: number) {
     if(!statusStr) {
       if(this.dataSubmitValidation() == false) {
@@ -1589,6 +1793,9 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     }
   }
 
+  /**
+   * @ignore
+   */
   routeToBasedOnPreviousPage() {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val).length > 0) {
@@ -1600,10 +1807,17 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     })
   }
 
+  /**
+   * @ignore
+   */
   cancelSubmodule() {
     this.routeToBasedOnPreviousPage()
   }
 
+  /**
+   * Method to validate company and workflows
+   * @returns boolean
+   */
   dataSubmitValidation() {
     if(
       this.f['companyName']?.invalid ||
@@ -1616,6 +1830,11 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     return true
   }
 
+  /**
+   * Method to show warning if worklflow users selection is not valid
+   * @param index number
+   * @returns boolean
+   */
   validateSelection(index: number) {
     this.errorIndex = index;
     if(this.workflows.at(index)?.get('approverIds')?.value?.length < 2) {
@@ -1628,6 +1847,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.showError.next(false)
   }
 
+  /**
+   * @ignore
+   * @param value 
+   * @param index 
+   * @returns 
+   */
   countUsers(value: number, index: number) {
     this.errorIndex = index;
     if(value < 2) {
@@ -1640,14 +1865,25 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
     this.showError.next(false)
   }
 
+  /**
+   * Method to add admin users
+   * @param users array<string>
+   */
   setAdminUsers(users: string[]) {
     this.subModuleForm?.get('adminUsers')?.setValue(users)
   }
 
+   /**
+   * Method to add view only users
+   * @param users array<string>
+   */
   setViewUsers(users: string[]) {
     this.subModuleForm?.get('viewOnlyUsers')?.setValue(users)
   }
 
+  /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe()
