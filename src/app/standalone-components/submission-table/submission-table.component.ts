@@ -163,23 +163,24 @@ export class SubmissionTableComponent implements OnDestroy {
       this.tableDataValue = val?.results;
       let flag = true;
       this.rowData = this.tableDataValue?.map(data => {
-        // for (let key in data?.summaryData) {
-        //   if (typeof data?.summaryData[key] === 'object' && key !== 'lastActivityPerformedBy' && key !== 'submissionStatus' && key !== 'pendingOnUsers' && key !== 'progress') {
-        //     delete data?.summaryData[key]
-        //     if (flag) {
-        //       this.columnDefs.splice(5, 0, {
-        //         field: this.findDynamicKey(data?.summaryData),
-        //         headerName: this.findDynamicKey(data?.summaryData)?.charAt(0)?.toLocaleUpperCase() + this.findDynamicKey(data?.summaryData)?.slice(1),
-        //         filter: true,
-        //         floatingFilter: true,
-        //         sortable: true,
-        //         resizable: true,
-        //         width: 200
-        //       })
-        //       flag = false
-        //     }
-        //   }
-        // }
+        for (let key in data?.summaryData) {
+          if (typeof data?.summaryData[key] === 'object' && key !== 'lastActivityPerformedBy' && key !== 'submissionStatus' && key !== 'pendingOnUsers' && key !== 'progress') {
+            delete data?.summaryData[key]
+            if (flag) {
+              this.columnDefs.splice(5, 0, {
+                field: this.findDynamicKey(data?.summaryData),
+                headerName: this.findDynamicKey(data?.summaryData)?.charAt(0)?.toLocaleUpperCase() + this.findDynamicKey(data?.summaryData)?.slice(1),
+                filter: true,
+                floatingFilter: true,
+                sortable: true,
+                resizable: true,
+                width: 200
+              })
+              flag = false
+            }
+          }
+        }
+        // console.log(this.columnDefs)
         return {
           id: data?.id,
           status: data?.status,
@@ -188,7 +189,7 @@ export class SubmissionTableComponent implements OnDestroy {
           lastActivityPerformedBy: data?.summaryData?.lastActivityPerformedBy?.fullName,
           pendingOnUsers: data?.summaryData?.pendingOnUsers?.map(val => val?.fullName),
           progress: String(data?.summaryData?.progress) + '%',
-          // [this.findDynamicKey(data?.summaryData)] : this.findDynamicValues(data?.summaryData),
+          [this.findDynamicKey(data?.summaryData)] : this.findDynamicValues(data?.summaryData),
           subModuleId: data?.subModuleId,
           activeStepUsers: data?.activeStepUsers,
           workflowStatus: data?.workflowStatus,

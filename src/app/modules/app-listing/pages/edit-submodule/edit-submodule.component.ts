@@ -798,7 +798,7 @@ export class EditSubmoduleComponent implements OnDestroy, OnInit {
       return this.notif.displayNotification('Field labels must be unique', 'Schema Controls', TuiNotification.Warning)
     }
     if (this.schemaForm?.value?.viewSchema[0]?.displayAs) {
-      this.schemaSubscription.forEach(val => val.unsubscribe())
+      this.saveDialogSubscription.forEach(val => val.unsubscribe())
     }
     else {
       return this.notif.displayNotification('Please provide all data', 'Form Schema', TuiNotification.Warning)

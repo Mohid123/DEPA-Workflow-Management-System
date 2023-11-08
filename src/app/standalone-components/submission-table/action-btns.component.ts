@@ -35,7 +35,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           <a
             title="Delete Submission"
             (click)="showDeleteDialog(dialog, 'delete', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created' || cellValue?.data?.submissionStatus == 'Completed')"
             class="w-10 px-2 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-red-600 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
             <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
           </a>
@@ -43,7 +43,7 @@ import { WorkflowsService } from "src/app/modules/workflows/workflows.service";
           <a
             title="Cancel Submission"
             (click)="showDeleteDialog(dialog, 'cancel', cellValue?.data?.id, cellValue?.data?.workflowStatus)"
-            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created')"
+            *ngIf="checkEditDisableDeleteButton(cellValue?.data) == true && (cellValue?.data?.submissionStatus == 'In Progress' || cellValue?.data?.submissionStatus == 'Created' || cellValue?.data?.submissionStatus == 'Completed')"
             class="w-10 px-1.5 pt-1 pb-1.5 text-center ml-1.5 text-xs font-medium text-white no-underline bg-[#CF5C27] rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
             <i class="fa fa-ban fa-lg" aria-hidden="true"></i>
           </a>
@@ -234,9 +234,7 @@ export class ActionButtonRenderer implements ICellRendererAngularComp, OnDestroy
    */
   showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>, checkDecision: string, workflowId: string, workflowStatus: any): void {
     workflowStatus?.map(value => {
-      if(value?.status == 'inProgress') {
-        this.currentStepId = value?.stepId
-      }
+      this.currentStepId = value?.stepId
     })
     this.isDeleting = checkDecision;
     this.workflowID = workflowId;

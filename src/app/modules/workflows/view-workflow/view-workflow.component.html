@@ -26,7 +26,7 @@
         <!--Enable-->
         <a
           title="Re-Activate"
-          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus == 5 && (workflowProgress | async) < 100 && disableAll == false"
+          *ngIf="checkEditDisableDeleteButton(workflowData) == true && workflowData?.submissionStatus == 5 && disableAll == false"
           (click)="showDeleteDialog(dialog, 'enable')"
           class="px-2 py-1 ml-2 text-xs font-medium text-white no-underline bg-green-500 rounded-md cursor-pointer hover:text-white hover:bg-opacity-80 hover:transition-colors">
           <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>&nbsp; Re-Activate
