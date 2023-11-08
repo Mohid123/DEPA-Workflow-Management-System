@@ -15,7 +15,7 @@ customElements.define('compodoc-menu', class extends HTMLElement {
         <nav>
             <ul class="list">
                 <li class="title">
-                    <a href="index.html" data-type="index-link">depa-frontend documentation</a>
+                    <a href="index.html" data-type="index-link">appstore-v4 documentation</a>
                 </li>
 
                 <li class="divider"></li>
