@@ -1,5 +1,4 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import { Subject, takeUntil, first, Observable, BehaviorSubject } from 'rxjs';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
@@ -13,12 +12,26 @@ import { activeDirectoryLoginForm, emailLoginForm } from 'src/app/forms-schema/f
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnDestroy {
+  /**
+   * Observable for showing loader on pending login state
+   */
   isLoggingIn$: Observable<boolean> = this.auth.isLoading$;
+
+  /**
+   * Subject used to unsubsribe from active observabel streams
+   */
   destroy$ = new Subject();
-  credentialStore = new BehaviorSubject<any>({})
-  userAuthData: any;
-  loginViaActiveDir = new FormControl<boolean>(true);
+
+  // loginViaActiveDir = new FormControl<boolean>(true);
+
+  /**
+   * Form IO email login form
+   */
   public emailLoginForm = emailLoginForm
+
+  /**
+   * The default submission object for the form
+   */
   public submission: any = {
     data: {
       password: "12345678"
@@ -26,6 +39,9 @@ export class LoginComponent implements OnDestroy {
   }
   public activeDirectoryLoginForm = activeDirectoryLoginForm;
 
+  /**
+   * Default options for Form IO form/s
+   */
   options: any = {
     "disableAlerts": true
   }
@@ -36,6 +52,13 @@ export class LoginComponent implements OnDestroy {
     private router: Router,
     private ac: ActivatedRoute
   ) {
+    this.checkIfADL();
+  }
+
+  /**
+   * Method to check if active directory login method is active i.e. graphData query param is attached to url
+   */
+  checkIfADL() {
     this.ac.queryParams.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if(Object.keys(val)?.length > 0) {
         this.auth.loginWithActiveDirectory(val['graphData']).pipe(takeUntil(this.destroy$))
@@ -47,8 +70,12 @@ export class LoginComponent implements OnDestroy {
         })
       }
     })
-    }
+  }
 
+  /**
+   * Method to login to app store (not via active directory)
+   * @param submission Submission object of email login form
+   */
   onSubmit(submission: any) {
     const params: any = {
       email: submission?.data?.email,
@@ -65,6 +92,9 @@ export class LoginComponent implements OnDestroy {
     }
   }
 
+   /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();

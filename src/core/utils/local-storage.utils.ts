@@ -61,7 +61,7 @@ export const removeItem = (itemName: StorageItem): void => {
 };
 
 /**
- * Get item from local storage
+ * Get item from session storage
  * @param {StorageItem} itemName
  * @returns {any | null} Either null or any other primitive or non-primitive type apart from undefined
  */
@@ -71,7 +71,7 @@ export const getItemSession = (itemName: StorageItem): any | null => {
 };
 
 /**
- * Set or update already set item in local storage
+ * Set or update already set item in session storage
  * @param {StorageItem} itemName
  * @param {unknown} value
  */
@@ -80,7 +80,7 @@ export const setItemSession = (itemName: StorageItem, value: unknown): void => {
 };
 
 /**
- * Remove item from local storage
+ * Remove item from session storage
  * @param {StorageItem} itemName
  */
 export const removeItemSession = (itemName: StorageItem): void => {

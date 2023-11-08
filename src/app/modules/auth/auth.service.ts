@@ -152,7 +152,7 @@ export class AuthService extends ApiService<AuthApiData> {
 
   /**
    * Login user via Active Directory or Windows users
-   * @param params Authentication or Login credentials provided by user
+   * @param params Graph data string attached as query params with adl url
    * @returns User object or null
    */
   loginWithActiveDirectory(params: any) {
@@ -215,6 +215,9 @@ export class AuthService extends ApiService<AuthApiData> {
     return null
   }
 
+  /**
+   * Actions to perform once the logout api response is successful
+   */
   responseAfterLogout() {
     localStorage.clear();
     sessionStorage.clear();

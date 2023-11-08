@@ -62,7 +62,7 @@ export class ApiService<T> {
   }
 
   /**
-   * Generic Get Request method for handling get requests
+   * Specia Get Request method for handling Active Directory Login
    * @param path The path or URL to send the request to
    * @param params Any parameters that need to be attached to the endpoint of the request URL
    * @returns {@link ApiResponse}

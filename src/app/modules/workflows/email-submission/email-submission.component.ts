@@ -13,8 +13,19 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, TuiLoaderModule]
 })
 export class EmailSubmissionComponent implements OnDestroy {
+  /**
+   * Subject used to unsubsribe from active observabel streams
+   */
   destory$ = new Subject();
+
+  /**
+   * Subject for maintaining the loading state
+   */
   savingDecision = new BehaviorSubject<boolean>(true);
+
+  /**
+   * A string boolean to check if user decision has been made
+   */
   userDecision: any;
 
   constructor(private activatedRoute: ActivatedRoute, private workflowService: WorkflowsService, private notif: NotificationsService) {
@@ -31,7 +42,6 @@ export class EmailSubmissionComponent implements OnDestroy {
         this.savingDecision.next(true)
         this.workflowService.updateSubmissionByEmail(res['submissionId'], payload).pipe(takeUntil(this.destory$))
         .subscribe((res: any) => {
-          console.log(res)
           this.savingDecision.next(false);
         })
       }
@@ -42,6 +52,9 @@ export class EmailSubmissionComponent implements OnDestroy {
     })
   }
 
+  /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
   ngOnDestroy(): void {
     this.destory$.complete();
     this.destory$.unsubscribe();
