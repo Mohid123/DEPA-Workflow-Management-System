@@ -40,11 +40,8 @@ export class LoginComponent implements OnDestroy {
       if(Object.keys(val)?.length > 0) {
         this.auth.loginWithActiveDirectory(val['graphData']).pipe(takeUntil(this.destroy$))
         .subscribe((res: ApiResponse<any>) => {
-          debugger
           if(!res.hasErrors()) {
-            debugger
             this.notif.displayNotification('Successfully authenticated', 'Login', TuiNotification.Success);
-            debugger
             this.router.navigate(['/dashboard/home'])
           }
         })
