@@ -1,0 +1,1115 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>depa-frontend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">depa-frontend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  GridTopAppComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/standalone-components/grid-top-app/grid-top-app.component.ts</code>
+</p>
+
+
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>The topmost card to display Module data inside Grid View on the Home Page. Will display if Grid contains at least 4 elements</p>
+
+    </p>
+
+
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+            <tr>
+                <td class="col-md-3">changeDetection</td>
+                <td class="col-md-9"><code>ChangeDetectionStrategy.OnPush</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>grid-top-app</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./grid-top-app.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./grid-top-app.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#currentUser" >currentUser</a>
+                            </li>
+                            <li>
+                                <a href="#userRoleCheck" >userRoleCheck</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#checkAccess" >checkAccess</a>
+                            </li>
+                            <li>
+                                <a href="#deleteModuleEvent" >deleteModuleEvent</a>
+                            </li>
+                            <li>
+                                <a href="#editModuleEvent" >editModuleEvent</a>
+                            </li>
+                            <li>
+                                <a href="#storeModuleID" >storeModuleID</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#appData" >appData</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#deleteModule" >deleteModule</a>
+                            </li>
+                            <li>
+                                <a href="#editModule" >editModule</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(transport: <a href="../injectables/DataTransportService.html" target="_self">DataTransportService</a>, auth: <a href="../injectables/AuthService.html" target="_self">AuthService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:30</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>transport</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DataTransportService.html" target="_self" >DataTransportService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>auth</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section>
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="appData"></a>
+                        <b>appData</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:51</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Used to display the relevant data inside the card view</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+    <section>
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="deleteModule"></a>
+                        <b>deleteModule</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:56</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Event Emitter for handling module deletion</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="editModule"></a>
+                        <b>editModule</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:61</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Event Emitter for handling module updation</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkAccess"></a>
+                    <span class="name">
+                        <span ><b>checkAccess</b></span>
+                        <a href="#checkAccess"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>checkAccess(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="42"
+                            class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:42</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method to check whether the user has access to modify/view the app</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>boolean</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteModuleEvent"></a>
+                    <span class="name">
+                        <span ><b>deleteModuleEvent</b></span>
+                        <a href="#deleteModuleEvent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>deleteModuleEvent(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="77"
+                            class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:77</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method to emit an event that signals the app for deletion</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The module or app ID</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="editModuleEvent"></a>
+                    <span class="name">
+                        <span ><b>editModuleEvent</b></span>
+                        <a href="#editModuleEvent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>editModuleEvent(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, code: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, title: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="87"
+                            class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:87</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method to emit event that signals app for updation</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The module or app ID</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>Module Slug</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>title</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>Module Title</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="storeModuleID"></a>
+                    <span class="name">
+                        <span ><b>storeModuleID</b></span>
+                        <a href="#storeModuleID"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>storeModuleID(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, code: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="68"
+                            class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:68</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Stores the module Code in session storage</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The module or app ID</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The key/slug of the app/module</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentUser"></a>
+                    <span class="name">
+                        <span ><b>currentUser</b></span>
+                        <a href="#currentUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:25</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The currently logged in user</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userRoleCheck"></a>
+                    <span class="name">
+                        <span ><b>userRoleCheck</b></span>
+                        <a href="#userRoleCheck"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/app/standalone-components/grid-top-app/grid-top-app.component.ts:30</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Global Variable for checking the role of the currently logged in user</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { RouterModule } from &#x27;@angular/router&#x27;;
+import { DataTransportService } from &#x27;src/core/core-services/data-transport.service&#x27;;
+import { AuthService } from &#x27;src/app/modules/auth/auth.service&#x27;;
+import { StorageItem, setItemSession } from &#x27;src/core/utils/local-storage.utils&#x27;;
+import { TuiBadgeModule } from &#x27;@taiga-ui/kit&#x27;;
+import { TuiHintModule } from &#x27;@taiga-ui/core/directives/hint&#x27;;
+
+/**
+ * The topmost card to display Module data inside Grid View on the Home Page. Will display if Grid contains at least 4 elements
+ */
+@Component({
+  selector: &#x27;grid-top-app&#x27;,
+  standalone: true,
+  imports: [CommonModule, RouterModule, TuiBadgeModule, TuiHintModule],
+  templateUrl: &#x27;./grid-top-app.component.html&#x27;,
+  styleUrls: [&#x27;./grid-top-app.component.scss&#x27;],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class GridTopAppComponent {
+  /**
+   * The currently logged in user
+   */
+  currentUser: any;
+
+  /**
+   * Global Variable for checking the role of the currently logged in user
+   */
+  userRoleCheck: any;
+
+  constructor(private transport: DataTransportService, private auth: AuthService) {
+    this.currentUser &#x3D; this.auth.currentUserValue;
+    this.userRoleCheck &#x3D; this.auth.checkIfRolesExist(&#x27;sysAdmin&#x27;)
+  }
+
+  /**
+   * Method to check whether the user has access to modify/view the app
+   * @param data 
+   * @returns boolean
+   */
+  checkAccess(data: any) {
+    if (this.userRoleCheck &#x3D;&#x3D; false &amp;&amp; data?.accessType &#x3D;&#x3D; &quot;disabled&quot; &amp;&amp; !data.authorizedUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+    /**
+   * Used to display the relevant data inside the card view
+   */
+  @Input() appData: any;
+
+  /**
+   * Event Emitter for handling module deletion
+   */
+  @Output() deleteModule &#x3D; new EventEmitter();
+
+  /**
+   * Event Emitter for handling module updation
+   */
+  @Output() editModule &#x3D; new EventEmitter();
+
+  /**
+   * Stores the module Code in session storage
+   * @param id The module or app ID
+   * @param code The key/slug of the app/module
+   */
+  storeModuleID(id: string, code: string) {
+    this.transport.moduleID.next(id);
+    setItemSession(StorageItem.moduleSlug, code);
+  }
+
+  /**
+   * Method to emit an event that signals the app for deletion
+   * @param id The module or app ID 
+   */
+  deleteModuleEvent(id: string) {
+    this.deleteModule.emit(id)
+  }
+
+  /**
+   * Method to emit event that signals app for updation
+   * @param id The module or app ID
+   * @param code Module Slug
+   * @param title Module Title
+   */
+  editModuleEvent(id: string, code: string, title: string) {
+    setItemSession(StorageItem.moduleSlug, code);
+    setItemSession(StorageItem.editmoduleTitle, title);
+    setItemSession(StorageItem.editmoduleId, id);
+    this.editModule.emit(id)
+    this.transport.moduleID.next(id)
+  }
+
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
+  checkIfUserisAdmin(value: any[]): boolean {
+    return value?.includes(this.currentUser?.id)
+  }
+
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
+  checkIfUserisViewOnly(value: any[]): boolean {
+    return value?.includes(this.currentUser?.id)
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div
+  *ngIf&#x3D;&quot;checkAccess(appData) &#x3D;&#x3D; true&quot;
+  class&#x3D;&quot;bg-white rounded-md shadow-md h-auto drop-shadow-md flex flex-col border-t-4 border-t-[#F15B41] cursor-pointer&quot;
+&gt;
+  &lt;div (click)&#x3D;&quot;appData?.status !&#x3D;&#x3D; 3 ? storeModuleID(appData?._id, appData?.code) : &#x27;&#x27;&quot; [routerLink]&#x3D;&quot;appData?.status !&#x3D;&#x3D; 3 ? [&#x27;/modules&#x27;, appData?.code] : null&quot;
+    [queryParams]&#x3D;&quot;{moduleID: appData?._id}&quot; class&#x3D;&quot;flex pt-5 space-x-8 px-4 pb-3&quot;&gt;
+    &lt;div class&#x3D;&quot;flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]&quot;&gt;
+      &lt;img [src]&#x3D;&quot;appData?.image&quot; alt&#x3D;&quot;top_app_icon&quot; loading&#x3D;&quot;eager&quot; class&#x3D;&quot;object-contain w-full h-full rounded-lg&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class&#x3D;&quot;w-full h-full ml-3&quot;&gt;
+      &lt;h3 [title]&#x3D;&quot;appData?.title&quot; class&#x3D;&quot;mb-2 text-lg font-semibold line-clamp-2&quot;&gt;
+        {{appData?.title}}
+        &lt;ng-container *ngIf&#x3D;&quot;appData?.status &#x3D;&#x3D;&#x3D; 3&quot;&gt;
+          &lt;tui-badge
+            status&#x3D;&quot;primary&quot;
+            class&#x3D;&quot;tui-space_left-1&quot;
+            value&#x3D;&quot;Draft&quot;
+            size&#x3D;&quot;s&quot;
+          &gt;&lt;/tui-badge&gt;
+        &lt;/ng-container&gt;
+      &lt;/h3&gt;
+      &lt;p [title]&#x3D;&quot;appData?.description&quot; class&#x3D;&quot;leading-6 line-clamp-2&quot;&gt;{{appData?.description}}&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-between items-center rounded-br-md rounded-bl-md py-5 px-3&quot;&gt;
+    &lt;div&gt;
+      &lt;a
+        title&#x3D;&quot;Edit&quot;
+        *ngIf&#x3D;&quot;
+        currentUser?.id &#x3D;&#x3D; appData?.createdBy ||
+        userRoleCheck &#x3D;&#x3D; true ||
+        checkIfUserisAdmin(appData?.adminUsers)&quot;
+        [routerLink]&#x3D;&quot;[&#x27;/modules/edit-module&#x27;, appData?._id]&quot; [queryParams]&#x3D;&quot;{moduleCode: appData?.code}&quot;
+        (click)&#x3D;&quot;editModuleEvent(appData?._id, appData?.code, appData?.title)&quot;
+        class&#x3D;&quot;px-2 py-1 mx-2 text-white bg-blue-500 rounded-md hover:text-white cursor-pointer hover:bg-opacity-80 hover:transition-colors&quot;
+      &gt;
+        &lt;i class&#x3D;&quot;fa fa-pencil-square-o fa-lg&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+      &lt;/a&gt;
+      &lt;a
+        title&#x3D;&quot;Delete&quot;
+        *ngIf&#x3D;&quot;currentUser?.id &#x3D;&#x3D; appData?.createdBy ||
+        (userRoleCheck &#x3D;&#x3D; true &amp;&amp; checkIfUserisViewOnly(appData?.viewOnlyUsers) &#x3D;&#x3D; false) ||
+        checkIfUserisAdmin(appData?.adminUsers)&quot;
+        (click)&#x3D;&quot;deleteModuleEvent(appData?._id)&quot;
+        class&#x3D;&quot;px-2 py-1 text-white bg-red-600 rounded-md hover:text-white cursor-pointer hover:bg-opacity-80 hover:transition-colors&quot;
+      &gt;
+        &lt;i class&#x3D;&quot;fa fa-trash fa-lg&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class&#x3D;&quot;mr-5 lg:mr-0&quot;&gt;
+      &lt;a
+        tuiHintDirection&#x3D;&quot;top&quot;
+        [tuiHintAppearance]&#x3D;&quot;&#x27;success&#x27;&quot;
+        [tuiHint]&#x3D;&quot;hint&quot;
+        class&#x3D;&quot;text-white lg:px-2 lg:py-1 lg:bg-green-500 cursor-pointer hover:text-white mr-2 relative rounded-md&quot;&gt;
+        &lt;tui-badge
+          class&#x3D;&quot;absolute -top-2 -right-2 bg-yellow-600&quot;
+          status&#x3D;&quot;custom&quot;
+          size&#x3D;&quot;s&quot;
+          [value]&#x3D;&quot;appData?.stats?.completedCount&quot;
+        &gt;&lt;/tui-badge&gt;
+        &lt;i class&#x3D;&quot;fa fa-check-circle fa-lg bg-green-500 lg:bg-transparent p-1 lg:p-0 rounded-md&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+      &lt;/a&gt;
+      &lt;a
+        tuiHintDirection&#x3D;&quot;top&quot;
+        [tuiHint]&#x3D;&quot;hint2&quot;
+        class&#x3D;&quot;text-white lg:px-2 lg:py-1 lg:bg-gray-500 cursor-pointer hover:text-white relative rounded-md&quot;&gt;
+        &lt;tui-badge
+          class&#x3D;&quot;absolute -top-2 -right-2 bg-yellow-600&quot;
+          status&#x3D;&quot;custom&quot;
+          size&#x3D;&quot;s&quot;
+          [value]&#x3D;&quot;appData?.stats?.inProgressCount&quot;
+        &gt;&lt;/tui-badge&gt;
+        &lt;i class&#x3D;&quot;fa fa-clock-o fa-lg bg-gray-500 lg:bg-transparent p-1 lg:p-0 rounded-md&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;  
+&lt;/div&gt;
+
+&lt;ng-template #hint&gt;
+  &lt;strong class&#x3D;&quot;text-base&quot;&gt;Completed submissions: &amp;nbsp; {{appData?.stats?.completedCount}}&lt;/strong&gt;
+&lt;/ng-template&gt;
+
+&lt;ng-template #hint2&gt;
+  &lt;strong class&#x3D;&quot;text-base&quot;&gt;In Progress submissions: &amp;nbsp; {{appData?.stats?.inProgressCount}}&lt;/strong&gt;
+&lt;/ng-template&gt;
+
+&lt;ng-template #hint3&gt;
+  &lt;strong class&#x3D;&quot;text-base&quot;&gt;Your pending submissions: &amp;nbsp; {{appData?.stats?.inProgressCount}}&lt;/strong&gt;
+&lt;/ng-template&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-styleData">
+                <p class="comment">
+                    <code>./grid-top-app.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss"></code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div  *ngIf="checkAccess(appData) == true"  class="bg-white rounded-md shadow-md h-auto drop-shadow-md flex flex-col border-t-4 border-t-[#F15B41] cursor-pointer">  <div (click)="appData?.status !== 3 ? storeModuleID(appData?._id, appData?.code) : \'\'" [routerLink]="appData?.status !== 3 ? [\'/modules\', appData?.code] : null"    [queryParams]="{moduleID: appData?._id}" class="flex pt-5 space-x-8 px-4 pb-3">    <div class="flex items-center justify-center border border-gray-200 rounded-lg w-[13rem] h-[8rem]">      <img [src]="appData?.image" alt="top_app_icon" loading="eager" class="object-contain w-full h-full rounded-lg">    </div>    <div class="w-full h-full ml-3">      <h3 [title]="appData?.title" class="mb-2 text-lg font-semibold line-clamp-2">        {{appData?.title}}        <ng-container *ngIf="appData?.status === 3">          <tui-badge            status="primary"            class="tui-space_left-1"            value="Draft"            size="s"          ></tui-badge>        </ng-container>      </h3>      <p [title]="appData?.description" class="leading-6 line-clamp-2">{{appData?.description}}</p>    </div>  </div>  <div class="bg-gradient-to-r from-orange-200 to-slate-200 h-8 w-full flex justify-between items-center rounded-br-md rounded-bl-md py-5 px-3">    <div>      <a        title="Edit"        *ngIf="        currentUser?.id == appData?.createdBy ||        userRoleCheck == true ||        checkIfUserisAdmin(appData?.adminUsers)"        [routerLink]="[\'/modules/edit-module\', appData?._id]" [queryParams]="{moduleCode: appData?.code}"        (click)="editModuleEvent(appData?._id, appData?.code, appData?.title)"        class="px-2 py-1 mx-2 text-white bg-blue-500 rounded-md hover:text-white cursor-pointer hover:bg-opacity-80 hover:transition-colors"      >        <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>      </a>      <a        title="Delete"        *ngIf="currentUser?.id == appData?.createdBy ||        (userRoleCheck == true && checkIfUserisViewOnly(appData?.viewOnlyUsers) == false) ||        checkIfUserisAdmin(appData?.adminUsers)"        (click)="deleteModuleEvent(appData?._id)"        class="px-2 py-1 text-white bg-red-600 rounded-md hover:text-white cursor-pointer hover:bg-opacity-80 hover:transition-colors"      >        <i class="fa fa-trash fa-lg" aria-hidden="true"></i>      </a>    </div>    <div class="mr-5 lg:mr-0">      <a        tuiHintDirection="top"        [tuiHintAppearance]="\'success\'"        [tuiHint]="hint"        class="text-white lg:px-2 lg:py-1 lg:bg-green-500 cursor-pointer hover:text-white mr-2 relative rounded-md">        <tui-badge          class="absolute -top-2 -right-2 bg-yellow-600"          status="custom"          size="s"          [value]="appData?.stats?.completedCount"        ></tui-badge>        <i class="fa fa-check-circle fa-lg bg-green-500 lg:bg-transparent p-1 lg:p-0 rounded-md" aria-hidden="true"></i>      </a>      <a        tuiHintDirection="top"        [tuiHint]="hint2"        class="text-white lg:px-2 lg:py-1 lg:bg-gray-500 cursor-pointer hover:text-white relative rounded-md">        <tui-badge          class="absolute -top-2 -right-2 bg-yellow-600"          status="custom"          size="s"          [value]="appData?.stats?.inProgressCount"        ></tui-badge>        <i class="fa fa-clock-o fa-lg bg-gray-500 lg:bg-transparent p-1 lg:p-0 rounded-md" aria-hidden="true"></i>      </a>    </div>  </div>  </div><ng-template #hint>  <strong class="text-base">Completed submissions: &nbsp; {{appData?.stats?.completedCount}}</strong></ng-template><ng-template #hint2>  <strong class="text-base">In Progress submissions: &nbsp; {{appData?.stats?.inProgressCount}}</strong></ng-template><ng-template #hint3>  <strong class="text-base">Your pending submissions: &nbsp; {{appData?.stats?.inProgressCount}}</strong></ng-template></div>'
+    var COMPONENTS = [{'name': 'ActionButtonRenderer', 'selector': 'action-button-component'},{'name': 'AddSubmissionComponent', 'selector': ''},{'name': 'AddSubmoduleComponent', 'selector': ''},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppListingComponent', 'selector': 'app-app-listing'},{'name': 'AuthComponent', 'selector': 'app-auth'},{'name': 'CategoriesListComponent', 'selector': ''},{'name': 'CategoryActionComponent', 'selector': 'catgeories-actions-component'},{'name': 'CompaniesComponent', 'selector': ''},{'name': 'CompanyActionComponent', 'selector': 'companies-actions-component'},{'name': 'CustomMultiSelectComponent', 'selector': 'custom-multi-select'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DialogTemplate', 'selector': ''},{'name': 'EditFormComponent', 'selector': ''},{'name': 'EditSubmissionComponent', 'selector': ''},{'name': 'EditSubmoduleComponent', 'selector': ''},{'name': 'EmailSubmissionComponent', 'selector': ''},{'name': 'FilterComponent', 'selector': 'filter'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'FormBuilderComponent', 'selector': ''},{'name': 'FormsComponent', 'selector': 'app-forms'},{'name': 'GridTopAppComponent', 'selector': 'grid-top-app'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': ''},{'name': 'LoginComponent', 'selector': ''},{'name': 'ModuleGuardComponent', 'selector': 'app-module-guard'},{'name': 'NotFoundComponent', 'selector': ''},{'name': 'ProfileComponent', 'selector': ''},{'name': 'SearchBarComponent', 'selector': 'app-search-bar'},{'name': 'SubmissionTableComponent', 'selector': 'app-submission-table'},{'name': 'SubmoduleGuardComponent', 'selector': 'app-submodule-guard'},{'name': 'SubmodulesListComponent', 'selector': ''},{'name': 'TableLoaderComponent', 'selector': 'app-table-loader'},{'name': 'TableViewComponent', 'selector': 'app-table-view'},{'name': 'UserActionsRenderer', 'selector': 'user-actions-component'},{'name': 'UsersListComponent', 'selector': ''},{'name': 'ViewWorkflowComponent', 'selector': ''},{'name': 'WorkflowsComponent', 'selector': 'app-workflows'},{'name': 'WorkflowSkeletonComponent', 'selector': 'app-workflow-skeleton'}];
+    var DIRECTIVES = [{'name': 'SortDirective', 'selector': '[appSort]'},{'name': 'TrimDirective', 'selector': '[appTrim]'}];
+    var ACTUAL_COMPONENT = {'name': 'GridTopAppComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'GridTopAppComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

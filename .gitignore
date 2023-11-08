@@ -2,7 +2,7 @@
 
 # Compiled output
 /dist
-/documentation
+# /documentation
 /tmp
 /out-tsc
 /bazel-out

@@ -1,0 +1,1587 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>depa-frontend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">depa-frontend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  CustomMultiSelectComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts</code>
+</p>
+
+
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>Multi-Select component (Uses Custom styling and event handling on a HTML Select Element).</p>
+<p>The component acts as Custom Form Control using Angular&#39;s Control Value Accessor. For more
+See <a href="https://blog.angular-university.io/angular-custom-form-controls/">CustomFormControls</a></p>
+<p>Example:</p>
+<div><pre class="line-numbers"><code class="language-typescript">&lt;custom-multi-select
+ formControlName=&quot;approvers&quot;
+ [users]=&quot;userList&quot;
+ (approverList)=&quot;getApproverList($event, i)&quot;
+&gt;
+&lt;/custom-multi-select&gt;</code></pre></div>
+    </p>
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/forms/ControlValueAccessor" target="_blank" >ControlValueAccessor</a></code>
+                    <code><a href="https://angular.io/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+    </p>
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+            <tr>
+                <td class="col-md-3">changeDetection</td>
+                <td class="col-md-9"><code>ChangeDetectionStrategy.OnPush</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">providers</td>
+                <td class="col-md-9">
+                                <code><a href="../components/CustomMultiSelectComponent.html" target="_self" >{
+    provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() &#x3D;&gt; CustomMultiSelectComponent), multi: true
+}</a></code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>custom-multi-select</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./custom-multi-select.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./custom-multi-select.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#limit" >limit</a>
+                            </li>
+                            <li>
+                                <a href="#onChange" >onChange</a>
+                            </li>
+                            <li>
+                                <a href="#page" >page</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#getUserData" >getUserData</a>
+                            </li>
+                            <li>
+                                <a href="#listenToDOMClick" >listenToDOMClick</a>
+                            </li>
+                            <li>
+                                <a href="#listenToDOMScroll" >listenToDOMScroll</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <a href="#registerOnChange" >registerOnChange</a>
+                            </li>
+                            <li>
+                                <a href="#removeItem" >removeItem</a>
+                            </li>
+                            <li>
+                                <a href="#selectValueAndPushToInput" >selectValueAndPushToInput</a>
+                            </li>
+                            <li>
+                                <a href="#writeValue" >writeValue</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#users" >users</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#approverList" >approverList</a>
+                            </li>
+                            <li>
+                                <a href="#checkUsersLength" >checkUsersLength</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>HostListeners</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#document:click" >document:click</a>
+                            </li>
+                            <li>
+                                <a href="#document:scroll" >document:scroll</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(dashboard: <a href="../injectables/DashboardService.html" target="_self">DashboardService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="89" class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:89</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>dashboard</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DashboardService.html" target="_self" >DashboardService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section>
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="users"></a>
+                        <b>users</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>BehaviorSubject&lt;any&gt;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject([])</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="81" class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:81</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Dropdown user list</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+    <section>
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="approverList"></a>
+                        <b>approverList</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="89" class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:89</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>List of approvers that will be sent to server as part of workflow</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="checkUsersLength"></a>
+                        <b>checkUsersLength</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="156" class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:156</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section>
+    <h3>HostListeners</h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="document:click"></a>
+                    <span class="name">
+                        <span ><b>document:click</b></span>
+                        <a href="#document:click"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <i>Arguments : </i><code>'$event' </code>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>document:click()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="121"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:121</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Click Event Listener on the document to close dropdown. Excludes the dropdown element from event listener</p>
+</div>
+
+                    <div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="document:scroll"></a>
+                    <span class="name">
+                        <span ><b>document:scroll</b></span>
+                        <a href="#document:scroll"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <i>Arguments : </i><code>'$event' </code>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>document:scroll()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="139"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:139</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Scroll Event Listener on the document to close dropdown. Excludes the dropdown element from event listener.
+If the element is no longer inside the current viewport, the dropdown will be closed</p>
+</div>
+
+                    <div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getUserData"></a>
+                    <span class="name">
+                        <span ><b>getUserData</b></span>
+                        <a href="#getUserData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getUserData(limit: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, page: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="107"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:107</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>limit</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>page</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="listenToDOMClick"></a>
+                    <span class="name">
+                        <span ><b>listenToDOMClick</b></span>
+                        <a href="#listenToDOMClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>listenToDOMClick()</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@HostListener(&#x27;document:click&#x27;, [&#x27;$event&#x27;])<br /></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="121"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:121</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Click Event Listener on the document to close dropdown. Excludes the dropdown element from event listener</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="listenToDOMScroll"></a>
+                    <span class="name">
+                        <span ><b>listenToDOMScroll</b></span>
+                        <a href="#listenToDOMScroll"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>listenToDOMScroll()</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@HostListener(&#x27;document:scroll&#x27;, [&#x27;$event&#x27;])<br /></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="139"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:139</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Scroll Event Listener on the document to close dropdown. Excludes the dropdown element from event listener.
+If the element is no longer inside the current viewport, the dropdown will be closed</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="245"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:245</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="registerOnChange"></a>
+                    <span class="name">
+                        <span ><b>registerOnChange</b></span>
+                        <a href="#registerOnChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>registerOnChange(fn: (value: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>) => void)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="233"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:233</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Register changes that occur on the FormControl</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>fn</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/function" target="_blank" >function</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeItem"></a>
+                    <span class="name">
+                        <span ><b>removeItem</b></span>
+                        <a href="#removeItem"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>removeItem(value: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="215"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:215</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Removes value from option list and DOM</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>value</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The user object</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectValueAndPushToInput"></a>
+                    <span class="name">
+                        <span ><b>selectValueAndPushToInput</b></span>
+                        <a href="#selectValueAndPushToInput"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>selectValueAndPushToInput(user: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="163"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:163</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Adds value in option list to show inside the input select field</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The user selected from the dropdown</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="writeValue"></a>
+                    <span class="name">
+                        <span ><b>writeValue</b></span>
+                        <a href="#writeValue"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>writeValue(approverIds: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="180"
+                            class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:180</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Writes the provided formControlName value to the component</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>approverIds</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="limit"></a>
+                    <span class="name">
+                        <span ><b>limit</b></span>
+                        <a href="#limit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>50</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="83" class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:83</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onChange"></a>
+                    <span class="name">
+                        <span ><b>onChange</b></span>
+                        <a href="#onChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="131" class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:131</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method for updating component after changes occur</p>
+</div>
+                </td>
+            </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description">
+                                <b>Parameters :</b>
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            <tr>
+                                                    <td>onchanges</td>
+                                            </tr>
+                                    </tbody>
+                                </table>
+                        </div>
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="page"></a>
+                    <span class="name">
+                        <span ><b>page</b></span>
+                        <a href="#page"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="84" class="link-to-prism">src/app/standalone-components/custom-multi-select/custom-multi-select.component.ts:84</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, ViewChild, forwardRef } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { TuiCheckboxLabeledModule, TuiInputModule } from &#x27;@taiga-ui/kit&#x27;;
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from &#x27;@angular/forms&#x27;;
+import { TuiTextfieldControllerModule } from &#x27;@taiga-ui/core&#x27;;
+import { BehaviorSubject, Subject, debounceTime, distinctUntilChanged, of, switchMap, takeUntil } from &#x27;rxjs&#x27;;
+import { DashboardService } from &#x27;src/app/modules/dashboard/dashboard.service&#x27;;
+import { TrimDirective } from &#x27;src/core/directives/trim.directive&#x27;;
+import { getUniqueListBy } from &#x27;src/core/utils/utility-functions&#x27;;
+
+/**
+ * @ignore
+ */
+export class dropDownItems {
+  id: string;
+  name: string;
+  control: FormControl
+}
+
+/**
+ * Multi-Select component (Uses Custom styling and event handling on a HTML Select Element).
+ * 
+ * The component acts as Custom Form Control using Angular&#x27;s Control Value Accessor. For more
+ * @see [CustomFormControls]{@link https://blog.angular-university.io/angular-custom-form-controls/}
+ * 
+ * Example:
+ * 
+ * &#x60;&#x60;&#x60;typescript
+ * &lt;custom-multi-select
+ *  formControlName&#x3D;&quot;approvers&quot;
+ *  [users]&#x3D;&quot;userList&quot;
+ *  (approverList)&#x3D;&quot;getApproverList($event, i)&quot;
+ * &gt;
+ * &lt;/custom-multi-select&gt;
+ * &#x60;&#x60;&#x60;
+ */
+@Component({
+  selector: &#x27;custom-multi-select&#x27;,
+  standalone: true,
+  imports: [CommonModule, TuiCheckboxLabeledModule, ReactiveFormsModule, TuiInputModule, TuiTextfieldControllerModule, TrimDirective],
+  templateUrl: &#x27;./custom-multi-select.component.html&#x27;,
+  styleUrls: [&#x27;./custom-multi-select.component.scss&#x27;],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() &#x3D;&gt; CustomMultiSelectComponent),
+      multi: true
+    }
+  ]
+})
+export class CustomMultiSelectComponent implements ControlValueAccessor, OnDestroy {
+  /**
+   * @ignore
+   */
+  open &#x3D; false;
+
+  /**
+   * @ignore
+   */
+  searchValue &#x3D; new FormControl();
+
+  /**
+   * @ignore
+   */
+  destroy$ &#x3D; new Subject();
+
+  /**
+   * @ignore
+   */
+  inputFieldArr: any[] &#x3D; [];
+
+  /**
+   * @ignore
+   */
+  @ViewChild(&#x27;customElem&#x27;) customElem?: ElementRef;
+
+  /**
+   * Dropdown user list
+   */
+  @Input() users: BehaviorSubject&lt;any&gt; &#x3D; new BehaviorSubject([]);
+
+  limit: number &#x3D; 50;
+  page: number &#x3D; 0;
+
+  /**
+   * List of approvers that will be sent to server as part of workflow 
+   */
+  @Output() approverList &#x3D; new EventEmitter();
+
+  constructor(private dashboard: DashboardService) {
+    this.getUserData(this.limit, this.page)
+
+    this.searchValue.valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400),
+      switchMap(searchStr &#x3D;&gt; this.dashboard.getAllUsers(this.limit, this.page, searchStr)),
+      takeUntil(this.destroy$)
+    ).subscribe((users: any) &#x3D;&gt; {
+      if(users !&#x3D;&#x3D; null) {
+        users &#x3D; users?.filter(val &#x3D;&gt; !val.roles?.includes(&#x27;sysAdmin&#x27;))
+        this.users.next(users)
+      }
+    })
+  }
+
+  getUserData(limit: number, page: number) {
+    this.dashboard.getAllUsers(limit, page)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) &#x3D;&gt; {
+      res &#x3D; res?.filter(val &#x3D;&gt; !val.roles?.includes(&#x27;sysAdmin&#x27;))
+      this.users.next(res);
+    });
+  }
+
+  /**
+   * Click Event Listener on the document to close dropdown. Excludes the dropdown element from event listener
+   * @event click
+   */
+  @HostListener(&#x27;document:click&#x27;, [&#x27;$event&#x27;])
+  listenToDOMClick() {
+    if(!this.customElem?.nativeElement?.contains(event.target)) {
+      this.open &#x3D; false;
+    }
+  }
+
+  /**
+   * Method for updating component after changes occur
+   * @param {any} onchanges 
+   */
+  onChange: any &#x3D; (onchanges:any) &#x3D;&gt; {};
+
+    /**
+   * Scroll Event Listener on the document to close dropdown. Excludes the dropdown element from event listener.
+   * If the element is no longer inside the current viewport, the dropdown will be closed
+   * @event scroll
+   */
+  @HostListener(&#x27;document:scroll&#x27;, [&#x27;$event&#x27;])
+  listenToDOMScroll() {
+    if(!this.customElem.nativeElement.contains(event.target)) {
+      const windowHeight &#x3D; window.innerHeight;
+      const boundingRectangle &#x3D; this.customElem.nativeElement.getBoundingClientRect();
+      if(boundingRectangle.bottom &lt;&#x3D; windowHeight) {
+        this.open &#x3D; false;
+      }
+    }
+  }
+
+  /**
+   * @ignore
+   */
+  toggleDropDown() {
+    this.open &#x3D; !this.open;
+  }
+
+  @Output() checkUsersLength &#x3D; new EventEmitter();
+
+  /**
+   * Adds value in option list to show inside the input select field
+   * @param {dropDownItems} user The user selected from the dropdown
+   * @param {any} event 
+   */
+  selectValueAndPushToInput(user: any, event: any) {
+    if(user?.control.value &#x3D;&#x3D;&#x3D; true &amp;&amp; this.inputFieldArr.includes(user)) {
+      this.removeItem(user);
+      this.checkUsersLength.emit(this.inputFieldArr.length);
+      this.approverList.emit(this.inputFieldArr);
+    }
+    if(event.target?.checked &#x3D;&#x3D;&#x3D; true) {
+      this.inputFieldArr.push(user);
+      this.checkUsersLength.emit(this.inputFieldArr.length);
+      this.approverList.emit(this.inputFieldArr);
+    }
+  }
+
+  /**
+   * Writes the provided formControlName value to the component
+   * @param {any} value It can be any data type that is provided in the formControlName in the selector of this component
+   */
+  writeValue(approverIds: any) {
+    if(approverIds?.length &gt; 0) {
+      this.inputFieldArr &#x3D; approverIds
+    }
+    this.users?.pipe(takeUntil(this.destroy$)).subscribe(user &#x3D;&gt; {
+      user &#x3D; user?.filter((val) &#x3D;&gt; {
+        if(approverIds?.includes(val.id)) {
+          val.control.setValue(true);
+          return val
+        }
+        else if(approverIds?.map(user &#x3D;&gt; user?.id)?.includes(val.id)) {
+          val.control.setValue(true);
+          return val
+        }
+      });
+      // user &#x3D; user.map(val &#x3D;&gt; {
+      //   if(!approverIds?.includes(val.id)) {
+      //     val.control.setValue(false);
+      //     return val
+      //   }
+      // })
+      // if(this.inputFieldArr?.length &gt; 0) {
+      //   // this.inputFieldArr &#x3D; getUniqueListBy([...this.inputFieldArr, ...user], &#x27;name&#x27;)
+      //   this.inputFieldArr &#x3D; 
+      // }
+      // else {
+      //   this.inputFieldArr &#x3D; user;
+      // }
+    });
+  }
+
+  /**
+   * Removes value from option list and DOM
+   * @param {any} value The user object
+   */
+  removeItem(value: any) {
+    const index &#x3D; this.inputFieldArr.indexOf(value);
+    this.inputFieldArr.splice(index, 1);
+    this.users.forEach((val: dropDownItems[]) &#x3D;&gt; {
+      val.forEach(user &#x3D;&gt; {
+        if(user &#x3D;&#x3D;&#x3D; value &amp;&amp; user.control.value &#x3D;&#x3D;&#x3D; true) {
+          user.control.setValue(false)
+        }
+      })
+    });
+    this.checkUsersLength.emit(this.inputFieldArr.length)
+    this.approverList.emit(this.inputFieldArr);
+  }
+
+  /**
+   * Register changes that occur on the FormControl
+   * @param {Function} fn 
+   */
+  registerOnChange(fn: (value: any) &#x3D;&gt; void): void {
+    this.onChange &#x3D; fn;
+  }
+
+  /**
+   * @ignore
+   */
+  registerOnTouched(){}
+  
+  /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div #customElem class&#x3D;&quot;relative&quot;&gt;
+  &lt;select
+    (keypress)&#x3D;&quot;$event.preventDefault()&quot;
+    (click)&#x3D;&quot;toggleDropDown()&quot;
+    multiple
+    [ngClass]&#x3D;&quot;inputFieldArr?.length &gt; 2 ? &#x27;h-10 overflow-y-hidden scrollable-elem&#x27;: &#x27;h-10 overflow-y-hidden scrollable-elem&#x27;&quot;
+    class&#x3D;&quot;form-control&quot;
+  &gt;
+    &lt;ng-container *ngIf&#x3D;&quot;inputFieldArr.length &gt; 0&quot;&gt;
+      &lt;ng-container *ngFor&#x3D;&quot;let selected of inputFieldArr; let j &#x3D; index&quot;&gt;
+        &lt;option (click)&#x3D;&quot;removeItem(selected)&quot; class&#x3D;&quot;rounded-lg bg-[#6C86E2] text-xs px-3 py-1 h-6 text-white my-1 mx-1 w-auto inline-block&quot; [value]&#x3D;&quot;selected?.id&quot;&gt;
+          {{selected?.name}} &amp;nbsp; &amp;nbsp; &lt;span&gt;&amp;#10005;&lt;/span&gt;
+        &lt;/option&gt;
+      &lt;/ng-container&gt;
+    &lt;/ng-container&gt;
+  &lt;/select&gt;
+  &lt;i (click)&#x3D;&quot;toggleDropDown()&quot; [ngClass]&#x3D;&quot;open ? &#x27;rotate-0 transition-all delay-75&#x27; : &#x27;-rotate-180 transition-all delay-75&#x27;&quot; class&#x3D;&quot;absolute text-gray-600 cursor-pointer fa fa-angle-up fa-lg top-3.5 right-2 font-semibold&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+  &lt;div class&#x3D;&quot;absolute z-40 block w-full&quot;&gt;
+    &lt;ul [ngClass]&#x3D;&quot;open ? &#x27;h-80 border border-gray-300 py-3 px-5 transition-all ease-in-out delay-75&#x27; : &#x27;h-0 border-none px-0 py-0 transition-all ease-in-out delay-75&#x27;&quot; class&#x3D;&quot;mt-1 overflow-y-auto bg-white rounded-lg shadow-md scrollable-elem&quot;&gt;
+      &lt;input
+        appTrim
+        class&#x3D;&quot;form-control&quot;
+        placeholder&#x3D;&quot;Search users&quot;
+        [formControl]&#x3D;&quot;searchValue&quot;
+      /&gt;
+      &lt;ng-container *ngIf&#x3D;&quot;(users | async) as users&quot;&gt;
+        &lt;ng-container *ngFor&#x3D;&quot;let user of users; let i &#x3D; index&quot;&gt;
+          &lt;li class&#x3D;&quot;gap-2 my-3&quot;&gt;
+            &lt;tui-checkbox-labeled
+              [formControl]&#x3D;&quot;user.control&quot;
+              (click)&#x3D;&quot;selectValueAndPushToInput(user, $event)&quot;
+              size&#x3D;&quot;l&quot;
+            &gt;
+              {{user.name}}
+            &lt;/tui-checkbox-labeled&gt;
+          &lt;/li&gt;
+        &lt;/ng-container&gt;
+      &lt;/ng-container&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-styleData">
+                <p class="comment">
+                    <code>./custom-multi-select.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.scrollable-elem {
+  scrollbar-width: thin;
+  scrollbar-color: #d6dde2 #d6dde2;
+  white-space: nowrap;
+  text-decoration: transparent!important;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.scrollable-elem {
+  scrollbar-width: thin;
+  scrollbar-color: #d6dde2 #d6dde2;
+}
+
+.scrollable-elem::-webkit-scrollbar-track {
+  background-color: rgb(235, 231, 231);
+}
+
+.scrollable-elem::-webkit-scrollbar-thumb {
+  background-color: #d6dde2;
+  border-radius: 6px;
+  border: 1px solid #CFD8DC;
+}
+
+.scrollable-elem::-webkit-scrollbar,
+.scrollable-elem::-webkit-scrollbar-thumb {
+  width: 8px;
+  height: 3px!important;
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div #customElem class="relative">  <select    (keypress)="$event.preventDefault()"    (click)="toggleDropDown()"    multiple    [ngClass]="inputFieldArr?.length > 2 ? \'h-10 overflow-y-hidden scrollable-elem\': \'h-10 overflow-y-hidden scrollable-elem\'"    class="form-control"  >    <ng-container *ngIf="inputFieldArr.length > 0">      <ng-container *ngFor="let selected of inputFieldArr; let j = index">        <option (click)="removeItem(selected)" class="rounded-lg bg-[#6C86E2] text-xs px-3 py-1 h-6 text-white my-1 mx-1 w-auto inline-block" [value]="selected?.id">          {{selected?.name}} &nbsp; &nbsp; <span>&#10005;</span>        </option>      </ng-container>    </ng-container>  </select>  <i (click)="toggleDropDown()" [ngClass]="open ? \'rotate-0 transition-all delay-75\' : \'-rotate-180 transition-all delay-75\'" class="absolute text-gray-600 cursor-pointer fa fa-angle-up fa-lg top-3.5 right-2 font-semibold" aria-hidden="true"></i>  <div class="absolute z-40 block w-full">    <ul [ngClass]="open ? \'h-80 border border-gray-300 py-3 px-5 transition-all ease-in-out delay-75\' : \'h-0 border-none px-0 py-0 transition-all ease-in-out delay-75\'" class="mt-1 overflow-y-auto bg-white rounded-lg shadow-md scrollable-elem">      <input        appTrim        class="form-control"        placeholder="Search users"        [formControl]="searchValue"      />      <ng-container *ngIf="(users | async) as users">        <ng-container *ngFor="let user of users; let i = index">          <li class="gap-2 my-3">            <tui-checkbox-labeled              [formControl]="user.control"              (click)="selectValueAndPushToInput(user, $event)"              size="l"            >              {{user.name}}            </tui-checkbox-labeled>          </li>        </ng-container>      </ng-container>    </ul>  </div></div></div>'
+    var COMPONENTS = [{'name': 'ActionButtonRenderer', 'selector': 'action-button-component'},{'name': 'AddSubmissionComponent', 'selector': ''},{'name': 'AddSubmoduleComponent', 'selector': ''},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppListingComponent', 'selector': 'app-app-listing'},{'name': 'AuthComponent', 'selector': 'app-auth'},{'name': 'CategoriesListComponent', 'selector': ''},{'name': 'CategoryActionComponent', 'selector': 'catgeories-actions-component'},{'name': 'CompaniesComponent', 'selector': ''},{'name': 'CompanyActionComponent', 'selector': 'companies-actions-component'},{'name': 'CustomMultiSelectComponent', 'selector': 'custom-multi-select'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DialogTemplate', 'selector': ''},{'name': 'EditFormComponent', 'selector': ''},{'name': 'EditSubmissionComponent', 'selector': ''},{'name': 'EditSubmoduleComponent', 'selector': ''},{'name': 'EmailSubmissionComponent', 'selector': ''},{'name': 'FilterComponent', 'selector': 'filter'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'FormBuilderComponent', 'selector': ''},{'name': 'FormsComponent', 'selector': 'app-forms'},{'name': 'GridTopAppComponent', 'selector': 'grid-top-app'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': ''},{'name': 'LoginComponent', 'selector': ''},{'name': 'ModuleGuardComponent', 'selector': 'app-module-guard'},{'name': 'NotFoundComponent', 'selector': ''},{'name': 'ProfileComponent', 'selector': ''},{'name': 'SearchBarComponent', 'selector': 'app-search-bar'},{'name': 'SubmissionTableComponent', 'selector': 'app-submission-table'},{'name': 'SubmoduleGuardComponent', 'selector': 'app-submodule-guard'},{'name': 'SubmodulesListComponent', 'selector': ''},{'name': 'TableLoaderComponent', 'selector': 'app-table-loader'},{'name': 'TableViewComponent', 'selector': 'app-table-view'},{'name': 'UserActionsRenderer', 'selector': 'user-actions-component'},{'name': 'UsersListComponent', 'selector': ''},{'name': 'ViewWorkflowComponent', 'selector': ''},{'name': 'WorkflowsComponent', 'selector': 'app-workflows'},{'name': 'WorkflowSkeletonComponent', 'selector': 'app-workflow-skeleton'}];
+    var DIRECTIVES = [{'name': 'SortDirective', 'selector': '[appSort]'},{'name': 'TrimDirective', 'selector': '[appTrim]'}];
+    var ACTUAL_COMPONENT = {'name': 'CustomMultiSelectComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'CustomMultiSelectComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

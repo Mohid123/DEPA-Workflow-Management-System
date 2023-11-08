@@ -1,0 +1,2191 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>depa-frontend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">depa-frontend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  SubmissionTableComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/standalone-components/submission-table/submission-table.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+    </p>
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-submission-table</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./submission-table.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./submission-table.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#adminUsers" >adminUsers</a>
+                            </li>
+                            <li>
+                                <a href="#columnDefs" >columnDefs</a>
+                            </li>
+                            <li>
+                                <a href="#createdByUsers" >createdByUsers</a>
+                            </li>
+                            <li>
+                                <a href="#currentStepId" >currentStepId</a>
+                            </li>
+                            <li>
+                                <a href="#currentUser" >currentUser</a>
+                            </li>
+                            <li>
+                                <a href="#limit" >limit</a>
+                            </li>
+                            <li>
+                                <a href="#page" >page</a>
+                            </li>
+                            <li>
+                                <a href="#rowData" >rowData</a>
+                            </li>
+                            <li>
+                                <a href="#sendingDecision" >sendingDecision</a>
+                            </li>
+                            <li>
+                                <a href="#submoduleData" >submoduleData</a>
+                            </li>
+                            <li>
+                                <a href="#submoduleId" >submoduleId</a>
+                            </li>
+                            <li>
+                                <a href="#subscriptions" >subscriptions</a>
+                            </li>
+                            <li>
+                                <a href="#tableDataValue" >tableDataValue</a>
+                            </li>
+                            <li>
+                                <a href="#userRoleCheckAdmin" >userRoleCheckAdmin</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#addSubmissionRoute" >addSubmissionRoute</a>
+                            </li>
+                            <li>
+                                <a href="#changeProgressColor" >changeProgressColor</a>
+                            </li>
+                            <li>
+                                <a href="#checkIfUserisActiveUser" >checkIfUserisActiveUser</a>
+                            </li>
+                            <li>
+                                <a href="#checkIfUserisApprovedUser" >checkIfUserisApprovedUser</a>
+                            </li>
+                            <li>
+                                <a href="#checkIfUserisCreator" >checkIfUserisCreator</a>
+                            </li>
+                            <li>
+                                <a href="#checkIfUserisPartofWorkflow" >checkIfUserisPartofWorkflow</a>
+                            </li>
+                            <li>
+                                <a href="#checkViewButtonCondition" >checkViewButtonCondition</a>
+                            </li>
+                            <li>
+                                <a href="#fetchDataAndPopulate" >fetchDataAndPopulate</a>
+                            </li>
+                            <li>
+                                <a href="#getPendingOnUsers" >getPendingOnUsers</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <a href="#onGridReady" >onGridReady</a>
+                            </li>
+                            <li>
+                                <a href="#showStatus" >showStatus</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#moduleData" >moduleData</a>
+                            </li>
+                            <li>
+                                <a href="#submissionData" >submissionData</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(workflowService: <a href="../injectables/WorkflowsService.html" target="_self">WorkflowsService</a>, auth: <a href="../injectables/AuthService.html" target="_self">AuthService</a>, dashboard: <a href="../injectables/DashboardService.html" target="_self">DashboardService</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>, activatedRoute: <a href="https://angular.io/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="108" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:108</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>workflowService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/WorkflowsService.html" target="_self" >WorkflowsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>auth</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>dashboard</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DashboardService.html" target="_self" >DashboardService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>activatedRoute</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/ActivatedRoute" target="_blank" >ActivatedRoute</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section>
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="moduleData"></a>
+                        <b>moduleData</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;any&gt;</code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:42</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="submissionData"></a>
+                        <b>submissionData</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:41</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+    <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addSubmissionRoute"></a>
+                    <span class="name">
+                        <span ><b>addSubmissionRoute</b></span>
+                        <a href="#addSubmissionRoute"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>addSubmissionRoute()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="329"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:329</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method for navigating the user to the module it belongs.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="changeProgressColor"></a>
+                    <span class="name">
+                        <span ><b>changeProgressColor</b></span>
+                        <a href="#changeProgressColor"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>changeProgressColor(value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="266"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:266</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method for changing color of progress based on current progress number</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>value</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>&quot;#F15B41&quot; | &quot;#F9B71A&quot; | &quot;#32de84&quot; | &quot;#fff&quot;</code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>a hex color code</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkIfUserisActiveUser"></a>
+                    <span class="name">
+                        <span ><b>checkIfUserisActiveUser</b></span>
+                        <a href="#checkIfUserisActiveUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>checkIfUserisActiveUser(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="310"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:310</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkIfUserisApprovedUser"></a>
+                    <span class="name">
+                        <span ><b>checkIfUserisApprovedUser</b></span>
+                        <a href="#checkIfUserisApprovedUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>checkIfUserisApprovedUser(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="314"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:314</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkIfUserisCreator"></a>
+                    <span class="name">
+                        <span ><b>checkIfUserisCreator</b></span>
+                        <a href="#checkIfUserisCreator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>checkIfUserisCreator()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="318"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:318</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkIfUserisPartofWorkflow"></a>
+                    <span class="name">
+                        <span ><b>checkIfUserisPartofWorkflow</b></span>
+                        <a href="#checkIfUserisPartofWorkflow"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>checkIfUserisPartofWorkflow(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="306"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:306</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkViewButtonCondition"></a>
+                    <span class="name">
+                        <span ><b>checkViewButtonCondition</b></span>
+                        <a href="#checkViewButtonCondition"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>checkViewButtonCondition(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="149"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:149</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method for checking view rights</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>any</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>boolean for allowing permission to view</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="fetchDataAndPopulate"></a>
+                    <span class="name">
+                        <span ><b>fetchDataAndPopulate</b></span>
+                        <a href="#fetchDataAndPopulate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>fetchDataAndPopulate()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="159"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:159</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method to fetch all submissions and populate the grid</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getPendingOnUsers"></a>
+                    <span class="name">
+                        <span ><b>getPendingOnUsers</b></span>
+                        <a href="#getPendingOnUsers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getPendingOnUsers(value: any[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="322"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:322</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>value</td>
+                                    <td>
+                                            <code>any[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="333"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:333</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onGridReady"></a>
+                    <span class="name">
+                        <span ><b>onGridReady</b></span>
+                        <a href="#onGridReady"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onGridReady(params)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="138"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:138</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method called once the grid is ready i.e. grid data is rendered</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>params</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>Object of params related to the AG Grid</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="showStatus"></a>
+                    <span class="name">
+                        <span ><b>showStatus</b></span>
+                        <a href="#showStatus"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>showStatus(submissionStatus: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="284"
+                            class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:284</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method for converting the status of the submission from number to string</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>submissionStatus</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>numeric status of the submission</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>A string value that reflects the</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="adminUsers"></a>
+                    <span class="name">
+                        <span ><b>adminUsers</b></span>
+                        <a href="#adminUsers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="columnDefs"></a>
+                    <span class="name">
+                        <span ><b>columnDefs</b></span>
+                        <a href="#columnDefs"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>ColDef[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+    {
+      field: &#x27;code&#x27;,
+      headerName: &#x27;Code&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 200
+    },
+    {
+      field: &#x27;submissionStatus&#x27;,
+      headerName: &#x27;Status&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 200
+    },
+    {
+      field: &#x27;lastActivityPerformedBy&#x27;,
+      headerName: &#x27;Last Activity By&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 250
+    },
+    {
+      field: &#x27;pendingOnUsers&#x27;,
+      headerName: &#x27;Pending With&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 300
+    },
+    {
+      field: &#x27;progress&#x27;,
+      headerName: &#x27;Progress&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 200
+    },
+    {
+      field: &#x27;actions&#x27;,
+      headerName: &#x27;Actions&#x27;,
+      cellRenderer: ActionButtonRenderer,
+      width: 150
+    },
+  ]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:55</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createdByUsers"></a>
+                    <span class="name">
+                        <span ><b>createdByUsers</b></span>
+                        <a href="#createdByUsers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentStepId"></a>
+                    <span class="name">
+                        <span ><b>currentStepId</b></span>
+                        <a href="#currentStepId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentUser"></a>
+                    <span class="name">
+                        <span ><b>currentUser</b></span>
+                        <a href="#currentUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="limit"></a>
+                    <span class="name">
+                        <span ><b>limit</b></span>
+                        <a href="#limit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>10000</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="page"></a>
+                    <span class="name">
+                        <span ><b>page</b></span>
+                        <a href="#page"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>1</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="rowData"></a>
+                    <span class="name">
+                        <span ><b>rowData</b></span>
+                        <a href="#rowData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="108" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:108</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sendingDecision"></a>
+                    <span class="name">
+                        <span ><b>sendingDecision</b></span>
+                        <a href="#sendingDecision"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;boolean&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:53</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="submoduleData"></a>
+                    <span class="name">
+                        <span ><b>submoduleData</b></span>
+                        <a href="#submoduleData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="submoduleId"></a>
+                    <span class="name">
+                        <span ><b>submoduleId</b></span>
+                        <a href="#submoduleId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="43" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="subscriptions"></a>
+                    <span class="name">
+                        <span ><b>subscriptions</b></span>
+                        <a href="#subscriptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Subscription[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tableDataValue"></a>
+                    <span class="name">
+                        <span ><b>tableDataValue</b></span>
+                        <a href="#tableDataValue"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userRoleCheckAdmin"></a>
+                    <span class="name">
+                        <span ><b>userRoleCheckAdmin</b></span>
+                        <a href="#userRoleCheckAdmin"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/standalone-components/submission-table/submission-table.component.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, Input, OnDestroy } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { Observable, Subject, Subscription } from &#x27;rxjs&#x27;;
+import { ReactiveFormsModule } from &#x27;@angular/forms&#x27;;
+import { ActivatedRoute, Router, RouterModule } from &#x27;@angular/router&#x27;;
+import { WorkflowsService } from &#x27;src/app/modules/workflows/workflows.service&#x27;;
+import { AuthService } from &#x27;src/app/modules/auth/auth.service&#x27;;
+import { DashboardService } from &#x27;src/app/modules/dashboard/dashboard.service&#x27;;
+import { TuiButtonModule, TuiDropdownModule, TuiHostedDropdownModule } from &#x27;@taiga-ui/core&#x27;;
+import { FilterComponent } from &#x27;../filter/filter.component&#x27;;
+import { StorageItem, getItem, getItemSession } from &#x27;src/core/utils/local-storage.utils&#x27;;
+import { TuiPaginationModule, TuiProgressModule } from &#x27;@taiga-ui/kit&#x27;;
+import { TableLoaderComponent } from &#x27;src/app/skeleton-loaders/table-loader/table-loader.component&#x27;;
+import { TuiActiveZoneModule } from &#x27;@taiga-ui/cdk&#x27;;
+import { ColDef } from &#x27;ag-grid-community&#x27;;
+import { AgGridModule } from &#x27;ag-grid-angular&#x27;;
+import { ActionButtonRenderer } from &#x27;./action-btns.component&#x27;;
+
+@Component({
+  selector: &#x27;app-submission-table&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FilterComponent,
+    TuiProgressModule,
+    TuiPaginationModule,
+    TableLoaderComponent,
+    ReactiveFormsModule,
+    TuiButtonModule,
+    RouterModule,
+    TuiHostedDropdownModule,
+    TuiDropdownModule,
+    TuiActiveZoneModule,
+    AgGridModule,
+    ActionButtonRenderer
+  ],
+  templateUrl: &#x27;./submission-table.component.html&#x27;,
+  styleUrls: [&#x27;./submission-table.component.scss&#x27;]
+})
+export class SubmissionTableComponent implements OnDestroy {
+  @Input() submissionData: any;
+  @Input() moduleData: Observable&lt;any&gt;;
+  submoduleId: string;
+  subscriptions: Subscription[] &#x3D; [];
+  currentUser: any;
+  adminUsers: any[] &#x3D; [];
+  createdByUsers: any[] &#x3D; [];
+  page &#x3D; 1;
+  tableDataValue: any;
+  limit: number &#x3D; 10000;
+  submoduleData: any;
+  userRoleCheckAdmin: any;
+  sendingDecision &#x3D; new Subject&lt;boolean&gt;();
+  currentStepId: string;
+  columnDefs: ColDef[] &#x3D; [
+    {
+      field: &#x27;code&#x27;,
+      headerName: &#x27;Code&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 200
+    },
+    {
+      field: &#x27;submissionStatus&#x27;,
+      headerName: &#x27;Status&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 200
+    },
+    {
+      field: &#x27;lastActivityPerformedBy&#x27;,
+      headerName: &#x27;Last Activity By&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 250
+    },
+    {
+      field: &#x27;pendingOnUsers&#x27;,
+      headerName: &#x27;Pending With&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 300
+    },
+    {
+      field: &#x27;progress&#x27;,
+      headerName: &#x27;Progress&#x27;,
+      filter: true,
+      floatingFilter: true,
+      sortable: true,
+      resizable: true,
+      width: 200
+    },
+    {
+      field: &#x27;actions&#x27;,
+      headerName: &#x27;Actions&#x27;,
+      cellRenderer: ActionButtonRenderer,
+      width: 150
+    },
+  ];
+  rowData &#x3D; [];
+
+  constructor(
+    private workflowService: WorkflowsService,
+    private auth: AuthService,
+    private dashboard: DashboardService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.currentUser &#x3D; this.auth.currentUserValue;
+    this.userRoleCheckAdmin &#x3D; this.auth.checkIfRolesExist(&#x27;sysAdmin&#x27;);
+    this.activatedRoute.queryParams.subscribe(val &#x3D;&gt; {
+      if(val[&#x27;moduleID&#x27;]) {
+        this.submoduleId &#x3D; val[&#x27;moduleID&#x27;]
+        this.fetchDataAndPopulate();
+        this.moduleData &#x3D; this.dashboard.getSubModuleByID(val[&#x27;moduleID&#x27;]);
+      }
+    });
+    this.subscriptions.push(this.workflowService.actionComplete.subscribe(value &#x3D;&gt; {
+      if(value &#x3D;&#x3D; true) {
+        this.fetchDataAndPopulate()
+        this.workflowService.actionComplete.emit(false)
+      }
+    }))
+  }
+
+  /**
+   * Method called once the grid is ready i.e. grid data is rendered
+   * @param params Object of params related to the AG Grid
+   */
+  onGridReady(params) {
+    if(this.columnDefs?.length &lt;&#x3D; 6) {
+      params.api.sizeColumnsToFit();
+    }
+  }
+
+  /**
+   * Method for checking view rights
+   * @param data any
+   * @returns boolean for allowing permission to view
+   */
+  checkViewButtonCondition(data: any) {
+    if (this.currentUser &amp;&amp; !this.currentUser.roles.includes(&#x27;sysAdmin&#x27;) &amp;&amp; data.subModuleId.accessType &#x3D;&#x3D; &quot;disabled&quot; &amp;&amp; !data.workFlowUsers.includes(this.currentUser.id)) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Method to fetch all submissions and populate the grid
+   */
+  fetchDataAndPopulate() {
+    this.subscriptions.push(this.workflowService.getSubmissionFromSubModule(this.submoduleId, this.limit, this.page)
+    .subscribe((val: any) &#x3D;&gt; {
+      this.submissionData &#x3D; val;
+      this.tableDataValue &#x3D; val?.results;
+      let flag &#x3D; true;
+      this.rowData &#x3D; this.tableDataValue?.map(data &#x3D;&gt; {
+        for (let key in data?.summaryData) {
+          if (typeof data?.summaryData[key] &#x3D;&#x3D;&#x3D; &#x27;object&#x27; &amp;&amp; key !&#x3D;&#x3D; &#x27;lastActivityPerformedBy&#x27; &amp;&amp; key !&#x3D;&#x3D; &#x27;submissionStatus&#x27; &amp;&amp; key !&#x3D;&#x3D; &#x27;pendingOnUsers&#x27; &amp;&amp; key !&#x3D;&#x3D; &#x27;progress&#x27;) {
+            delete data?.summaryData[key]
+            if (flag) {
+              this.columnDefs.splice(5, 0, {
+                field: this.findDynamicKey(data?.summaryData),
+                headerName: this.findDynamicKey(data?.summaryData)?.charAt(0)?.toLocaleUpperCase() + this.findDynamicKey(data?.summaryData)?.slice(1),
+                filter: true,
+                floatingFilter: true,
+                sortable: true,
+                resizable: true,
+                width: 200
+              })
+              flag &#x3D; false
+            }
+          }
+        }
+        // console.log(this.columnDefs)
+        return {
+          id: data?.id,
+          status: data?.status,
+          code: data?.code,
+          submissionStatus: this.showStatus(data?.submissionStatus),
+          lastActivityPerformedBy: data?.summaryData?.lastActivityPerformedBy?.fullName,
+          pendingOnUsers: data?.summaryData?.pendingOnUsers?.map(val &#x3D;&gt; val?.fullName),
+          progress: String(data?.summaryData?.progress) + &#x27;%&#x27;,
+          [this.findDynamicKey(data?.summaryData)] : this.findDynamicValues(data?.summaryData),
+          subModuleId: data?.subModuleId,
+          activeStepUsers: data?.activeStepUsers,
+          workflowStatus: data?.workflowStatus,
+          workFlowUsers: data?.workFlowUsers
+        }
+      })
+      this.createdByUsers &#x3D; val?.results?.map(data &#x3D;&gt; data?.subModuleId?.createdBy);
+    }))
+  }
+
+  /**
+   * @ignore
+   * @param data 
+   * @returns 
+   */
+  findDynamicKey(data: Object) {
+    return Object.keys(data).find(
+      key &#x3D;&gt; key !&#x3D;&#x3D; &#x27;code&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;submissionStatus&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;lastActivityPerformedBy&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;pendingOnUsers&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;progress&#x27;)
+  }
+
+  /**
+   * @ignore
+   * @param data 
+   * @returns 
+   */
+  findDynamicValues(data: Object) {
+    let dataKey &#x3D; Object.keys(data).find(
+      key &#x3D;&gt; key !&#x3D;&#x3D; &#x27;code&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;submissionStatus&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;lastActivityPerformedBy&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;pendingOnUsers&#x27; &amp;&amp;
+      key !&#x3D;&#x3D; &#x27;progress&#x27;)
+    return typeof(data[dataKey]) &#x3D;&#x3D; &#x27;string&#x27; ? data[dataKey]?.replace(/&amp;lt;/g, &quot;&lt;&quot;).replace(/&amp;gt;/g, &quot;&gt;&quot;) : data[dataKey]
+  }
+
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
+  checkIfUserisAdmin(value: any[]): boolean {
+    return value?.map(data &#x3D;&gt; data?.id).includes(this.currentUser?.id)
+  }
+
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
+  checkIfUserIsFirstUser(value: any) {
+    if(value[0]?.status &#x3D;&#x3D; &#x27;inProgress&#x27;) {
+      return value[0]?.activeUsers?.includes(this.currentUser?.id)
+    }
+  }
+
+  /**
+   * @ignore
+   * @param value 
+   * @returns 
+   */
+  checkIfUserisViewOnly(value: any[]): boolean {
+    return value?.map(data &#x3D;&gt; data?.id).includes(this.currentUser?.id)
+  }
+
+  /**
+   * Method for changing color of progress based on current progress number 
+   * @param value 
+   * @returns a hex color code
+   */
+  changeProgressColor(value: number) {
+    if(value &lt;&#x3D; 49) {
+      return &#x27;#F15B41&#x27;
+    }
+    if(value &gt; 49 &amp;&amp; value &lt; 75) {
+      return &#x27;#F9B71A&#x27;
+    }
+    if(value &gt;&#x3D; 75) {
+      return &#x27;#32de84&#x27;
+    }
+    return &#x27;#fff&#x27;
+  }
+
+  /**
+   * Method for converting the status of the submission from number to string
+   * @param submissionStatus numeric status of the submission
+   * @returns A string value that reflects the 
+   */
+  showStatus(submissionStatus: number): string {
+    if(submissionStatus &#x3D;&#x3D;&#x3D; 1) {
+      return &#x27;Created&#x27;
+    }
+    if(submissionStatus &#x3D;&#x3D;&#x3D; 3) {
+      return &#x27;Completed&#x27;
+    }
+    if(submissionStatus &#x3D;&#x3D;&#x3D; 2) {
+      return &#x27;In Progress&#x27;
+    }
+    if(submissionStatus &#x3D;&#x3D;&#x3D; 4) {
+      return &#x27;Draft&#x27;
+    }
+    if(submissionStatus &#x3D;&#x3D;&#x3D; 5) {
+      return &#x27;Cancelled&#x27;
+    }
+    if(submissionStatus &#x3D;&#x3D;&#x3D; 6) {
+      return &#x27;Deleted&#x27;
+    }
+    return &#x27;Rejected&#x27;
+  }
+
+  checkIfUserisPartofWorkflow(data: any) {
+    return data?.map(val &#x3D;&gt; val?._id)?.includes(this.currentUser?.id)
+  }
+
+  checkIfUserisActiveUser(data: any) {
+    return data?.flatMap(val &#x3D;&gt; val?.status &#x3D;&#x3D; &#x27;inProgress&#x27; ? val.activeUsers: null)?.filter(val &#x3D;&gt; val).includes(this.currentUser?.id)
+  }
+
+  checkIfUserisApprovedUser(data: any) {
+    return data?.flatMap(val &#x3D;&gt; val.approvedUsers)?.includes(this.currentUser?.id)
+  }
+
+  checkIfUserisCreator(): boolean {
+    return this.createdByUsers?.includes(this.currentUser?.id)
+  }
+
+  getPendingOnUsers(value: any[]) {
+    return value?.map(data &#x3D;&gt; data?.fullName)
+  }
+
+  /**
+   * Method for navigating the user to the module it belongs.
+   */
+  addSubmissionRoute() {
+    this.router.navigate([&#x60;/modules/${getItemSession(StorageItem.moduleSlug)}/add-submission&#x60;, this.submoduleId])
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(val &#x3D;&gt; val.unsubscribe());
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;ng-container *ngIf&#x3D;&quot;submissionData as tableData; else noData&quot;&gt;
+  &lt;ng-container *ngIf&#x3D;&quot;(moduleData | async)?.formIds?.length &gt; 0 &amp;&amp; (moduleData | async)?.formVisibility &#x3D;&#x3D; true&quot;&gt;
+    &lt;div class&#x3D;&quot;flex flex-col&quot;&gt;
+      &lt;ag-grid-angular
+        class&#x3D;&quot;w-full h-full overflow-hidden ag-theme-alpine&quot;
+        [rowData]&#x3D;&quot;rowData&quot;
+        [columnDefs]&#x3D;&quot;columnDefs&quot;
+        [pagination]&#x3D;&quot;true&quot;
+        [paginationPageSize]&#x3D;&quot;10&quot;
+        [suppressMenuHide]&#x3D;&quot;true&quot;
+        (gridReady)&#x3D;&quot;onGridReady($event)&quot;
+      &gt;
+      &lt;/ag-grid-angular&gt;
+    &lt;/div&gt;
+  &lt;/ng-container&gt;
+&lt;/ng-container&gt;
+
+&lt;ng-template #noData&gt;
+  &lt;p&gt;&lt;/p&gt;
+&lt;/ng-template&gt;
+&lt;!--  (gridReady)&#x3D;&quot;onGridReady($event)&quot;--&gt;
+
+&lt;!--VIEW
+  (
+                      checkIfUserisApprovedUser(data?.workflowStatus) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) &#x3D;&#x3D; true &amp;&amp;
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisActiveUser(data?.workflowStatus) &#x3D;&#x3D; false &amp;&amp;
+                      data?.summaryData?.progress &lt;&#x3D; 100
+                    ) ||
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) &#x3D;&#x3D; true &amp;&amp;
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisActiveUser(data?.workflowStatus) &#x3D;&#x3D; false &amp;&amp;
+                      data?.summaryData?.progress &lt;&#x3D; 100
+                    ) ||
+                    (
+                      checkIfUserisApprovedUser(data?.workflowStatus) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisActiveUser(data?.workflowStatus) &#x3D;&#x3D; false &amp;&amp;
+                      data?.summaryData?.progress &#x3D;&#x3D; 100 &amp;&amp;
+                      userRoleCheckAdmin &#x3D;&#x3D; true
+                    )
+--&gt;
+
+&lt;!--EDIT BTN
+   (
+                      checkIfUserisActiveUser(data?.workflowStatus) &#x3D;&#x3D; true &amp;&amp;
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) &#x3D;&#x3D; false &amp;&amp;
+                      data?.summaryData?.progress &lt; 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) &#x3D;&#x3D; true &amp;&amp;
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) &#x3D;&#x3D; false &amp;&amp;
+                      data?.summaryData?.progress &lt; 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) &#x3D;&#x3D; true &amp;&amp;
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) &#x3D;&#x3D; true &amp;&amp;
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) &#x3D;&#x3D; false &amp;&amp;
+                      data?.summaryData?.progress &lt; 100
+                    ) ||
+                    (
+                      checkIfUserisActiveUser(data?.workflowStatus) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisAdmin((moduleData | async)?.adminUsers) &#x3D;&#x3D; false &amp;&amp;
+                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) &#x3D;&#x3D; false &amp;&amp;
+                      data?.summaryData?.progress &lt; 100 &amp;&amp;
+                      userRoleCheckAdmin &#x3D;&#x3D; true
+                    )
+--&gt;
+
+&lt;!--
+  &lt;td class&#x3D;&quot;px-5 py-4&quot;&gt;
+                &lt;button
+                  *ngIf&#x3D;&quot;data?.status !&#x3D;&#x3D; 2&quot;
+                  icon&#x3D;&quot;tuiIconMoreVerticalLarge&quot;
+                  tuiIconButton
+                  type&#x3D;&quot;button&quot;
+                  size&#x3D;&quot;s&quot;
+                  [tuiDropdown]&#x3D;&quot;dropdownContent&quot;
+                  appearance&#x3D;&quot;secondary&quot;
+                  class&#x3D;&quot;ml-3&quot;
+                  [tuiDropdownManual]&#x3D;&quot;data?.menuOpen&quot;
+                  [tuiDropdownAlign]&#x3D;&quot;&#x27;right&#x27;&quot;
+                  (click)&#x3D;&quot;onClick(data)&quot;
+                  (tuiActiveZoneChange)&#x3D;&quot;onActiveZone($event, data)&quot;
+                  (tuiObscured)&#x3D;&quot;onObscured($event, data)&quot;
+                &gt;
+                  &lt;ng-template #dropdownContent&gt;
+                    &lt;div class&#x3D;&quot;px-2 py-5 bg-white&quot;&gt;
+                      &lt;div class&#x3D;&quot;flex flex-col items-center gap-3&quot; *ngIf&#x3D;&quot;data?.submissionStatus !&#x3D;&#x3D; 4 &amp;&amp; data?.status !&#x3D;&#x3D; 2&quot;&gt;
+                        &lt;a
+                          title&#x3D;&quot;Perform Workflow Action&quot;
+                          (click)&#x3D;&quot;editWorkflowRoute(data?.id, data?.code)&quot;
+                          *ngIf&#x3D;&quot;checkEditDisableDeleteButton(data) &#x3D;&#x3D; true &amp;&amp; data?.submissionStatus &#x3D;&#x3D; 2&quot;
+                          class&#x3D;&quot;w-20 h-6 px-1 py-1 text-xs font-medium text-center text-black no-underline bg-white cursor-pointer hover:text-black&quot;&gt;
+                          Edit &amp;nbsp; &lt;i class&#x3D;&quot;fa fa-pencil&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+                        &lt;/a&gt;
+                        &lt;!--VIEW-
+                        &lt;a
+                          title&#x3D;&quot;View Submission&quot;
+                          (click)&#x3D;&quot;editWorkflowRoute(data?.id, data?.code)&quot;
+                          *ngIf&#x3D;&quot;checkViewButtonCondition(data) &#x3D;&#x3D; true&quot;
+                          class&#x3D;&quot;w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black&quot;&gt;
+                          View &amp;nbsp; &lt;i class&#x3D;&quot;fa fa-eye fa-lg&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+                        &lt;/a&gt;
+                        &lt;!--Delete
+                        &lt;a
+                          title&#x3D;&quot;Delete Submission&quot;
+                          (click)&#x3D;&quot;showDeleteDialog(dialog, &#x27;delete&#x27;, data?.id, data?.workflowStatus)&quot;
+                          *ngIf&#x3D;&quot;checkViewButtonCondition(data) &#x3D;&#x3D; true &amp;&amp; data?.submissionStatus &#x3D;&#x3D; 2 &quot;
+                          class&#x3D;&quot;w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black&quot;&gt;
+                          Delete &amp;nbsp; &lt;i class&#x3D;&quot;fa fa-trash fa-lg&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+                        &lt;/a&gt;
+                        &lt;!--Cancel
+                        &lt;a
+                          title&#x3D;&quot;Cancel Submission&quot;
+                          (click)&#x3D;&quot;showDeleteDialog(dialog, &#x27;cancel&#x27;, data?.id, data?.workflowStatus)&quot;
+                          *ngIf&#x3D;&quot;checkViewButtonCondition(data) &#x3D;&#x3D; true &amp;&amp; data?.submissionStatus &#x3D;&#x3D; 2&quot;
+                          class&#x3D;&quot;w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black&quot;&gt;
+                          Cancel &amp;nbsp; &lt;i class&#x3D;&quot;fa fa-ban fa-lg&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+                        &lt;/a&gt;
+                      &lt;/div&gt;
+                      &lt;!--EDIT SUBMISSION PAGE-
+                      &lt;a
+                        title&#x3D;&quot;Edit Submission&quot;
+                        [routerLink]&#x3D;&quot;[&#x27;/modules/edit-submission&#x27;, data?.id]&quot;
+                        (click)&#x3D;&quot;setWorkflowID(data?.code, data?.id)&quot;
+                        *ngIf&#x3D;&quot;data?.submissionStatus &#x3D;&#x3D; 4&quot;
+                        class&#x3D;&quot;px-3 py-2 ml-2 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black&quot;&gt;
+                        Update Status &amp;nbsp; &lt;i class&#x3D;&quot;fa fa-edit fa-lg&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+                      &lt;/a&gt;
+                    &lt;/div&gt;
+                  &lt;/ng-template&gt;
+                &lt;/button&gt;
+              &lt;/td&gt;
+--&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-styleData">
+                <p class="comment">
+                    <code>./submission-table.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss"></code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><ng-container *ngIf="submissionData as tableData; else noData">  <ng-container *ngIf="(moduleData | async)?.formIds?.length > 0 && (moduleData | async)?.formVisibility == true">    <div class="flex flex-col">      <ag-grid-angular        class="w-full h-full overflow-hidden ag-theme-alpine"        [rowData]="rowData"        [columnDefs]="columnDefs"        [pagination]="true"        [paginationPageSize]="10"        [suppressMenuHide]="true"        (gridReady)="onGridReady($event)"      >      </ag-grid-angular>    </div>  </ng-container></ng-container><ng-template #noData>  <p></p></ng-template><!--  (gridReady)="onGridReady($event)"--><!--VIEW  (                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == true &&                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&                      checkIfUserisActiveUser(data?.workflowStatus) == false &&                      data?.summaryData?.progress <= 100                    ) ||                    (                      checkIfUserisApprovedUser(data?.workflowStatus) == true &&                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&                      checkIfUserisActiveUser(data?.workflowStatus) == false &&                      data?.summaryData?.progress <= 100                    ) ||                    (                      checkIfUserisApprovedUser(data?.workflowStatus) == false &&                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&                      checkIfUserisActiveUser(data?.workflowStatus) == false &&                      data?.summaryData?.progress == 100 &&                      userRoleCheckAdmin == true                    )--><!--EDIT BTN   (                      checkIfUserisActiveUser(data?.workflowStatus) == true &&                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&                      data?.summaryData?.progress < 100                    ) ||                    (                      checkIfUserisActiveUser(data?.workflowStatus) == false &&                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&                      data?.summaryData?.progress < 100                    ) ||                    (                      checkIfUserisActiveUser(data?.workflowStatus) == true &&                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == true &&                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&                      data?.summaryData?.progress < 100                    ) ||                    (                      checkIfUserisActiveUser(data?.workflowStatus) == false &&                      checkIfUserisAdmin((moduleData | async)?.adminUsers) == false &&                      checkIfUserisViewOnly((moduleData | async)?.viewOnlyUsers) == false &&                      data?.summaryData?.progress < 100 &&                      userRoleCheckAdmin == true                    )--><!--  <td class="px-5 py-4">                <button                  *ngIf="data?.status !== 2"                  icon="tuiIconMoreVerticalLarge"                  tuiIconButton                  type="button"                  size="s"                  [tuiDropdown]="dropdownContent"                  appearance="secondary"                  class="ml-3"                  [tuiDropdownManual]="data?.menuOpen"                  [tuiDropdownAlign]="\'right\'"                  (click)="onClick(data)"                  (tuiActiveZoneChange)="onActiveZone($event, data)"                  (tuiObscured)="onObscured($event, data)"                >                  <ng-template #dropdownContent>                    <div class="px-2 py-5 bg-white">                      <div class="flex flex-col items-center gap-3" *ngIf="data?.submissionStatus !== 4 && data?.status !== 2">                        <a                          title="Perform Workflow Action"                          (click)="editWorkflowRoute(data?.id, data?.code)"                          *ngIf="checkEditDisableDeleteButton(data) == true && data?.submissionStatus == 2"                          class="w-20 h-6 px-1 py-1 text-xs font-medium text-center text-black no-underline bg-white cursor-pointer hover:text-black">                          Edit &nbsp; <i class="fa fa-pencil" aria-hidden="true"></i>                        </a>                        <!--VIEW-                        <a                          title="View Submission"                          (click)="editWorkflowRoute(data?.id, data?.code)"                          *ngIf="checkViewButtonCondition(data) == true"                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">                          View &nbsp; <i class="fa fa-eye fa-lg" aria-hidden="true"></i>                        </a>                        <!--Delete                        <a                          title="Delete Submission"                          (click)="showDeleteDialog(dialog, \'delete\', data?.id, data?.workflowStatus)"                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2 "                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">                          Delete &nbsp; <i class="fa fa-trash fa-lg" aria-hidden="true"></i>                        </a>                        <!--Cancel                        <a                          title="Cancel Submission"                          (click)="showDeleteDialog(dialog, \'cancel\', data?.id, data?.workflowStatus)"                          *ngIf="checkViewButtonCondition(data) == true && data?.submissionStatus == 2"                          class="w-20 h-6 px-1 py-1 text-center ml-1.5 text-xs font-medium text-black no-underline bg-white rounded-md cursor-pointer hover:text-black">                          Cancel &nbsp; <i class="fa fa-ban fa-lg" aria-hidden="true"></i>                        </a>                      </div>                      <!--EDIT SUBMISSION PAGE-                      <a                        title="Edit Submission"                        [routerLink]="[\'/modules/edit-submission\', data?.id]"                        (click)="setWorkflowID(data?.code, data?.id)"                        *ngIf="data?.submissionStatus == 4"                        class="px-3 py-2 ml-2 text-xs font-medium text-black no-underline bg-white cursor-pointer hover:text-black">                        Update Status &nbsp; <i class="fa fa-edit fa-lg" aria-hidden="true"></i>                      </a>                    </div>                  </ng-template>                </button>              </td>--></div>'
+    var COMPONENTS = [{'name': 'ActionButtonRenderer', 'selector': 'action-button-component'},{'name': 'AddSubmissionComponent', 'selector': ''},{'name': 'AddSubmoduleComponent', 'selector': ''},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppListingComponent', 'selector': 'app-app-listing'},{'name': 'AuthComponent', 'selector': 'app-auth'},{'name': 'CategoriesListComponent', 'selector': ''},{'name': 'CategoryActionComponent', 'selector': 'catgeories-actions-component'},{'name': 'CompaniesComponent', 'selector': ''},{'name': 'CompanyActionComponent', 'selector': 'companies-actions-component'},{'name': 'CustomMultiSelectComponent', 'selector': 'custom-multi-select'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DialogTemplate', 'selector': ''},{'name': 'EditFormComponent', 'selector': ''},{'name': 'EditSubmissionComponent', 'selector': ''},{'name': 'EditSubmoduleComponent', 'selector': ''},{'name': 'EmailSubmissionComponent', 'selector': ''},{'name': 'FilterComponent', 'selector': 'filter'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'FormBuilderComponent', 'selector': ''},{'name': 'FormsComponent', 'selector': 'app-forms'},{'name': 'GridTopAppComponent', 'selector': 'grid-top-app'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': ''},{'name': 'LoginComponent', 'selector': ''},{'name': 'ModuleGuardComponent', 'selector': 'app-module-guard'},{'name': 'NotFoundComponent', 'selector': ''},{'name': 'ProfileComponent', 'selector': ''},{'name': 'SearchBarComponent', 'selector': 'app-search-bar'},{'name': 'SubmissionTableComponent', 'selector': 'app-submission-table'},{'name': 'SubmoduleGuardComponent', 'selector': 'app-submodule-guard'},{'name': 'SubmodulesListComponent', 'selector': ''},{'name': 'TableLoaderComponent', 'selector': 'app-table-loader'},{'name': 'TableViewComponent', 'selector': 'app-table-view'},{'name': 'UserActionsRenderer', 'selector': 'user-actions-component'},{'name': 'UsersListComponent', 'selector': ''},{'name': 'ViewWorkflowComponent', 'selector': ''},{'name': 'WorkflowsComponent', 'selector': 'app-workflows'},{'name': 'WorkflowSkeletonComponent', 'selector': 'app-workflow-skeleton'}];
+    var DIRECTIVES = [{'name': 'SortDirective', 'selector': '[appSort]'},{'name': 'TrimDirective', 'selector': '[appTrim]'}];
+    var ACTUAL_COMPONENT = {'name': 'SubmissionTableComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'SubmissionTableComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

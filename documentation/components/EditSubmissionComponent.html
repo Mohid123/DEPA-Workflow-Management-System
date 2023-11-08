@@ -1,0 +1,3835 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>depa-frontend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">depa-frontend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  EditSubmissionComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li >
+            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+                    <code><a href="https://angular.io/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+    </p>
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./edit-submission.component.scss</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./edit-submission.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#activeEmailIndex" >activeEmailIndex</a>
+                            </li>
+                            <li>
+                                <a href="#activeIndex" >activeIndex</a>
+                            </li>
+                            <li>
+                                <a href="#activeItemIndex" >activeItemIndex</a>
+                            </li>
+                            <li>
+                                <a href="#approvalLogs" >approvalLogs</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#breakpoint$" >breakpoint$</a>
+                            </li>
+                            <li>
+                                <a href="#BreakPoints" >BreakPoints</a>
+                            </li>
+                            <li>
+                                <a href="#carouselIndex" >carouselIndex</a>
+                            </li>
+                            <li>
+                                <a href="#creatingSubmission" >creatingSubmission</a>
+                            </li>
+                            <li>
+                                <a href="#currentBreakpoint" >currentBreakpoint</a>
+                            </li>
+                            <li>
+                                <a href="#currentFieldArray" >currentFieldArray</a>
+                            </li>
+                            <li>
+                                <a href="#currentUser" >currentUser</a>
+                            </li>
+                            <li>
+                                <a href="#destroy$" >destroy$</a>
+                            </li>
+                            <li>
+                                <a href="#draftingSubmission" >draftingSubmission</a>
+                            </li>
+                            <li>
+                                <a href="#errorIndex" >errorIndex</a>
+                            </li>
+                            <li>
+                                <a href="#formioForms" >formioForms</a>
+                            </li>
+                            <li>
+                                <a href="#forms" >forms</a>
+                            </li>
+                            <li>
+                                <a href="#formSubmission" >formSubmission</a>
+                            </li>
+                            <li>
+                                <a href="#formTabs" >formTabs</a>
+                            </li>
+                            <li>
+                                <a href="#formValues" >formValues</a>
+                            </li>
+                            <li>
+                                <a href="#formValuesTemp" >formValuesTemp</a>
+                            </li>
+                            <li>
+                                <a href="#globalVar" >globalVar</a>
+                            </li>
+                            <li>
+                                <a href="#hooks" >hooks</a>
+                            </li>
+                            <li>
+                                <a href="#items" >items</a>
+                            </li>
+                            <li>
+                                <a href="#limit" >limit</a>
+                            </li>
+                            <li>
+                                <a href="#onChangeFn" >onChangeFn</a>
+                            </li>
+                            <li>
+                                <a href="#onLoadFn" >onLoadFn</a>
+                            </li>
+                            <li>
+                                <a href="#options" >options</a>
+                            </li>
+                            <li>
+                                <a href="#page" >page</a>
+                            </li>
+                            <li>
+                                <a href="#rxJsOperators" >rxJsOperators</a>
+                            </li>
+                            <li>
+                                <a href="#saveDialogSubscription" >saveDialogSubscription</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#search$" >search$</a>
+                            </li>
+                            <li>
+                                <a href="#showError" >showError</a>
+                            </li>
+                            <li>
+                                <a href="#subModuleData" >subModuleData</a>
+                            </li>
+                            <li>
+                                <a href="#subModuleId" >subModuleId</a>
+                            </li>
+                            <li>
+                                <a href="#userListForEmail" >userListForEmail</a>
+                            </li>
+                            <li>
+                                <a href="#userRoleCheck" >userRoleCheck</a>
+                            </li>
+                            <li>
+                                <a href="#workflowForm" >workflowForm</a>
+                            </li>
+                            <li>
+                                <a href="#workFlowId" >workFlowId</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#addWorkflowStep" >addWorkflowStep</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#breakpointChanged" >breakpointChanged</a>
+                            </li>
+                            <li>
+                                <a href="#cancelEmailNotify" >cancelEmailNotify</a>
+                            </li>
+                            <li>
+                                <a href="#cancelSubmission" >cancelSubmission</a>
+                            </li>
+                            <li>
+                                <a href="#checkApprovalLogs" >checkApprovalLogs</a>
+                            </li>
+                            <li>
+                                <a href="#countUsers" >countUsers</a>
+                            </li>
+                            <li>
+                                <a href="#dataSubmitValidation" >dataSubmitValidation</a>
+                            </li>
+                            <li>
+                                <a href="#editSubmission" >editSubmission</a>
+                            </li>
+                            <li>
+                                <a href="#fetchAndPopulateData" >fetchAndPopulateData</a>
+                            </li>
+                            <li>
+                                <a href="#getApproverList" >getApproverList</a>
+                            </li>
+                            <li>
+                                <a href="#initWorkflowForm" >initWorkflowForm</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onChange" >onChange</a>
+                            </li>
+                            <li>
+                                <a href="#onSearchChange" >onSearchChange</a>
+                            </li>
+                            <li>
+                                <a href="#openEmailNotifyModal" >openEmailNotifyModal</a>
+                            </li>
+                            <li>
+                                <a href="#removeWorkflowStep" >removeWorkflowStep</a>
+                            </li>
+                            <li>
+                                <a href="#sanitizeSubmission" >sanitizeSubmission</a>
+                            </li>
+                            <li>
+                                <a href="#sendFormForEdit" >sendFormForEdit</a>
+                            </li>
+                            <li>
+                                <a href="#validateEmails" >validateEmails</a>
+                            </li>
+                            <li>
+                                <a href="#validateSelection" >validateSelection</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#workflows" >workflows</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(auth: <a href="../injectables/AuthService.html" target="_self">AuthService</a>, notif: <a href="../injectables/NotificationsService.html" target="_self">NotificationsService</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>, fb: <a href="https://angular.io/api/forms/FormBuilder" target="_blank">FormBuilder</a>, dashboard: <a href="../injectables/DashboardService.html" target="_self">DashboardService</a>, workflowService: <a href="../injectables/WorkflowsService.html" target="_self">WorkflowsService</a>, dialogs: TuiDialogService, activatedRoute: <a href="https://angular.io/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>, location: <a href="https://angular.io/api/common/Location" target="_blank">Location</a>, transportService: <a href="../injectables/DataTransportService.html" target="_self">DataTransportService</a>, breakpointObserver: BreakpointObserver, formService: <a href="../injectables/FormsService.html" target="_self">FormsService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="75" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:75</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>auth</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>notif</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/NotificationsService.html" target="_self" >NotificationsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>fb</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/forms/FormBuilder" target="_blank" >FormBuilder</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>dashboard</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DashboardService.html" target="_self" >DashboardService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>workflowService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/WorkflowsService.html" target="_self" >WorkflowsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>dialogs</td>
+                                                  
+                                                        <td>
+                                                                    <code>TuiDialogService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>activatedRoute</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/ActivatedRoute" target="_blank" >ActivatedRoute</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>location</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/common/Location" target="_blank" >Location</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>transportService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DataTransportService.html" target="_self" >DataTransportService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>breakpointObserver</td>
+                                                  
+                                                        <td>
+                                                                    <code>BreakpointObserver</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>formService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FormsService.html" target="_self" >FormsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addWorkflowStep"></a>
+                    <span class="name">
+                        <span ><b>addWorkflowStep</b></span>
+                        <a href="#addWorkflowStep"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>addWorkflowStep()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="305"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:305</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="breakpointChanged"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>breakpointChanged</b></span>
+                        <a href="#breakpointChanged"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>breakpointChanged()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="126"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:126</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cancelEmailNotify"></a>
+                    <span class="name">
+                        <span ><b>cancelEmailNotify</b></span>
+                        <a href="#cancelEmailNotify"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>cancelEmailNotify()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="389"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:389</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cancelSubmission"></a>
+                    <span class="name">
+                        <span ><b>cancelSubmission</b></span>
+                        <a href="#cancelSubmission"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>cancelSubmission()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="420"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:420</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkApprovalLogs"></a>
+                    <span class="name">
+                        <span ><b>checkApprovalLogs</b></span>
+                        <a href="#checkApprovalLogs"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>checkApprovalLogs()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="266"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:266</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="countUsers"></a>
+                    <span class="name">
+                        <span ><b>countUsers</b></span>
+                        <a href="#countUsers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>countUsers(value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="394"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:394</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>value</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dataSubmitValidation"></a>
+                    <span class="name">
+                        <span ><b>dataSubmitValidation</b></span>
+                        <a href="#dataSubmitValidation"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>dataSubmitValidation()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="343"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:343</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="editSubmission"></a>
+                    <span class="name">
+                        <span ><b>editSubmission</b></span>
+                        <a href="#editSubmission"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>editSubmission(status?: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="438"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:438</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>status</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        Yes
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="fetchAndPopulateData"></a>
+                    <span class="name">
+                        <span ><b>fetchAndPopulateData</b></span>
+                        <a href="#fetchAndPopulateData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>fetchAndPopulateData(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="159"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:159</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getApproverList"></a>
+                    <span class="name">
+                        <span ><b>getApproverList</b></span>
+                        <a href="#getApproverList"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getApproverList(value: string[], index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="318"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:318</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>value</td>
+                                    <td>
+                                            <code>string[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="initWorkflowForm"></a>
+                    <span class="name">
+                        <span ><b>initWorkflowForm</b></span>
+                        <a href="#initWorkflowForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>initWorkflowForm(item?: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="273"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:273</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>item</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        Yes
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="536"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:536</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="112"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:112</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onChange"></a>
+                    <span class="name">
+                        <span ><b>onChange</b></span>
+                        <a href="#onChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onChange(event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="424"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:424</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearchChange"></a>
+                    <span class="name">
+                        <span ><b>onSearchChange</b></span>
+                        <a href="#onSearchChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSearchChange(search: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="369"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:369</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>search</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openEmailNotifyModal"></a>
+                    <span class="name">
+                        <span ><b>openEmailNotifyModal</b></span>
+                        <a href="#openEmailNotifyModal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openEmailNotifyModal(content: PolymorpheusContent<TuiDialogContext>, fieldArray: <a href="https://angular.io/api/forms/FormArray" target="_blank">FormArray</a>, index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="354"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:354</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>content</td>
+                                    <td>
+                                            <code>PolymorpheusContent&lt;TuiDialogContext&gt;</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>fieldArray</td>
+                                    <td>
+                                                <code><a href="https://angular.io/api/forms/FormArray" target="_blank" >FormArray</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeWorkflowStep"></a>
+                    <span class="name">
+                        <span ><b>removeWorkflowStep</b></span>
+                        <a href="#removeWorkflowStep"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>removeWorkflowStep(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="314"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:314</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>index</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sanitizeSubmission"></a>
+                    <span class="name">
+                        <span ><b>sanitizeSubmission</b></span>
+                        <a href="#sanitizeSubmission"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>sanitizeSubmission(value: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="138"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:138</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>value</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sendFormForEdit"></a>
+                    <span class="name">
+                        <span ><b>sendFormForEdit</b></span>
+                        <a href="#sendFormForEdit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>sendFormForEdit(i: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, formID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, key: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="322"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:322</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>i</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>formID</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>key</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateEmails"></a>
+                    <span class="name">
+                        <span ><b>validateEmails</b></span>
+                        <a href="#validateEmails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>validateEmails()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="373"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:373</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateSelection"></a>
+                    <span class="name">
+                        <span ><b>validateSelection</b></span>
+                        <a href="#validateSelection"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>validateSelection(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="407"
+                            class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:407</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>index</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeEmailIndex"></a>
+                    <span class="name">
+                        <span ><b>activeEmailIndex</b></span>
+                        <a href="#activeEmailIndex"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeIndex"></a>
+                    <span class="name">
+                        <span ><b>activeIndex</b></span>
+                        <a href="#activeIndex"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:24</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeItemIndex"></a>
+                    <span class="name">
+                        <span ><b>activeItemIndex</b></span>
+                        <a href="#activeItemIndex"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:32</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="approvalLogs"></a>
+                    <span class="name">
+                        <span ><b>approvalLogs</b></span>
+                        <a href="#approvalLogs"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="breakpoint$"></a>
+                    <span class="name">
+                            <span class="modifier">Readonly</span>
+                        <span ><b>breakpoint$</b></span>
+                        <a href="#breakpoint$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.breakpointObserver
+  .observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, &#x27;(min-width: 500px)&#x27;])
+  .pipe(
+    distinctUntilChanged()
+  )</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="BreakPoints"></a>
+                    <span class="name">
+                        <span ><b>BreakPoints</b></span>
+                        <a href="#BreakPoints"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>Breakpoints</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="carouselIndex"></a>
+                    <span class="name">
+                        <span ><b>carouselIndex</b></span>
+                        <a href="#carouselIndex"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="creatingSubmission"></a>
+                    <span class="name">
+                        <span ><b>creatingSubmission</b></span>
+                        <a href="#creatingSubmission"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;boolean&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentBreakpoint"></a>
+                    <span class="name">
+                        <span ><b>currentBreakpoint</b></span>
+                        <a href="#currentBreakpoint"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentFieldArray"></a>
+                    <span class="name">
+                        <span ><b>currentFieldArray</b></span>
+                        <a href="#currentFieldArray"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentUser"></a>
+                    <span class="name">
+                        <span ><b>currentUser</b></span>
+                        <a href="#currentUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:25</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="destroy$"></a>
+                    <span class="name">
+                        <span ><b>destroy$</b></span>
+                        <a href="#destroy$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:36</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="draftingSubmission"></a>
+                    <span class="name">
+                        <span ><b>draftingSubmission</b></span>
+                        <a href="#draftingSubmission"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;boolean&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="43" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="errorIndex"></a>
+                    <span class="name">
+                        <span ><b>errorIndex</b></span>
+                        <a href="#errorIndex"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="formioForms"></a>
+                    <span class="name">
+                        <span ><b>formioForms</b></span>
+                        <a href="#formioForms"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>QueryList&lt;any&gt;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChildren(&#x27;formioForm&#x27;)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:55</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="forms"></a>
+                    <span class="name">
+                        <span ><b>forms</b></span>
+                        <a href="#forms"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:26</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="formSubmission"></a>
+                    <span class="name">
+                        <span ><b>formSubmission</b></span>
+                        <a href="#formSubmission"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject&lt;Array&lt;any&gt;&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="formTabs"></a>
+                    <span class="name">
+                        <span ><b>formTabs</b></span>
+                        <a href="#formTabs"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:23</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="formValues"></a>
+                    <span class="name">
+                        <span ><b>formValues</b></span>
+                        <a href="#formValues"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="formValuesTemp"></a>
+                    <span class="name">
+                        <span ><b>formValuesTemp</b></span>
+                        <a href="#formValuesTemp"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="globalVar"></a>
+                    <span class="name">
+                        <span ><b>globalVar</b></span>
+                        <a href="#globalVar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="75" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="hooks"></a>
+                    <span class="name">
+                        <span ><b>hooks</b></span>
+                        <a href="#hooks"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="63" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="items"></a>
+                    <span class="name">
+                        <span ><b>items</b></span>
+                        <a href="#items"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:31</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="limit"></a>
+                    <span class="name">
+                        <span ><b>limit</b></span>
+                        <a href="#limit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>10</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:34</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onChangeFn"></a>
+                    <span class="name">
+                        <span ><b>onChangeFn</b></span>
+                        <a href="#onChangeFn"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank" >Function</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="74" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onLoadFn"></a>
+                    <span class="name">
+                        <span ><b>onLoadFn</b></span>
+                        <a href="#onLoadFn"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank" >Function</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="73" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:73</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="options"></a>
+                    <span class="name">
+                        <span ><b>options</b></span>
+                        <a href="#options"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+    &quot;disableAlerts&quot;: true,
+    &quot;noDefaultSubmitButton&quot;: true
+  }</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:27</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="page"></a>
+                    <span class="name">
+                        <span ><b>page</b></span>
+                        <a href="#page"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:35</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="rxJsOperators"></a>
+                    <span class="name">
+                        <span ><b>rxJsOperators</b></span>
+                        <a href="#rxJsOperators"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+    takeUntil,
+    forkJoin,
+    take,
+    map,
+    tap,
+    distinctUntilChanged,
+    switchMap
+  }</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="saveDialogSubscription"></a>
+                    <span class="name">
+                        <span ><b>saveDialogSubscription</b></span>
+                        <a href="#saveDialogSubscription"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Subscription[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="search$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>search$</b></span>
+                        <a href="#search$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;string&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="showError"></a>
+                    <span class="name">
+                        <span ><b>showError</b></span>
+                        <a href="#showError"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;boolean&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="subModuleData"></a>
+                    <span class="name">
+                        <span ><b>subModuleData</b></span>
+                        <a href="#subModuleData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="subModuleId"></a>
+                    <span class="name">
+                        <span ><b>subModuleId</b></span>
+                        <a href="#subModuleId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userListForEmail"></a>
+                    <span class="name">
+                        <span ><b>userListForEmail</b></span>
+                        <a href="#userListForEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:38</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userRoleCheck"></a>
+                    <span class="name">
+                        <span ><b>userRoleCheck</b></span>
+                        <a href="#userRoleCheck"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:53</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="workflowForm"></a>
+                    <span class="name">
+                        <span ><b>workflowForm</b></span>
+                        <a href="#workflowForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/forms/FormGroup" target="_blank" >FormGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:33</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="workFlowId"></a>
+                    <span class="name">
+                        <span ><b>workFlowId</b></span>
+                        <a href="#workFlowId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="workflows"></a>
+                        <span class="name"><b>workflows</b><a href="#workflows"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>workflows()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="301" class="link-to-prism">src/app/modules/app-listing/pages/edit-submission/edit-submission.component.ts:301</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren } from &#x27;@angular/core&#x27;;
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from &#x27;@angular/forms&#x27;;
+import { ActivatedRoute, Router } from &#x27;@angular/router&#x27;;
+import { TuiDialogContext, TuiDialogService, TuiNotification } from &#x27;@taiga-ui/core&#x27;;
+import { BehaviorSubject, Subject, Subscription, distinctUntilChanged, switchMap, takeUntil, forkJoin, take, map, tap } from &#x27;rxjs&#x27;;
+import { AuthService } from &#x27;src/app/modules/auth/auth.service&#x27;;
+import { DashboardService } from &#x27;src/app/modules/dashboard/dashboard.service&#x27;;
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from &#x27;src/core/utils/local-storage.utils&#x27;;
+import { PolymorpheusContent } from &#x27;@tinkoff/ng-polymorpheus&#x27;;
+import { NotificationsService } from &#x27;src/core/core-services/notifications.service&#x27;;
+import { WorkflowsService } from &#x27;src/app/modules/workflows/workflows.service&#x27;;
+import { Location } from &#x27;@angular/common&#x27;;
+import { FormioUtils } from &#x27;@formio/angular&#x27;;
+import { DataTransportService } from &#x27;src/core/core-services/data-transport.service&#x27;;
+import { BreakpointObserver, BreakpointState, Breakpoints } from &#x27;@angular/cdk/layout&#x27;;
+import { FormsService } from &#x27;src/app/modules/forms/services/forms.service&#x27;;
+
+@Component({
+  templateUrl: &#x27;./edit-submission.component.html&#x27;,
+  styleUrls: [&#x27;./edit-submission.component.scss&#x27;]
+})
+export class EditSubmissionComponent implements OnInit, OnDestroy {
+  formTabs: any[] &#x3D; [];
+  activeIndex: number &#x3D; 0;
+  currentUser: any;
+  forms: any;
+  options: any &#x3D; {
+    &quot;disableAlerts&quot;: true,
+    &quot;noDefaultSubmitButton&quot;: true
+  }
+  items: any[] &#x3D; [];
+  activeItemIndex: number &#x3D; 0;
+  workflowForm: FormGroup;
+  limit: number &#x3D; 10;
+  page: number &#x3D; 0;
+  destroy$ &#x3D; new Subject();
+  private readonly search$ &#x3D; new Subject&lt;string&gt;();
+  userListForEmail: any[] &#x3D; [];
+  currentFieldArray: any;
+  activeEmailIndex: number;
+  saveDialogSubscription: Subscription[] &#x3D; [];
+  creatingSubmission &#x3D; new Subject&lt;boolean&gt;();
+  draftingSubmission &#x3D; new Subject&lt;boolean&gt;();
+  carouselIndex &#x3D; 0;
+  errorIndex: number &#x3D; 0;
+  showError &#x3D; new Subject&lt;boolean&gt;();
+  formSubmission &#x3D; new BehaviorSubject&lt;Array&lt;any&gt;&gt;([]);
+  subModuleId: string;
+  subModuleData: any;
+  formValues: any[] &#x3D; [];
+  formValuesTemp: any[] &#x3D; [];
+  workFlowId: string;
+  userRoleCheck: any;
+  approvalLogs &#x3D; [];
+  @ViewChildren(&#x27;formioForm&#x27;) formioForms: QueryList&lt;any&gt;;
+  currentBreakpoint: string &#x3D; &#x27;&#x27;;
+  BreakPoints &#x3D; Breakpoints
+  readonly breakpoint$ &#x3D; this.breakpointObserver
+  .observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, &#x27;(min-width: 500px)&#x27;])
+  .pipe(
+    distinctUntilChanged()
+  );
+  hooks: any;
+  rxJsOperators &#x3D; {
+    takeUntil,
+    forkJoin,
+    take,
+    map,
+    tap,
+    distinctUntilChanged,
+    switchMap
+  };
+  onLoadFn: Function;
+  onChangeFn: Function;
+  globalVar: any;
+
+  constructor(
+    private auth: AuthService,
+    private notif: NotificationsService,
+    private router: Router,
+    private fb: FormBuilder,
+    private dashboard: DashboardService,
+    private workflowService: WorkflowsService,
+    @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+    private activatedRoute: ActivatedRoute,
+    private location: Location,
+    private transportService: DataTransportService,
+    private breakpointObserver: BreakpointObserver,
+    private formService: FormsService
+  ) {
+    this.currentUser &#x3D; this.auth.currentUserValue;
+    this.userRoleCheck &#x3D; this.auth.checkIfRolesExist(&#x27;sysAdmin&#x27;)
+    this.initWorkflowForm();
+    this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(val &#x3D;&gt; {
+      this.subModuleId &#x3D; val[&#x27;id&#x27;];
+      this.fetchAndPopulateData(this.subModuleId)
+    });
+
+    this.search$.pipe(switchMap(search &#x3D;&gt; this.dashboard.getAllUsersForListing(this.limit, this.page, search))).subscribe((res: any) &#x3D;&gt; {
+      if (res) {
+        this.userListForEmail &#x3D; res?.results?.map((data) &#x3D;&gt; data?.email);
+      }
+    });
+
+    this.dashboard.getAllUsersForListing(this.limit, this.page).pipe(takeUntil(this.destroy$)).subscribe((res: any) &#x3D;&gt; {
+      if (res) {
+        this.userListForEmail &#x3D; res?.results?.map((data) &#x3D;&gt; data?.email);
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    const hierarchy &#x3D; getItemSession(StorageItem.navHierarchy);
+    hierarchy.forEach(val &#x3D;&gt; {
+      val.routerLink &#x3D; &#x60;/modules/${val.code}?moduleID&#x3D;${getItemSession(StorageItem.moduleID)}&#x60;
+    })
+    this.dashboard.items &#x3D; [...hierarchy, {
+      caption: getItemSession(StorageItem.formKey) || &#x27;Edit Submission&#x27;,
+      routerLink: &#x60;/modules/edit-submission/${getItemSession(StorageItem.editSubmissionId)}&#x60;
+    }];
+    this.breakpoint$.subscribe(() &#x3D;&gt;
+      this.breakpointChanged()
+    );
+  }
+
+  private breakpointChanged() {
+    if(this.breakpointObserver.isMatched(Breakpoints.Large)) {
+      this.currentBreakpoint &#x3D; Breakpoints.Large;
+    } else if(this.breakpointObserver.isMatched(Breakpoints.Medium)) {
+      this.currentBreakpoint &#x3D; Breakpoints.Medium;
+    } else if(this.breakpointObserver.isMatched(Breakpoints.Small)) {
+      this.currentBreakpoint &#x3D; Breakpoints.Small;
+    } else if(this.breakpointObserver.isMatched(&#x27;(min-width: 500px)&#x27;)) {
+      this.currentBreakpoint &#x3D; &#x27;(min-width: 500px)&#x27;;
+    }
+  }
+
+  sanitizeSubmission(value: any) {
+    let data &#x3D; value?.data;
+    if(data) {
+      for (const key in data) {
+        if(typeof(data[key]) &#x3D;&#x3D; &#x27;string&#x27;) {
+          data[key] &#x3D; data[key]?.replace(/&amp;lt;/g, &quot;&lt;&quot;)?.replace(/&amp;gt;/g, &quot;&gt;&quot;);
+        }
+        if(key &#x3D;&#x3D; &#x27;dataGrid&#x27; || key &#x3D;&#x3D; &#x27;editGrid&#x27;) {
+          data[key]?.forEach(newVal &#x3D;&gt; {
+            for (const key2 in newVal) {
+              if(typeof(newVal[key2]) &#x3D;&#x3D; &#x27;string&#x27;) {
+                newVal[key2] &#x3D; newVal[key2]?.replace(/&amp;lt;/g, &quot;&lt;&quot;)?.replace(/&amp;gt;/g, &quot;&gt;&quot;);
+              }
+            }
+          })
+        }
+      }
+    }
+    return value
+  }
+
+  fetchAndPopulateData(id: string) {
+    this.workflowService.getWorkflowSubmission(id).pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) &#x3D;&gt; {
+      if(res) {
+        res?.formIds?.forEach(comp &#x3D;&gt; {
+          FormioUtils.eachComponent(comp?.components, (component) &#x3D;&gt; {
+            if(component?.type &#x3D;&#x3D; &#x27;editgrid&#x27;) {
+              for (const key in component.templates) {
+                component.templates[key] &#x3D; component.templates[key]?.replace(/&amp;lt;/g, &quot;&lt;&quot;).replace(/&amp;gt;/g, &quot;&gt;&quot;);
+              }
+            }
+            if(component?.type &#x3D;&#x3D; &#x27;select&#x27;) {
+              component.template &#x3D; component.template?.replace(/&amp;lt;/g, &quot;&lt;&quot;).replace(/&amp;gt;/g, &quot;&gt;&quot;);
+            }
+            if(component?.html) {
+              component.html &#x3D; component.html?.replace(/&amp;lt;/g, &quot;&lt;&quot;).replace(/&amp;gt;/g, &quot;&gt;&quot;);
+            }
+            if(component?.wysiwyg &amp;&amp; component?.wysiwyg &#x3D;&#x3D; true) {
+              comp.sanitize &#x3D; true
+            }
+            if(component?.permissions &amp;&amp; component?.permissions?.length &gt; 0) {
+              return component?.permissions?.map(permit &#x3D;&gt; {
+                if(this.currentUser?.id &#x3D;&#x3D; permit?.id) {
+                  if(permit.canEdit &#x3D;&#x3D; true) {
+                    component.disabled &#x3D; false
+                  }
+                  else {
+                    component.disabled &#x3D; true
+                  }
+                  if(permit.canView &#x3D;&#x3D; false) {
+                    component.hidden &#x3D; true
+                  }
+                  else {
+                    component.hidden &#x3D; false
+                  }
+                }
+              })
+            }
+          }, true)
+        })
+        this.subModuleData &#x3D; res;
+        if(this.subModuleData?.events &amp;&amp; this.subModuleData?.events?.length &gt; 0) {
+          this.subModuleData?.events?.forEach(val &#x3D;&gt; {
+            if(val?.name &#x3D;&#x3D; &#x27;onLoad&#x27;) {
+              val.code &#x3D; val?.code?.replace(/&amp;lt;/g, &quot;&lt;&quot;)?.replace(/&amp;gt;/g, &quot;&gt;&quot;);
+              this.onLoadFn &#x3D; new Function(&#x27;return &#x27; + val.code)();
+            }
+            if(val?.name &#x3D;&#x3D; &#x27;onChange&#x27;) {
+              val.code &#x3D; val?.code?.replace(/&amp;lt;/g, &quot;&lt;&quot;)?.replace(/&amp;gt;/g, &quot;&gt;&quot;);
+              this.onChangeFn &#x3D; new Function(&#x27;return &#x27; + val.code)();
+            }
+          })
+        }
+        this.workFlowId &#x3D; res?.workFlowId?._id;
+        this.approvalLogs &#x3D; res?.approvalLog;
+        this.forms &#x3D; res?.formIds?.map(comp &#x3D;&gt; {
+          return {
+            ...comp,
+            components: comp?.components?.map(data &#x3D;&gt; {
+              if(data?.label &amp;&amp; data?.label &#x3D;&#x3D; &#x27;Submit&#x27;) {
+                data.hidden &#x3D; true;
+                return data
+              }
+              return data
+            }),
+            formDataId: res?.formDataIds?.map(val &#x3D;&gt; {
+              if(val.formId &#x3D;&#x3D; comp?._id) {
+                return val?._id
+              }
+            }).filter(val &#x3D;&gt; val)[0],
+            data: res?.formDataIds?.map(val &#x3D;&gt; {
+              if(val.formId &#x3D;&#x3D; comp?._id) {
+                return val?.data
+              }
+            }).filter(val &#x3D;&gt; val)[0]
+          }
+        });
+        this.formTabs &#x3D; res?.formIds?.map(forms &#x3D;&gt; forms.title);
+        this.items &#x3D; res?.workFlowId?.stepIds?.map(data &#x3D;&gt; {
+          return {
+            approvers: data?.approverIds?.map(appr &#x3D;&gt; appr?.fullName),
+            condition: data?.condition,
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers || []
+          }
+        });
+        const workFlowId &#x3D; res?.workFlowId?.stepIds?.map(data &#x3D;&gt; {
+          return {
+            id: data?.id,
+            approverIds: data?.approverIds?.map(ids &#x3D;&gt; {
+              return {
+                name: ids?.fullName,
+                id: ids?._id,
+                control: new FormControl&lt;boolean&gt;(true)
+              }
+            }),
+            condition: data?.condition,
+            emailNotifyTo: data?.emailNotifyToId?.notifyUsers || [],
+            emailNotifyToId: data?.emailNotifyToId?.id
+          }
+        });
+        delete this.subModuleData?.workFlowId;
+        Object.assign(this.subModuleData, {workFlowId: workFlowId})
+        this.initWorkflowForm(workFlowId);
+      }
+    })
+  }
+
+  checkApprovalLogs() {
+    return (
+      this.approvalLogs?.map(value &#x3D;&gt; value?.approvalStatus)?.includes(&#x27;approved&#x27;) ||
+      this.approvalLogs?.map(value &#x3D;&gt; value?.approvalStatus)?.includes(&#x27;created&#x27;)
+    )
+  }
+
+  initWorkflowForm(item?: any) {
+    if(item) {
+      this.workflowForm &#x3D; this.fb.group({
+        workflows: this.fb.array(
+          item?.map((val: { condition: any; approverIds: any; emailNotifyTo: any; emailNotifyToId?: any; id?: any }) &#x3D;&gt; {
+            return this.fb.group({
+              id: val.id,
+              condition: [val.condition, Validators.required],
+              approverIds: [val.approverIds, Validators.required],
+              emailNotifyTo: [val.emailNotifyTo || [], Validators.required],
+              emailNotifyToId: val?.emailNotifyToId,
+            })
+          }))
+        })
+    }
+    else {
+      this.workflowForm &#x3D; this.fb.group({
+        workflows: this.fb.array([
+          this.fb.group({
+            condition: [&#x27;&#x27;, Validators.required],
+            approverIds: [[], Validators.required],
+            emailNotifyTo: [[], Validators.required]
+          })
+        ])
+      })
+    }
+  }
+
+  get workflows() {
+    return this.workflowForm.controls[&#x27;workflows&#x27;] as FormArray
+  }
+
+  addWorkflowStep() {
+    const workflowStepForm &#x3D; this.fb.group({
+      approverIds: [[], Validators.required],
+      condition: [{value: &#x27;&#x27;, disabled: &#x27;&#x27;}, Validators.required],
+      emailNotifyTo: [[], Validators.required]
+    });
+    this.workflows.push(workflowStepForm);
+  }
+
+  removeWorkflowStep(index: number) {
+    this.workflows.removeAt(index);
+  }
+
+  getApproverList(value: string[], index: number) {
+    this.workflows.at(index)?.get(&#x27;approverIds&#x27;)?.setValue(value);
+  }
+
+  sendFormForEdit(i: number, formID: string, key: string) {
+    if(formID) {
+      let approvers &#x3D; this.workflows?.value?.flatMap(data &#x3D;&gt; {
+        return data?.approverIds?.map(approver &#x3D;&gt; {
+          return {
+            id: approver.id,
+            name: approver.name
+          }
+        })
+      })
+      if(approvers.length &#x3D;&#x3D; 0) {
+        return this.notif.displayNotification(&#x27;Please create a default workflow before adding forms&#x27;, &#x27;Default Workflow&#x27;, TuiNotification.Warning)
+      }
+      this.transportService.editBreadcrumbs.next(this.dashboard.items)
+      setItemSession(StorageItem.editBreadcrumbs, this.dashboard.items)
+      setItemSession(StorageItem.formKey, key)
+      setItemSession(StorageItem.approvers, approvers)
+      this.router.navigate([&#x27;/forms/edit-form&#x27;], {queryParams: {id: formID, fromSubmission: true}});
+    }
+  }
+
+  dataSubmitValidation() {
+    if(
+      this.workflows?.length &#x3D;&#x3D; 0 ||
+      this.workflows.controls.map(val &#x3D;&gt; val.get(&#x27;approverIds&#x27;)?.value.length &#x3D;&#x3D; 0).includes(true) ||
+      this.workflows.controls.map(val &#x3D;&gt; val.get(&#x27;condition&#x27;)?.value).includes(&#x27;&#x27;) &#x3D;&#x3D;&#x3D; true
+    ) {
+      return false
+    }
+    return true
+  }
+
+  openEmailNotifyModal(
+    content: PolymorpheusContent&lt;TuiDialogContext&gt;,
+    fieldArray: FormArray,
+    index: number
+  ): void {
+    this.activeEmailIndex &#x3D; index;
+    this.currentFieldArray &#x3D; fieldArray;
+    this.saveDialogSubscription.push(this.dialogs
+      .open(content, {
+        dismissible: false,
+        closeable: false,
+      })
+      .subscribe());
+  }
+
+  onSearchChange(search: string) {
+    this.search$.next(search);
+  }
+
+  validateEmails() {
+    let emails &#x3D; this.workflows.at(this.activeEmailIndex)?.get(&#x27;emailNotifyTo&#x27;)?.value;
+    emails &#x3D; emails.map(element &#x3D;&gt; {
+      if(!/\S+@\S+\.\S+/.test(element)) {
+        return false
+      }
+      return true
+    });
+    if(emails.includes(false)) {
+      this.notif.displayNotification(&#x27;Please provide valid email addresses&#x27;, &#x27;Email Notify&#x27;, TuiNotification.Warning)
+    }
+    else {
+      this.saveDialogSubscription.forEach(val &#x3D;&gt; val.unsubscribe())
+    }
+  }
+
+  cancelEmailNotify() {
+    this.workflows.at(this.activeEmailIndex)?.get(&#x27;emailNotifyTo&#x27;)?.setValue([]);
+    this.saveDialogSubscription.forEach(val &#x3D;&gt; val.unsubscribe())
+  }
+
+  countUsers(value: number, index: number) {
+    this.errorIndex &#x3D; index
+    if(value &lt; 2) {
+      this.workflows.at(index)?.get(&#x27;condition&#x27;)?.setValue(&#x27;none&#x27;)
+      this.notif.displayNotification(&#x27;Default condition of &quot;None&quot; will be used if the number of approvers is less than 2&#x27;, &#x27;Create Module&#x27;, TuiNotification.Info)
+      return this.showError.next(false)
+    }
+    if(value &gt;&#x3D; 2 &amp;&amp; this.workflows.at(index)?.get(&#x27;condition&#x27;)?.value &#x3D;&#x3D; &#x27;none&#x27;) {
+      return this.showError.next(true)
+    }
+    this.showError.next(false)
+  }
+
+  validateSelection(index: number) {
+    this.errorIndex &#x3D; index
+    if(this.workflows.at(index)?.get(&#x27;approverIds&#x27;)?.value?.length &lt; 2) {
+      this.workflows.at(index)?.get(&#x27;condition&#x27;)?.setValue(&#x27;none&#x27;)
+      this.notif.displayNotification(&#x27;Default condition of &quot;None&quot; will be used if the number of approvers is less than 2&#x27;, &#x27;Create Module&#x27;, TuiNotification.Info);
+      return this.showError.next(false)
+    }
+    if(this.workflows.at(index)?.get(&#x27;approverIds&#x27;)?.value?.length &gt;&#x3D; 2 &amp;&amp; this.workflows.at(index)?.get(&#x27;condition&#x27;)?.value &#x3D;&#x3D; &#x27;none&#x27;) {
+      return this.showError.next(true)
+    }
+    this.showError.next(false)
+  }
+
+  cancelSubmission() {
+    this.router.navigate([&#x27;/modules&#x27;, getItemSession(StorageItem.moduleSlug) || &#x27;&#x27;], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || &#x27;&#x27;}});
+  }
+
+  onChange(event: any, index: number) {
+    if(event?.data &amp;&amp; event?.changed) {
+      if(event?.changed &amp;&amp; event?.changed?.component?.type &#x3D;&#x3D; &#x27;file&#x27;) {
+        let key &#x3D; event?.changed?.component?.key
+        event?.data[key]?.forEach(value &#x3D;&gt; {
+          value.url &#x3D; value?.data?.baseUrl.split(&#x27;v1&#x27;)[0] + value?.data?.fileUrl
+        })
+      }
+      const formId &#x3D; this.subModuleData?.formDataIds[index]?._id;
+      const id &#x3D; this.subModuleData?.formDataIds[index]?.formId;
+      this.formValuesTemp[index] &#x3D; {...event, formId, id};
+    }
+  }
+
+  editSubmission(status?: number) {
+    let formComps &#x3D; JSON.parse(JSON.stringify(this.forms))
+    let formioInstance: any[] &#x3D; [];
+    formComps?.forEach((form, index) &#x3D;&gt; {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) &#x3D;&gt; {
+        if(comp?._disabled &#x3D;&#x3D;&#x3D; true) {
+          this.formioForms.toArray()[index].formio?.components?.splice(i, 1)
+        }
+      });
+    });
+    formComps?.forEach((form, index) &#x3D;&gt; {
+      this.formioForms.toArray()[index].formio?.components?.forEach((comp, i) &#x3D;&gt; {
+        let instance &#x3D; this.formioForms.toArray()[index].formio.checkValidity(comp.key, true, null, false);
+        formioInstance.push(instance);
+      });
+    });
+    if(formioInstance.includes(false)) {
+      return this.notif.displayNotification(&#x27;Please provide valid data for all required fields&#x27;, &#x27;Form Validation&#x27;, TuiNotification.Warning)
+    }
+    if(this.dataSubmitValidation() &#x3D;&#x3D; false) {
+      return this.notif.displayNotification(&#x27;Please provide valid condition for the workflow step/s&#x27;, &#x27;Create Submission&#x27;, TuiNotification.Warning)
+    }
+    if(this.workflows.controls.map(val &#x3D;&gt; val.get(&#x27;approverIds&#x27;)?.value.length &gt; 1 &amp;&amp; val.get(&#x27;condition&#x27;)?.value).includes(&#x27;none&#x27;)) {
+      return this.notif.displayNotification(&#x27;Please provide valid condition for the workflow step/s&#x27;, &#x27;Create Submission&#x27;, TuiNotification.Warning)
+    }
+    if(!status) {
+      this.creatingSubmission.next(true);
+      if(this.hooks?.length &gt; 0) {
+        this.formValuesTemp?.forEach(submission &#x3D;&gt; {
+          this.hooks.forEach(val &#x3D;&gt; {
+            if(val?.name &#x3D;&#x3D; &#x27;beforeSubmit&#x27;) {
+              val.code &#x3D; val?.code?.replace(/&amp;lt;/g, &quot;&lt;&quot;)?.replace(/&amp;gt;/g, &quot;&gt;&quot;);
+              val.code &#x3D; new Function(&#x27;return &#x27; + val.code)();
+              val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, 0, 1);
+            }
+          })
+        })
+      }
+    }
+    else {
+      this.draftingSubmission.next(true)
+    }
+    this.creatingSubmission.next(true);
+    let finalData &#x3D; [];
+    this.formValues &#x3D; this.formValuesTemp
+    formComps?.forEach((form: any, i: number) &#x3D;&gt; {
+      if (this.formValues[i]) {
+        finalData[i] &#x3D; {
+          formId: this.formValues[i]?._id || this.formValues[i]?.id,
+          data: this.formValues[i]?.data || this.formValues[i]?.defaultData?.data || {},
+          id: this.formValues[i]?.formDataId || this.formValues[i]?.formId
+        };
+      } else {
+        finalData[i] &#x3D; {
+          formId: form._id,
+          id: form?.formDataId,
+          data: form?.defaultData?.data || {}
+        };
+      }
+      this.formSubmission.next(finalData);
+    });
+    const payload: any &#x3D; {
+      workFlowId: this.workFlowId,
+      formDataIds: this.formSubmission?.value,
+      submissionStatus: status ? status : 1,
+      type: &#x27;edit&#x27;,
+      steps: this.workflows?.value?.map(data &#x3D;&gt; {
+        return {
+          id: data?.id ? data?.id : undefined,
+          approverIds: data?.approverIds?.map(ids &#x3D;&gt; ids.id ? ids.id : ids),
+          condition: data?.condition,
+          emailNotifyTo: data?.emailNotifyTo || [],
+          emailNotifyToId: data?.emailNotifyToId ? data?.emailNotifyToId : undefined,
+        }
+      })
+    }
+    this.workflowService.updateSubmissionWorkflow(this.subModuleId, payload).pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) &#x3D;&gt; {
+      if(res) {
+        if(!status) {
+          if(this.hooks?.length &gt; 0) {
+            this.formValuesTemp?.forEach(submission &#x3D;&gt; {
+              this.hooks.forEach(val &#x3D;&gt; {
+                if(val?.name &#x3D;&#x3D; &#x27;afterSubmit&#x27;) {
+                  val.code &#x3D; val?.code?.replace(/&amp;lt;/g, &quot;&lt;&quot;)?.replace(/&amp;gt;/g, &quot;&gt;&quot;);
+                  val.code &#x3D; new Function(&#x27;return &#x27; + val.code)();
+                  val.code(submission?.data, this.formService, this.workflowService, this.dashboard, this.rxJsOperators, this.destroy$, res?.summaryData?.progress, res?.submissionStatus);
+                }
+              })
+            })
+          }
+        }
+        this.creatingSubmission.next(true);
+        this.location.back()
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;app-header&gt;&lt;/app-header&gt;
+
+&lt;section class&#x3D;&quot;w-11/12 h-auto min-h-screen mx-auto lg:mt-52 mt-40 pb-44&quot;&gt;
+  &lt;p class&#x3D;&quot;text-lg font-semibold&quot;&gt;Forms&lt;/p&gt;
+  &lt;div class&#x3D;&quot;flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50&quot;&gt;
+    &lt;section class&#x3D;&quot;relative flex justify-between my-8&quot;&gt;
+      &lt;nav
+        tuiTabs
+        vertical&#x3D;&quot;left&quot;
+        class&#x3D;&quot;lg:w-32 w-20 lg:mr-5&quot;
+      &gt;
+        &lt;ng-container *ngFor&#x3D;&quot;let tab of formTabs; let j &#x3D; index&quot;&gt;
+          &lt;button (click)&#x3D;&quot;activeIndex &#x3D; j&quot; tuiTab&gt;{{tab}}&lt;/button&gt;
+        &lt;/ng-container&gt;
+      &lt;/nav&gt;
+      &lt;ng-container *ngFor&#x3D;&quot;let form of forms; let i &#x3D; index;&quot;&gt;
+        &lt;div class&#x3D;&quot;w-full well jsonviewer ml-2 lg:ml-0&quot; [ngClass]&#x3D;&quot;activeIndex &#x3D;&#x3D; i ? &#x27;block&#x27;: &#x27;hidden&#x27;&quot;&gt;
+          &lt;div class&#x3D;&quot;absolute z-10 -top-7 right-1&quot;&gt;
+            &lt;a (click)&#x3D;&quot;sendFormForEdit(i, form?._id, form?.key)&quot; class&#x3D;&quot;rounded-md cursor-pointer&quot; title&#x3D;&quot;Edit Form&quot;&gt;
+              &lt;i class&#x3D;&quot;text-white bg-blue-600 fa fa-pencil-square-o fa-lg p-1.5 rounded-md hover:text-white hover:bg-opacity-80 hover:transition-colors&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+            &lt;/a&gt;
+          &lt;/div&gt;
+          &lt;formio
+            #formioForm
+            [submission]&#x3D;&quot;sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)&quot;
+            [options]&#x3D;&quot;options&quot;
+            [form]&#x3D;&quot;form&quot;
+            (change)&#x3D;&quot;onChange($event, i); onChangeFn($event, globalVar)&quot;
+            (formLoad)&#x3D;&quot;onLoadFn($event, globalVar)&quot;
+          &gt;&lt;/formio&gt;
+        &lt;/div&gt;
+      &lt;/ng-container&gt;
+
+    &lt;/section&gt;
+  &lt;/div&gt;
+
+  &lt;tui-tabs [(activeItemIndex)]&#x3D;&quot;activeItemIndex&quot;&gt;
+    &lt;button
+      tuiTab
+    &gt;
+      &lt;tui-svg
+        src&#x3D;&quot;tuiIconEye&quot;
+        class&#x3D;&quot;tui-space_right-2&quot;
+      &gt;&lt;/tui-svg&gt;
+      Approval Workflow
+    &lt;/button&gt;
+    &lt;button
+      tuiTab
+    &gt;
+      &lt;tui-svg
+        src&#x3D;&quot;tuiIconEdit&quot;
+        class&#x3D;&quot;tui-space_right-2&quot;
+      &gt;&lt;/tui-svg&gt;
+      Modify Workflow
+    &lt;/button&gt;
+  &lt;/tui-tabs&gt;
+
+  &lt;div *ngIf&#x3D;&quot;activeItemIndex &#x3D;&#x3D; 1&quot; class&#x3D;&quot;mt-12&quot; [formGroup]&#x3D;&quot;workflowForm&quot;&gt;
+    &lt;h4 class&#x3D;&quot;text-lg font-semibold&quot;&gt;Modify submodule workflow&lt;/h4&gt;
+    &lt;ng-container formArrayName&#x3D;&quot;workflows&quot;&gt;
+      &lt;ng-container *ngFor&#x3D;&quot;let workflow of workflows.controls; let i &#x3D; index; let first &#x3D; first&quot;&gt;
+        &lt;p class&#x3D;&quot;text-base font-semibold mt-7&quot;&gt;Step {{i &#x3D;&#x3D;&#x3D; 0 ? &#x27;1&#x27; : i+1}}&lt;/p&gt;
+        &lt;div class&#x3D;&quot;grid grid-cols-12 gap-3 my-4&quot; [formGroupName]&#x3D;&quot;i&quot;&gt;
+          &lt;div class&#x3D;&quot;lg:col-span-4 col-span-5&quot;&gt;
+            &lt;label class&#x3D;&quot;block pb-1&quot;&gt;{{first ? &#x27;Creators&#x27;: &#x27;Approvers&#x27;}} &lt;span class&#x3D;&quot;text-xs text-red-400&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+            &lt;custom-multi-select (checkUsersLength)&#x3D;&quot;countUsers($event, i)&quot; formControlName&#x3D;&quot;approverIds&quot; (approverList)&#x3D;&quot;getApproverList($event, i)&quot;&gt;&lt;/custom-multi-select&gt;
+            &lt;span class&#x3D;&quot;text-xs text-red-500&quot; *ngIf&#x3D;&quot;(showError | async) &amp;&amp; i &#x3D;&#x3D;&#x3D; errorIndex&quot;&gt;Please select either AND or OR as the condition&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;lg:col-span-4 col-span-5&quot;&gt;
+            &lt;label for&#x3D;&quot;conditionSelect&quot; class&#x3D;&quot;block pb-1&quot;&gt;Condition &lt;span class&#x3D;&quot;text-xs text-red-400&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+            &lt;select (change)&#x3D;&quot;validateSelection(i)&quot; formControlName&#x3D;&quot;condition&quot; class&#x3D;&quot;h-10 form-select form-control&quot; aria-label&#x3D;&quot;Default select example&quot; id&#x3D;&quot;conditionSelect&quot;&gt;
+              &lt;option value&#x3D;&quot;and&quot;&gt;AND&lt;/option&gt;
+              &lt;option value&#x3D;&quot;or&quot;&gt;OR&lt;/option&gt;
+              &lt;option value&#x3D;&quot;none&quot;&gt;NONE&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;inline-flex col-span-1 mt-8&quot;&gt;
+            &lt;tui-tooltip
+              [content]&#x3D;&quot;hint&quot;
+              direction&#x3D;&quot;right&quot;
+              class&#x3D;&quot;mt-1 mr-4 -ml-2&quot;
+            &gt;&lt;/tui-tooltip&gt;
+            &lt;tui-badged-content
+              [contentTop]&#x3D;&quot;
+                workflows.at(i).get(&#x27;emailNotifyTo&#x27;)?.value?.length
+              &quot;
+              [colorTop]&#x3D;&quot;&#x27;green&#x27;&quot;
+            &gt;
+              &lt;button
+                tuiIconButton
+                type&#x3D;&quot;button&quot;
+                size&#x3D;&quot;s&quot;
+                appearance&#x3D;&quot;outline&quot;
+                icon&#x3D;&quot;tuiIconMailLarge&quot;
+                (click)&#x3D;&quot;openEmailNotifyModal(template, workflows, i)&quot;
+              &gt;&lt;/button&gt;
+            &lt;/tui-badged-content&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;col-span-1 mt-8 lg:-ml-6 ml-3&quot;&gt;
+            &lt;button
+              tuiIconButton
+              type&#x3D;&quot;button&quot;
+              size&#x3D;&quot;s&quot;
+              appearance&#x3D;&quot;secondary-destructive&quot;
+              icon&#x3D;&quot;tuiIconTrash2Large&quot;
+              (click)&#x3D;&quot;removeWorkflowStep(i)&quot;
+            &gt;&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/ng-container&gt;
+    &lt;/ng-container&gt;
+    &lt;button
+      tuiIconButton
+      type&#x3D;&quot;button&quot;
+      size&#x3D;&quot;m&quot;
+      appearance&#x3D;&quot;primary&quot;
+      icon&#x3D;&quot;tuiIconPlusLarge&quot;
+      (click)&#x3D;&quot;addWorkflowStep()&quot;
+    &gt;&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;ng-container *ngIf&#x3D;&quot;activeItemIndex &#x3D;&#x3D; 0&quot;&gt;
+    &lt;tui-island
+      size&#x3D;&quot;l&quot;
+      class&#x3D;&quot;lg:w-[97.5%] w-[95%] my-4 shadow-lg border border-[#F15B41] px-5 mx-auto&quot;
+    &gt;
+      &lt;h4 class&#x3D;&quot;mb-5 text-base font-semibold text-gray-700&quot;&gt;Workflow Steps&lt;/h4&gt;
+      &lt;tui-carousel
+        [draggable]&#x3D;&quot;true&quot;
+        [itemsCount]&#x3D;&quot;currentBreakpoint &#x3D;&#x3D; BreakPoints.Small ? 2 : 3&quot;
+        [(index)]&#x3D;&quot;carouselIndex&quot;
+      &gt;
+      &lt;ng-container *ngFor&#x3D;&quot;let item of items; let i &#x3D; index; let last &#x3D; last&quot;&gt;
+        &lt;div *tuiItem class&#x3D;&quot;flex justify-between w-full&quot;&gt;
+          &lt;div class&#x3D;&quot;relative w-full px-4 py-4 text-left border border-gray-200 rounded-md bg-gray-50&quot;&gt;
+            &lt;p class&#x3D;&quot;mb-2 text-lg font-semibold text-gray-700&quot;&gt;Step {{ i + 1}}&lt;/p&gt;
+            &lt;ul *ngFor&#x3D;&quot;let approver of item?.approvers&quot; class&#x3D;&quot;px-5&quot;&gt;
+              &lt;li class&#x3D;&quot;list-disc&quot;&gt;{{approver}}&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;div class&#x3D;&quot;absolute top-0 right-0 px-3 py-1 text-sm font-semibold bg-gray-200 rounded-b-none text-slate-700 rounded-r-md&quot;&gt;
+              {{item?.condition}}
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;ml-4 mt-7&quot;&gt;
+            &lt;i *ngIf&#x3D;&quot;!last&quot; class&#x3D;&quot;fa fa-long-arrow-right fa-lg&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/ng-container&gt;
+      &lt;/tui-carousel&gt;
+      &lt;tui-pagination
+        class&#x3D;&quot;my-5 pagination&quot;
+        [length]&#x3D;&quot;items?.length &gt; 2 ? items?.length - 2 : items?.length&quot;
+        size&#x3D;&quot;s&quot;
+        [(index)]&#x3D;&quot;carouselIndex&quot;
+      &gt;&lt;/tui-pagination&gt;
+    &lt;/tui-island&gt;
+  &lt;/ng-container&gt;
+
+  &lt;div class&#x3D;&quot;flex justify-end gap-5 mt-8&quot;&gt;
+    &lt;button
+      tuiButton
+      type&#x3D;&quot;button&quot;
+      size&#x3D;&quot;m&quot;
+      appearance&#x3D;&quot;primary&quot;
+      [showLoader]&#x3D;&quot;(creatingSubmission | async)&quot;
+      (click)&#x3D;&quot;editSubmission()&quot;
+    &gt;
+      Update Submission
+    &lt;/button&gt;
+    &lt;button
+      tuiButton
+      type&#x3D;&quot;button&quot;
+      size&#x3D;&quot;m&quot;
+      appearance&#x3D;&quot;secondary&quot;
+      [showLoader]&#x3D;&quot;(draftingSubmission | async)&quot;
+      (click)&#x3D;&quot;editSubmission(4)&quot;
+    &gt;
+      Save as Draft
+    &lt;/button&gt;
+    &lt;button
+      tuiButton
+      type&#x3D;&quot;button&quot;
+      size&#x3D;&quot;m&quot;
+      appearance&#x3D;&quot;accent&quot;
+      (click)&#x3D;&quot;cancelSubmission()&quot;
+    &gt;
+      Cancel
+    &lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;section class&#x3D;&quot;my-4&quot;&gt;
+    &lt;p class&#x3D;&quot;mb-5 text-lg font-semibold&quot;&gt;Approval Logs&lt;/p&gt;
+    &lt;div class&#x3D;&quot;grid grid-cols-12&quot;&gt;
+      &lt;div class&#x3D;&quot;col-span-12 w-[97.5%]&quot;&gt;
+        &lt;tui-island size&#x3D;&quot;l&quot; class&#x3D;&quot;w-full shadow-lg&quot;&gt;
+          &lt;ng-container *ngIf&#x3D;&quot;approvalLogs?.length &#x3D;&#x3D; 0&quot;&gt;
+            &lt;p class&#x3D;&quot;py-5 text-base font-semibold text-center text-gray-500&quot;&gt;Approval logs are empty!&lt;/p&gt;
+          &lt;/ng-container&gt;
+          &lt;ng-container *ngFor&#x3D;&quot;let log of approvalLogs; let i &#x3D; index&quot;&gt;
+            &lt;div class&#x3D;&quot;grid grid-cols-12 py-3 border-b border-gray-300 gap-x-3&quot;&gt;
+              &lt;p class&#x3D;&quot;col-span-3 font-normal&quot;&gt;Performed by: &amp;nbsp; &lt;span [ngClass]&#x3D;&quot;log?.approvalStatus &#x3D;&#x3D; &#x27;approved&#x27; ? &#x27;text-green-500&#x27;: &#x27;text-gray-600&#x27;&quot; class&#x3D;&quot;font-semibold&quot;&gt;{{log?.onBehalfOf ? log?.onBehalfOf?.fullName + &#x27; on behalf of &#x27; + log?.performedById?.fullName : log?.performedById?.fullName}}&lt;/span&gt;&lt;/p&gt;
+              &lt;p class&#x3D;&quot;col-span-2 font-normal&quot;&gt;Action: &amp;nbsp; &lt;span [ngClass]&#x3D;&quot;log?.approvalStatus &#x3D;&#x3D; &#x27;approved&#x27; ? &#x27;text-green-500&#x27;: &#x27;text-gray-600&#x27;&quot; class&#x3D;&quot;font-semibold capitalize&quot;&gt;{{log?.approvalStatus}}&lt;/span&gt;&lt;/p&gt;
+              &lt;p class&#x3D;&quot;col-span-4 font-normal&quot;&gt;
+                Approved On: &lt;span [ngClass]&#x3D;&quot;log?.approvalStatus &#x3D;&#x3D; &#x27;approved&#x27; ? &#x27;text-green-500&#x27;: &#x27;text-gray-600&#x27;&quot; class&#x3D;&quot;font-semibold&quot;&gt;&amp;nbsp;{{log?.approvedOn | date: &#x27;medium&#x27;}}&lt;/span&gt;
+              &lt;/p&gt;
+              &lt;p class&#x3D;&quot;col-span-3 font-normal&quot;&gt;Comments:
+                &lt;span [ngClass]&#x3D;&quot;log?.approvalStatus &#x3D;&#x3D; &#x27;approved&#x27; ? &#x27;text-green-500&#x27;: &#x27;text-gray-600&#x27;&quot; class&#x3D;&quot;font-semibold&quot;&gt;&amp;nbsp;{{log?.remarks}}&lt;/span&gt;
+              &lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/ng-container&gt;
+        &lt;/tui-island&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+&lt;/section&gt;
+
+
+&lt;!--Email Notify Modal--&gt;
+&lt;ng-template #template&gt;
+  &lt;p class&#x3D;&quot;text-lg font-semibold text-center&quot;&gt;Email Notification Users&lt;/p&gt;
+  &lt;p class&#x3D;&quot;mt-3 text-base font-medium text-gray-500&quot;&gt;
+    Please specify the users you want to send the notification email to
+  &lt;/p&gt;
+  &lt;div class&#x3D;&quot;flex flex-col justify-center my-5&quot;&gt;
+    &lt;tui-input-tag
+      [formControl]&#x3D;&quot;
+        currentFieldArray?.controls[activeEmailIndex]?.controls[&#x27;emailNotifyTo&#x27;]
+      &quot;
+      class&#x3D;&quot;b-form&quot;
+      [tuiTextfieldLabelOutside]&#x3D;&quot;true&quot;
+      (searchChange)&#x3D;&quot;onSearchChange($event)&quot;
+    &gt;
+      Type to search and press Enter to select...
+      &lt;tui-data-list-wrapper
+        *tuiDataList
+        [items]&#x3D;&quot;userListForEmail&quot;
+      &gt;&lt;/tui-data-list-wrapper&gt;
+    &lt;/tui-input-tag&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;flex justify-start gap-x-3&quot;&gt;
+    &lt;button tuiButton type&#x3D;&quot;button&quot; size&#x3D;&quot;m&quot; (click)&#x3D;&quot;validateEmails()&quot;&gt;
+      Confirm &amp; Close
+    &lt;/button&gt;
+    &lt;button appearance&#x3D;&quot;accent&quot; tuiButton type&#x3D;&quot;button&quot; size&#x3D;&quot;m&quot; (click)&#x3D;&quot;cancelEmailNotify()&quot;&gt;
+      Remove Users &amp; Close
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/ng-template&gt;
+
+
+&lt;ng-template #hint&gt;
+  &lt;strong class&#x3D;&quot;text-base&quot;&gt;How conditions work?&lt;/strong&gt;
+  &lt;hr&gt;
+  &lt;ul class&#x3D;&quot;mt-2&quot;&gt;
+    &lt;li&gt;&lt;strong&gt;AND&lt;/strong&gt; implies that every user of the step must provide approval&lt;/li&gt;
+    &lt;li class&#x3D;&quot;my-2&quot;&gt;&lt;strong&gt;OR&lt;/strong&gt; implies that any one of the users may provide approval&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;NONE&lt;/strong&gt; implies that there is only one user per step and hence no conditon is necessary&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/ng-template&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-styleData">
+                <p class="comment">
+                    <code>./edit-submission.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss"></code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><app-header></app-header><section class="w-11/12 h-auto min-h-screen mx-auto lg:mt-52 mt-40 pb-44">  <p class="text-lg font-semibold">Forms</p>  <div class="flex flex-col w-full px-5 mx-auto mt-5 border border-gray-400 border-dashed rounded-md bg-gray-50">    <section class="relative flex justify-between my-8">      <nav        tuiTabs        vertical="left"        class="lg:w-32 w-20 lg:mr-5"      >        <ng-container *ngFor="let tab of formTabs; let j = index">          <button (click)="activeIndex = j" tuiTab>{{tab}}</button>        </ng-container>      </nav>      <ng-container *ngFor="let form of forms; let i = index;">        <div class="w-full well jsonviewer ml-2 lg:ml-0" [ngClass]="activeIndex == i ? \'block\': \'hidden\'">          <div class="absolute z-10 -top-7 right-1">            <a (click)="sendFormForEdit(i, form?._id, form?.key)" class="rounded-md cursor-pointer" title="Edit Form">              <i class="text-white bg-blue-600 fa fa-pencil-square-o fa-lg p-1.5 rounded-md hover:text-white hover:bg-opacity-80 hover:transition-colors" aria-hidden="true"></i>            </a>          </div>          <formio            #formioForm            [submission]="sanitizeSubmission(formValues[i]) || sanitizeSubmission(form)"            [options]="options"            [form]="form"            (change)="onChange($event, i); onChangeFn($event, globalVar)"            (formLoad)="onLoadFn($event, globalVar)"          ></formio>        </div>      </ng-container>    </section>  </div>  <tui-tabs [(activeItemIndex)]="activeItemIndex">    <button      tuiTab    >      <tui-svg        src="tuiIconEye"        class="tui-space_right-2"      ></tui-svg>      Approval Workflow    </button>    <button      tuiTab    >      <tui-svg        src="tuiIconEdit"        class="tui-space_right-2"      ></tui-svg>      Modify Workflow    </button>  </tui-tabs>  <div *ngIf="activeItemIndex == 1" class="mt-12" [formGroup]="workflowForm">    <h4 class="text-lg font-semibold">Modify submodule workflow</h4>    <ng-container formArrayName="workflows">      <ng-container *ngFor="let workflow of workflows.controls; let i = index; let first = first">        <p class="text-base font-semibold mt-7">Step {{i === 0 ? \'1\' : i+1}}</p>        <div class="grid grid-cols-12 gap-3 my-4" [formGroupName]="i">          <div class="lg:col-span-4 col-span-5">            <label class="block pb-1">{{first ? \'Creators\': \'Approvers\'}} <span class="text-xs text-red-400">*</span></label>            <custom-multi-select (checkUsersLength)="countUsers($event, i)" formControlName="approverIds" (approverList)="getApproverList($event, i)"></custom-multi-select>            <span class="text-xs text-red-500" *ngIf="(showError | async) && i === errorIndex">Please select either AND or OR as the condition</span>          </div>          <div class="lg:col-span-4 col-span-5">            <label for="conditionSelect" class="block pb-1">Condition <span class="text-xs text-red-400">*</span></label>            <select (change)="validateSelection(i)" formControlName="condition" class="h-10 form-select form-control" aria-label="Default select example" id="conditionSelect">              <option value="and">AND</option>              <option value="or">OR</option>              <option value="none">NONE</option>            </select>          </div>          <div class="inline-flex col-span-1 mt-8">            <tui-tooltip              [content]="hint"              direction="right"              class="mt-1 mr-4 -ml-2"            ></tui-tooltip>            <tui-badged-content              [contentTop]="                workflows.at(i).get(\'emailNotifyTo\')?.value?.length              "              [colorTop]="\'green\'"            >              <button                tuiIconButton                type="button"                size="s"                appearance="outline"                icon="tuiIconMailLarge"                (click)="openEmailNotifyModal(template, workflows, i)"              ></button>            </tui-badged-content>          </div>          <div class="col-span-1 mt-8 lg:-ml-6 ml-3">            <button              tuiIconButton              type="button"              size="s"              appearance="secondary-destructive"              icon="tuiIconTrash2Large"              (click)="removeWorkflowStep(i)"            ></button>          </div>        </div>      </ng-container>    </ng-container>    <button      tuiIconButton      type="button"      size="m"      appearance="primary"      icon="tuiIconPlusLarge"      (click)="addWorkflowStep()"    ></button>  </div>  <ng-container *ngIf="activeItemIndex == 0">    <tui-island      size="l"      class="lg:w-[97.5%] w-[95%] my-4 shadow-lg border border-[#F15B41] px-5 mx-auto"    >      <h4 class="mb-5 text-base font-semibold text-gray-700">Workflow Steps</h4>      <tui-carousel        [draggable]="true"        [itemsCount]="currentBreakpoint == BreakPoints.Small ? 2 : 3"        [(index)]="carouselIndex"      >      <ng-container *ngFor="let item of items; let i = index; let last = last">        <div *tuiItem class="flex justify-between w-full">          <div class="relative w-full px-4 py-4 text-left border border-gray-200 rounded-md bg-gray-50">            <p class="mb-2 text-lg font-semibold text-gray-700">Step {{ i + 1}}</p>            <ul *ngFor="let approver of item?.approvers" class="px-5">              <li class="list-disc">{{approver}}</li>            </ul>            <div class="absolute top-0 right-0 px-3 py-1 text-sm font-semibold bg-gray-200 rounded-b-none text-slate-700 rounded-r-md">              {{item?.condition}}            </div>          </div>          <div class="ml-4 mt-7">            <i *ngIf="!last" class="fa fa-long-arrow-right fa-lg" aria-hidden="true"></i>          </div>        </div>      </ng-container>      </tui-carousel>      <tui-pagination        class="my-5 pagination"        [length]="items?.length > 2 ? items?.length - 2 : items?.length"        size="s"        [(index)]="carouselIndex"      ></tui-pagination>    </tui-island>  </ng-container>  <div class="flex justify-end gap-5 mt-8">    <button      tuiButton      type="button"      size="m"      appearance="primary"      [showLoader]="(creatingSubmission | async)"      (click)="editSubmission()"    >      Update Submission    </button>    <button      tuiButton      type="button"      size="m"      appearance="secondary"      [showLoader]="(draftingSubmission | async)"      (click)="editSubmission(4)"    >      Save as Draft    </button>    <button      tuiButton      type="button"      size="m"      appearance="accent"      (click)="cancelSubmission()"    >      Cancel    </button>  </div>  <section class="my-4">    <p class="mb-5 text-lg font-semibold">Approval Logs</p>    <div class="grid grid-cols-12">      <div class="col-span-12 w-[97.5%]">        <tui-island size="l" class="w-full shadow-lg">          <ng-container *ngIf="approvalLogs?.length == 0">            <p class="py-5 text-base font-semibold text-center text-gray-500">Approval logs are empty!</p>          </ng-container>          <ng-container *ngFor="let log of approvalLogs; let i = index">            <div class="grid grid-cols-12 py-3 border-b border-gray-300 gap-x-3">              <p class="col-span-3 font-normal">Performed by: &nbsp; <span [ngClass]="log?.approvalStatus == \'approved\' ? \'text-green-500\': \'text-gray-600\'" class="font-semibold">{{log?.onBehalfOf ? log?.onBehalfOf?.fullName + \' on behalf of \' + log?.performedById?.fullName : log?.performedById?.fullName}}</span></p>              <p class="col-span-2 font-normal">Action: &nbsp; <span [ngClass]="log?.approvalStatus == \'approved\' ? \'text-green-500\': \'text-gray-600\'" class="font-semibold capitalize">{{log?.approvalStatus}}</span></p>              <p class="col-span-4 font-normal">                Approved On: <span [ngClass]="log?.approvalStatus == \'approved\' ? \'text-green-500\': \'text-gray-600\'" class="font-semibold">&nbsp;{{log?.approvedOn | date: \'medium\'}}</span>              </p>              <p class="col-span-3 font-normal">Comments:                <span [ngClass]="log?.approvalStatus == \'approved\' ? \'text-green-500\': \'text-gray-600\'" class="font-semibold">&nbsp;{{log?.remarks}}</span>              </p>            </div>          </ng-container>        </tui-island>      </div>    </div>  </section></section><!--Email Notify Modal--><ng-template #template>  <p class="text-lg font-semibold text-center">Email Notification Users</p>  <p class="mt-3 text-base font-medium text-gray-500">    Please specify the users you want to send the notification email to  </p>  <div class="flex flex-col justify-center my-5">    <tui-input-tag      [formControl]="        currentFieldArray?.controls[activeEmailIndex]?.controls[\'emailNotifyTo\']      "      class="b-form"      [tuiTextfieldLabelOutside]="true"      (searchChange)="onSearchChange($event)"    >      Type to search and press Enter to select...      <tui-data-list-wrapper        *tuiDataList        [items]="userListForEmail"      ></tui-data-list-wrapper>    </tui-input-tag>  </div>  <div class="flex justify-start gap-x-3">    <button tuiButton type="button" size="m" (click)="validateEmails()">      Confirm & Close    </button>    <button appearance="accent" tuiButton type="button" size="m" (click)="cancelEmailNotify()">      Remove Users & Close    </button>  </div></ng-template><ng-template #hint>  <strong class="text-base">How conditions work?</strong>  <hr>  <ul class="mt-2">    <li><strong>AND</strong> implies that every user of the step must provide approval</li>    <li class="my-2"><strong>OR</strong> implies that any one of the users may provide approval</li>    <li><strong>NONE</strong> implies that there is only one user per step and hence no conditon is necessary</li>  </ul></ng-template></div>'
+    var COMPONENTS = [{'name': 'ActionButtonRenderer', 'selector': 'action-button-component'},{'name': 'AddSubmissionComponent', 'selector': ''},{'name': 'AddSubmoduleComponent', 'selector': ''},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppListingComponent', 'selector': 'app-app-listing'},{'name': 'AuthComponent', 'selector': 'app-auth'},{'name': 'CategoriesListComponent', 'selector': ''},{'name': 'CategoryActionComponent', 'selector': 'catgeories-actions-component'},{'name': 'CompaniesComponent', 'selector': ''},{'name': 'CompanyActionComponent', 'selector': 'companies-actions-component'},{'name': 'CustomMultiSelectComponent', 'selector': 'custom-multi-select'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DialogTemplate', 'selector': ''},{'name': 'EditFormComponent', 'selector': ''},{'name': 'EditSubmissionComponent', 'selector': ''},{'name': 'EditSubmoduleComponent', 'selector': ''},{'name': 'EmailSubmissionComponent', 'selector': ''},{'name': 'FilterComponent', 'selector': 'filter'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'FormBuilderComponent', 'selector': ''},{'name': 'FormsComponent', 'selector': 'app-forms'},{'name': 'GridTopAppComponent', 'selector': 'grid-top-app'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': ''},{'name': 'LoginComponent', 'selector': ''},{'name': 'ModuleGuardComponent', 'selector': 'app-module-guard'},{'name': 'NotFoundComponent', 'selector': ''},{'name': 'ProfileComponent', 'selector': ''},{'name': 'SearchBarComponent', 'selector': 'app-search-bar'},{'name': 'SubmissionTableComponent', 'selector': 'app-submission-table'},{'name': 'SubmoduleGuardComponent', 'selector': 'app-submodule-guard'},{'name': 'SubmodulesListComponent', 'selector': ''},{'name': 'TableLoaderComponent', 'selector': 'app-table-loader'},{'name': 'TableViewComponent', 'selector': 'app-table-view'},{'name': 'UserActionsRenderer', 'selector': 'user-actions-component'},{'name': 'UsersListComponent', 'selector': ''},{'name': 'ViewWorkflowComponent', 'selector': ''},{'name': 'WorkflowsComponent', 'selector': 'app-workflows'},{'name': 'WorkflowSkeletonComponent', 'selector': 'app-workflow-skeleton'}];
+    var DIRECTIVES = [{'name': 'SortDirective', 'selector': '[appSort]'},{'name': 'TrimDirective', 'selector': '[appTrim]'}];
+    var ACTUAL_COMPONENT = {'name': 'EditSubmissionComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'EditSubmissionComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

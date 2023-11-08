@@ -1,0 +1,919 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>depa-frontend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">depa-frontend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li>Components</li>
+  <li
+  >
+  DialogTemplate</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li >
+            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/modules/forms/templates/permission-template.component.ts</code>
+</p>
+
+
+
+
+
+
+<section>
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">template</td>
+                <td class="col-md-9"><pre class="line-numbers"><code class="language-html">&lt;h2 class&#x3D;&quot;text-lg font-semibold text-center&quot;&gt;Set Permissions for users&lt;/h2&gt;
+&lt;div class&#x3D;&quot;my-6&quot;&gt;
+  &lt;ng-container *ngFor&#x3D;&quot;let user of workflowApprovers; let i &#x3D; index;&quot;&gt;
+    &lt;div class&#x3D;&quot;border-b border-gray-300 py-4 flex justify-start gap-x-3&quot;&gt;
+      &lt;p class&#x3D;&quot;font-semibold text-base mb-3 mr-4&quot;&gt;{{user?.name}}&lt;/p&gt;
+      &lt;tui-checkbox-labeled [formControl]&#x3D;&quot;userFormControls[user.id].canEdit&quot; (ngModelChange)&#x3D;&quot;setCanView($event, user.id)&quot; class&#x3D;&quot;tui-space_top-1&quot;&gt;
+        Can Edit?
+        &lt;div class&#x3D;&quot;text-gray-400&quot;&gt;User will have the right to edit this component&lt;/div&gt;
+      &lt;/tui-checkbox-labeled&gt;
+      &lt;tui-checkbox-labeled [formControl]&#x3D;&quot;userFormControls[user.id].canView&quot; class&#x3D;&quot;tui-space_top-1&quot;&gt;
+        Can View?
+        &lt;div class&#x3D;&quot;text-gray-400&quot;&gt;User will have the right to only view this component&lt;/div&gt;
+      &lt;/tui-checkbox-labeled&gt;
+    &lt;/div&gt;
+  &lt;/ng-container&gt;
+&lt;/div&gt;
+&lt;div class&#x3D;&quot;flex justify-center gap-2 mt-5&quot;&gt;
+  &lt;button
+    tuiButton
+    type&#x3D;&quot;button&quot;
+    size&#x3D;&quot;m&quot;
+    appearance&#x3D;&quot;primary&quot;
+    (click)&#x3D;&quot;submitPermission()&quot;
+  &gt;
+    Confirm
+  &lt;/button&gt;
+
+  &lt;button
+    tuiButton
+    type&#x3D;&quot;button&quot;
+    size&#x3D;&quot;m&quot;
+    appearance&#x3D;&quot;accent&quot;
+    (click)&#x3D;&quot;cancel()&quot;
+  &gt;
+    Cancel
+  &lt;/button&gt;
+&lt;/div&gt;
+</code></pre></td>
+            </tr>
+
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#userFormControls" >userFormControls</a>
+                            </li>
+                            <li>
+                                <a href="#workflowApprovers" >workflowApprovers</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#cancel" >cancel</a>
+                            </li>
+                            <li>
+                                <a href="#setCanView" >setCanView</a>
+                            </li>
+                            <li>
+                                <a href="#showDialog" >showDialog</a>
+                            </li>
+                            <li>
+                                <a href="#submitPermission" >submitPermission</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#data" >data</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(context: TuiDialogContext<any | any>, dialogs: TuiDialogService, transport: <a href="../injectables/DataTransportService.html" target="_self">DataTransportService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:64</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>context</td>
+                                                  
+                                                        <td>
+                                                                    <code>TuiDialogContext&lt;any | any&gt;</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>dialogs</td>
+                                                  
+                                                        <td>
+                                                                    <code>TuiDialogService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>transport</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DataTransportService.html" target="_self" >DataTransportService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cancel"></a>
+                    <span class="name">
+                        <span ><b>cancel</b></span>
+                        <a href="#cancel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>cancel()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="147"
+                            class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:147</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Cancel without setting permissions</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setCanView"></a>
+                    <span class="name">
+                        <span ><b>setCanView</b></span>
+                        <a href="#setCanView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>setCanView(value, id)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="112"
+                            class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:112</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method to set the view permission for the user</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>value</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>any</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>id</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>string</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="showDialog"></a>
+                    <span class="name">
+                        <span ><b>showDialog</b></span>
+                        <a href="#showDialog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>showDialog(content: TemplateRef<TuiDialogContext>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="155"
+                            class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:155</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Method to show permissions dialog</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>content</td>
+                                    <td>
+                                            <code>TemplateRef&lt;TuiDialogContext&gt;</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>Template which contains the dialog UI</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="submitPermission"></a>
+                    <span class="name">
+                        <span ><b>submitPermission</b></span>
+                        <a href="#submitPermission"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>submitPermission()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="128"
+                            class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:128</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Submit the permissions after setting for users</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userFormControls"></a>
+                    <span class="name">
+                        <span ><b>userFormControls</b></span>
+                        <a href="#userFormControls"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>literal type</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Form Controls for managing the data and permissions of the workflow users</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="workflowApprovers"></a>
+                    <span class="name">
+                        <span ><b>workflowApprovers</b></span>
+                        <a href="#workflowApprovers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:59</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Array of users that are part of the workflow</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</section>
+
+    <section>
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="data"></a>
+                        <span class="name"><b>data</b><a href="#data"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>data()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="121" class="link-to-prism">src/app/modules/forms/templates/permission-template.component.ts:121</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-description"><p>Get Dialog context data</p>
+</div>
+
+                                <div class="io-description">
+                                    <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                                </div>
+                        </td>
+                    </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { CommonModule } from &quot;@angular/common&quot;;
+import { Component, Inject, TemplateRef } from &quot;@angular/core&quot;;
+import { FormControl, FormsModule, ReactiveFormsModule } from &quot;@angular/forms&quot;;
+import { FormioUtils } from &quot;@formio/angular&quot;;
+import { TuiButtonModule, TuiDialogContext, TuiDialogService } from &quot;@taiga-ui/core&quot;;
+import { TuiCheckboxLabeledModule } from &quot;@taiga-ui/kit&quot;;
+import { POLYMORPHEUS_CONTEXT } from &#x27;@tinkoff/ng-polymorpheus&#x27;;
+import { DataTransportService } from &quot;src/core/core-services/data-transport.service&quot;;
+import { StorageItem, getItem, getItemSession } from &quot;src/core/utils/local-storage.utils&quot;;
+
+@Component({
+  template: &#x60;
+    &lt;h2 class&#x3D;&quot;text-lg font-semibold text-center&quot;&gt;Set Permissions for users&lt;/h2&gt;
+    &lt;div class&#x3D;&quot;my-6&quot;&gt;
+      &lt;ng-container *ngFor&#x3D;&quot;let user of workflowApprovers; let i &#x3D; index;&quot;&gt;
+        &lt;div class&#x3D;&quot;border-b border-gray-300 py-4 flex justify-start gap-x-3&quot;&gt;
+          &lt;p class&#x3D;&quot;font-semibold text-base mb-3 mr-4&quot;&gt;{{user?.name}}&lt;/p&gt;
+          &lt;tui-checkbox-labeled [formControl]&#x3D;&quot;userFormControls[user.id].canEdit&quot; (ngModelChange)&#x3D;&quot;setCanView($event, user.id)&quot; class&#x3D;&quot;tui-space_top-1&quot;&gt;
+            Can Edit?
+            &lt;div class&#x3D;&quot;text-gray-400&quot;&gt;User will have the right to edit this component&lt;/div&gt;
+          &lt;/tui-checkbox-labeled&gt;
+          &lt;tui-checkbox-labeled [formControl]&#x3D;&quot;userFormControls[user.id].canView&quot; class&#x3D;&quot;tui-space_top-1&quot;&gt;
+            Can View?
+            &lt;div class&#x3D;&quot;text-gray-400&quot;&gt;User will have the right to only view this component&lt;/div&gt;
+          &lt;/tui-checkbox-labeled&gt;
+        &lt;/div&gt;
+      &lt;/ng-container&gt;
+    &lt;/div&gt;
+    &lt;div class&#x3D;&quot;flex justify-center gap-2 mt-5&quot;&gt;
+      &lt;button
+        tuiButton
+        type&#x3D;&quot;button&quot;
+        size&#x3D;&quot;m&quot;
+        appearance&#x3D;&quot;primary&quot;
+        (click)&#x3D;&quot;submitPermission()&quot;
+      &gt;
+        Confirm
+      &lt;/button&gt;
+
+      &lt;button
+        tuiButton
+        type&#x3D;&quot;button&quot;
+        size&#x3D;&quot;m&quot;
+        appearance&#x3D;&quot;accent&quot;
+        (click)&#x3D;&quot;cancel()&quot;
+      &gt;
+        Cancel
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &#x60;,
+  standalone: true,
+  imports: [CommonModule, TuiButtonModule, ReactiveFormsModule, FormsModule, TuiCheckboxLabeledModule]
+})
+
+export class DialogTemplate {
+  /**
+   * Array of users that are part of the workflow
+   */
+  workflowApprovers: any[];
+
+  /**
+   * Form Controls for managing the data and permissions of the workflow users
+   */
+  userFormControls: { [userId: number]: { canEdit: FormControl, canView: FormControl } } &#x3D; {};
+
+  constructor(@Inject(POLYMORPHEUS_CONTEXT)
+  private readonly context: TuiDialogContext&lt;any, any&gt;,
+  @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+  private transport: DataTransportService
+) {
+  this.workflowApprovers &#x3D; getItemSession(StorageItem.approvers) || [];
+  /**
+   * Checks if the user exists, then checks their permission status and based on that sets the permissions
+   */
+  if (this.workflowApprovers.length &gt; 0) {
+    this.workflowApprovers.forEach(user &#x3D;&gt; {
+      let userMatchFound &#x3D; false;
+
+      if (this.data &amp;&amp; this.data?.permissions?.length &gt; 0) {
+        this.data?.permissions?.forEach(value &#x3D;&gt; {
+          if (user?.id &#x3D;&#x3D; value?.id) {
+            this.userFormControls[user.id] &#x3D; {
+              canEdit: new FormControl(value?.canEdit),
+              canView: new FormControl(value?.canView)
+            };
+            userMatchFound &#x3D; true;
+          }
+        });
+      }
+      if (!userMatchFound) {
+        this.userFormControls[user.id] &#x3D; {
+          canEdit: new FormControl(false),
+          canView: new FormControl(false)
+        };
+      }
+    });
+  } else {
+    this.workflowApprovers.forEach(user &#x3D;&gt; {
+      this.userFormControls[user.id] &#x3D; {
+        canEdit: new FormControl(false),
+        canView: new FormControl(false)
+      };
+    });
+  }
+}
+
+/**
+ * Method to set the view permission for the user
+ * @param value any
+ * @param id string
+ */
+  setCanView(value, id) {
+    if(value &#x3D;&#x3D; true) {
+      this.userFormControls[id]?.canView?.setValue(true)
+    }
+  }
+
+  /**
+   * Get Dialog context data
+   */
+  get data(): any {
+    return this.context.data;
+  }
+
+  /**
+   * Submit the permissions after setting for users
+   */
+  submitPermission() {
+    this.workflowApprovers &#x3D; this.workflowApprovers?.map(user &#x3D;&gt; {
+      return {
+        ...user,
+        canEdit: this.userFormControls[user.id]?.canEdit?.value,
+        canView: this.userFormControls[user.id]?.canView?.value,
+      }
+    })
+    let updatedData &#x3D; {
+      ...this.data,
+      permissions: this.workflowApprovers
+    }
+    this.transport.updatedComponent.emit(updatedData)
+    this.context.completeWith(this.data);
+  }
+
+  /**
+   * Cancel without setting permissions
+   */
+  cancel() {
+    this.context.completeWith(null);
+  }
+
+  /**
+   * Method to show permissions dialog
+   * @param content Template which contains the dialog UI
+   */
+  showDialog(content: TemplateRef&lt;TuiDialogContext&gt;): void {
+    this.dialogs.open(content, {dismissible: false, closeable: false, size: &#x27;l&#x27;}).subscribe();
+  }
+}
+</code></pre>
+    </div>
+
+
+
+    <div class="tab-pane fade " id="c-tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><h2 class="text-lg font-semibold text-center">Set Permissions for users</h2><div class="my-6">  <ng-container *ngFor="let user of workflowApprovers; let i = index;">    <div class="border-b border-gray-300 py-4 flex justify-start gap-x-3">      <p class="font-semibold text-base mb-3 mr-4">{{user?.name}}</p>      <tui-checkbox-labeled [formControl]="userFormControls[user.id].canEdit" (ngModelChange)="setCanView($event, user.id)" class="tui-space_top-1">        Can Edit?        <div class="text-gray-400">User will have the right to edit this component</div>      </tui-checkbox-labeled>      <tui-checkbox-labeled [formControl]="userFormControls[user.id].canView" class="tui-space_top-1">        Can View?        <div class="text-gray-400">User will have the right to only view this component</div>      </tui-checkbox-labeled>    </div>  </ng-container></div><div class="flex justify-center gap-2 mt-5">  <button    tuiButton    type="button"    size="m"    appearance="primary"    (click)="submitPermission()"  >    Confirm  </button>  <button    tuiButton    type="button"    size="m"    appearance="accent"    (click)="cancel()"  >    Cancel  </button></div></div>'
+    var COMPONENTS = [{'name': 'ActionButtonRenderer', 'selector': 'action-button-component'},{'name': 'AddSubmissionComponent', 'selector': ''},{'name': 'AddSubmoduleComponent', 'selector': ''},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppListingComponent', 'selector': 'app-app-listing'},{'name': 'AuthComponent', 'selector': 'app-auth'},{'name': 'CategoriesListComponent', 'selector': ''},{'name': 'CategoryActionComponent', 'selector': 'catgeories-actions-component'},{'name': 'CompaniesComponent', 'selector': ''},{'name': 'CompanyActionComponent', 'selector': 'companies-actions-component'},{'name': 'CustomMultiSelectComponent', 'selector': 'custom-multi-select'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DialogTemplate', 'selector': ''},{'name': 'EditFormComponent', 'selector': ''},{'name': 'EditSubmissionComponent', 'selector': ''},{'name': 'EditSubmoduleComponent', 'selector': ''},{'name': 'EmailSubmissionComponent', 'selector': ''},{'name': 'FilterComponent', 'selector': 'filter'},{'name': 'FooterComponent', 'selector': 'app-footer'},{'name': 'FormBuilderComponent', 'selector': ''},{'name': 'FormsComponent', 'selector': 'app-forms'},{'name': 'GridTopAppComponent', 'selector': 'grid-top-app'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'HomeComponent', 'selector': ''},{'name': 'LoginComponent', 'selector': ''},{'name': 'ModuleGuardComponent', 'selector': 'app-module-guard'},{'name': 'NotFoundComponent', 'selector': ''},{'name': 'ProfileComponent', 'selector': ''},{'name': 'SearchBarComponent', 'selector': 'app-search-bar'},{'name': 'SubmissionTableComponent', 'selector': 'app-submission-table'},{'name': 'SubmoduleGuardComponent', 'selector': 'app-submodule-guard'},{'name': 'SubmodulesListComponent', 'selector': ''},{'name': 'TableLoaderComponent', 'selector': 'app-table-loader'},{'name': 'TableViewComponent', 'selector': 'app-table-view'},{'name': 'UserActionsRenderer', 'selector': 'user-actions-component'},{'name': 'UsersListComponent', 'selector': ''},{'name': 'ViewWorkflowComponent', 'selector': ''},{'name': 'WorkflowsComponent', 'selector': 'app-workflows'},{'name': 'WorkflowSkeletonComponent', 'selector': 'app-workflow-skeleton'}];
+    var DIRECTIVES = [{'name': 'SortDirective', 'selector': '[appSort]'},{'name': 'TrimDirective', 'selector': '[appTrim]'}];
+    var ACTUAL_COMPONENT = {'name': 'DialogTemplate'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'DialogTemplate.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
