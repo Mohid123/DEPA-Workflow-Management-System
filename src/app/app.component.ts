@@ -27,7 +27,8 @@ export class AppComponent {
    * Project title
    */
   title = 'DEPA_FRONTEND';
-  isNewVersionAvailable = new Subject<boolean>()
+  isNewVersionAvailable = new Subject<boolean>();
+  public showSplash: boolean = true;
 
   /**
    * Handles route redirect if user is authenticated and checks for updates
@@ -46,6 +47,10 @@ export class AppComponent {
     private dashboardService: DashboardService,
     private activatedRoute: ActivatedRoute
   ) {
+    window.onload = (event) => {
+      this.showSplash = false;
+    }
+
     if(auth.currentUserValue && (window.location.pathname === '/' || window.location.pathname === '/auth/login')) {
       router.navigate(['/dashboard/home'])
     }
