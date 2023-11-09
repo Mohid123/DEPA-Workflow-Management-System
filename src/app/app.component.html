@@ -1,5 +1,5 @@
+<app-splash-screen *ngIf="showSplash == true"></app-splash-screen>
 <tui-root>
-  <app-splash-screen *ngIf="showSplash == true"></app-splash-screen>
   <router-outlet></router-outlet>
 </tui-root>
 <ng-container *ngIf="(isNewVersionAvailable | async) == true">
