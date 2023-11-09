@@ -522,6 +522,7 @@ export class AddSubmissionComponent implements OnDestroy, OnInit {
         }
       })
     }
+    debugger
     this.submissionService.addNewSubmission(payload).pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
       if(res) {

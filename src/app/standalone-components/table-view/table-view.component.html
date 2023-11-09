@@ -167,10 +167,10 @@
 </ng-template>
 
 <ng-template #hint>
-  <strong class="text-base">Completed Submissions: &nbsp; {{hintData?.stats?.completedCount}}</strong>
+  <strong class="text-base">Completed Submissions: &nbsp; {{hintData?.stats?.completedCount || 0}}</strong>
 </ng-template>
 
 <ng-template #hint2>
-  <strong class="text-base">In Progress Submissions: &nbsp; {{hintData?.stats?.inProgressCount}}</strong>
+  <strong class="text-base">In Progress Submissions: &nbsp; {{hintData?.stats?.inProgressCount || 0}}</strong>
 </ng-template>
 

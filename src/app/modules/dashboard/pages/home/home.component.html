@@ -18,8 +18,8 @@
       </ng-container>
       <ng-container *ngFor="let app of (dashboardApps | async); let index = index; let firstItem = first">
         <div class="flex justify-between py-2 px-2 bg-[#eae4d8] rounded-md col-span-12 relative">
-          <p class="mt-2 text-lg font-semibold">{{app.name}}</p>
-          <a *ngIf="userRoleCheck == true" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-base hover:bg-opacity-80 hover:transition-colors">+ Add new app</a>
+          <p class="mt-2 text-sm md:text-lg font-semibold">{{app.name}}</p>
+          <a *ngIf="userRoleCheck == true" [routerLink]="['/modules/add-module', app._id]" [queryParams]="{parentID: app?._id || ''}" class="px-4 py-2 rounded-md bg-[#F15B41] text-white no-underline hover:text-white text-sm md:text-base hover:bg-opacity-80 hover:transition-colors">+ Add new app</a>
         </div>
         <ng-container *ngIf="!app.submodules || app.subsubmodules?.length == 0; else showApps">
           <div class="h-5"></div>

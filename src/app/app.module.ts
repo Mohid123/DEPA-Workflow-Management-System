@@ -13,6 +13,7 @@ import { AppConfig } from "./config";
 import { TuiPreviewModule } from "@taiga-ui/addon-preview";
 import { EmailSubmissionComponent } from "./modules/workflows/email-submission/email-submission.component";
 import { MONACO_PATH, MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
+import { SplashScreenComponent } from "./standalone-components/splash-screen/splash-screen.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +36,8 @@ import { MONACO_PATH, MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
     TuiPreviewModule,
     TuiNotificationModule,
     EmailSubmissionComponent,
-    MonacoEditorModule
+    MonacoEditorModule,
+    SplashScreenComponent
 ],
   providers: [
     // {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer},

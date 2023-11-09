@@ -476,6 +476,7 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
         condition: this.conditionAddUser?.value
       }
     }
+
     this.workflowService.updateWorkflowStep(payload, this.workflowID)
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
