@@ -47,7 +47,6 @@
     "bootstrap": "^4.6.2",
     "dompurify": "2.2.9",
     "font-awesome": "^4.7.0",
-    "formio-export": "^0.3.0",
     "formiojs": "^4.14.12",
     "ngx-bootstrap": "^10.2.0",
     "pdfmake": "^0.2.7",

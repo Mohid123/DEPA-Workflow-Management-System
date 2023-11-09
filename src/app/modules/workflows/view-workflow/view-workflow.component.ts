@@ -10,7 +10,6 @@ import { StorageItem, getItemSession } from 'src/core/utils/local-storage.utils'
 import { DashboardService } from '../../dashboard/dashboard.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
 import { FormioUtils } from '@formio/angular';
-import FormioExport from 'formio-export';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { FormsService } from '../../forms/services/forms.service';
@@ -75,7 +74,6 @@ export class ViewWorkflowComponent implements OnDestroy, OnInit {
   formValues: any[] = [];
   formValuesTemp: any[] = [];
   formSubmission = new BehaviorSubject<Array<any>>([]);
-  exporter: FormioExport;
   currentBreakpoint: string = '';
   disableAll: boolean;
   hooks: any;

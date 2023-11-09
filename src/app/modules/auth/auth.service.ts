@@ -152,23 +152,18 @@ export class AuthService extends ApiService<AuthApiData> {
 
   /**
    * Login user via Active Directory or Windows users
-   * @param params Authentication or Login credentials provided by user
+   * @param params Graph data string attached as query params with adl url
    * @returns User object or null
    */
   loginWithActiveDirectory(params: any) {
     this.isLoadingSubject.next(true);
-    debugger
-    return this.get('/auth/adl-redirect', params).pipe(
+    return this.adlget('/auth/adl-redirect', params).pipe(
       shareReplay(),
       map((result: ApiResponse<any>) => {
         if (!result.hasErrors()) {
-          debugger
           setItem(StorageItem.User, result?.data?.user || null);
-          debugger
           setItem(StorageItem.JwtToken, result?.data?.tokens?.access?.token || null);
-          debugger
           setItem(StorageItem.RefreshToken, result?.data?.tokens?.refresh?.token || null);
-          debugger
           if(result?.data?.user)
           this.currentUserSubject.next(result?.data?.user);
           return result
@@ -220,6 +215,9 @@ export class AuthService extends ApiService<AuthApiData> {
     return null
   }
 
+  /**
+   * Actions to perform once the logout api response is successful
+   */
   responseAfterLogout() {
     localStorage.clear();
     sessionStorage.clear();
