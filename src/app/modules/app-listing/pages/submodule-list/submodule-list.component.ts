@@ -56,6 +56,11 @@ export class SubmodulesListComponent implements OnDestroy {
     })
   }
 
+  /**
+   * Method for checking if User has permissions
+   * @param data Object
+   * @returns boolean
+   */
   checkAccess(data: any) {
     if (this.userRoleCheckSys == false && data?.accessType == "disabled" && !data?.submissionCreators.includes(this.currentUser?.id)) {
       return false;
@@ -63,6 +68,12 @@ export class SubmodulesListComponent implements OnDestroy {
     return true;
   }
 
+  /**
+   * Method to check permissions for logged in user
+   * @param data Object
+   * @param adminUsers Array of admin users
+   * @returns boolean
+   */
   disableModify(data: any, adminUsers: any) {
     if(data == 'disabled') {
       return true
@@ -73,14 +84,26 @@ export class SubmodulesListComponent implements OnDestroy {
     return false
   }
 
+  /**
+   * Method to handle redirection to Add submission page
+   */
   addSubmissionRoute() {
     this.router.navigate([`/modules/${getItemSession(StorageItem.moduleSlug)}/add-submission`, this.transport.moduleID?.value])
   }
 
+  /**
+   * Method to check if user is an app admin
+   * @param value array<any>
+   * @returns boolean
+   */
   checkIfUserisAdmin(value: any[]): boolean {
     return value?.map(data => data?.id).includes(this.currentUser?.id)
   }
 
+  /**
+   * @ignore
+   * @param data Object
+   */
   fetchFreshData(data: any) {
     if(data) {
       this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(getItemSession(StorageItem.moduleSlug), this.limit, 1);
@@ -88,12 +111,20 @@ export class SubmodulesListComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Called when the item to be deleted emits the deleted event
+   * @param value boolean
+   */
   itemDeleted(value: boolean) {
     if(value == true) {
       this.subModuleData = this.dashBoardService.getSubModuleByModuleSlug(this.moduleSlug, this.limit, this.page)
     }
   }
 
+  /**
+   * Method to handle pagination of data
+   * @param value number
+   */
   sendPagination(value: number) {
     if(value) {
       this.page = value
@@ -101,10 +132,18 @@ export class SubmodulesListComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Method to check if admin user is on first step
+   * @param value array<any>
+   * @returns boolean
+   */
   checkIfAdminUserIsOnFirstStep(value: any[]) {
     return value?.map(data => data?.id)?.includes(this.currentUser?.id)
   }
 
+  /**
+   * Built in Angular Lifecycle method that is run when component or page is destroyed or removed from DOM
+   */
   ngOnDestroy(): void {
     this.destroy$.complete();
     this.destroy$.unsubscribe();
