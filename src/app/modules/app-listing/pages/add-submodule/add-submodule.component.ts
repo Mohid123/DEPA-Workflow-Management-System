@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/modules/auth/auth.service';
 import { DashboardService } from 'src/app/modules/dashboard/dashboard.service';
 import { DataTransportService } from 'src/core/core-services/data-transport.service';
 import { NotificationsService } from 'src/core/core-services/notifications.service';
-import { StorageItem, getItem, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
+import { StorageItem, getItem, getItemSession, setItem, setItemSession } from 'src/core/utils/local-storage.utils';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { CodeValidator, calculateFileSize, generateKeyCombinations } from 'src/core/utils/utility-functions';
 import { MediaUploadService } from 'src/core/core-services/media-upload.service';
@@ -50,12 +50,12 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
   redirectToModuleID: string;
   companyList: any[];
   cols: any[] = [
-    "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" 
+    "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
   ];
   addForms: FormControl<boolean> = new FormControl(true)
   firstEditorPreview = false;
   secondEditorPreview = false;
-  
+
   emailContent: any = `
   <head>Action</head>
   <body>
@@ -1595,7 +1595,7 @@ export class AddSubmoduleComponent implements OnDestroy, OnInit {
         this.router.navigate(['/dashboard/home'])
       }
       else {
-        this.router.navigate(['/modules', getItem(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItem(StorageItem.moduleID) || ''}});
+        this.router.navigate(['/modules', getItemSession(StorageItem.moduleSlug) || ''], {queryParams: {moduleID: getItemSession(StorageItem.moduleID) || ''}});
       }
     })
   }
